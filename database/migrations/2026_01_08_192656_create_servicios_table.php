@@ -7,14 +7,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('usuarios', function (Blueprint $table) {
+        Schema::create('servicios', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->string('apellido')->nullable();
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('telefono')->nullable();
-            $table->foreignId('rol_id')->constrained('roles');
+            $table->text('descripcion')->nullable();
+            $table->integer('duracion_minutos');
+            $table->decimal('precio', 8, 2);
             $table->boolean('activo')->default(true);
             $table->timestamps();
         });
@@ -22,7 +20,7 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('usuarios');
+        Schema::dropIfExists('servicios');
     }
 };
 
