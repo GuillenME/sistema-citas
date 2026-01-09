@@ -12,11 +12,15 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
+    
 Route::get('/redirect', function () {
     $rol = auth()->user()->rol_id;
 
     if ($rol == 1) return redirect('/admin');
-    if ($rol == 2) return redirect('/recepcionista');
+    if ($rol == 3) return redirect('/recepcionista');
     return redirect('/cliente');
 })->middleware('auth');
 
