@@ -1,18 +1,33 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/register', [AuthController::class, 'registerForm']);
+Route::post('/register', [AuthController::class, 'register']);
+
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+
+Route::get('/redirect', function () {
+    $rol = auth()->user()->rol_id;
+
+    if ($rol == 1) return redirect('/admin');
+    if ($rol == 2) return redirect('/recepcionista');
+    return redirect('/cliente');
+})->middleware('auth');
+
+Route::middleware(['auth', 'rol:1'])->get('/admin', function () {
+    return view('admin.dashboard');
+});
+
+Route::middleware(['auth', 'rol:3'])->get('/recepcionista', function () {
+    return view('recepcionista.dashboard');
+});
+
+Route::middleware(['auth', 'rol:2'])->get('/cliente', function () {
+    return view('cliente.dashboard');
 });
