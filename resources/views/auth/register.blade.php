@@ -11,5 +11,5 @@
     <!-- Rol fijo -->
     <input type="hidden" name="rol_id" value="3">
 
-    <button type="submit">Registrarse</button>
+    <button type="submit">Registrarte</button>
 </form>
