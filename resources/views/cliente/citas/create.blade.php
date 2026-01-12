@@ -82,7 +82,7 @@
 
     </div>
 
-    <a href="{{ route('cliente.dashboard') }}">⬅ Volver al panel</a>
+<a href="{{ route('cliente.dashboard') }}">Volver</a>
 
 </body>
 
