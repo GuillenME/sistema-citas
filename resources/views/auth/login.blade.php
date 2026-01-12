@@ -15,24 +15,24 @@
             margin: 0;
             height: 100vh;
 
-            background-color: #111827;
-            background-image:
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 2px, transparent 2px),
-                linear-gradient(rgba(255, 255, 255, 0.03) 2px, transparent 2px);
-            background-size: 80px 40px;
+            /* 👉 SE CONSERVA TU FONDO */
+            background-image: url('{{ asset("imagenes/registro_fondo.png") }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
 
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
         }
+
 
         body::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.75);
             z-index: 0;
         }
 
@@ -44,10 +44,10 @@
             transform: translateX(-50%);
             width: 420px;
             height: 120px;
-            border: 5px solid #ff9f1c;
+            border: 5px solid #1F4E79;
             border-bottom: none;
             border-radius: 220px 220px 0 0;
-            box-shadow: 0 0 12px #ff9f1c, 0 0 32px rgba(255, 159, 28, .8);
+            box-shadow: 0 0 12px #1F4E79, 0 0 32px rgba(42, 22, 218, 0.8);
             z-index: 1;
             animation: neon-flicker 4s infinite;
         }
@@ -60,11 +60,11 @@
             font-size: 48px;
             font-weight: bold;
             letter-spacing: 6px;
-            color: #ff9f1c;
+            color: #ffffff;
             text-shadow:
-                0 0 6px #ff9f1c,
-                0 0 16px rgba(255, 159, 28, .8),
-                0 0 32px rgba(255, 159, 28, .6);
+                0 0 6px #1F4E79,
+                0 0 16px rgba(42, 22, 218, 0.8),
+                0 0 32px rgba(42, 22, 218, 0.8);
             z-index: 2;
             animation: neon-flicker 4s infinite;
         }
@@ -111,7 +111,7 @@
             left: 24px;
             right: 24px;
             height: 2px;
-            background: linear-gradient(90deg, transparent, #ff9f1c, transparent);
+            background: linear-gradient(90deg, transparent, #1F4E79, transparent);
         }
 
         h2 {
@@ -153,7 +153,7 @@
         }
 
         input:focus {
-            outline: 2px solid #ff9f1c;
+            outline: 2px solid #1F4E79;
         }
 
         .input-error {
@@ -173,7 +173,7 @@
             width: 100%;
             padding: 12px;
             margin-top: 12px;
-            background: #ff9f1c;
+            background: #1F4E79;
             border: none;
             border-radius: 8px;
             color: #fff;
@@ -181,14 +181,14 @@
             font-weight: bold;
             letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(255, 159, 28, .5);
+            box-shadow: 0 6px 20px rgba(42, 22, 218, 0.8);
             transition: .2s;
         }
 
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 28px rgba(255, 159, 28, .6);
-            background: #f89100;
+            box-shadow: 0 10px 28px rgba(42, 22, 218, 0.8);
+            background: #1F4E79;
         }
 
         .register {

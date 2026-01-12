@@ -31,7 +31,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.75);
             z-index: 0;
         }
 
@@ -56,7 +56,7 @@
             left: 24px;
             right: 24px;
             height: 2px;
-            background: linear-gradient(90deg, transparent, #ff9f1c, transparent);
+            background: linear-gradient(90deg, transparent, #1F4E79, transparent);
         }
 
         h2 {
@@ -98,7 +98,7 @@
         }
 
         input:focus {
-            outline: 2px solid #ff9f1c;
+            outline: 2px solid #1F4E79;
         }
 
         .input-error {
@@ -118,7 +118,7 @@
             width: 100%;
             padding: 12px;
             margin-top: 12px;
-            background: #ff9f1c;
+            background: #1F4E79;
             border: none;
             border-radius: 8px;
             color: #fff;
@@ -126,14 +126,14 @@
             font-weight: bold;
             letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(255, 159, 28, .5);
+            box-shadow: 0 6px 20px rgba(42, 22, 218, 0.8);
             transition: .2s;
         }
 
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 28px rgba(255, 159, 28, .6);
-            background: #f89100;
+            box-shadow: 0 10px 28px rgba(42, 22, 218, 0.8);
+            background: #1F4E79;
         }
 
         .login {
