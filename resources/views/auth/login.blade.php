@@ -10,163 +10,118 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             height: 100vh;
 
-            /* ===== FONDO DE LADRILLOS OSCUROS (GRANDES) ===== */
-            background-color: #1b1b1b;
+            /* FONDO BARBERÍA PREMIUM */
+            background-color: #111827;
             background-image:
-                linear-gradient(90deg, rgba(255,255,255,0.05) 3px, transparent 3px),
-                linear-gradient(rgba(255,255,255,0.05) 3px, transparent 3px),
-                linear-gradient(
-                    90deg,
-                    transparent 44px,
-                    rgba(0,0,0,0.5) 44px,
-                    rgba(0,0,0,0.5) 48px,
-                    transparent 48px
-                ),
-                linear-gradient(
-                    transparent 44px,
-                    rgba(0,0,0,0.5) 44px,
-                    rgba(0,0,0,0.5) 48px,
-                    transparent 48px
-                );
+                linear-gradient(90deg, rgba(255,255,255,0.03) 2px, transparent 2px),
+                linear-gradient(rgba(255,255,255,0.03) 2px, transparent 2px);
+            background-size: 80px 40px;
 
-            /* LADRILLOS MÁS GRANDES */
-            background-size: 96px 48px;
-
-            /* ===== CENTRADO ===== */
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
+            overflow: hidden;
         }
 
-        /* OVERLAY OSCURO PARA MEJOR CONTRASTE */
+        /* OVERLAY SUAVE */
         body::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.45);
+            background: rgba(0,0,0,0.55);
             z-index: 0;
         }
-        /* TUBO LED CURVO */
+
+        /* TUBO LED */
         .led-tube {
             position: absolute;
-            top: 30px; /* 👈 antes 130px */
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
-
             width: 420px;
             height: 120px;
-
-            border: 6px solid #ff9f1c;
+            border: 5px solid #ff9f1c;
             border-bottom: none;
             border-radius: 220px 220px 0 0;
-
             box-shadow:
-                0 0 10px #ff9f1c,
-                0 0 20px #ff9f1c,
-                0 0 40px #ff9f1c,
-                0 0 80px rgb(253, 144, 2);
-
+                0 0 12px #ff9f1c,
+                0 0 32px rgba(255,159,28,0.8);
             pointer-events: none;
             z-index: 1;
-        }
-        
-            /* LETRERO NEÓN (LÁMPARA LED) */
-        .neon-sign {
-            position: absolute;
-            top: 80px;          /* Altura en la pared */
-            left: 50%;
-            transform: translateX(-50%);
-
-            font-size: 64px;
-            font-weight: bold;
-            letter-spacing: 4px;
-            font-family: 'Arial', sans-serif;
-
-            color: #ff9f1c;
-
-            text-shadow:
-                0 0 5px #ffffff,
-                0 0 10px #ffffff,
-                0 0 20px #ffffff,
-                0 0 40px #ffffff,
-                0 0 80px #ffffff;
-
-            pointer-events: none; /* NO afecta el login */
-            z-index: 1;
-        }
-        .neon-text {
-            position: absolute;
-            top: 65px; /* 👈 antes 170px */
-            left: 50%;
-            transform: translateX(-50%);
-
-            font-size: 52px;
-            font-weight: bold;
-            letter-spacing: 4px;
-
-            color: #ff9f1c;
-
-            text-shadow:
-                0 0 5px #ffffff,
-                0 0 10px #ffffff,
-                0 0 20px #ffffff,
-                0 0 40px #ffffff;
-
-            pointer-events: none;
-            z-index: 2;
-        }
-
-
-        @keyframes neon-flicker {
-        0%, 100% { opacity: 1; }
-        45% { opacity: 0.85; }
-        50% { opacity: 0.6; }
-        55% { opacity: 0.9; }
-        }
-
-        .led-tube,
-        .neon-text {
             animation: neon-flicker 4s infinite;
         }
 
+        /* TEXTO NEÓN */
+        .neon-text {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: 6px;
+            color: #ff9f1c;
+            text-shadow:
+                0 0 6px #ff9f1c,
+                0 0 16px rgba(255,159,28,0.8),
+                0 0 32px rgba(255,159,28,0.6);
+            pointer-events: none;
+            z-index: 2;
+            animation: neon-flicker 4s infinite;
+        }
 
+        @keyframes neon-flicker {
+            0%, 100% { opacity: 1; }
+            48% { opacity: 0.95; }
+            50% { opacity: 0.85; }
+            52% { opacity: 1; }
+        }
 
-        /* TARJETA LOGIN (GLASS EFFECT) */
+        /* TARJETA LOGIN */
         .login-container {
             position: relative;
             z-index: 1;
-
             width: 360px;
-            padding: 25px;
-
-            margin-top: 140px; /* 👈 CLAVE */
-
-            background: rgba(255, 255, 255, 0.25);
-            border: 1px solid rgba(255,255,255,0.35);
-            border-radius: 12px;
-
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-
-            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            padding: 28px;
+            margin-top: 140px;
+            background: rgba(17, 24, 39, 0.65);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 14px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
             color: #fff;
         }
 
+        .login-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                #ff9f1c,
+                transparent
+            );
+        }
 
         .login-container h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: #fff;
+            font-weight: 600;
         }
 
-        /* ERRORES GENERALES */
+        /* ERRORES */
         .error-box {
-            background: rgba(254, 226, 226, 0.95);
+            background: rgba(254,226,226,0.95);
             border: 1px solid #f87171;
             color: #991b1b;
             padding: 10px;
@@ -183,11 +138,17 @@
         /* INPUTS */
         .login-container input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 5px;
-            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 6px;
+            border-radius: 8px;
             border: none;
-            outline: none;
+            font-size: 14px;
+            background: rgba(255,255,255,0.9);
+            color: #111827;
+        }
+
+        .login-container input::placeholder {
+            color: #6b7280;
         }
 
         .login-container input:focus {
@@ -205,28 +166,34 @@
         /* BOTÓN */
         .login-container button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
+            margin-top: 12px;
             background: #ff9f1c;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             color: #ffffff;
-            font-size: 16px;
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
             cursor: pointer;
-            margin-top: 10px;
+            box-shadow: 0 6px 20px rgba(255,159,28,0.5);
+            transition: all 0.2s ease;
         }
 
         .login-container button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 28px rgba(255,159,28,0.6);
             background: #f89100;
         }
 
         /* REGISTRO */
         .register {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 16px;
         }
 
         .register a {
-            color: #e0e7ff;
+            color: #e5e7eb;
             text-decoration: none;
             font-size: 14px;
         }
@@ -240,8 +207,6 @@
 
     <div class="led-tube"></div>
     <div class="neon-text">BARBERÍA</div>
-
-
 
     <div class="login-container">
         <h2>Iniciar sesión</h2>
@@ -281,7 +246,7 @@
                 <span class="field-error">{{ $message }}</span>
             @enderror
 
-            <button type="submit">Entrar</button>
+            <button type="submit">ENTRAR</button>
         </form>
 
         <div class="register">
