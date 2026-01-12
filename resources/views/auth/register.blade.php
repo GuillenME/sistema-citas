@@ -11,72 +11,129 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-image: url('{{ asset('imagenes/registro_fondo.png') }}');
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            height: 100vh;
+
+            /* 👉 SE CONSERVA TU FONDO */
+            background-image: url('{{ asset("imagenes/registro_fondo.png") }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            height: 100vh;
+
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
-        /* Tarjeta */
-        .barber-card {
-            background: rgba(15, 15, 15, .95);
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 0;
+        }
+
+        /* CARD (MISMO ESTILO QUE LOGIN) */
+        .register-container {
+            position: relative;
+            z-index: 1;
             width: 380px;
-            padding: 35px;
+            padding: 28px;
+            background: rgba(17, 24, 39, .65);
+            border: 1px solid rgba(255, 255, 255, .15);
             border-radius: 14px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, .6);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
             color: #fff;
         }
 
-        /* Título */
-        .barber-card h2 {
+        .register-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff9f1c, transparent);
+        }
+
+        h2 {
             text-align: center;
-            margin-bottom: 25px;
-            letter-spacing: 1px;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
 
-        /* Inputss */
-        .barber-card input {
-            width: 100%;
-            padding: 12px;
+        /* ERRORES */
+        .error-box {
+            background: #fee2e2;
+            border: 1px solid #f87171;
+            color: #991b1b;
+            padding: 10px;
+            border-radius: 6px;
             margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #444;
-            background: transparent;
-            color: #fff;
             font-size: 14px;
         }
 
-        .barber-card input::placeholder {
-            color: #aaa;
+        .error-box ul {
+            margin: 0;
+            padding-left: 18px;
         }
 
-        .barber-card input:focus {
-            outline: none;
-            border-color: #ff8c00;
-            box-shadow: 0 0 6px rgba(255, 140, 0, .4);
-        }
-
-        /* Botón */
-        .barber-card button {
+        /* INPUTS */
+        input {
             width: 100%;
             padding: 12px;
-            background: #ff8c00;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            background: rgba(255, 255, 255, .9);
+            color: #111827;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+        }
+
+        input:focus {
+            outline: 2px solid #ff9f1c;
+        }
+
+        .input-error {
+            outline: 2px solid #ef4444 !important;
+            background: #fee2e2;
+        }
+
+        .field-error {
+            color: #fecaca;
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* BUTTON */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            background: #ff9f1c;
             border: none;
             border-radius: 8px;
             color: #fff;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
+            letter-spacing: 1px;
             cursor: pointer;
-            transition: .3s;
+            box-shadow: 0 6px 20px rgba(255, 159, 28, .5);
+            transition: .2s;
         }
 
-        .barber-card button:hover {
-            background: #e67e00;
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 28px rgba(255, 159, 28, .6);
+            background: #f89100;
         }
 
         .login {
@@ -85,7 +142,7 @@
         }
 
         .login a {
-            color: #0055ff;
+            color: #e5e7eb;
             text-decoration: none;
             font-size: 14px;
         }
@@ -98,26 +155,54 @@
 
 <body>
 
-    <div class="barber-card">
+    <div class="register-container">
 
         <h2>Registro de cliente</h2>
 
-        <form method="POST" action="/register">
+        {{-- ERRORES GENERALES --}}
+        @if ($errors->any())
+            <div class="error-box">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('register') }}" novalidate>
             @csrf
 
-            <input type="text" name="nombre" placeholder="Nombre" required>
-            <input type="email" name="email" placeholder="Correo" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <input type="password" name="password_confirmation" placeholder="Confirmar contraseña" required>
+            <input type="text" name="nombre" placeholder="Nombre"
+                value="{{ old('nombre') }}" class="@error('nombre') input-error @enderror">
+            @error('nombre')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
+
+            <input type="email" name="email" placeholder="Correo"
+                value="{{ old('email') }}" class="@error('email') input-error @enderror">
+            @error('email')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
+
+            <input type="password" name="password" placeholder="Contraseña"
+                class="@error('password') input-error @enderror">
+            @error('password')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
+
+            <input type="password" name="password_confirmation" placeholder="Confirmar contraseña">
 
             <!-- Rol fijo -->
             <input type="hidden" name="rol_id" value="3">
 
-            <button type="submit">Registrarte</button>
+            <button type="submit">REGISTRARSE</button>
         </form>
+
         <div class="login">
             <a href="{{ route('login') }}">¿Ya tienes cuenta? Inicia sesión</a>
         </div>
+
     </div>
 
 </body>
