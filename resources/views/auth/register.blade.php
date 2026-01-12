@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Registro de Cliente</title>
@@ -8,25 +9,26 @@
         * {
             box-sizing: border-box;
         }
-body {
-    font-family: Arial, sans-serif;
-    background-image: url('{{ asset("imagenes/registro_fondo.png") }}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('{{ asset('imagenes/registro_fondo.png') }}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
         /* Tarjeta */
         .barber-card {
-            background: rgba(15,15,15,.95);
+            background: rgba(15, 15, 15, .95);
             width: 380px;
             padding: 35px;
             border-radius: 14px;
-            box-shadow: 0 25px 60px rgba(0,0,0,.6);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, .6);
             color: #fff;
         }
 
@@ -56,7 +58,7 @@ body {
         .barber-card input:focus {
             outline: none;
             border-color: #ff8c00;
-            box-shadow: 0 0 6px rgba(255,140,0,.4);
+            box-shadow: 0 0 6px rgba(255, 140, 0, .4);
         }
 
         /* Botón */
@@ -76,8 +78,24 @@ body {
         .barber-card button:hover {
             background: #e67e00;
         }
+
+        .login {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .login a {
+            color: #0055ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .login a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="barber-card">
@@ -97,8 +115,11 @@ body {
 
             <button type="submit">Registrarte</button>
         </form>
-
+        <div class="login">
+            <a href="{{ route('login') }}">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
     </div>
 
 </body>
+
 </html>
