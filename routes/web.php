@@ -4,11 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 
-/*
-|--------------------------------------------------------------------------
-| Autenticación (solo invitados)
-|--------------------------------------------------------------------------
-*/
 
 Route::middleware('guest')->group(function () {
 
@@ -23,11 +18,25 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-/*
-|--------------------------------------------------------------------------
-| Cerrar sesión
-|--------------------------------------------------------------------------
-*/
+
+
+Route::middleware('auth')->prefix('cliente')->name('cliente.')->group(function () {
+
+    Route::get('/dashboard', function () {
+        return view('cliente.dashboard');
+    })->name('dashboard');
+
+    Route::get('/citas', [CitaController::class, 'index'])
+        ->name('citas.index');
+
+    Route::get('/citas/crear', [CitaController::class, 'create'])
+        ->name('citas.create');
+
+    Route::post('/citas', [CitaController::class, 'store'])
+        ->name('citas.store');
+
+});
+
 
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
