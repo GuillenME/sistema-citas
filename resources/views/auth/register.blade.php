@@ -65,20 +65,10 @@
             font-weight: 600;
         }
 
-<<<<<<< HEAD
         /* Inputss */
         .barber-card input {
             width: 100%;
             padding: 12px;
-=======
-        /* ERRORES */
-        .error-box {
-            background: #fee2e2;
-            border: 1px solid #f87171;
-            color: #991b1b;
-            padding: 10px;
-            border-radius: 6px;
->>>>>>> 41f1946da0c827e2ca51cca8169b8aee4a75995d
             margin-bottom: 15px;
             font-size: 14px;
         }
