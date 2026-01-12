@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Iniciar sesión</title>
@@ -14,11 +15,10 @@
             margin: 0;
             height: 100vh;
 
-            /* FONDO BARBERÍA PREMIUM */
             background-color: #111827;
             background-image:
-                linear-gradient(90deg, rgba(255,255,255,0.03) 2px, transparent 2px),
-                linear-gradient(rgba(255,255,255,0.03) 2px, transparent 2px);
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 2px, transparent 2px),
+                linear-gradient(rgba(255, 255, 255, 0.03) 2px, transparent 2px);
             background-size: 80px 40px;
 
             display: flex;
@@ -28,16 +28,15 @@
             overflow: hidden;
         }
 
-        /* OVERLAY SUAVE */
         body::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.55);
+            background: rgba(0, 0, 0, 0.55);
             z-index: 0;
         }
 
-        /* TUBO LED */
+        /* LED */
         .led-tube {
             position: absolute;
             top: 30px;
@@ -48,15 +47,11 @@
             border: 5px solid #ff9f1c;
             border-bottom: none;
             border-radius: 220px 220px 0 0;
-            box-shadow:
-                0 0 12px #ff9f1c,
-                0 0 32px rgba(255,159,28,0.8);
-            pointer-events: none;
+            box-shadow: 0 0 12px #ff9f1c, 0 0 32px rgba(255, 159, 28, .8);
             z-index: 1;
             animation: neon-flicker 4s infinite;
         }
 
-        /* TEXTO NEÓN */
         .neon-text {
             position: absolute;
             top: 70px;
@@ -68,33 +63,44 @@
             color: #ff9f1c;
             text-shadow:
                 0 0 6px #ff9f1c,
-                0 0 16px rgba(255,159,28,0.8),
-                0 0 32px rgba(255,159,28,0.6);
-            pointer-events: none;
+                0 0 16px rgba(255, 159, 28, .8),
+                0 0 32px rgba(255, 159, 28, .6);
             z-index: 2;
             animation: neon-flicker 4s infinite;
         }
 
         @keyframes neon-flicker {
-            0%, 100% { opacity: 1; }
-            48% { opacity: 0.95; }
-            50% { opacity: 0.85; }
-            52% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            48% {
+                opacity: .95;
+            }
+
+            50% {
+                opacity: .85;
+            }
+
+            52% {
+                opacity: 1;
+            }
         }
 
-        /* TARJETA LOGIN */
+        /* CARD */
         .login-container {
             position: relative;
             z-index: 1;
             width: 360px;
             padding: 28px;
             margin-top: 140px;
-            background: rgba(17, 24, 39, 0.65);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(17, 24, 39, .65);
+            border: 1px solid rgba(255, 255, 255, .15);
             border-radius: 14px;
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
             color: #fff;
         }
 
@@ -105,15 +111,10 @@
             left: 24px;
             right: 24px;
             height: 2px;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                #ff9f1c,
-                transparent
-            );
+            background: linear-gradient(90deg, transparent, #ff9f1c, transparent);
         }
 
-        .login-container h2 {
+        h2 {
             text-align: center;
             margin-bottom: 20px;
             font-weight: 600;
@@ -121,7 +122,7 @@
 
         /* ERRORES */
         .error-box {
-            background: rgba(254,226,226,0.95);
+            background: #fee2e2;
             border: 1px solid #f87171;
             color: #991b1b;
             padding: 10px;
@@ -136,26 +137,30 @@
         }
 
         /* INPUTS */
-        .login-container input {
+        input {
             width: 100%;
             padding: 12px;
             margin-bottom: 6px;
             border-radius: 8px;
             border: none;
             font-size: 14px;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255, 255, 255, .9);
             color: #111827;
         }
 
-        .login-container input::placeholder {
+        input::placeholder {
             color: #6b7280;
         }
 
-        .login-container input:focus {
+        input:focus {
             outline: 2px solid #ff9f1c;
         }
 
-        /* ERROR POR CAMPO */
+        .input-error {
+            outline: 2px solid #ef4444 !important;
+            background: #fee2e2;
+        }
+
         .field-error {
             color: #fecaca;
             font-size: 13px;
@@ -163,30 +168,29 @@
             display: block;
         }
 
-        /* BOTÓN */
-        .login-container button {
+        /* BUTTON */
+        button {
             width: 100%;
             padding: 12px;
             margin-top: 12px;
             background: #ff9f1c;
             border: none;
             border-radius: 8px;
-            color: #ffffff;
+            color: #fff;
             font-size: 15px;
             font-weight: bold;
             letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(255,159,28,0.5);
-            transition: all 0.2s ease;
+            box-shadow: 0 6px 20px rgba(255, 159, 28, .5);
+            transition: .2s;
         }
 
-        .login-container button:hover {
+        button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 28px rgba(255,159,28,0.6);
+            box-shadow: 0 10px 28px rgba(255, 159, 28, .6);
             background: #f89100;
         }
 
-        /* REGISTRO */
         .register {
             text-align: center;
             margin-top: 16px;
@@ -203,6 +207,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="led-tube"></div>
@@ -222,26 +227,17 @@
             </div>
         @endif
 
-        <form method="POST" action="/login">
+        <form method="POST" action="{{ route('login') }}" novalidate>
             @csrf
 
-            <input 
-                type="email" 
-                name="email" 
-                placeholder="Correo"
-                value="{{ old('email') }}"
-                required
-            >
+            <input type="text" name="email" placeholder="Correo" value="{{ old('email') }}"
+                class="@error('email') input-error @enderror">
             @error('email')
                 <span class="field-error">{{ $message }}</span>
             @enderror
 
-            <input 
-                type="password" 
-                name="password" 
-                placeholder="Contraseña" 
-                required
-            >
+            <input type="password" name="password" placeholder="Contraseña"
+                class="@error('password') input-error @enderror">
             @error('password')
                 <span class="field-error">{{ $message }}</span>
             @enderror
@@ -249,10 +245,12 @@
             <button type="submit">ENTRAR</button>
         </form>
 
+
         <div class="register">
-            <a href="/register">Registrarse</a>
+            <a href="{{ route('register') }}">Registrarse</a>
         </div>
     </div>
 
 </body>
+
 </html>
