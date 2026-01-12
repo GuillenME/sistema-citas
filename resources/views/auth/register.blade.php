@@ -15,8 +15,7 @@
             margin: 0;
             height: 100vh;
 
-            /* 👉 SE CONSERVA TU FONDO */
-            background-image: url('{{ asset("imagenes/registro_fondo.png") }}');
+            background-image: url('{{ asset('imagenes/registro_fondo.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -35,11 +34,10 @@
             z-index: 0;
         }
 
-        /* CARD (MISMO ESTILO QUE LOGIN) */
         .register-container {
             position: relative;
             z-index: 1;
-            width: 380px;
+            width: 400px;
             padding: 28px;
             background: rgba(17, 24, 39, .65);
             border: 1px solid rgba(255, 255, 255, .15);
@@ -61,11 +59,10 @@
 
         h2 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             font-weight: 600;
         }
 
-        /* ERRORES */
         .error-box {
             background: #fee2e2;
             border: 1px solid #f87171;
@@ -81,7 +78,6 @@
             padding-left: 18px;
         }
 
-        /* INPUTS */
         input {
             width: 100%;
             padding: 12px;
@@ -113,11 +109,10 @@
             display: block;
         }
 
-        /* BUTTON */
         button {
             width: 100%;
             padding: 12px;
-            margin-top: 12px;
+            margin-top: 14px;
             background: #ff9f1c;
             border: none;
             border-radius: 8px;
@@ -173,14 +168,23 @@
         <form method="POST" action="{{ route('register') }}" novalidate>
             @csrf
 
-            <input type="text" name="nombre" placeholder="Nombre"
-                value="{{ old('nombre') }}" class="@error('nombre') input-error @enderror">
+            <input type="text" name="nombre" placeholder="Nombre" value="{{ old('nombre') }}"
+                class="@error('nombre') input-error @enderror">
             @error('nombre')
                 <span class="field-error">{{ $message }}</span>
             @enderror
 
-            <input type="email" name="email" placeholder="Correo"
-                value="{{ old('email') }}" class="@error('email') input-error @enderror">
+            <input type="text" name="apellido" placeholder="Apellidos" value="{{ old('apellido') }}"
+                class="@error('apellido') input-error @enderror">
+            <input type="tel" name="telefono" placeholder="Teléfono (10 dígitos)" maxlength="10" inputmode="numeric"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)" value="{{ old('telefono') }}"
+                class="@error('telefono') input-error @enderror">
+            @error('telefono')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
+
+            <input type="email" name="email" placeholder="Correo" value="{{ old('email') }}"
+                class="@error('email') input-error @enderror">
             @error('email')
                 <span class="field-error">{{ $message }}</span>
             @enderror
@@ -194,7 +198,7 @@
             <input type="password" name="password_confirmation" placeholder="Confirmar contraseña">
 
             <!-- Rol fijo -->
-            <input type="hidden" name="rol_id" value="3">
+            <input type="hidden" name="rol_id" value="2">
 
             <button type="submit">REGISTRARSE</button>
         </form>
