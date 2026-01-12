@@ -83,6 +83,9 @@
     </div>
 
     <a href="{{ route('cliente.dashboard') }}">⬅ Volver al panel</a>
+=========
+<a href="{{ route('cliente.dashboard') }}">Volver</a>
+>>>>>>>>> Temporary merge branch 2
 
 </body>
 
