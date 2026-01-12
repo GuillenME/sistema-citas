@@ -37,7 +37,7 @@ body {
             letter-spacing: 1px;
         }
 
-        /* Inputs */
+        /* Inputss */
         .barber-card input {
             width: 100%;
             padding: 12px;
