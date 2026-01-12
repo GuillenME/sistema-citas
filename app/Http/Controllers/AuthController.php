@@ -21,35 +21,58 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $credentials = $request->validate(
+            [
+                'email' => ['required', 'email'],
+                'password' => ['required', 'min:6'],
+            ],
+            [
+                'email.required' => 'El correo es obligatorio',
+                'email.email' => 'El correo no es válido',
+                'password.required' => 'La contraseña es obligatoria',
+                'password.min' => 'La contraseña debe tener al menos 6 caracteres',
+            ]
+        );
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect('/redirect');
         }
 
-        return back()->withErrors(['email' => 'Credenciales incorrectas']);
+        return back()->withErrors([
+            'email' => 'Correo o contraseña incorrectos'
+        ])->withInput();
     }
+
 
     public function register(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required',
-            'email' => 'required|email|unique:usuarios',
-            'password' => 'required|confirmed|min:6'
-        ]);
+        $request->validate(
+            [
+                'nombre' => ['required', 'string', 'min:3'],
+                'email' => ['required', 'email', 'unique:usuarios,email'],
+                'password' => ['required', 'confirmed', 'min:6'],
+            ],
+            [
+                'nombre.required' => 'El nombre es obligatorio',
+                'nombre.min' => 'El nombre debe tener al menos 3 letras',
+                'email.required' => 'El correo es obligatorio',
+                'email.email' => 'El correo no es válido',
+                'email.unique' => 'Este correo ya está registrado',
+                'password.required' => 'La contraseña es obligatoria',
+                'password.confirmed' => 'Las contraseñas no coinciden',
+                'password.min' => 'La contraseña debe tener mínimo 6 caracteres',
+            ]
+        );
 
         Usuario::create([
             'nombre' => $request->nombre,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'rol_id' => 3 // cliente
+            'rol_id' => 3,
         ]);
 
-        return redirect('/login');
+        return redirect('/login')->with('success', 'Cuenta creada correctamente');
     }
 
     public function logout(Request $request)
@@ -61,4 +84,3 @@ class AuthController extends Controller
         return redirect('/login');
     }
 }
-
