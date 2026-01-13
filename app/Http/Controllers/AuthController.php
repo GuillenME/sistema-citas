@@ -89,7 +89,7 @@ class AuthController extends Controller
         if ($usuario->rol_id == 2) {
             Cliente::create([
                 'usuario_id' => $usuario->id,
-                'telefono'   => $usuario->telefono,
+               // 'telefono'   => $usuario->telefono,
             ]);
         }
 
