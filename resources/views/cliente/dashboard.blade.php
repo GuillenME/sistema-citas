@@ -25,7 +25,7 @@
             position: relative;
         }
 
-        /* 🔥 OVERLAY OSCURO (ILUMINACIÓN DE FONDO) */
+        /* OVERLAY OSCURO (ILUMINACIÓN DE FONDO) */
         body::before {
             content: "";
             position: absolute;
