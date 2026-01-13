@@ -42,6 +42,7 @@ class CitaController extends Controller
         ]);
 
 
+
         return redirect()->route('cliente.citas.index')
             ->with('success', 'Cita registrada correctamente');
     }
