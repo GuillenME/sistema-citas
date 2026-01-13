@@ -17,7 +17,7 @@
             margin: 0;
             min-height: 100vh;
 
-            background-image: url('{{ asset("imagenes/Citas-SalaEspera.png") }}');
+            background-image: url('{{ asset("imagenes/registro.png") }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
