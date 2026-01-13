@@ -13,7 +13,7 @@
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
 
             background-image: url('{{ asset('imagenes/registro_fondo.png') }}');
             background-size: cover;
@@ -34,10 +34,12 @@
             z-index: 0;
         }
 
+        /* CARD */
         .register-container {
             position: relative;
             z-index: 1;
-            width: 400px;
+            width: 100%;
+            max-width: 400px;
             padding: 28px;
             background: rgba(17, 24, 39, .65);
             border: 1px solid rgba(255, 255, 255, .15);
@@ -63,6 +65,7 @@
             font-weight: 600;
         }
 
+        /* ERRORES */
         .error-box {
             background: #fee2e2;
             border: 1px solid #f87171;
@@ -79,6 +82,7 @@
             padding-left: 18px;
         }
 
+        /* INPUTS */
         input {
             width: 100%;
             padding: 12px;
@@ -110,6 +114,7 @@
             display: block;
         }
 
+        /* BUTTON */
         button {
             width: 100%;
             padding: 12px;
@@ -146,6 +151,55 @@
         .login a:hover {
             text-decoration: underline;
         }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .register-container {
+                padding: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 18px;
+                border-radius: 12px;
+            }
+
+            input {
+                font-size: 13px;
+                padding: 11px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 11px;
+            }
+
+            .login a {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            body {
+                align-items: flex-start;
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+        }
     </style>
 </head>
 
@@ -177,8 +231,11 @@
 
             <input type="text" name="apellido" placeholder="Apellidos" value="{{ old('apellido') }}"
                 class="@error('apellido') input-error @enderror">
-            <input type="tel" name="telefono" placeholder="Teléfono (10 dígitos)" maxlength="10" inputmode="numeric"
-                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)" value="{{ old('telefono') }}"
+
+            <input type="tel" name="telefono" placeholder="Teléfono (10 dígitos)" maxlength="10"
+                inputmode="numeric"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)"
+                value="{{ old('telefono') }}"
                 class="@error('telefono') input-error @enderror">
             @error('telefono')
                 <span class="field-error">{{ $message }}</span>

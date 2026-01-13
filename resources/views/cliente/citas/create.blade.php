@@ -16,14 +16,28 @@
             font-family: Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
+
             background-image: url('{{ asset("imagenes/Citas-SalaEspera.png") }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+
+            position: relative;
+        }
+
+        /* Oscurecer fondo como login */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 0;
         }
 
         /* ===== Barra superior ===== */
         header {
+            position: relative;
+            z-index: 2;
             background: rgba(115, 114, 126, 0.8);
             color: #fff;
             padding: 15px 30px;
@@ -40,20 +54,13 @@
             gap: 15px;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 22px;
-        }
-
-        /* ===== Flecha ===== */
+        /* Flecha */
         .back-btn {
             background: transparent;
             color: #ffffff;
             text-decoration: none;
-
             font-size: 38px;
             font-weight: bold;
-
             padding: 6px 10px;
             cursor: pointer;
 
@@ -63,23 +70,17 @@
 
             text-shadow:
                 0 0 6px rgba(255, 255, 255, 0.8),
-                0 0 12px rgba(255, 255, 255, 0.6),
-                0 0 20px rgba(255, 255, 255, 0.4);
+                0 0 16px rgba(42, 22, 218, 0.8),
+                0 0 32px rgba(42, 22, 218, 0.8);
 
-            transition:
-                transform 0.2s ease,
-                text-shadow 0.3s ease;
+            transition: transform .2s;
         }
 
         .back-btn:hover {
             transform: scale(1.2);
-            text-shadow:
-                0 0 10px rgba(255, 255, 255, 1),
-                0 0 18px rgba(255, 255, 255, 0.8),
-                0 0 28px rgba(255, 255, 255, 0.6);
         }
 
-        /* ===== Logout ===== */
+        /* Logout */
         .logout-btn {
             background: transparent;
             border: 2px solid #ff0000;
@@ -88,28 +89,22 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            letter-spacing: 0.5px;
 
             box-shadow:
                 0 0 18px rgba(255, 0, 0, 1),
                 inset 0 0 8px rgba(255, 45, 45, 0.4);
 
-            transition: 
-                background 0.3s ease,
-                box-shadow 0.3s ease,
-                transform 0.2s ease;
+            transition: .2s;
         }
 
         .logout-btn:hover {
-            background: rgba(255, 45, 45, 0.15);
-            box-shadow:
-                0 0 14px rgba(255, 45, 45, 1),
-                inset 0 0 12px rgba(255, 45, 45, 0.6);
             transform: scale(1.05);
         }
 
-        /* ===== Contenido ===== */
+        /* ===== CONTENEDOR ===== */
         .container {
+            position: relative;
+            z-index: 2;
             min-height: calc(100vh - 80px);
             display: flex;
             justify-content: center;
@@ -117,94 +112,113 @@
             padding: 30px;
         }
 
+        /* CARD igual al login */
         .form-container {
-            width: 100%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 25px;
+            width: 360px;
+            padding: 28px;
+            background: rgba(17, 24, 39, .65);
+            border: 1px solid rgba(255, 255, 255, .15);
             border-radius: 14px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, .75);
-        }
-
-        .form-container h2 {
-            margin-top: 0;
-            text-align: center;
-            font-size: 20px;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-
-        button.submit-btn {
-            margin-top: 20px;
-            background: #1F4E79;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
             color: #fff;
-            border: none;
-            padding: 12px;
+            position: relative;
+        }
+
+        .form-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #1F4E79, transparent);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* ===== ERRORES (IGUAL LOGIN) ===== */
+        .error-box {
+            background: #fee2e2;
+            border: 1px solid #f87171;
+            color: #991b1b;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .error-box ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .field-error {
+            color: #fecaca;
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* INPUTS */
+        select,
+        input {
             width: 100%;
+            padding: 12px;
+            margin-bottom: 6px;
             border-radius: 8px;
-            cursor: pointer;
+            border: none;
+            font-size: 14px;
+            background: rgba(255, 255, 255, .9);
+            color: #111827;
+        }
+
+        select:focus,
+        input:focus {
+            outline: 2px solid #1F4E79;
+        }
+
+        .input-error {
+            outline: 2px solid #ef4444 !important;
+            background: #fee2e2;
+        }
+
+        /* BOTÓN */
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            background: #1F4E79;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
             font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(42, 22, 218, 0.8);
+            transition: .2s;
         }
 
-        button.submit-btn:hover {
-            background: #0d273f;
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 28px rgba(42, 22, 218, 0.8);
         }
 
-        /* ===== RESPONSIVE ===== */
-
-        /* Tablets */
-        @media (max-width: 900px) {
-            .container {
-                padding: 20px;
-            }
-        }
-
-        /* Celulares */
+        /* RESPONSIVE */
         @media (max-width: 600px) {
-
             header {
                 flex-direction: column;
-                align-items: center;
                 text-align: center;
-                padding: 15px;
-            }
-
-            .header-left {
-                justify-content: center;
-            }
-
-            .back-btn {
-                font-size: 32px;
-            }
-
-            .logout-btn {
-                width: 100%;
-                max-width: 220px;
-            }
-
-            .container {
-                padding: 15px;
             }
 
             .form-container {
-                padding: 20px;
-            }
-
-            .form-container h2 {
-                font-size: 18px;
+                width: 100%;
+                max-width: 360px;
             }
         }
     </style>
@@ -213,45 +227,60 @@
 
 <header>
     <div class="header-left">
-        <a href="{{ route('cliente.dashboard') }}" class="back-btn" title="Volver">←</a>
+        <a href="{{ route('cliente.dashboard') }}" class="back-btn">←</a>
     </div>
 
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button class="logout-btn" type="submit">
-            Cerrar sesión
-        </button>
+        <button class="logout-btn" type="submit">Cerrar sesión</button>
     </form>
 </header>
 
 <div class="container">
 
     <div class="form-container">
+        <h2>Agendar cita</h2>
 
-        <h2>Formulario de cita</h2>
+        {{-- ERRORES GENERALES --}}
+        @if ($errors->any())
+            <div class="error-box">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <form method="POST" action="{{ route('cliente.citas.store') }}">
+        <form method="POST" action="{{ route('cliente.citas.store') }}" novalidate>
             @csrf
 
-            <label>Servicio</label>
-            <select name="servicio_id" required>
-                <option value="">Seleccione un servicio</option>
+            <select name="servicio_id" class="@error('servicio_id') input-error @enderror">
+                <option value="">Servicio</option>
                 @foreach ($servicios as $servicio)
                     <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
                 @endforeach
             </select>
+            @error('servicio_id')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
 
-            <label>Fecha</label>
-            <input type="date" name="fecha" required>
+            <input type="date" name="fecha"
+                   class="@error('fecha') input-error @enderror">
+            @error('fecha')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
 
-            <label>Hora</label>
-            <input type="time" name="hora" required>
+            <input type="time" name="hora"
+                   class="@error('hora') input-error @enderror">
+            @error('hora')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
 
             <button type="submit" class="submit-btn">
-                Agendar cita
+                AGENDAR
             </button>
         </form>
-
     </div>
 
 </div>
