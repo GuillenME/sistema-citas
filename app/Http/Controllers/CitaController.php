@@ -27,20 +27,19 @@ class CitaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'servicio_id' => 'required|exists:servicios,id',
-            'fecha' => 'required|date',
-            'hora' => 'required'
-        ]);
-
-        Cita::create([
-            'cliente_id'   => auth()->id(),
-            'servicio_id'  => $request->servicio_id,
-            'fecha'        => $request->fecha,
-            'hora_inicio'  => $request->hora,
-            'estado'       => 'pendiente_de_anticipo'
-        ]);
-
+        $request->validate(
+            [
+                'servicio_id' => 'required',
+                'fecha' => 'required|date',
+                'hora' => 'required',
+            ],
+            [
+                'servicio_id.required' => 'Debes seleccionar un servicio.',
+                'fecha.required'       => 'La fecha es obligatoria.',
+                'fecha.date'           => 'La fecha no es válida.',
+                'hora.required'        => 'La hora es obligatoria.',
+            ]
+        );
 
         return redirect()->route('cliente.citas.index')
             ->with('success', 'Cita registrada correctamente');

@@ -16,15 +16,29 @@
             font-family: Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
+
             background-image: url('{{ asset("imagenes/registro_fondo.png") }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+
+            position: relative;
+        }
+
+        /* 🔥 OVERLAY OSCURO (ILUMINACIÓN DE FONDO) */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 0;
         }
 
         /* ===== HEADER ===== */
         header {
-            background: rgba(42, 22, 218, 0.8);
+            position: relative;
+            z-index: 2;
+            background: rgba(42, 22, 218, 0.75);
             color: #fff;
             padding: 15px 30px;
 
@@ -32,30 +46,46 @@
             justify-content: space-between;
             align-items: center;
             gap: 15px;
+
+            box-shadow: 0 0 25px rgba(42, 22, 218, 0.6);
         }
 
         header h1 {
             margin: 0;
             font-size: 22px;
+            letter-spacing: 1px;
         }
 
+        /* LOGOUT */
         .logout-btn {
-            background: #dc2626;
-            border: none;
+            background: transparent;
+            border: 2px solid #ff2d2d;
             padding: 10px 18px;
             color: #fff;
             border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: bold;
+
+            box-shadow:
+                0 0 12px rgba(255, 45, 45, 0.9),
+                inset 0 0 6px rgba(255, 45, 45, 0.4);
+
+            transition: transform .2s, box-shadow .2s;
         }
 
         .logout-btn:hover {
-            background: #b91c1c;
+            transform: scale(1.05);
+            box-shadow:
+                0 0 18px rgba(255, 45, 45, 1),
+                inset 0 0 10px rgba(255, 45, 45, 0.6);
         }
 
         /* ===== CONTENEDOR ===== */
         .container {
-            min-height: calc(100vh - 80px);
+            position: relative;
+            z-index: 2;
+            min-height: calc(100vh - 90px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -66,46 +96,66 @@
         .cards {
             display: grid;
             grid-template-columns: repeat(2, minmax(250px, 1fr));
-            gap: 25px;
-            max-width: 700px;
+            gap: 30px;
+            max-width: 720px;
             width: 100%;
         }
 
         .card {
-            background: rgba(42, 22, 218, 0.85);
-            padding: 25px;
-            border-radius: 14px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.35);
+            background: rgba(17, 24, 39, 0.65);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 16px;
             text-align: center;
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.45),
+                0 0 20px rgba(42, 22, 218, 0.6);
+
+            transition: transform .25s, box-shadow .25s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow:
+                0 18px 45px rgba(0, 0, 0, 0.6),
+                0 0 28px rgba(42, 22, 218, 0.9);
         }
 
         .card h2 {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             color: #fff;
-            font-size: 20px;
+            font-size: 21px;
+            letter-spacing: .5px;
         }
 
         .card p {
-            color: #f1f1f1;
-            margin-bottom: 20px;
+            color: #e5e7eb;
+            margin-bottom: 24px;
             font-size: 15px;
         }
 
         .card a {
             display: inline-block;
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: #1F4E79;
             color: #fff;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 15px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+            letter-spacing: 1px;
+
+            box-shadow: 0 6px 20px rgba(42, 22, 218, 0.8);
+            transition: transform .2s, box-shadow .2s;
         }
 
         .card a:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 30px rgba(42, 22, 218, 1);
         }
 
         /* ===== RESPONSIVE ===== */
@@ -114,7 +164,7 @@
         @media (max-width: 900px) {
             .cards {
                 grid-template-columns: 1fr;
-                max-width: 500px;
+                max-width: 520px;
             }
         }
 
@@ -136,20 +186,12 @@
             }
 
             .card {
-                padding: 20px;
-            }
-
-            .card h2 {
-                font-size: 18px;
-            }
-
-            .card p {
-                font-size: 14px;
+                padding: 24px;
             }
 
             .logout-btn {
                 width: 100%;
-                max-width: 220px;
+                max-width: 240px;
             }
         }
     </style>
@@ -174,13 +216,13 @@
         <div class="card">
             <h2>Agendar cita</h2>
             <p>Reserva una nueva cita seleccionando fecha y servicio.</p>
-            <a href="{{ route('cliente.citas.create') }}">Agendar</a>
+            <a href="{{ route('cliente.citas.create') }}">AGENDAR</a>
         </div>
 
         <div class="card">
             <h2>Mis citas</h2>
-            <p>Consulta el estado de tu cita programadas.</p>
-            <a href="{{ route('cliente.citas.index') }}">Ver cita</a>
+            <p>Consulta el estado de tus citas programadas.</p>
+            <a href="{{ route('cliente.citas.index') }}">VER CITAS</a>
         </div>
 
     </div>
