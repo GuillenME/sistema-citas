@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +76,7 @@ class AuthController extends Controller
             ]
         );
 
-        Usuario::create([
+        $usuario = Usuario::create([
             'nombre'   => $request->nombre,
             'apellido' => $request->apellido,
             'telefono' => $request->telefono,
@@ -83,6 +84,15 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'rol_id'   => 2,
         ]);
+
+        // 👇 Si el usuario es cliente, crear registro en clientes
+        if ($usuario->rol_id == 2) {
+            Cliente::create([
+                'usuario_id' => $usuario->id,
+                'telefono'   => $usuario->telefono,
+            ]);
+        }
+
 
 
         return redirect('/login')->with('success', 'Cuenta creada correctamente');
