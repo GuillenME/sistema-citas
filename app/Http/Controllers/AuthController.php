@@ -44,21 +44,31 @@ class AuthController extends Controller
         ])->withInput();
     }
 
-
     public function register(Request $request)
     {
         $request->validate(
             [
-                'nombre' => ['required', 'string', 'min:3'],
-                'email' => ['required', 'email', 'unique:usuarios,email'],
-                'password' => ['required', 'confirmed', 'min:6'],
+                'nombre'    => ['required', 'string', 'min:3'],
+                'apellido'  => ['required', 'string', 'min:3'],
+                'telefono'  => ['required', 'digits:10'],
+                'email'     => ['required', 'email', 'unique:usuarios,email'],
+                'password'  => ['required', 'confirmed', 'min:6'],
             ],
             [
                 'nombre.required' => 'El nombre es obligatorio',
                 'nombre.min' => 'El nombre debe tener al menos 3 letras',
+
+                'apellido.required' => 'Los apellidos son obligatorios',
+                'apellido.min' => 'Los apellidos deben tener al menos 3 letras',
+
+
+                'telefono.required' => 'El teléfono es obligatorio',
+                'telefono.digits' => 'El teléfono debe tener exactamente 10 dígitos',
+
                 'email.required' => 'El correo es obligatorio',
                 'email.email' => 'El correo no es válido',
                 'email.unique' => 'Este correo ya está registrado',
+
                 'password.required' => 'La contraseña es obligatoria',
                 'password.confirmed' => 'Las contraseñas no coinciden',
                 'password.min' => 'La contraseña debe tener mínimo 6 caracteres',
@@ -66,11 +76,14 @@ class AuthController extends Controller
         );
 
         Usuario::create([
-            'nombre' => $request->nombre,
-            'email' => $request->email,
+            'nombre'   => $request->nombre,
+            'apellido' => $request->apellido,
+            'telefono' => $request->telefono,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'rol_id' => 3,
+            'rol_id'   => 2,
         ]);
+
 
         return redirect('/login')->with('success', 'Cuenta creada correctamente');
     }
