@@ -10,7 +10,13 @@ class Servicio extends Model
 
     protected $fillable = [
         'nombre',
+        'descripcion',
+        'duracion_minutos',
         'precio',
-        'duracion',
+        'activo'
+    ];
+
+    protected $casts = [
+        'activo' => 'boolean'
     ];
 }

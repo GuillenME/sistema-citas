@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminCitaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
+use App\Http\Controllers\Admin\AdminServicioController;
 
 
 Route::middleware('guest')->group(function () {
@@ -18,6 +20,22 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+
+    Route::get('/citas', [AdminCitaController::class, 'index'])
+        ->name('citas.index');
+
+    Route::post('/citas/{cita}/confirmar', [AdminCitaController::class, 'confirmar'])
+        ->name('citas.confirmar');
+
+    Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
+        ->name('citas.cancelar');
+
+});
 
 
 Route::middleware('auth')->prefix('cliente')->name('cliente.')->group(function () {
@@ -119,4 +137,14 @@ Route::middleware(['auth', 'rol:2'])
         // Guardar cita (cuando lo implementes)
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');
+});
+
+
+
+Route::middleware(['auth', 'is_admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::resource('servicios', AdminServicioController::class);
 });
