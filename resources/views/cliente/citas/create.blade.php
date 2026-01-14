@@ -22,15 +22,16 @@
             background-repeat: no-repeat;
             position: relative;
         }
+
+        /* ===== OSCURECER FONDO ===== */
         body::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.55); /* ajusta aquí */
+            background: rgba(0, 0, 0, 0.55);
             z-index: 0;
+            pointer-events: none;
         }
-
-
 
         /* ===== BARRA SUPERIOR ===== */
         header {
@@ -42,6 +43,9 @@
             justify-content: space-between;
             align-items: center;
             gap: 15px;
+
+            position: relative;
+            z-index: 1;
         }
 
         .header-left {
@@ -103,13 +107,16 @@
             justify-content: center;
             align-items: center;
             padding: 30px;
+
+            position: relative;
+            z-index: 1;
         }
 
         /* ===== TARJETA ===== */
         .card {
             width: 100%;
             max-width: 520px;
-            background: rgba(17,24,39,.75);
+            background: rgba(17,24,39,.8);
             backdrop-filter: blur(12px);
             padding: 28px;
             border-radius: 16px;
@@ -216,7 +223,7 @@
 
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button class="logout-btn">Cerrar sesión</button>
+        <button class="logout-btn" type="submit">Cerrar sesión</button>
     </form>
 </header>
 
@@ -250,7 +257,6 @@
             </button>
         </form>
 
-        <!-- ANTICIPO -->
         <div class="anticipo">
             <h4>⚠ Anticipo requerido</h4>
             <p>Se solicita un <strong>50%</strong> para confirmar la cita</p>
