@@ -34,7 +34,36 @@
             z-index: 0;
         }
 
-        /* CARD */
+        /* ================= FLECHA REGRESO ================= */
+        .back-arrow {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            z-index: 3;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(17, 24, 39, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #93c5fd;
+            text-decoration: none;
+            font-size: 22px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 15px rgba(42, 22, 218, 0.6);
+            transition: 0.25s ease;
+        }
+
+        .back-arrow:hover {
+            transform: translateX(-4px);
+            background: rgba(31, 78, 121, 0.85);
+            box-shadow: 0 0 25px rgba(42, 22, 218, 0.9);
+            color: #ffffff;
+        }
+
+        /* ================= CARD ================= */
         .register-container {
             position: relative;
             z-index: 1;
@@ -65,7 +94,7 @@
             font-weight: 600;
         }
 
-        /* ERRORES */
+        /* ================= ERRORES ================= */
         .error-box {
             background: #fee2e2;
             border: 1px solid #f87171;
@@ -82,7 +111,7 @@
             padding-left: 18px;
         }
 
-        /* INPUTS */
+        /* ================= INPUTS ================= */
         input {
             width: 100%;
             padding: 12px;
@@ -114,7 +143,7 @@
             display: block;
         }
 
-        /* BUTTON */
+        /* ================= BUTTON ================= */
         button {
             width: 100%;
             padding: 12px;
@@ -134,7 +163,6 @@
         button:hover {
             transform: translateY(-1px);
             box-shadow: 0 10px 28px rgba(42, 22, 218, 0.8);
-            background: #1F4E79;
         }
 
         .login {
@@ -152,15 +180,11 @@
             text-decoration: underline;
         }
 
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
+        /* ================= RESPONSIVE ================= */
         @media (max-width: 768px) {
             body {
                 padding: 20px;
                 height: auto;
-                min-height: 100vh;
             }
 
             .register-container {
@@ -204,6 +228,9 @@
 </head>
 
 <body>
+
+    <!-- FLECHA REGRESO -->
+    <a href="{{ url('/') }}" class="back-arrow" title="Volver al inicio">←</a>
 
     <div class="register-container">
 
