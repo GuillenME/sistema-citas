@@ -7,6 +7,11 @@ use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminServicioController;
 
 
+Route::get('/', function () {
+    return view('public.index');
+});
+
+
 Route::middleware('guest')->group(function () {
 
     Route::get('/login', [AuthController::class, 'loginForm'])
@@ -38,22 +43,21 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 });
 
 
-Route::middleware('auth')->prefix('cliente')->name('cliente.')->group(function () {
+Route::middleware('auth')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('cliente.dashboard');
-    })->name('dashboard');
+    Route::get('/cliente/citas', [CitaController::class, 'index'])
+        ->name('cliente.citas.index');
 
-    Route::get('/citas', [CitaController::class, 'index'])
-        ->name('citas.index');
+    Route::get('/cliente/citas/create', [CitaController::class, 'create'])
+        ->name('cliente.citas.create');
 
-    Route::get('/citas/crear', [CitaController::class, 'create'])
-        ->name('citas.create');
+    Route::post('/cliente/citas', [CitaController::class, 'store'])
+        ->name('cliente.citas.store');
 
-    Route::post('/citas', [CitaController::class, 'store'])
-        ->name('citas.store');
-
+    Route::get('/cliente/citas/bloques', [CitaController::class, 'bloquesDisponibles'])
+        ->name('cliente.citas.bloques');
 });
+
 
 
 Route::post('/logout', [AuthController::class, 'logout'])
