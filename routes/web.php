@@ -5,8 +5,10 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminServicioController;
-use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
+<<<<<<<<< Temporary merge branch 1
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
+
 
 Route::get('/', function () {
     return view('public.index');
@@ -41,11 +43,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-/*
-|--------------------------------------------------------------------------
-| LOGOUT
-|--------------------------------------------------------------------------
-*/
+<<<<<<<<< Temporary merge branch 1
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', function () {
@@ -60,6 +58,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
         ->name('citas.cancelar');
+
 });
 
 
@@ -77,6 +76,7 @@ Route::middleware('auth')->prefix('cliente')->name('cliente.')->group(function (
 
     Route::post('/citas', [CitaController::class, 'store'])
         ->name('citas.store');
+
 });
 
 
@@ -102,7 +102,9 @@ Route::get('/redirect', function () {
     }
 
     return redirect()->route('cliente.dashboard');
-})->middleware('auth');
+
+})->middleware('auth')->name('redirect');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -135,6 +137,7 @@ Route::middleware(['auth', 'rol:1'])
 | RECEPCIONISTA (rol_id = 3)
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth', 'rol:3'])
     ->prefix('recepcionista')
     ->name('recepcionista.')
@@ -145,19 +148,16 @@ Route::middleware(['auth', 'rol:3'])
             return view('recepcionista.dashboard');
         })->name('dashboard');
 
-        // 👉 IR A AGENDAR CITA
+        // Agendar cita (vista)
         Route::get('/citas/create', [RecepcionistaCitaController::class, 'create'])
             ->name('citas.create');
 
-        // 👉 GUARDAR CITA
+        // Guardar cita
         Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
             ->name('citas.store');
 
-        // 👉 HORARIOS (AJAX)
-        Route::get('/citas/bloques', [RecepcionistaCitaController::class, 'bloques'])
-            ->name('citas.bloques');
 });
-    
+>>>>>>>>> Temporary merge branch 2
 
 /*
 |--------------------------------------------------------------------------
