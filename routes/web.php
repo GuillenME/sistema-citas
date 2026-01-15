@@ -5,12 +5,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminServicioController;
+use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
 
 /*
 |--------------------------------------------------------------------------
 | INDEX PÚBLICO
 |--------------------------------------------------------------------------
-| Página principal accesible sin login
 */
 Route::get('/', function () {
     return view('public.index');
@@ -45,7 +45,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 /*
 |--------------------------------------------------------------------------
-| REDIRECCIÓN POR ROL (DESPUÉS DE LOGIN)
+| REDIRECCIÓN POR ROL
 |--------------------------------------------------------------------------
 */
 Route::get('/redirect', function () {
@@ -100,9 +100,22 @@ Route::middleware(['auth', 'rol:3'])
     ->name('recepcionista.')
     ->group(function () {
 
+        // Dashboard
         Route::get('/', function () {
             return view('recepcionista.dashboard');
         })->name('dashboard');
+
+        // 👉 IR A AGENDAR CITA
+        Route::get('/citas/create', [RecepcionistaCitaController::class, 'create'])
+            ->name('citas.create');
+
+        // 👉 GUARDAR CITA
+        Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
+            ->name('citas.store');
+
+        // 👉 HORARIOS (AJAX)
+        Route::get('/citas/bloques', [RecepcionistaCitaController::class, 'bloques'])
+            ->name('citas.bloques');
 });
 
 /*
