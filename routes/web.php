@@ -5,24 +5,27 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminServicioController;
-<<<<<<< HEAD
-=======
+
 use App\Http\Controllers\PasswordResetController;
 
 Route::get('/', function () {
     return view('public.index');
 });
->>>>>>> e1a84024590fb8dde9c3fff305121584cffbfcb4
+
 
 /*
 |--------------------------------------------------------------------------
-| INDEX PÚBLICO
+| Ruta raíz
 |--------------------------------------------------------------------------
-| Página principal accesible sin login
+| Si no está logueado → login
+| Si está logueado → redirección por rol
 */
 Route::get('/', function () {
-    return view('public.index');
-})->name('index');
+    if (auth()->check()) {
+        return redirect('/redirect');
+    }
+    return redirect()->route('login');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -42,13 +45,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-<<<<<<< HEAD
-/*
-|--------------------------------------------------------------------------
-| LOGOUT
-|--------------------------------------------------------------------------
-*/
-=======
+
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', function () {
@@ -83,14 +80,14 @@ Route::middleware('auth')->prefix('cliente')->name('cliente.')->group(function (
 });
 
 
->>>>>>> e1a84024590fb8dde9c3fff305121584cffbfcb4
+
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| REDIRECCIÓN POR ROL (DESPUÉS DE LOGIN)
+| REDIRECCIÓN POR ROL
 |--------------------------------------------------------------------------
 */
 Route::get('/redirect', function () {
