@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminServicioController;
+use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
 use App\Http\Controllers\PasswordResetController;
 
 Route::get('/', function () {
@@ -13,17 +14,14 @@ Route::get('/', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Ruta raíz
+| INDEX PÚBLICO
 |--------------------------------------------------------------------------
 | Si no está logueado → login
 | Si está logueado → redirección por rol
 */
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect('/redirect');
-    }
-    return redirect()->route('login');
-});
+    return view('public.index');
+})->name('index');
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +41,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
+/*
+|--------------------------------------------------------------------------
+| LOGOUT
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', function () {
@@ -137,10 +140,24 @@ Route::middleware(['auth', 'rol:3'])
     ->name('recepcionista.')
     ->group(function () {
 
+        // Dashboard
         Route::get('/', function () {
             return view('recepcionista.dashboard');
         })->name('dashboard');
-    });
+
+        // 👉 IR A AGENDAR CITA
+        Route::get('/citas/create', [RecepcionistaCitaController::class, 'create'])
+            ->name('citas.create');
+
+        // 👉 GUARDAR CITA
+        Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
+            ->name('citas.store');
+
+        // 👉 HORARIOS (AJAX)
+        Route::get('/citas/bloques', [RecepcionistaCitaController::class, 'bloques'])
+            ->name('citas.bloques');
+});
+    
 
 /*
 |--------------------------------------------------------------------------

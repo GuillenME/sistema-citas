@@ -45,14 +45,7 @@
             height: 100vh;
             background:
                 linear-gradient(rgba(0, 0, 0, .75), rgba(0, 0, 0, .85)),
-                url('{{ asset('imagenes/registro_fondo.png') }}') center/cover no-repeat;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 60px 20px;
-            position: relative;
+                url("{{ asset('imagenes/registro_fondo.png') }}") center/cover no-repeat;
         }
 
         .hero h1 {
