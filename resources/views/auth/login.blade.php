@@ -15,7 +15,7 @@
             margin: 0;
             height: 100vh;
 
-            background-image: url('{{ asset("imagenes/registro_fondo.png") }}');
+            background-image: url('{{ asset('imagenes/registro_fondo.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -277,6 +277,10 @@
         <div class="register">
             <a href="{{ route('register') }}">Registrarse</a>
         </div>
+        <div class="register">
+            <a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+        </div>
+
     </div>
 
 </body>

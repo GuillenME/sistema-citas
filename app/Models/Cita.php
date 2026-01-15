@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cita extends Model
 {
+    
+    protected $table = 'citas';
+    
     protected $fillable = [
         'cliente_id',
         'servicio_id',
@@ -14,7 +17,13 @@ class Cita extends Model
         'hora_inicio',
         'hora_fin',
         'estado',
-        'observaciones'
+        'observaciones',
+    ];
+
+    protected $casts = [
+        'fecha' => 'date',
+        'hora_inicio' => 'datetime:H:i',
+        'hora_fin' => 'datetime:H:i',
     ];
 
     public function cliente()

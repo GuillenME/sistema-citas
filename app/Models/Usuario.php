@@ -6,10 +6,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Cita;
 use App\Models\Cliente;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Passwords\CanResetPassword as ResetPasswordTrait;
 
 class Usuario extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable, ResetPasswordTrait;
 
     protected $table = 'usuarios';
 
@@ -35,5 +38,9 @@ class Usuario extends Authenticatable
     public function cliente()
     {
         return $this->hasOne(Cliente::class, 'usuario_id');
+    }
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

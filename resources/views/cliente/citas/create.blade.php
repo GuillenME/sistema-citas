@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Agendar cita</title>
@@ -16,7 +17,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
-            background-image: url('{{ asset("imagenes/RegistrarSala.png") }}');
+            background-image: url('{{ asset('imagenes/RegistrarSala.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -65,8 +66,8 @@
             cursor: pointer;
 
             text-shadow:
-                0 0 6px rgba(255,255,255,.8),
-                0 0 14px rgba(255,255,255,.6);
+                0 0 6px rgba(255, 255, 255, .8),
+                0 0 14px rgba(255, 255, 255, .6);
 
             transition: transform .2s ease, text-shadow .3s ease;
         }
@@ -74,8 +75,8 @@
         .back-btn:hover {
             transform: scale(1.2);
             text-shadow:
-                0 0 12px rgba(255,255,255,1),
-                0 0 22px rgba(255,255,255,.8);
+                0 0 12px rgba(255, 255, 255, 1),
+                0 0 22px rgba(255, 255, 255, .8);
         }
 
         /* Logout */
@@ -89,14 +90,14 @@
             font-weight: bold;
 
             box-shadow:
-                0 0 16px rgba(255,0,0,1),
-                inset 0 0 8px rgba(255,45,45,.4);
+                0 0 16px rgba(255, 0, 0, 1),
+                inset 0 0 8px rgba(255, 45, 45, .4);
 
             transition: .3s;
         }
 
         .logout-btn:hover {
-            background: rgba(255,45,45,.15);
+            background: rgba(255, 45, 45, .15);
             transform: scale(1.05);
         }
 
@@ -116,15 +117,15 @@
         .card {
             width: 100%;
             max-width: 520px;
-            background: rgba(17,24,39,.8);
+            background: rgba(17, 24, 39, .8);
             backdrop-filter: blur(12px);
             padding: 28px;
             border-radius: 16px;
             color: #fff;
 
             box-shadow:
-                0 0 25px rgba(42,22,218,.6),
-                inset 0 0 20px rgba(42,22,218,.25);
+                0 0 25px rgba(42, 22, 218, .6),
+                inset 0 0 20px rgba(42, 22, 218, .25);
         }
 
         .card h2 {
@@ -140,7 +141,8 @@
             font-weight: bold;
         }
 
-        select, input {
+        select,
+        input {
             width: 100%;
             padding: 10px;
             margin-top: 6px;
@@ -149,7 +151,8 @@
             font-size: 14px;
         }
 
-        select:focus, input:focus {
+        select:focus,
+        input:focus {
             outline: 2px solid #1F4E79;
         }
 
@@ -165,13 +168,13 @@
             font-weight: bold;
             cursor: pointer;
 
-            box-shadow: 0 6px 20px rgba(42,22,218,.8);
+            box-shadow: 0 6px 20px rgba(42, 22, 218, .8);
             transition: .2s;
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(42,22,218,.9);
+            box-shadow: 0 10px 28px rgba(42, 22, 218, .9);
         }
 
         /* ===== ANTICIPO ===== */
@@ -179,8 +182,8 @@
             margin-top: 28px;
             padding: 18px;
             border-radius: 12px;
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.2);
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .2);
             font-size: 14px;
         }
 
@@ -216,110 +219,119 @@
 
 <body>
 
-<header>
-    <div class="header-left">
-        <a href="{{ route('cliente.dashboard') }}" class="back-btn">←</a>
-    </div>
-
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button class="logout-btn" type="submit">Cerrar sesión</button>
-    </form>
-</header>
-
-<div class="container">
-
-    <div class="card">
-
-        <h2>Agendar cita</h2>
-
-        <form method="POST" action="{{ route('cliente.citas.store') }}">
-            @csrf
-
-            <label>Servicio</label>
-            <select name="servicio_id" id="servicio" required>
-                <option value="">Selecciona un servicio</option>
-                @foreach ($servicios as $servicio)
-                    <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
-                @endforeach
-            </select>
-
-            <label>Fecha</label>
-            <input type="date" name="fecha" id="fecha" min="{{ now()->toDateString() }}" required>
-
-            <label>Horario</label>
-            <select name="hora_inicio" id="horarios" required>
-                <option value="">Selecciona un horario</option>
-            </select>
-
-            <button type="submit" class="submit-btn">
-                AGENDAR CITA
-            </button>
-        </form>
-
-        <div class="anticipo">
-            <h4>⚠ Anticipo requerido</h4>
-            <p>Se solicita un <strong>50%</strong> para confirmar la cita</p>
-            <p>
-                Banco: BBVA<br>
-                Cuenta: 1234567890<br>
-                CLABE: 012345678901234567
-            </p>
+    <header>
+        <div class="header-left">
+            <a href="{{ route('cliente.dashboard') }}" class="back-btn">←</a>
         </div>
 
-    </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="logout-btn" type="submit">Cerrar sesión</button>
+        </form>
+    </header>
 
-</div>
+    <div class="container">
 
-<script>
-const servicio = document.getElementById('servicio');
-const fecha = document.getElementById('fecha');
-const horarios = document.getElementById('horarios');
+        <div class="card">
 
-// Bloquear domingos
-fecha.addEventListener('input', () => {
-    if (!fecha.value) return;
+            <h2>Agendar cita</h2>
+            <form method="POST" action="{{ route('cliente.citas.store') }}">
+                @csrf
 
-    const d = new Date(fecha.value + 'T00:00:00').getDay();
-    if (d === 0) {
-        alert('Los domingos no se atiende');
-        fecha.value = '';
-        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
-    }
-});
+                <label>Servicio</label>
+                <select name="servicio_id" id="servicio" required>
+                    <option value="">Selecciona un servicio</option>
+                    @foreach ($servicios as $servicio)
+                        <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
+                    @endforeach
+                </select>
 
-async function cargarBloques() {
-    horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+                <label>Fecha</label>
+                <input type="date" name="fecha" id="fecha" min="{{ now()->toDateString() }}" required>
 
-    if (!servicio.value || !fecha.value) return;
+                <label>Horario</label>
+                <select name="hora_inicio" id="horarios" required>
+                    <option value="">Selecciona un horario</option>
+                </select>
 
-    const dia = new Date(fecha.value + 'T00:00:00').getDay();
-    if (dia === 0) return;
+                <button type="submit" class="submit-btn">
+                    AGENDAR CITA
+                </button>
+            </form>
 
-    const res = await fetch(
-        `/cliente/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`
-    );
+            <div class="anticipo">
+                <h4>⚠ Anticipo requerido</h4>
+                <p>
+                    Para confirmar tu cita es necesario realizar un <strong>anticipo del 50%</strong>.
+                </p>
 
-    const bloques = await res.json();
+                <p>
+                    <strong>Banco:</strong> BBVA<br>
+                    <strong>Cuenta:</strong> 1234567890<br>
+                    <strong>CLABE:</strong> 012345678901234567
+                </p>
 
-    if (bloques.length === 0) {
-        const opt = document.createElement('option');
-        opt.textContent = 'No hay horarios disponibles';
-        horarios.appendChild(opt);
-        return;
-    }
+                <p style="font-size:13px; opacity:.85;">
+                    Envía tu comprobante por WhatsApp para confirmar tu cita.
+                </p>
+            </div>
 
-    bloques.forEach(b => {
-        const opt = document.createElement('option');
-        opt.value = b.inicio;
-        opt.textContent = `${b.inicio} - ${b.fin}`;
-        horarios.appendChild(opt);
-    });
-}
+            <script>
+                const servicio = document.getElementById('servicio');
+                const fecha = document.getElementById('fecha');
+                const horarios = document.getElementById('horarios');
 
-servicio.addEventListener('change', cargarBloques);
-fecha.addEventListener('change', cargarBloques);
-</script>
+                // Bloquear domingos
+                fecha.addEventListener('input', () => {
+                    if (!fecha.value) return;
+
+                    const d = new Date(fecha.value + 'T00:00:00').getDay();
+                    if (d === 0) {
+                        alert('Los domingos no se atiende');
+                        fecha.value = '';
+                        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+                    }
+                });
+
+                async function cargarBloques() {
+                    horarios.innerHTML = '<option>Cargando horarios...</option>';
+
+                    if (!servicio.value || !fecha.value) return;
+
+                    const dia = new Date(fecha.value + 'T00:00:00').getDay();
+                    if (dia === 0) return;
+
+                    try {
+                        const res = await fetch(
+                            `/cliente/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`
+                        );
+
+                        const bloques = await res.json();
+                        horarios.innerHTML = '';
+
+                        if (bloques.length === 0) {
+                            horarios.innerHTML = '<option>No hay horarios disponibles</option>';
+                            return;
+                        }
+
+                        bloques.forEach(b => {
+                            const opt = document.createElement('option');
+                            opt.value = b.inicio;
+                            opt.textContent = `${b.inicio} - ${b.fin}`;
+                            horarios.appendChild(opt);
+                        });
+
+                    } catch (error) {
+                        horarios.innerHTML = '<option>Error al cargar horarios</option>';
+                    }
+                }
+
+                servicio.addEventListener('change', cargarBloques);
+                fecha.addEventListener('change', cargarBloques);
+            </script>
+
+
 
 </body>
+
 </html>
