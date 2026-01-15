@@ -237,7 +237,7 @@
 <body>
 
     <!-- FLECHA REGRESO -->
-    <a href="{{ url('/') }}" class="back-arrow" title="Volver al inicio">←</a>
+    <a href="{{ route('index') }}" class="back-arrow" title="Volver al inicio">←</a>
 
     <div class="led-tube"></div>
     <div class="neon-text">BARBERÍA</div>

@@ -6,24 +6,15 @@ use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminServicioController;
 
-
-Route::get('/', function () {
-    return view('public.index');
-});
-
 /*
 |--------------------------------------------------------------------------
-| Ruta raíz
+| INDEX PÚBLICO
 |--------------------------------------------------------------------------
-| Si no está logueado → login
-| Si está logueado → redirección por rol
+| Página principal accesible sin login
 */
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect('/redirect');
-    }
-    return redirect()->route('login');
-});
+    return view('public.index');
+})->name('index');
 
 /*
 |--------------------------------------------------------------------------
@@ -43,49 +34,18 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-
-    Route::get('/citas', [AdminCitaController::class, 'index'])
-        ->name('citas.index');
-
-    Route::post('/citas/{cita}/confirmar', [AdminCitaController::class, 'confirmar'])
-        ->name('citas.confirmar');
-
-    Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
-        ->name('citas.cancelar');
-
-});
-
-
-Route::middleware('auth')->prefix('cliente')->name('cliente.')->group(function () {
-
-    Route::get('/dashboard', function () {
-        return view('cliente.dashboard');
-    })->name('dashboard');
-
-    Route::get('/citas', [CitaController::class, 'index'])
-        ->name('citas.index');
-
-    Route::get('/citas/crear', [CitaController::class, 'create'])
-        ->name('citas.create');
-
-    Route::post('/citas', [CitaController::class, 'store'])
-        ->name('citas.store');
-
-});
-
-
+/*
+|--------------------------------------------------------------------------
+| LOGOUT
+|--------------------------------------------------------------------------
+*/
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| REDIRECCIÓN POR ROL
+| REDIRECCIÓN POR ROL (DESPUÉS DE LOGIN)
 |--------------------------------------------------------------------------
 */
 Route::get('/redirect', function () {
