@@ -5,27 +5,21 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminServicioController;
-
 use App\Http\Controllers\PasswordResetController;
+
 
 Route::get('/', function () {
     return view('public.index');
 });
 
-
 /*
 |--------------------------------------------------------------------------
-| Ruta raíz
+| INDEX PÚBLICO
 |--------------------------------------------------------------------------
-| Si no está logueado → login
-| Si está logueado → redirección por rol
 */
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect('/redirect');
-    }
-    return redirect()->route('login');
-});
+    return view('public.index');
+})->name('index');
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +39,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', function () {
@@ -60,6 +53,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
         ->name('citas.cancelar');
+
 });
 
 
@@ -77,8 +71,8 @@ Route::middleware('auth')->prefix('cliente')->name('cliente.')->group(function (
 
     Route::post('/citas', [CitaController::class, 'store'])
         ->name('citas.store');
-});
 
+});
 
 
 Route::post('/logout', [AuthController::class, 'logout'])
@@ -141,10 +135,11 @@ Route::middleware(['auth', 'rol:3'])
     ->name('recepcionista.')
     ->group(function () {
 
+        // Dashboard
         Route::get('/', function () {
             return view('recepcionista.dashboard');
         })->name('dashboard');
-    });
+});
 
 /*
 |--------------------------------------------------------------------------
