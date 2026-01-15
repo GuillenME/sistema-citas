@@ -255,20 +255,48 @@
                 </tr>
             </thead>
 
-            <tbody>
-                @foreach ($citas as $cita)
-                    <tr>
-                        <td data-label="Servicio">{{ $cita->servicio->nombre }}</td>
-                        <td data-label="Fecha">{{ $cita->fecha }}</td>
-                        <td data-label="Hora">{{ $cita->hora }}</td>
-                        <td data-label="Estado">
-                            <span class="estado {{ $cita->estado }}">
-                                {{ ucfirst($cita->estado) }}
-                            </span>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
+<tbody>
+@foreach ($citas as $cita)
+    <tr>
+        <td data-label="Servicio">
+            {{ $cita->servicio->nombre }}
+        </td>
+
+        <td data-label="Fecha">
+            {{ \Carbon\Carbon::parse($cita->fecha)->format('d/m/Y') }}
+        </td>
+
+        <td data-label="Hora">
+            {{ \Carbon\Carbon::parse($cita->hora_inicio)->format('H:i') }}
+            -
+            {{ \Carbon\Carbon::parse($cita->hora_fin)->format('H:i') }}
+        </td>
+
+        <td data-label="Estado">
+            @php
+                $estadoClase = match ($cita->estado) {
+                    'pendiente_anticipo' => 'pendiente',
+                    'confirmada' => 'confirmada',
+                    'cancelada' => 'cancelada',
+                    default => 'pendiente',
+                };
+
+                $estadoTexto = match ($cita->estado) {
+                    'pendiente_anticipo' => 'Pendiente de anticipo',
+                    'confirmada' => 'Confirmada',
+                    'cancelada' => 'Cancelada',
+                    default => ucfirst($cita->estado),
+                };
+            @endphp
+
+            <span class="estado {{ $estadoClase }}">
+                {{ $estadoTexto }}
+            </span>
+        </td>
+    </tr>
+@endforeach
+</tbody>
+
         </table>
 
     </div>

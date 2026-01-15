@@ -5,12 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cita;
 use App\Models\Servicio;
+use App\Models\Cliente;
 
 class CitaController extends Controller
 {
     public function index()
     {
-        $citas = Cita::where('cliente_id', auth()->id())
+        // obtener cliente real
+        $cliente = Cliente::where('usuario_id', auth()->id())->first();
+
+        if (!$cliente) {
+            abort(403, 'Cliente no encontrado');
+        }
+
+        $citas = Cita::where('cliente_id', $cliente->id)
             ->with('servicio')
             ->get();
 
@@ -33,7 +41,6 @@ class CitaController extends Controller
         $fecha = $request->fecha;
         $dia = date('w', strtotime($fecha)); // 0=Domingo
 
-        // ❌ Domingo no laboral
         if ($dia == 0) {
             return response()->json([]);
         }
@@ -41,32 +48,20 @@ class CitaController extends Controller
         $servicio = Servicio::findOrFail($request->servicio_id);
         $duracion = $servicio->duracion_minutos;
 
-        $rangos = [];
-
-        if ($dia >= 1 && $dia <= 5) {
-            // Lunes a Viernes
-            $rangos = [
-                [8 * 60, 15 * 60],
-                [16 * 60, 20 * 60],
-            ];
-        }
-
-        if ($dia == 6) {
-            // Sábado
-            $rangos = [
-                [8 * 60, 15 * 60],
-            ];
-        }
+        $rangos = ($dia >= 1 && $dia <= 5)
+            ? [[480, 900], [960, 1200]]
+            : [[480, 900]];
 
         $citas = Cita::where('fecha', $fecha)
+            ->whereIn('estado', ['confirmada', 'pendiente_anticipo'])
             ->get(['hora_inicio', 'hora_fin']);
 
         $ocupados = [];
-
         foreach ($citas as $cita) {
-            $ini = strtotime($cita->hora_inicio) / 60;
-            $fin = strtotime($cita->hora_fin) / 60;
-            $ocupados[] = [$ini, $fin];
+            $ocupados[] = [
+                strtotime($cita->hora_inicio) / 60,
+                strtotime($cita->hora_fin) / 60
+            ];
         }
 
         $bloques = [];
@@ -104,11 +99,19 @@ class CitaController extends Controller
             'hora_inicio' => 'required|date_format:H:i',
         ]);
 
-        // ❌ Bloqueo definitivo de domingos
+        // obtener cliente real
+        $cliente = Cliente::where('usuario_id', auth()->id())->first();
+
+        if (!$cliente) {
+            return back()->withErrors([
+                'cliente' => 'No existe un perfil de cliente para este usuario'
+            ]);
+        }
+
         if (date('w', strtotime($request->fecha)) == 0) {
             return back()->withErrors([
                 'fecha' => 'No se atienden citas los domingos'
-            ])->withInput();
+            ]);
         }
 
         $servicio = Servicio::findOrFail($request->servicio_id);
@@ -128,19 +131,22 @@ class CitaController extends Controller
         if ($cruce) {
             return back()->withErrors([
                 'hora_inicio' => 'Horario no disponible'
-            ])->withInput();
+            ]);
         }
 
         Cita::create([
-            'cliente_id' => auth()->id(),
+            'cliente_id' => $cliente->id, // ✅ CORRECTO
             'servicio_id' => $servicio->id,
+            'personal_id' => null,
             'fecha' => $request->fecha,
             'hora_inicio' => $request->hora_inicio,
             'hora_fin' => $horaFin,
             'estado' => 'pendiente_anticipo',
+            'observaciones' => null,
         ]);
 
-        return redirect()->route('cliente.citas.index')
-            ->with('success', 'Cita creada, pendiente de anticipo');
+        return redirect()
+            ->route('cliente.citas.index')
+            ->with('success', 'Cita creada correctamente. Pendiente de anticipo.');
     }
 }

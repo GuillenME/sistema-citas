@@ -10,11 +10,15 @@ class Cliente extends Model
 
     protected $fillable = [
         'usuario_id',
-        'telefono',
     ];
 
     public function usuario()
     {
         return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+
+    public function citas()
+    {
+        return $this->hasMany(Cita::class, 'cliente_id');
     }
 }
