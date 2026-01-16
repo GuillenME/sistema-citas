@@ -6,6 +6,8 @@ use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
+
 
 
 Route::get('/', function () {
@@ -97,7 +99,9 @@ Route::get('/redirect', function () {
     }
 
     return redirect()->route('cliente.dashboard');
-})->middleware('auth');
+
+})->middleware('auth')->name('redirect');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +134,7 @@ Route::middleware(['auth', 'rol:1'])
 | RECEPCIONISTA (rol_id = 3)
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth', 'rol:3'])
     ->prefix('recepcionista')
     ->name('recepcionista.')
