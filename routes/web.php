@@ -4,23 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
+use App\Http\Controllers\Admin\AdminPromocionController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
 
 
-Route::get('/', function () {
-    return view('public.index');
-});
-
-/*
-|--------------------------------------------------------------------------
-| INDEX PÚBLICO
-|--------------------------------------------------------------------------
-*/
-Route::get('/', function () {
-    return view('public.index');
-})->name('index');
+Route::get('/', [PublicController::class, 'index'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +31,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
+
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', function () {
@@ -54,7 +46,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
         ->name('citas.cancelar');
-
 });
 
 
@@ -72,7 +63,6 @@ Route::middleware('auth')->prefix('cliente')->name('cliente.')->group(function (
 
     Route::post('/citas', [CitaController::class, 'store'])
         ->name('citas.store');
-
 });
 
 
@@ -98,7 +88,6 @@ Route::get('/redirect', function () {
     }
 
     return redirect()->route('cliente.dashboard');
-
 })->middleware('auth')->name('redirect');
 
 
@@ -124,7 +113,7 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
-
+        Route::resource('promociones', AdminPromocionController::class);
         Route::resource('servicios', AdminServicioController::class);
     });
 
@@ -151,8 +140,7 @@ Route::middleware(['auth', 'rol:3'])
         // Guardar cita
         Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
             ->name('citas.store');
-
-});
+    });
 
 
 /*
@@ -197,3 +185,5 @@ Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetFor
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
     ->middleware('guest')
     ->name('password.update');
+
+Route::resource('promociones', AdminPromocionController::class);
