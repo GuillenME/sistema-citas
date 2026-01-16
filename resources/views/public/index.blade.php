@@ -171,6 +171,7 @@
             font-size: 14px;
         }
     </style>
+    @livewireStyles
 </head>
 
 <body>
@@ -208,21 +209,10 @@
         </div>
     </section>
 
+    {{-- PROMOCIÓN EN TIEMPO REAL --}}
+    <livewire:public.promociones />
 
-    {{-- PROMOCIÓN --}}
-    @if ($promocion)
-        <section>
-            <div class="promo">
-                <h3>🔥 {{ $promocion->titulo }}</h3>
-                <p>{{ $promocion->descripcion }}</p>
-                <p><strong>{{ $promocion->descuento }}% de descuento</strong></p>
-                <p>
-                    Vigente del {{ $promocion->fecha_inicio }}
-                    al {{ $promocion->fecha_fin }}
-                </p>
-            </div>
-        </section>
-    @endif
+
 
     {{-- NOTICIAS --}}
     <section>
@@ -250,6 +240,7 @@
     <footer>
         © 2026 Barbería & Spa
     </footer>
+     
     <script>
         function scrollServices(direction) {
             const slider = document.getElementById('servicesSlider');
@@ -260,6 +251,7 @@
             });
         }
     </script>
+    @livewireScripts
 
 </body>
 
