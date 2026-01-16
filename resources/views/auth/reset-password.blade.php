@@ -110,7 +110,7 @@
     </style>
 </head>
 
-<body style="background-image: url('{{ asset('imagenes/tu_fondo_aqui.png') }}');">
+<body style="background-image: url('{{ asset('imagenes/SalaEspera.png') }}');">
 
     <div class="card">
         <h2>Nueva contraseña</h2>
