@@ -235,7 +235,6 @@ const servicio = document.getElementById('servicio');
 const fecha = document.getElementById('fecha');
 const horarios = document.getElementById('horarios');
 
-// Bloquear domingos
 fecha.addEventListener('input', () => {
     if (!fecha.value) return;
 
@@ -248,32 +247,38 @@ fecha.addEventListener('input', () => {
 });
 
 async function cargarBloques() {
-    horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+    horarios.innerHTML = '<option>Cargando horarios...</option>';
 
     if (!servicio.value || !fecha.value) return;
 
-    const dia = new Date(fecha.value + 'T00:00:00').getDay();
-    if (dia === 0) return;
+    try {
+        const res = await fetch(
+            `/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`
+        );
 
-    const res = await fetch(
-        `/recepcionista/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`
-    );
+        if (!res.ok) {
+            horarios.innerHTML = '<option>Error al cargar horarios</option>';
+            return;
+        }
 
-    const bloques = await res.json();
+        const bloques = await res.json();
+        horarios.innerHTML = '';
 
-    if (bloques.length === 0) {
-        const opt = document.createElement('option');
-        opt.textContent = 'No hay horarios disponibles';
-        horarios.appendChild(opt);
-        return;
+        if (bloques.length === 0) {
+            horarios.innerHTML = '<option>No hay horarios disponibles</option>';
+            return;
+        }
+
+        bloques.forEach(b => {
+            const opt = document.createElement('option');
+            opt.value = b.inicio;
+            opt.textContent = `${b.inicio} - ${b.fin}`;
+            horarios.appendChild(opt);
+        });
+
+    } catch (error) {
+        horarios.innerHTML = '<option>Error al cargar horarios</option>';
     }
-
-    bloques.forEach(b => {
-        const opt = document.createElement('option');
-        opt.value = b.inicio;
-        opt.textContent = `${b.inicio} - ${b.fin}`;
-        horarios.appendChild(opt);
-    });
 }
 
 servicio.addEventListener('change', cargarBloques);
