@@ -11,19 +11,7 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
 
 
-
-Route::get('/', function () {
-    return view('public.index');
-});
-
-/*
-|--------------------------------------------------------------------------
-| INDEX PÚBLICO
-|--------------------------------------------------------------------------
-*/
-Route::get('/', function () {
-    return view('public.index');
-})->name('index');
+Route::get('/', [PublicController::class, 'index'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -144,7 +132,16 @@ Route::middleware(['auth', 'rol:3'])
         Route::get('/', function () {
             return view('recepcionista.dashboard');
         })->name('dashboard');
-});
+
+        // Agendar cita (vista)
+        Route::get('/citas/create', [RecepcionistaCitaController::class, 'create'])
+            ->name('citas.create');
+
+        // Guardar cita
+        Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
+            ->name('citas.store');
+    });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -188,3 +185,5 @@ Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetFor
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
     ->middleware('guest')
     ->name('password.update');
+
+Route::resource('promociones', AdminPromocionController::class);

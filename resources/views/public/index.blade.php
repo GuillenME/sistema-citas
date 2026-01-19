@@ -17,6 +17,7 @@
             color: #e5e7eb;
         }
 
+        /* ================= HEADER ================= */
         header {
             position: absolute;
             top: 0;
@@ -30,11 +31,24 @@
 
         header a {
             margin-left: 20px;
-            color: #fff;
+            color: #e5e7eb;
             text-decoration: none;
             font-weight: bold;
+            transition: 0.3s ease;
+            text-shadow:
+                0 0 6px rgba(31, 78, 121, 0.7),
+                0 0 14px rgba(42, 22, 218, 0.6);
         }
 
+        header a:hover {
+            color: #ffffff;
+            text-shadow:
+                0 0 8px #1F4E79,
+                0 0 20px rgba(42, 22, 218, 0.9),
+                0 0 35px rgba(42, 22, 218, 0.9);
+        }
+
+        /* ================= HERO ================= */
         .hero {
             height: 100vh;
             background:
@@ -51,15 +65,35 @@
             font-size: 56px;
             letter-spacing: 6px;
             margin-bottom: 12px;
-            text-shadow: 0 0 10px #1F4E79;
+            text-shadow:
+                0 0 10px #1F4E79,
+                0 0 25px rgba(42, 22, 218, 0.8);
         }
 
         .hero p {
             font-size: 18px;
             max-width: 600px;
             color: #cbd5f5;
+            margin-bottom: 40px;
         }
 
+        /* ================= FLECHA ================= */
+        .scroll-indicator {
+            font-size: 32px;
+            color: #93c5fd;
+            animation: bounce 1.8s infinite;
+            text-shadow:
+                0 0 10px rgba(31, 78, 121, 0.9),
+                0 0 20px rgba(42, 22, 218, 0.9);
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); opacity: .4; }
+            50% { transform: translateY(14px); opacity: 1; }
+            100% { transform: translateY(0); opacity: .4; }
+        }
+
+        /* ================= SECTIONS ================= */
         section {
             padding: 80px 20px;
             max-width: 1200px;
@@ -72,6 +106,7 @@
             margin-bottom: 50px;
         }
 
+        /* ================= SLIDERS ================= */
         .services-wrapper {
             position: relative;
             display: flex;
@@ -82,7 +117,6 @@
             display: grid;
             grid-auto-flow: column;
             grid-auto-columns: calc(25% - 20px);
-            /* 4 visibles */
             gap: 20px;
             overflow-x: auto;
             scroll-behavior: smooth;
@@ -90,16 +124,19 @@
             padding: 10px 0;
         }
 
+        /* 👉 SOLO PROMOCIONES CENTRADAS */
+        .promo-slider-centered {
+            justify-content: center;
+        }
+
         .service-card {
             scroll-snap-align: start;
         }
 
-        /* Ocultar scroll */
         .services-slider::-webkit-scrollbar {
             display: none;
         }
 
-        /* Botones */
         .nav-btn {
             background: rgba(15, 23, 42, 0.9);
             border: 1px solid rgba(255, 255, 255, .2);
@@ -116,29 +153,20 @@
             background: #1e40af;
         }
 
-        .nav-btn.left {
-            margin-right: 10px;
-        }
+        .nav-btn.left { margin-right: 10px; }
+        .nav-btn.right { margin-left: 10px; }
 
-        .nav-btn.right {
-            margin-left: 10px;
-        }
-
-        /* Responsive */
         @media (max-width: 1024px) {
             .services-slider {
                 grid-auto-columns: calc(50% - 20px);
-                /* 2 */
             }
         }
 
         @media (max-width: 640px) {
             .services-slider {
                 grid-auto-columns: 100%;
-                /* 1 */
             }
         }
-
 
         .card {
             background: rgba(17, 24, 39, .9);
@@ -157,13 +185,6 @@
             color: #93c5fd;
         }
 
-        .promo {
-            background: linear-gradient(135deg, #1F4E79, #1e40af);
-            padding: 35px;
-            border-radius: 18px;
-            text-align: center;
-        }
-
         footer {
             background: #020617;
             padding: 25px;
@@ -171,88 +192,91 @@
             font-size: 14px;
         }
     </style>
+
     @livewireStyles
 </head>
 
 <body>
 
-    <header>
-        <a href="{{ route('login') }}">Iniciar sesión</a>
-        <a href="{{ route('register') }}">Registrarse</a>
-    </header>
+<header>
+    <a href="{{ route('login') }}">Iniciar sesión</a>
+    <a href="{{ route('register') }}">Registrarse</a>
+</header>
 
-    <div class="hero">
-        <h1>BARBERÍA & SPA</h1>
-        <p>Estilo, cuidado y bienestar en un solo lugar</p>
-    </div>
+<div class="hero">
+    <h1>BARBERÍA & SPA</h1>
+    <p>Estilo, cuidado y bienestar en un solo lugar</p>
+    <div class="scroll-indicator">⬇</div>
+</div>
 
-    <section>
-        <h2>Nuestros Servicios</h2>
+<section>
+    <h2>Nuestros Servicios</h2>
 
-        <div class="services-wrapper">
-            <button class="nav-btn left" onclick="scrollServices(-1)">‹</button>
+    <div class="services-wrapper">
+        <button class="nav-btn left" onclick="scrollServices(-1)">‹</button>
 
-            <div class="services-slider" id="servicesSlider">
-                @forelse($servicios as $servicio)
-                    <div class="card service-card">
-                        <h3>{{ $servicio->nombre }}</h3>
-                        <p>{{ $servicio->descripcion }}</p>
-                        <p><strong>Duración:</strong> {{ $servicio->duracion_minutos }} min</p>
-                        <p><strong>Precio:</strong> ${{ number_format($servicio->precio, 2) }}</p>
-                    </div>
-                @empty
-                    <p>No hay servicios disponibles.</p>
-                @endforelse
-            </div>
-
-            <button class="nav-btn right" onclick="scrollServices(1)">›</button>
-        </div>
-    </section>
-
-    {{-- PROMOCIÓN EN TIEMPO REAL --}}
-    <livewire:public.promociones />
-
-
-
-    {{-- NOTICIAS --}}
-    <section>
-        <h2>Noticias & Novedades</h2>
-
-        <div class="services">
-            @forelse($noticias as $noticia)
-                <div class="card">
-                    <h3>{{ $noticia->titulo }}</h3>
-
-                    <p>
-                        {{ \Illuminate\Support\Str::limit(strip_tags($noticia->contenido), 120) }}
-                    </p>
-
-                    <small>
-                        Publicado: {{ $noticia->fecha_publicacion }}
-                    </small>
+        <div class="services-slider" id="servicesSlider">
+            @forelse($servicios as $servicio)
+                <div class="card service-card">
+                    <h3>{{ $servicio->nombre }}</h3>
+                    <p>{{ $servicio->descripcion }}</p>
+                    <p><strong>Duración:</strong> {{ $servicio->duracion_minutos }} min</p>
+                    <p><strong>Precio:</strong> ${{ number_format($servicio->precio, 2) }}</p>
                 </div>
             @empty
-                <p>No hay noticias publicadas.</p>
+                <p>No hay servicios disponibles.</p>
             @endforelse
         </div>
-    </section>
 
-    <footer>
-        © 2026 Barbería & Spa
-    </footer>
-     
-    <script>
-        function scrollServices(direction) {
-            const slider = document.getElementById('servicesSlider');
-            const cardWidth = slider.querySelector('.service-card').offsetWidth + 20;
-            slider.scrollBy({
-                left: direction * cardWidth,
-                behavior: 'smooth'
-            });
-        }
-    </script>
-    @livewireScripts
+        <button class="nav-btn right" onclick="scrollServices(1)">›</button>
+    </div>
+</section>
+
+{{-- PROMOCIONES --}}
+<livewire:public.promociones />
+
+{{-- NOTICIAS --}}
+<section>
+    <h2>Noticias & Novedades</h2>
+
+    <div class="services">
+        @forelse($noticias as $noticia)
+            <div class="card">
+                <h3>{{ $noticia->titulo }}</h3>
+                <p>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->contenido), 120) }}</p>
+                <small>Publicado: {{ $noticia->fecha_publicacion }}</small>
+            </div>
+        @empty
+            <p>No hay noticias publicadas.</p>
+        @endforelse
+    </div>
+</section>
+
+<footer>
+    © 2026 Barbería & Spa
+</footer>
+
+<script>
+    function scrollServices(direction) {
+        const slider = document.getElementById('servicesSlider');
+        const cardWidth = slider.querySelector('.service-card').offsetWidth + 20;
+        slider.scrollBy({
+            left: direction * cardWidth,
+            behavior: 'smooth'
+        });
+    }
+
+    function scrollPromos(direction) {
+        const slider = document.getElementById('promoSlider');
+        const cardWidth = slider.querySelector('.service-card').offsetWidth + 20;
+        slider.scrollBy({
+            left: direction * cardWidth,
+            behavior: 'smooth'
+        });
+    }
+</script>
+
+@livewireScripts
 
 </body>
-
 </html>
