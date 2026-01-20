@@ -234,7 +234,7 @@
 
         <div class="card">
 
-            <h2>Agendar cita</h2>
+            <h2>AGENDAR CITAS</h2>
             <form method="POST" action="{{ route('cliente.citas.store') }}">
                 @csrf
 
@@ -268,7 +268,8 @@
                 <p>
                     <strong>Banco:</strong> BBVA<br>
                     <strong>Cuenta:</strong> 1234567890<br>
-                    <strong>CLABE:</strong> 012345678901234567
+                    <strong>CLABE:</strong> 012345678901234567 <br>
+                    <strong>Numero tel:</strong> 9614633455 <br>
                 </p>
 
                 <p style="font-size:13px; opacity:.85;">
@@ -277,58 +278,61 @@
             </div>
 
             <script>
-                const servicio = document.getElementById('servicio');
-                const fecha = document.getElementById('fecha');
-                const horarios = document.getElementById('horarios');
+        const servicio = document.getElementById('servicio');
+        const fecha = document.getElementById('fecha');
+        const horarios = document.getElementById('horarios');
 
-                // Bloquear domingos
-                fecha.addEventListener('input', () => {
-                    if (!fecha.value) return;
 
-                    const d = new Date(fecha.value + 'T00:00:00').getDay();
-                    if (d === 0) {
-                        alert('Los domingos no se atiende');
-                        fecha.value = '';
-                        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
-                    }
-                });
+        fecha.addEventListener('input', () => {
+            if (!fecha.value) return;
 
-                async function cargarBloques() {
-                    horarios.innerHTML = '<option>Cargando horarios...</option>';
+            const d = new Date(fecha.value + 'T00:00:00').getDay();
+            if (d === 0) {
+                alert('Los domingos no se atiende');
+                fecha.value = '';
+                horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+            }
+        });
 
-                    if (!servicio.value || !fecha.value) return;
+        async function cargarBloques() {
+            horarios.innerHTML = '<option>Cargando horarios...</option>';
 
-                    const dia = new Date(fecha.value + 'T00:00:00').getDay();
-                    if (dia === 0) return;
+            if (!servicio.value || !fecha.value) return;
 
-                    try {
-                        const res = await fetch(
-                            `/cliente/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`
-                        );
+            try {
+                const res = await fetch(
+                    `/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`
+                );
 
-                        const bloques = await res.json();
-                        horarios.innerHTML = '';
-
-                        if (bloques.length === 0) {
-                            horarios.innerHTML = '<option>No hay horarios disponibles</option>';
-                            return;
-                        }
-
-                        bloques.forEach(b => {
-                            const opt = document.createElement('option');
-                            opt.value = b.inicio;
-                            opt.textContent = `${b.inicio} - ${b.fin}`;
-                            horarios.appendChild(opt);
-                        });
-
-                    } catch (error) {
-                        horarios.innerHTML = '<option>Error al cargar horarios</option>';
-                    }
+                if (!res.ok) {
+                    horarios.innerHTML = '<option>Error al cargar horarios</option>';
+                    return;
                 }
 
-                servicio.addEventListener('change', cargarBloques);
-                fecha.addEventListener('change', cargarBloques);
-            </script>
+                const bloques = await res.json();
+                horarios.innerHTML = '';
+
+                if (bloques.length === 0) {
+                    horarios.innerHTML = '<option>No hay horarios disponibles</option>';
+                    return;
+                }
+
+                bloques.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b.inicio;
+                    opt.textContent = `${b.inicio} - ${b.fin}`;
+                    horarios.appendChild(opt);
+                });
+
+            } catch (error) {
+                horarios.innerHTML = '<option>Error al cargar horarios</option>';
+            }
+        }
+
+        servicio.addEventListener('change', cargarBloques);
+        fecha.addEventListener('change', cargarBloques);
+        </script>
+
 
 
 

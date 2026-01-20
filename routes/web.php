@@ -10,12 +10,16 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
 
-
+/*
+|--------------------------------------------------------------------------
+| HOME PÚBLICO
+|--------------------------------------------------------------------------
+*/
 Route::get('/', [PublicController::class, 'index'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
-| AUTH (Invitados)
+| AUTH (INVITADOS)
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
@@ -31,44 +35,24 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-
-    Route::get('/citas', [AdminCitaController::class, 'index'])
-        ->name('citas.index');
-
-    Route::post('/citas/{cita}/confirmar', [AdminCitaController::class, 'confirmar'])
-        ->name('citas.confirmar');
-
-    Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
-        ->name('citas.cancelar');
-});
-
-
-Route::middleware('auth')->prefix('cliente')->name('cliente.')->group(function () {
-
-    Route::get('/dashboard', function () {
-        return view('cliente.dashboard');
-    })->name('dashboard');
-
-    Route::get('/citas', [CitaController::class, 'index'])
-        ->name('citas.index');
-
-    Route::get('/citas/crear', [CitaController::class, 'create'])
-        ->name('citas.create');
-
-    Route::post('/citas', [CitaController::class, 'store'])
-        ->name('citas.store');
-});
-
-
+/*
+|--------------------------------------------------------------------------
+| LOGOUT
+|--------------------------------------------------------------------------
+*/
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
+
+/*
+|--------------------------------------------------------------------------
+| 🔹 RUTA GLOBAL PARA HORARIOS (CLIENTE + RECEPCIONISTA)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->get(
+    '/citas/bloques',
+    [CitaController::class, 'bloquesDisponibles']
+)->name('citas.bloques.global');
 
 /*
 |--------------------------------------------------------------------------
@@ -88,8 +72,8 @@ Route::get('/redirect', function () {
     }
 
     return redirect()->route('cliente.dashboard');
-})->middleware('auth')->name('redirect');
 
+})->middleware('auth')->name('redirect');
 
 /*
 |--------------------------------------------------------------------------
@@ -101,7 +85,7 @@ Route::middleware(['auth', 'rol:1'])
     ->name('admin.')
     ->group(function () {
 
-        Route::get('/', function () {
+        Route::get('/dashboard', function () {
             return view('admin.dashboard');
         })->name('dashboard');
 
@@ -113,6 +97,7 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
+
         Route::resource('promociones', AdminPromocionController::class);
         Route::resource('servicios', AdminServicioController::class);
     });
@@ -122,26 +107,21 @@ Route::middleware(['auth', 'rol:1'])
 | RECEPCIONISTA (rol_id = 3)
 |--------------------------------------------------------------------------
 */
-
 Route::middleware(['auth', 'rol:3'])
     ->prefix('recepcionista')
     ->name('recepcionista.')
     ->group(function () {
 
-        // Dashboard
-        Route::get('/', function () {
+        Route::get('/dashboard', function () {
             return view('recepcionista.dashboard');
         })->name('dashboard');
 
-        // Agendar cita (vista)
         Route::get('/citas/create', [RecepcionistaCitaController::class, 'create'])
             ->name('citas.create');
 
-        // Guardar cita
         Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
             ->name('citas.store');
     });
-
 
 /*
 |--------------------------------------------------------------------------
@@ -153,7 +133,7 @@ Route::middleware(['auth', 'rol:2'])
     ->name('cliente.')
     ->group(function () {
 
-        Route::get('/', function () {
+        Route::get('/dashboard', function () {
             return view('cliente.dashboard');
         })->name('dashboard');
 
@@ -163,6 +143,7 @@ Route::middleware(['auth', 'rol:2'])
         Route::get('/citas/crear', [CitaController::class, 'create'])
             ->name('citas.create');
 
+        // (opcional, puede quedarse)
         Route::get('/citas/bloques', [CitaController::class, 'bloquesDisponibles'])
             ->name('citas.bloques');
 
@@ -170,6 +151,11 @@ Route::middleware(['auth', 'rol:2'])
             ->name('citas.store');
     });
 
+/*
+|--------------------------------------------------------------------------
+| RECUPERAR CONTRASEÑA
+|--------------------------------------------------------------------------
+*/
 Route::get('/forgot-password', [PasswordResetController::class, 'requestForm'])
     ->middleware('guest')
     ->name('password.request');
