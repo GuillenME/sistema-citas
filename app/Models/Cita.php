@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cita extends Model
 {
-    
+
     protected $table = 'citas';
-    
+
     protected $fillable = [
         'cliente_id',
         'servicio_id',
@@ -18,6 +18,7 @@ class Cita extends Model
         'hora_fin',
         'estado',
         'observaciones',
+        'comprobante',
     ];
 
     protected $casts = [
@@ -28,7 +29,7 @@ class Cita extends Model
 
     public function cliente()
     {
-        return $this->belongsTo(Usuario::class, 'cliente_id');
+        return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
     public function servicio()
@@ -41,4 +42,3 @@ class Cita extends Model
         return $this->hasMany(CitaEstado::class, 'cita_id');
     }
 }
-

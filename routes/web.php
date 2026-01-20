@@ -15,6 +15,7 @@ use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaContro
 | HOME PÚBLICO
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', [PublicController::class, 'index'])->name('home');
 
 /*
@@ -72,7 +73,6 @@ Route::get('/redirect', function () {
     }
 
     return redirect()->route('cliente.dashboard');
-
 })->middleware('auth')->name('redirect');
 
 /*
@@ -146,7 +146,9 @@ Route::middleware(['auth', 'rol:2'])
         // (opcional, puede quedarse)
         Route::get('/citas/bloques', [CitaController::class, 'bloquesDisponibles'])
             ->name('citas.bloques');
-
+        Route::post('/citas/{cita}/comprobante', [CitaController::class, 'subirComprobante'])
+            ->name('citas.comprobante');
+            
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');
     });

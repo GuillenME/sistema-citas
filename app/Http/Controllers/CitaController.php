@@ -34,7 +34,7 @@ class CitaController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | FORMULARIO CREAR CITA (CLIENTE)
+    | FORMULARIO CREAR CITA
     |--------------------------------------------------------------------------
     */
     public function create()
@@ -45,7 +45,7 @@ class CitaController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | 🔹 BLOQUES DISPONIBLES (CLIENTE + RECEPCIONISTA)
+    | BLOQUES DISPONIBLES
     |--------------------------------------------------------------------------
     */
     public function bloquesDisponibles(Request $request)
@@ -57,35 +57,17 @@ class CitaController extends Controller
 
         $fecha = Carbon::parse($request->fecha);
 
-        // ❌ Domingo cerrado
         if ($fecha->isSunday()) {
             return response()->json([]);
         }
 
-        $servicio  = Servicio::findOrFail($request->servicio_id);
+        $servicio = Servicio::findOrFail($request->servicio_id);
         $duracion = $servicio->duracion_minutos;
 
-        /*
-        |--------------------------------------------------------------------------
-        | HORARIOS DEL NEGOCIO
-        | L–V: 08:00–15:00 y 16:00–20:00
-        | S  : 08:00–15:00
-        |--------------------------------------------------------------------------
-        */
-        $rangos = [];
+        $rangos = $fecha->isWeekday()
+            ? [[480, 900], [960, 1200]]
+            : [[480, 900]];
 
-        if ($fecha->isWeekday()) {
-            $rangos = [
-                [480, 900],   // 08:00 - 15:00
-                [960, 1200],  // 16:00 - 20:00
-            ];
-        } else {
-            $rangos = [
-                [480, 900],   // 08:00 - 15:00
-            ];
-        }
-
-        // ⛔ citas ya tomadas
         $citas = Cita::whereDate('fecha', $fecha)
             ->whereIn('estado', ['confirmada', 'pendiente_anticipo'])
             ->get(['hora_inicio', 'hora_fin']);
@@ -128,66 +110,63 @@ class CitaController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | GUARDAR CITA (CLIENTE)
+    | GUARDAR CITA
     |--------------------------------------------------------------------------
     */
     public function store(Request $request)
     {
         $request->validate([
-            'servicio_id'  => 'required|exists:servicios,id',
-            'fecha'        => 'required|date|after_or_equal:today',
-            'hora_inicio'  => 'required|date_format:H:i',
+            'servicio_id' => 'required|exists:servicios,id',
+            'fecha' => 'required|date|after_or_equal:today',
+            'hora_inicio' => 'required|date_format:H:i',
         ]);
 
         $cliente = Cliente::where('usuario_id', auth()->id())->first();
 
-        if (!$cliente) {
-            return back()->withErrors([
-                'cliente' => 'No existe un perfil de cliente para este usuario'
-            ]);
-        }
-
-        $fecha = Carbon::parse($request->fecha);
-
-        if ($fecha->isSunday()) {
-            return back()->withErrors([
-                'fecha' => 'No se atienden citas los domingos'
-            ]);
-        }
-
         $servicio = Servicio::findOrFail($request->servicio_id);
-
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($servicio->duracion_minutos);
 
-        // ⛔ evitar choques
-        $cruce = Cita::whereDate('fecha', $fecha)
-            ->whereIn('estado', ['confirmada', 'pendiente_anticipo'])
-            ->where(function ($q) use ($horaInicio, $horaFin) {
-                $q->where('hora_inicio', '<', $horaFin->format('H:i'))
-                  ->where('hora_fin', '>', $horaInicio->format('H:i'));
-            })
-            ->exists();
-
-        if ($cruce) {
-            return back()->withErrors([
-                'hora_inicio' => 'Horario no disponible'
-            ]);
-        }
-
         Cita::create([
-            'cliente_id'    => $cliente->id,
-            'servicio_id'   => $servicio->id,
-            'personal_id'   => null,
-            'fecha'         => $fecha->toDateString(),
-            'hora_inicio'   => $horaInicio->format('H:i'),
-            'hora_fin'      => $horaFin->format('H:i'),
-            'estado'        => 'pendiente_anticipo',
-            'observaciones' => null,
+            'cliente_id' => $cliente->id,
+            'servicio_id' => $servicio->id,
+            'fecha' => $request->fecha,
+            'hora_inicio' => $horaInicio->format('H:i'),
+            'hora_fin' => $horaFin->format('H:i'),
+            'estado' => 'pendiente_anticipo',
         ]);
 
-        return redirect()
-            ->route('cliente.citas.index')
-            ->with('success', 'Cita creada correctamente. Pendiente de anticipo.');
+        return redirect()->route('cliente.citas.index');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUBIR COMPROBANTE (🔥 CORREGIDO)
+    |--------------------------------------------------------------------------
+    */
+    public function subirComprobante(Request $request, Cita $cita)
+    {
+        $cliente = Cliente::where('usuario_id', auth()->id())->first();
+
+        if (!$cliente || $cita->cliente_id !== $cliente->id) {
+            abort(403);
+        }
+
+        if ($cita->estado !== 'pendiente_anticipo') {
+            return back()->withErrors('Esta cita no acepta comprobantes');
+        }
+
+        $request->validate([
+            'comprobante' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        // ✅ ESTA LÍNEA ES LA CLAVE
+        $ruta = $request->file('comprobante')->store('comprobantes', 'public');
+
+        $cita->update([
+            'comprobante' => $ruta,
+        ]);
+
+        return back()->with('success', 'Comprobante enviado correctamente');
     }
 }

@@ -17,6 +17,7 @@ class Cliente extends Model
         return $this->belongsTo(Usuario::class, 'usuario_id');
     }
 
+
     public function citas()
     {
         return $this->hasMany(Cita::class, 'cliente_id');
