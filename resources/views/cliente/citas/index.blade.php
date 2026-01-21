@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Mis citas</title>
@@ -17,7 +18,7 @@
             margin: 0;
             min-height: 100vh;
 
-            background-image: url('{{ asset("imagenes/SalaEspera.png") }}');
+            background-image: url('{{ asset('imagenes/SalaEspera.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -146,7 +147,8 @@
             background: rgba(31, 41, 55, 0.9);
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px;
             text-align: center;
         }
@@ -193,7 +195,12 @@
         /* ===== RESPONSIVE ===== */
         @media (max-width: 700px) {
 
-            table, thead, tbody, th, td, tr {
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
                 display: block;
             }
 
@@ -227,81 +234,110 @@
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <div class="header-left">
-        <a href="{{ route('cliente.dashboard') }}" class="back-btn">←</a>
+    <header>
+        <div class="header-left">
+            <a href="{{ route('cliente.dashboard') }}" class="back-btn">←</a>
+        </div>
+
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="logout-btn" type="submit">Cerrar sesión</button>
+        </form>
+    </header>
+
+    <div class="container">
+
+        <div class="table-card">
+            <h2>Historial de citas</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Servicio</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                        <th>Comprobante</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach ($citas as $cita)
+                        <tr>
+                            <td data-label="Servicio">
+                                {{ $cita->servicio->nombre }}
+                            </td>
+
+                            <td data-label="Fecha">
+                                {{ \Carbon\Carbon::parse($cita->fecha)->format('d/m/Y') }}
+                            </td>
+
+                            <td data-label="Hora">
+                                {{ \Carbon\Carbon::parse($cita->hora_inicio)->format('H:i') }}
+                                -
+                                {{ \Carbon\Carbon::parse($cita->hora_fin)->format('H:i') }}
+                            </td>
+
+                            <td data-label="Estado">
+                                @php
+                                    $estadoClase = match ($cita->estado) {
+                                        'pendiente_anticipo' => 'pendiente',
+                                        'confirmada' => 'confirmada',
+                                        'cancelada' => 'cancelada',
+                                        default => 'pendiente',
+                                    };
+
+                                    $estadoTexto = match ($cita->estado) {
+                                        'pendiente_anticipo' => 'Pendiente de anticipo',
+                                        'confirmada' => 'Confirmada',
+                                        'cancelada' => 'Cancelada',
+                                        default => ucfirst($cita->estado),
+                                    };
+                                @endphp
+
+                                <span class="estado {{ $estadoClase }}">
+                                    {{ $estadoTexto }}
+                                </span>
+                            </td>
+                            <td data-label="Comprobante">
+                                @if ($cita->estado === 'pendiente_anticipo')
+                                    @if ($cita->comprobante)
+                                        <a href="{{ asset('storage/' . $cita->comprobante) }}" target="_blank"
+                                            style="color:#22c55e;font-weight:bold;">
+                                            ✔ Ver comprobante
+                                        </a>
+                                    @else
+                                        <form method="POST" action="{{ route('cliente.citas.comprobante', $cita) }}"
+                                            enctype="multipart/form-data">
+                                            @csrf
+
+                                            <input type="file" name="comprobante" accept="image/*" required>
+
+                                            <button type="submit"
+                                                style="margin-top:6px;background:#eab308;border:none;padding:6px 10px;border-radius:6px;">
+                                                Subir comprobante
+                                            </button>
+                                        </form>
+                                    @endif
+                                @else
+                                    —
+                                @endif
+                            </td>
+
+
+                        </tr>
+                    @endforeach
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
-
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button class="logout-btn" type="submit">Cerrar sesión</button>
-    </form>
-</header>
-
-<div class="container">
-
-    <div class="table-card">
-        <h2>Historial de citas</h2>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Servicio</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-
-<tbody>
-@foreach ($citas as $cita)
-    <tr>
-        <td data-label="Servicio">
-            {{ $cita->servicio->nombre }}
-        </td>
-
-        <td data-label="Fecha">
-            {{ \Carbon\Carbon::parse($cita->fecha)->format('d/m/Y') }}
-        </td>
-
-        <td data-label="Hora">
-            {{ \Carbon\Carbon::parse($cita->hora_inicio)->format('H:i') }}
-            -
-            {{ \Carbon\Carbon::parse($cita->hora_fin)->format('H:i') }}
-        </td>
-
-        <td data-label="Estado">
-            @php
-                $estadoClase = match ($cita->estado) {
-                    'pendiente_anticipo' => 'pendiente',
-                    'confirmada' => 'confirmada',
-                    'cancelada' => 'cancelada',
-                    default => 'pendiente',
-                };
-
-                $estadoTexto = match ($cita->estado) {
-                    'pendiente_anticipo' => 'Pendiente de anticipo',
-                    'confirmada' => 'Confirmada',
-                    'cancelada' => 'Cancelada',
-                    default => ucfirst($cita->estado),
-                };
-            @endphp
-
-            <span class="estado {{ $estadoClase }}">
-                {{ $estadoTexto }}
-            </span>
-        </td>
-    </tr>
-@endforeach
-</tbody>
-
-        </table>
-
-    </div>
-
-</div>
 
 </body>
+
 </html>
