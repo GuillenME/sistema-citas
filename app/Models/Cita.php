@@ -6,19 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cita extends Model
 {
-
     protected $table = 'citas';
 
     protected $fillable = [
         'cliente_id',
         'servicio_id',
-        'personal_id',
+        'empleado_id',
         'fecha',
         'hora_inicio',
         'hora_fin',
         'estado',
-        'observaciones',
         'comprobante',
+        'observaciones',
     ];
 
     protected $casts = [
@@ -29,7 +28,7 @@ class Cita extends Model
 
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id');
+        return $this->belongsTo(Cliente::class);
     }
 
     public function servicio()
@@ -37,8 +36,9 @@ class Cita extends Model
         return $this->belongsTo(Servicio::class);
     }
 
-    public function estados()
+    public function empleado()
     {
-        return $this->hasMany(CitaEstado::class, 'cita_id');
+        return $this->belongsTo(Empleado::class, 'empleado_id');
     }
 }
+
