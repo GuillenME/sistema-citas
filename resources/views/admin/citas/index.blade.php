@@ -142,6 +142,7 @@
                 <th>Estado</th>
                 <th>Comprobante</th>
                 <th>Acciones</th>
+                <th>Observaciones</th>
             </tr>
         </thead>
 
@@ -202,12 +203,26 @@
 
                             <form method="POST" action="{{ route('admin.citas.cancelar', $cita) }}">
                                 @csrf
+                                <textarea name="observaciones" rows="2" placeholder="Motivo de cancelación"
+                                    style="
+            width:100%;
+            margin-bottom:6px;
+            border-radius:6px;
+            padding:6px;
+            font-size:12px;
+        "></textarea>
+
                                 <button class="btn btn-cancelar">Cancelar</button>
                             </form>
                         @else
                             —
                         @endif
                     </td>
+                    {{-- OBSERVACIONES --}}
+                    <td style="max-width:200px; text-align:left;">
+                        {{ $cita->observaciones ?? '—' }}
+                    </td>
+
                 </tr>
             @endforeach
         </tbody>

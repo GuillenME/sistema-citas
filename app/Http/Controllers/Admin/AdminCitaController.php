@@ -21,7 +21,8 @@ class AdminCitaController extends Controller
     public function confirmar(Cita $cita)
     {
         $cita->update([
-            'estado' => 'confirmada'
+            'estado' => 'confirmada',
+            'observaciones' => 'Cita confirmada por el administrador',
         ]);
 
         CitaEstado::create([
@@ -34,10 +35,17 @@ class AdminCitaController extends Controller
         return back()->with('success', 'Cita confirmada correctamente');
     }
 
-    public function cancelar(Cita $cita)
+
+    public function cancelar(Request $request, Cita $cita)
     {
+        $request->validate([
+            'observaciones' => 'nullable|string|max:500',
+        ]);
+
         $cita->update([
-            'estado' => 'cancelada'
+            'estado' => 'cancelada',
+            'observaciones' => $request->observaciones
+                ?? 'Cancelada por el administrador',
         ]);
 
         CitaEstado::create([
@@ -49,6 +57,7 @@ class AdminCitaController extends Controller
 
         return back()->with('success', 'Cita cancelada correctamente');
     }
+
 
     public function asignarEmpleado(Request $request, Cita $cita)
     {
@@ -71,4 +80,3 @@ class AdminCitaController extends Controller
         return back()->with('success', 'Empleado asignado correctamente');
     }
 }
-

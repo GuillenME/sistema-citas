@@ -144,7 +144,7 @@
             </a>
 
             <a href="{{ route('admin.clientes.index') }}" class="card">
-                <span>👨‍💼</span>
+                <span>👥</span>
                 <strong>Gestionar clientes</strong>
             </a>
         </div>

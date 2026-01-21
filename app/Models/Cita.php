@@ -41,4 +41,3 @@ class Cita extends Model
         return $this->belongsTo(Empleado::class, 'empleado_id');
     }
 }
-
