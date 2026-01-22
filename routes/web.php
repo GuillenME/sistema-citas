@@ -125,6 +125,9 @@ Route::middleware(['auth', 'rol:3'])
 
         Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
             ->name('citas.store');
+           
+        Route::get('/citas', [RecepcionistaCitaController::class, 'index'])
+            ->name('citas.index');
     });
 
 /* CLIENTE (rol_id = 2) */
