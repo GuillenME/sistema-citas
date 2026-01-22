@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminClientesController;
 use App\Http\Controllers\Admin\AdminEmpleadoController;
 use App\Http\Controllers\Admin\AdminPromocionController;
+use App\Http\Controllers\Admin\AdminRecepcionistaController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
@@ -108,6 +109,24 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::post('/clientes/{cliente}/activar', [AdminClientesController::class, 'activar'])
             ->name('clientes.activar');
+
+        Route::get('/recepcionistas', [AdminRecepcionistaController::class, 'index'])
+            ->name('recepcionistas.index');
+
+        Route::get('/recepcionistas/create', [AdminRecepcionistaController::class, 'create'])
+            ->name('recepcionistas.create');
+
+        Route::post('/recepcionistas', [AdminRecepcionistaController::class, 'store'])
+            ->name('recepcionistas.store');
+
+        Route::get('/recepcionistas/{usuario}/edit', [AdminRecepcionistaController::class, 'edit'])
+            ->name('recepcionistas.edit');
+
+        Route::put('/recepcionistas/{usuario}', [AdminRecepcionistaController::class, 'update'])
+            ->name('recepcionistas.update');
+
+        Route::post('/recepcionistas/{usuario}/toggle', [AdminRecepcionistaController::class, 'toggleActivo'])
+            ->name('recepcionistas.toggle');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */
@@ -125,7 +144,7 @@ Route::middleware(['auth', 'rol:3'])
 
         Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
             ->name('citas.store');
-           
+
         Route::get('/citas', [RecepcionistaCitaController::class, 'index'])
             ->name('citas.index');
     });
