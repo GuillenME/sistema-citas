@@ -77,7 +77,8 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
 
-        Route::resource('promociones', AdminPromocionController::class);
+        Route::resource('promociones', AdminPromocionController::class)
+            ->parameters(['promociones' => 'promocion']);
         Route::resource('servicios', AdminServicioController::class);
 
         Route::get('/empleados', [AdminEmpleadoController::class, 'index'])
