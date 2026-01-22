@@ -172,3 +172,8 @@ Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetFor
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
     ->middleware('guest')
     ->name('password.update');
+
+Route::get('/politica-de-privacidad', function () {
+    return view('legal.politica-privacidad');
+})->name('politica.privacidad');
+

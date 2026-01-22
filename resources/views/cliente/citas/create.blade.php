@@ -12,7 +12,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             min-height: 100vh;
-            background-image: url('{{ asset('imagenes/RegistrarSala.png') }}');
+            background-image: url('{{ asset("imagenes/RegistrarSala.png") }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -59,6 +59,7 @@
             padding: 8px 18px;
             border-radius: 8px;
             cursor: pointer;
+            font-weight: bold;
             box-shadow: 0 0 14px rgba(255,0,0,1);
         }
 
@@ -98,10 +99,6 @@
             font-size: 14px;
         }
 
-        select:focus, input:focus {
-            outline: 2px solid #1F4E79;
-        }
-
         /* ===== ERRORES ===== */
         .error-box {
             background: #fee2e2;
@@ -113,10 +110,7 @@
             font-size: 14px;
         }
 
-        .error-box ul {
-            margin: 0;
-            padding-left: 18px;
-        }
+        .error-box ul { margin: 0; padding-left: 18px; }
 
         .input-error {
             outline: 2px solid #ef4444 !important;
@@ -141,6 +135,41 @@
             cursor: pointer;
             border: none;
             box-shadow: 0 6px 20px rgba(42,22,218,.8);
+        }
+        /* ===== PRIVACIDAD ===== */
+        .privacy-box {
+            margin-top: 18px;
+            width: 100%;
+        }
+
+        .privacy-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        .privacy-checkbox {
+            margin-top: 3px;
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+        }
+
+        .privacy-text {
+            font-size: 13px;
+            line-height: 1.4;
+            color: #e5e7eb;
+        }
+
+        .privacy-link {
+            color: #93c5fd;
+            text-decoration: underline;
+        }
+
+        .privacy-link:hover {
+            color: #bfdbfe;
         }
 
         .anticipo {
@@ -192,7 +221,7 @@
             @csrf
 
             <label>Servicio</label>
-            <select name="servicio_id" class="@error('servicio_id') input-error @enderror">
+            <select name="servicio_id" id="servicio" class="@error('servicio_id') input-error @enderror">
                 <option value="">Selecciona un servicio</option>
                 @foreach ($servicios as $servicio)
                     <option value="{{ $servicio->id }}" {{ old('servicio_id') == $servicio->id ? 'selected' : '' }}>
@@ -205,22 +234,45 @@
             @enderror
 
             <label>Fecha</label>
-            <input type="date"
-                   name="fecha"
-                   value="{{ old('fecha') }}"
+            <input type="date" name="fecha" id="fecha"
                    min="{{ now()->toDateString() }}"
+                   value="{{ old('fecha') }}"
                    class="@error('fecha') input-error @enderror">
             @error('fecha')
                 <span class="field-error">{{ $message }}</span>
             @enderror
 
             <label>Horario</label>
-            <select name="hora_inicio" class="@error('hora_inicio') input-error @enderror">
+            <select name="hora_inicio" id="horarios" class="@error('hora_inicio') input-error @enderror">
                 <option value="">Selecciona un horario</option>
             </select>
             @error('hora_inicio')
                 <span class="field-error">{{ $message }}</span>
             @enderror
+
+           {{-- POLÍTICA DE PRIVACIDAD --}}
+        <div class="privacy-box">
+            <label class="privacy-label">
+                <input type="checkbox"
+                    name="acepta_privacidad"
+                    value="1"
+                    class="privacy-checkbox @error('acepta_privacidad') input-error @enderror"
+                    {{ old('acepta_privacidad') ? 'checked' : '' }}>
+
+                <span class="privacy-text">
+                    Acepto la
+                    <a href="{{ route('politica.privacidad') }}" target="_blank" class="privacy-link">
+                        Política de privacidad
+                    </a>
+                    y autorizo el uso de mis datos para la gestión de mi cita.
+                </span>
+            </label>
+
+            @error('acepta_privacidad')
+                <span class="field-error">{{ $message }}</span>
+            @enderror
+        </div>
+
 
             <button type="submit" class="submit-btn">
                 AGENDAR CITA
@@ -235,6 +287,54 @@
 
     </div>
 </div>
+
+<script>
+const servicio = document.getElementById('servicio');
+const fecha = document.getElementById('fecha');
+const horarios = document.getElementById('horarios');
+
+// Bloquear domingos
+fecha.addEventListener('input', () => {
+    if (!fecha.value) return;
+    if (new Date(fecha.value + 'T00:00:00').getDay() === 0) {
+        alert('Los domingos no se atiende');
+        fecha.value = '';
+        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+    }
+});
+
+async function cargarBloques() {
+    horarios.innerHTML = '<option>Cargando horarios...</option>';
+
+    if (!servicio.value || !fecha.value) return;
+
+    try {
+        const res = await fetch(
+            `/cliente/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`
+        );
+
+        const bloques = await res.json();
+        horarios.innerHTML = '';
+
+        if (bloques.length === 0) {
+            horarios.innerHTML = '<option>No hay horarios disponibles</option>';
+            return;
+        }
+
+        bloques.forEach(b => {
+            const opt = document.createElement('option');
+            opt.value = b.inicio;
+            opt.textContent = `${b.inicio} - ${b.fin}`;
+            horarios.appendChild(opt);
+        });
+    } catch {
+        horarios.innerHTML = '<option>Error al cargar horarios</option>';
+    }
+}
+
+servicio.addEventListener('change', cargarBloques);
+fecha.addEventListener('change', cargarBloques);
+</script>
 
 </body>
 </html>
