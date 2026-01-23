@@ -252,9 +252,9 @@
 
             <input type="text" name="nombre" placeholder="Nombre" value="{{ old('nombre') }}"
                 class="@error('nombre') input-error @enderror">
-            @error('nombre')
+            {{-- @error('nombre')
                 <span class="field-error">{{ $message }}</span>
-            @enderror
+            @enderror --}}
 
             <input type="text" name="apellido" placeholder="Apellidos" value="{{ old('apellido') }}"
                 class="@error('apellido') input-error @enderror">
@@ -264,21 +264,21 @@
                 oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)"
                 value="{{ old('telefono') }}"
                 class="@error('telefono') input-error @enderror">
-            @error('telefono')
+            {{-- @error('telefono')
                 <span class="field-error">{{ $message }}</span>
-            @enderror
+            @enderror --}}
 
             <input type="email" name="email" placeholder="Correo" value="{{ old('email') }}"
                 class="@error('email') input-error @enderror">
-            @error('email')
+            {{-- @error('email')
                 <span class="field-error">{{ $message }}</span>
-            @enderror
+            @enderror --}}
 
             <input type="password" name="password" placeholder="Contraseña"
                 class="@error('password') input-error @enderror">
-            @error('password')
+            {{-- @error('password')
                 <span class="field-error">{{ $message }}</span>
-            @enderror
+            @enderror --}}
 
             <input type="password" name="password_confirmation" placeholder="Confirmar contraseña">
 

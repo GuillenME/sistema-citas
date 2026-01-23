@@ -12,10 +12,11 @@ class PublicController extends Controller
     {
         $servicios = Servicio::where('activo', 1)->get();
 
-        $promocion = Promocion::where('publicada', 1)
+        $promociones = Promocion::where('publicada', 1)
             ->whereDate('fecha_inicio', '<=', now())
             ->whereDate('fecha_fin', '>=', now())
-            ->first();
+            ->orderBy('fecha_inicio', 'desc')
+            ->get();
 
         $noticias = Noticia::where('publicada', 1)
             ->orderBy('fecha_publicacion', 'desc')
@@ -24,7 +25,7 @@ class PublicController extends Controller
 
         return view('public.index', compact(
             'servicios',
-            'promocion',
+            'promociones',
             'noticias'
         ));
     }
