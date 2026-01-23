@@ -82,11 +82,11 @@
         }
 
         .btn-confirmar {
-            background: #22c55e;
+            background: rgba(34, 197, 94, .2);
         }
 
         .btn-cancelar {
-            background: #ef4444;
+            background: rgba(239, 68, 68, .2);
         }
 
         .btn-asignar {
@@ -115,10 +115,50 @@
             margin-bottom: 20px;
             text-align: center;
         }
+        .admin-back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 10px 16px;
+            border-radius: 12px;
+
+            background: rgba(17, 24, 39, .85);
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            text-decoration: none;
+
+            box-shadow: 0 0 18px rgba(42, 22, 218, .6);
+            backdrop-filter: blur(6px);
+
+            transition: all .25s ease;
+            z-index: 1000;
+        }
+
+        .admin-back-btn span {
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .admin-back-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 0 25px rgba(42, 22, 218, .9);
+            background: rgba(31, 41, 55, .95);
+        }
     </style>
 </head>
 
 <body>
+    
+<a href="{{ route('admin.dashboard') }}" class="admin-back-btn">
+    <span>←</span>
+    Panel
+</a>
 
     <h1>Gestión de citas</h1>
 
@@ -229,9 +269,6 @@
     </table>
 
     <br>
-
-    <a href="{{ route('admin.dashboard') }}">⬅ Volver al panel</a>
-
+    </a>
 </body>
-
 </html>

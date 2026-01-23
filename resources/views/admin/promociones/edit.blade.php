@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Promoción</title>
+    <title>Editar Promoción</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -37,11 +37,17 @@
             font-size: 28px;
             text-decoration: none;
             color: #a5b4fc;
+            transition: transform .2s, text-shadow .2s;
             text-shadow: 0 0 10px rgba(99,102,241,.7);
         }
 
+        .back-arrow:hover {
+            transform: translateX(-4px);
+            text-shadow: 0 0 20px rgba(99,102,241,1);
+        }
+
         h1 {
-            font-size: 32px;
+            font-size: 30px;
             letter-spacing: 1px;
             text-shadow:
                 0 0 10px rgba(99,102,241,.8),
@@ -59,6 +65,19 @@
                 0 0 25px rgba(99,102,241,.35),
                 inset 0 0 10px rgba(99,102,241,.25);
         }
+
+        /* ERRORS */
+        .errors {
+            background: rgba(239,68,68,.15);
+            border: 1px solid rgba(239,68,68,.5);
+            color: #fecaca;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 12px rgba(239,68,68,.5);
+        }
+
+        .errors li { margin-left: 18px; font-size: 13px; }
 
         /* FORM */
         .form-grid {
@@ -94,21 +113,28 @@
             grid-column: 1 / -1;
         }
 
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 10px rgba(99,102,241,.6);
+        }
+
         /* CHECKBOX */
         .checkbox {
             grid-column: 1 / -1;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         /* ACTIONS */
         .actions {
-            margin-top: 30px;
+            margin-top: 28px;
             display: flex;
             justify-content: space-between;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -119,65 +145,41 @@
             font-weight: bold;
             letter-spacing: 1px;
             cursor: pointer;
+            text-decoration: none;
             color: #fff;
             transition: transform .2s, box-shadow .2s;
         }
 
         .btn-save {
             border: 2px solid #22c55e;
-            box-shadow: 0 0 14px rgba(34,197,94,.7), inset 0 0 8px rgba(34,197,94,.4);
+            box-shadow:
+                0 0 14px rgba(34,197,94,.7),
+                inset 0 0 8px rgba(34,197,94,.4);
+        }
+
+        .btn-save:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 0 25px rgba(34,197,94,1),
+                inset 0 0 12px rgba(34,197,94,.6);
         }
 
         .btn-cancel {
             border: 2px solid #ef4444;
-            box-shadow: 0 0 14px rgba(239,68,68,.7), inset 0 0 8px rgba(239,68,68,.4);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow:
+                0 0 14px rgba(239,68,68,.7),
+                inset 0 0 8px rgba(239,68,68,.4);
         }
 
-        /* MODAL */
-        #confirmModal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.65);
-            backdrop-filter: blur(4px);
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-        }
-
-        .modal-box {
-            background: rgba(17,24,39,.95);
-            border-radius: 16px;
-            padding: 25px;
-            max-width: 420px;
-            width: 90%;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,.2);
-            box-shadow: 0 0 25px rgba(99,102,241,.6);
-        }
-
-        .modal-box h3 {
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px rgba(99,102,241,.8);
-        }
-
-        .modal-box p {
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
+        .btn-cancel:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 0 25px rgba(239,68,68,1),
+                inset 0 0 12px rgba(239,68,68,.6);
         }
 
         @media (max-width: 700px) {
+            h1 { font-size: 26px; }
             .form-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -190,44 +192,58 @@
     <!-- HEADER -->
     <div class="header">
         <a href="{{ route('admin.promociones.index') }}" class="back-arrow">←</a>
-        <h1>Crear Promoción</h1>
+        <h1>Editar Promoción</h1>
     </div>
 
     <!-- CARD -->
     <div class="card">
 
-        <form id="promoForm" method="POST" action="{{ route('admin.promociones.store') }}">
+        @if ($errors->any())
+            <ul class="errors">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+
+        <form method="POST" action="{{ route('admin.promociones.update', $promocion) }}">
             @csrf
+            @method('PUT')
 
             <div class="form-grid">
                 <div class="form-group">
                     <label>Título</label>
-                    <input type="text" name="titulo" required>
+                    <input type="text" name="titulo"
+                           value="{{ old('titulo', $promocion->titulo) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Descuento (%)</label>
-                    <input type="number" name="descuento" min="1" max="100" required>
+                    <input type="number" name="descuento" min="1" max="100"
+                           value="{{ old('descuento', $promocion->descuento) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Fecha inicio</label>
-                    <input type="date" name="fecha_inicio" required>
+                    <input type="date" name="fecha_inicio"
+                           value="{{ old('fecha_inicio', $promocion->fecha_inicio) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Fecha fin</label>
-                    <input type="date" name="fecha_fin" required>
+                    <input type="date" name="fecha_fin"
+                           value="{{ old('fecha_fin', $promocion->fecha_fin) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Descripción</label>
-                    <textarea name="descripcion" required></textarea>
+                    <textarea name="descripcion" required>{{ old('descripcion', $promocion->descripcion) }}</textarea>
                 </div>
 
                 <div class="checkbox">
-                    <input type="checkbox" name="publicada" id="publicada">
-                    <label for="publicada">Publicar promoción</label>
+                    <input type="checkbox" name="publicada"
+                           {{ old('publicada', $promocion->publicada) ? 'checked' : '' }}>
+                    <label>Publicar promoción</label>
                 </div>
             </div>
 
@@ -236,59 +252,15 @@
                     Cancelar
                 </a>
 
-                <button type="button" class="btn btn-save" onclick="confirmarPromocion()">
-                    Guardar promoción
+                <button type="submit" class="btn btn-save">
+                    Guardar cambios
                 </button>
             </div>
         </form>
+
     </div>
+
 </div>
-
-<!-- MODAL -->
-<div id="confirmModal">
-    <div class="modal-box">
-        <h3>¿Confirmar promoción?</h3>
-        <p id="resumenPromo"></p>
-
-        <div class="modal-actions">
-            <button class="btn btn-cancel" onclick="cerrarModal()">Seguir editando</button>
-            <button class="btn btn-save" onclick="enviarFormulario()">Sí, guardar</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    function confirmarPromocion() {
-        const titulo = document.querySelector('[name="titulo"]').value;
-        const descuento = document.querySelector('[name="descuento"]').value;
-        const inicio = document.querySelector('[name="fecha_inicio"]').value;
-        const fin = document.querySelector('[name="fecha_fin"]').value;
-        const publicada = document.querySelector('[name="publicada"]').checked ? 'Sí' : 'No';
-
-        if (!titulo || !descuento || !inicio || !fin) {
-            alert('Completa todos los campos.');
-            return;
-        }
-
-        document.getElementById('resumenPromo').innerHTML = `
-            <strong>Título:</strong> ${titulo}<br>
-            <strong>Descuento:</strong> ${descuento}%<br>
-            <strong>Inicio:</strong> ${inicio}<br>
-            <strong>Fin:</strong> ${fin}<br>
-            <strong>Publicar:</strong> ${publicada}
-        `;
-
-        document.getElementById('confirmModal').style.display = 'flex';
-    }
-
-    function cerrarModal() {
-        document.getElementById('confirmModal').style.display = 'none';
-    }
-
-    function enviarFormulario() {
-        document.getElementById('promoForm').submit();
-    }
-</script>
 
 </body>
 </html>

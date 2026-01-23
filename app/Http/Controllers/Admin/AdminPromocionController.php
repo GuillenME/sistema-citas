@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Usuario;
+use App\Notifications\NuevaPromocionNotification;
 use App\Http\Controllers\Controller;
 use App\Models\Promocion;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class AdminPromocionController extends Controller
 {
@@ -20,7 +21,7 @@ class AdminPromocionController extends Controller
         return view('admin.promociones.create');
     }
 
-public function store(Request $request)
+    public function store(Request $request)
 {
     $request->validate([
         'titulo' => 'required|min:5',
@@ -30,7 +31,7 @@ public function store(Request $request)
         'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
     ]);
 
-    Promocion::create([
+    $promocion = Promocion::create([
         'titulo' => $request->titulo,
         'descripcion' => $request->descripcion,
         'descuento' => $request->descuento,
@@ -39,8 +40,17 @@ public function store(Request $request)
         'publicada' => $request->has('publicada'),
     ]);
 
+    // ✅ SOLO SI SE PUBLICA
+    if ($promocion->publicada) {
+        $usuarios = Usuario::where('activo', 1)->get();
+
+        foreach ($usuarios as $usuario) {
+            $usuario->notify(new NuevaPromocionNotification($promocion));
+        }
+    }
+
     return redirect()->route('admin.promociones.index')
-        ->with('success', 'Promoción creada correctamente');
+        ->with('success', 'Promoción creada y notificada por correo');
 }
 
 
@@ -51,25 +61,27 @@ public function store(Request $request)
 
     public function update(Request $request, Promocion $promocion)
     {
-        $request->validate([
-            'titulo' => 'required|min:5',
-            'contenido' => 'required',
+        $data = $request->validate([
+            'titulo' => 'required|string|min:5|max:255',
+            'descripcion' => 'required|string',
+            'descuento' => 'required|integer|min:1|max:100',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
         ]);
 
-        $promocion->update([
-            'titulo' => $request->titulo,
-            'slug' => Str::slug($request->titulo),
-            'contenido' => $request->contenido,
-            'publicada' => $request->has('publicada'),
-        ]);
+        $data['publicada'] = $request->has('publicada');
 
-        return redirect()->route('admin.promociones.index')
-            ->with('success', 'Promoción actualizada');
+        $promocion->update($data);
+
+        return redirect()
+            ->route('admin.promociones.index')
+            ->with('success', 'Promoción actualizada correctamente');
     }
 
     public function destroy(Promocion $promocion)
     {
         $promocion->delete();
+
         return back()->with('success', 'Promoción eliminada');
     }
 }

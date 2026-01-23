@@ -109,35 +109,46 @@ class CitaController extends Controller
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | GUARDAR CITA
-    |--------------------------------------------------------------------------
-    */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'servicio_id' => 'required|exists:servicios,id',
-            'fecha' => 'required|date|after_or_equal:today',
-            'hora_inicio' => 'required|date_format:H:i',
-        ]);
+|--------------------------------------------------------------------------
+| GUARDAR CITA
+|--------------------------------------------------------------------------
+*/
+public function store(Request $request)
+{
+    $request->validate([
+        'servicio_id'       => 'required|exists:servicios,id',
+        'fecha'             => 'required|date|after_or_equal:today',
+        'hora_inicio'       => 'required|date_format:H:i',
+        'acepta_privacidad' => 'required|accepted',
+    ], [
+        'acepta_privacidad.required' => 'Debes aceptar la política de privacidad.',
+        'acepta_privacidad.accepted' => 'Debes aceptar la política de privacidad.',
+    ]);
 
-        $cliente = Cliente::where('usuario_id', auth()->id())->first();
+    $cliente = Cliente::where('usuario_id', auth()->id())->first();
 
-        $servicio = Servicio::findOrFail($request->servicio_id);
-        $horaInicio = Carbon::parse($request->hora_inicio);
-        $horaFin = $horaInicio->copy()->addMinutes($servicio->duracion_minutos);
-
-        Cita::create([
-            'cliente_id' => $cliente->id,
-            'servicio_id' => $servicio->id,
-            'fecha' => $request->fecha,
-            'hora_inicio' => $horaInicio->format('H:i'),
-            'hora_fin' => $horaFin->format('H:i'),
-            'estado' => 'pendiente_anticipo',
-        ]);
-
-        return redirect()->route('cliente.citas.index');
+    if (!$cliente) {
+        abort(403, 'Cliente no encontrado');
     }
+
+    $servicio = Servicio::findOrFail($request->servicio_id);
+    $horaInicio = Carbon::parse($request->hora_inicio);
+    $horaFin = $horaInicio->copy()->addMinutes($servicio->duracion_minutos);
+
+    Cita::create([
+        'cliente_id' => $cliente->id,
+        'servicio_id' => $servicio->id,
+        'fecha'       => $request->fecha,
+        'hora_inicio' => $horaInicio->format('H:i'),
+        'hora_fin'    => $horaFin->format('H:i'),
+        'estado'      => 'pendiente_anticipo',
+    ]);
+
+    return redirect()
+        ->route('cliente.citas.index')
+        ->with('success', 'Cita agendada correctamente. Pendiente de anticipo.');
+}
+
 
 
     public function subirComprobante(Request $request, Cita $cita)
@@ -156,7 +167,7 @@ class CitaController extends Controller
             'comprobante' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // ✅ ESTA LÍNEA ES LA CLAVE
+        // ESTA LÍNEA ES LA CLAVE
         $ruta = $request->file('comprobante')->store('comprobantes', 'public');
 
         $cita->update([
