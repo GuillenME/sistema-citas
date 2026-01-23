@@ -147,6 +147,11 @@
                 <span>👥</span>
                 <strong>Gestionar clientes</strong>
             </a>
+
+            <a href="{{ route('admin.recepcionistas.index') }}" class="card">
+                <span>👩🏽‍💻👨🏽‍💻</span>
+                <strong>Gestionar recepcionistas</strong>
+            </a>
         </div>
 
         <form method="POST" action="{{ route('logout') }}" class="logout">

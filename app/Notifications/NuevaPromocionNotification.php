@@ -17,7 +17,7 @@ class NuevaPromocionNotification extends Notification
         $this->promocion = $promocion;
     }
 
-    public function via($notifiable)
+ public function via($notifiable)
 {
     return ['mail']; // SOLO MAIL por ahora
 }
@@ -33,6 +33,7 @@ public function toMail($notifiable)
         ->action('Ver promoción', url('/promociones'))
         ->line('¡Aprovecha antes de que termine!');
 }
+
     public function toArray($notifiable)
     {
         return [

@@ -217,7 +217,7 @@
         <div class="card">
             <h2>Citas del día</h2>
             <p>Consulta y administra las citas programadas.</p>
-            <a href="#">VER CITAS</a>
+            <a href="{{ route('recepcionista.citas.index') }}">VER CITAS</a>
         </div>
 
     </div>

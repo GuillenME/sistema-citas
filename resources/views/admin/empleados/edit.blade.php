@@ -44,7 +44,7 @@
     @csrf
     @method('PUT')
 
-    <input type="text" value="{{ $empleado->usuario->nombre }}" disabled>
+    <input type="text" value="{{ $empleado->usuario?->nombre }}" disabled>
 
     <input type="text" name="especialidad" value="{{ $empleado->especialidad }}" required>
 
