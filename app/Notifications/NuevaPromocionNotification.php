@@ -18,21 +18,21 @@ class NuevaPromocionNotification extends Notification
     }
 
     public function via($notifiable)
-    {
-        return ['mail', 'database']; // email + notificación interna
-    }
+{
+    return ['mail']; // SOLO MAIL por ahora
+}
 
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-            ->subject('🎉 Nueva promoción disponible')
-            ->greeting('Hola ' . $notifiable->name)
-            ->line('Tenemos una nueva promoción para ti:')
-            ->line($this->promocion->titulo)
-            ->action('Ver promoción', url('/promociones'))
-            ->line('¡Aprovecha antes de que termine!');
-    }
-
+public function toMail($notifiable)
+{
+    return (new MailMessage)
+        ->subject('🎉 Nueva promoción disponible')
+        ->greeting('Hola ' . $notifiable->nombre)
+        ->line('Tenemos una nueva promoción para ti:')
+        ->line($this->promocion->titulo)
+        ->line($this->promocion->descripcion)
+        ->action('Ver promoción', url('/promociones'))
+        ->line('¡Aprovecha antes de que termine!');
+}
     public function toArray($notifiable)
     {
         return [

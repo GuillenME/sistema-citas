@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Cita;
@@ -23,6 +24,7 @@ class Usuario extends Authenticatable
         'email',
         'password',
         'rol_id',
+        'activo',
     ];
 
     protected $hidden = [

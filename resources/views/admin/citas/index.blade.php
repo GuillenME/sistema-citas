@@ -15,7 +15,7 @@
 
         h1 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         table {
@@ -64,6 +64,14 @@
             color: #fecaca;
         }
 
+        select {
+            background: #020617;
+            color: #e5e7eb;
+            border-radius: 6px;
+            padding: 6px;
+            border: 1px solid rgba(255, 255, 255, .2);
+        }
+
         .btn {
             padding: 6px 10px;
             border-radius: 6px;
@@ -81,9 +89,31 @@
             background: #ef4444;
         }
 
+        .btn-asignar {
+            background: #3b82f6;
+        }
+
         a {
             color: #93c5fd;
             text-decoration: none;
+        }
+
+        .alert-success {
+            background: #16a34a;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .alert-error {
+            background: #dc2626;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
         }
     </style>
 </head>
@@ -92,6 +122,15 @@
 
     <h1>Gestión de citas</h1>
 
+    {{-- MENSAJES --}}
+    @if (session('success'))
+        <div class="alert-success">{{ session('success') }}</div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert-error">{{ session('error') }}</div>
+    @endif
+
     <table>
         <thead>
             <tr>
@@ -99,9 +138,11 @@
                 <th>Servicio</th>
                 <th>Fecha</th>
                 <th>Hora</th>
+                <th>Empleado</th>
                 <th>Estado</th>
                 <th>Comprobante</th>
                 <th>Acciones</th>
+                <th>Observaciones</th>
             </tr>
         </thead>
 
@@ -113,22 +154,46 @@
                     <td>{{ \Carbon\Carbon::parse($cita->fecha)->format('d/m/Y') }}</td>
                     <td>{{ $cita->hora_inicio }} - {{ $cita->hora_fin }}</td>
 
+                    {{-- EMPLEADO --}}
+                    <td>
+                        @if ($cita->estado === 'confirmada' && !$cita->empleado_id)
+                            {{-- Confirmada pero sin empleado → permitir asignar --}}
+                            <form method="POST" action="{{ route('admin.citas.asignarEmpleado', $cita) }}">
+                                @csrf
+                                <select name="empleado_id" required>
+                                    <option value="">— Seleccionar —</option>
+                                    @foreach ($empleados as $empleado)
+                                        <option value="{{ $empleado->id }}">
+                                            {{ $empleado->nombre }} ({{ $empleado->especialidad }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <button class="btn btn-asignar" title="Asignar empleado">✔</button>
+                            </form>
+                        @else
+                            {{-- Cualquier otro caso → solo mostrar --}}
+                            {{ $cita->empleado?->nombre ?? '— Sin asignar —' }}
+                        @endif
+                    </td>
+
+
+                    {{-- ESTADO --}}
                     <td>
                         <span class="estado {{ $cita->estado }}">
                             {{ str_replace('_', ' ', ucfirst($cita->estado)) }}
                         </span>
                     </td>
 
+                    {{-- COMPROBANTE --}}
                     <td>
                         @if ($cita->comprobante)
-                            <a href="{{ asset('storage/' . $cita->comprobante) }}" target="_blank">
-                                Ver comprobante
-                            </a>
+                            <a href="{{ asset('storage/' . $cita->comprobante) }}" target="_blank">Ver</a>
                         @else
                             —
                         @endif
                     </td>
 
+                    {{-- ACCIONES --}}
                     <td>
                         @if ($cita->estado === 'pendiente_anticipo')
                             <form method="POST" action="{{ route('admin.citas.confirmar', $cita) }}">
@@ -138,12 +203,26 @@
 
                             <form method="POST" action="{{ route('admin.citas.cancelar', $cita) }}">
                                 @csrf
+                                <textarea name="observaciones" rows="2" placeholder="Motivo de cancelación"
+                                    style="
+            width:100%;
+            margin-bottom:6px;
+            border-radius:6px;
+            padding:6px;
+            font-size:12px;
+        "></textarea>
+
                                 <button class="btn btn-cancelar">Cancelar</button>
                             </form>
                         @else
                             —
                         @endif
                     </td>
+                    {{-- OBSERVACIONES --}}
+                    <td style="max-width:200px; text-align:left;">
+                        {{ $cita->observaciones ?? '—' }}
+                    </td>
+
                 </tr>
             @endforeach
         </tbody>

@@ -4,25 +4,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
+use App\Http\Controllers\Admin\AdminClientesController;
+use App\Http\Controllers\Admin\AdminEmpleadoController;
 use App\Http\Controllers\Admin\AdminPromocionController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
 
-/*
-|--------------------------------------------------------------------------
-| HOME PÚBLICO
-|--------------------------------------------------------------------------
-*/
+/* HOME PÚBLICO */
 
 Route::get('/', [PublicController::class, 'index'])->name('home');
 
-/*
-|--------------------------------------------------------------------------
-| AUTH (INVITADOS)
-|--------------------------------------------------------------------------
-*/
+/* AUTH (INVITADOS) */
 Route::middleware('guest')->group(function () {
 
     Route::get('/login', [AuthController::class, 'loginForm'])
@@ -36,30 +30,18 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-/*
-|--------------------------------------------------------------------------
-| LOGOUT
-|--------------------------------------------------------------------------
-*/
+/* LOGOUT */
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-/*
-|--------------------------------------------------------------------------
-| 🔹 RUTA GLOBAL PARA HORARIOS (CLIENTE + RECEPCIONISTA)
-|--------------------------------------------------------------------------
-*/
+/* RUTA GLOBAL PARA HORARIOS (CLIENTE + RECEPCIONISTA) */
 Route::middleware('auth')->get(
     '/citas/bloques',
     [CitaController::class, 'bloquesDisponibles']
 )->name('citas.bloques.global');
 
-/*
-|--------------------------------------------------------------------------
-| REDIRECCIÓN POR ROL
-|--------------------------------------------------------------------------
-*/
+/* REDIRECCIÓN POR ROL */
 Route::get('/redirect', function () {
 
     $rol = auth()->user()->rol_id;
@@ -75,11 +57,7 @@ Route::get('/redirect', function () {
     return redirect()->route('cliente.dashboard');
 })->middleware('auth')->name('redirect');
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN (rol_id = 1)
-|--------------------------------------------------------------------------
-*/
+/* ADMIN (rol_id = 1) */
 Route::middleware(['auth', 'rol:1'])
     ->prefix('admin')
     ->name('admin.')
@@ -100,13 +78,39 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::resource('promociones', AdminPromocionController::class);
         Route::resource('servicios', AdminServicioController::class);
+
+        Route::get('/empleados', [AdminEmpleadoController::class, 'index'])
+            ->name('empleados.index');
+
+        Route::get('/empleados/create', [AdminEmpleadoController::class, 'create'])
+            ->name('empleados.create');
+
+        Route::post('/empleados', [AdminEmpleadoController::class, 'store'])
+            ->name('empleados.store');
+
+        Route::get('/empleados/{empleado}/edit', [AdminEmpleadoController::class, 'edit'])
+            ->name('empleados.edit');
+
+        Route::put('/empleados/{empleado}', [AdminEmpleadoController::class, 'update'])
+            ->name('empleados.update');
+
+        Route::delete('/empleados/{empleado}', [AdminEmpleadoController::class, 'destroy'])
+            ->name('empleados.destroy');
+
+        Route::post('citas/{cita}/asignar-empleado', [AdminCitaController::class, 'asignarEmpleado'])
+            ->name('citas.asignarEmpleado');
+
+        Route::get('/clientes', [AdminClientesController::class, 'index'])
+            ->name('clientes.index');
+
+        Route::post('/clientes/{cliente}/desactivar', [AdminClientesController::class, 'desactivar'])
+            ->name('clientes.desactivar');
+
+        Route::post('/clientes/{cliente}/activar', [AdminClientesController::class, 'activar'])
+            ->name('clientes.activar');
     });
 
-/*
-|--------------------------------------------------------------------------
-| RECEPCIONISTA (rol_id = 3)
-|--------------------------------------------------------------------------
-*/
+/* RECEPCIONISTA (rol_id = 3) */
 Route::middleware(['auth', 'rol:3'])
     ->prefix('recepcionista')
     ->name('recepcionista.')
@@ -123,11 +127,7 @@ Route::middleware(['auth', 'rol:3'])
             ->name('citas.store');
     });
 
-/*
-|--------------------------------------------------------------------------
-| CLIENTE (rol_id = 2)
-|--------------------------------------------------------------------------
-*/
+/* CLIENTE (rol_id = 2) */
 Route::middleware(['auth', 'rol:2'])
     ->prefix('cliente')
     ->name('cliente.')
@@ -148,16 +148,12 @@ Route::middleware(['auth', 'rol:2'])
             ->name('citas.bloques');
         Route::post('/citas/{cita}/comprobante', [CitaController::class, 'subirComprobante'])
             ->name('citas.comprobante');
-            
+
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');
     });
 
-/*
-|--------------------------------------------------------------------------
-| RECUPERAR CONTRASEÑA
-|--------------------------------------------------------------------------
-*/
+/* RECUPERAR CONTRASEÑA */
 Route::get('/forgot-password', [PasswordResetController::class, 'requestForm'])
     ->middleware('guest')
     ->name('password.request');
