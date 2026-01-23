@@ -9,13 +9,13 @@ class Promociones extends Component
 {
     public function render()
     {
-        return view('components.public.promociones', [
-            'promociones' => Promocion::where('publicada', 1)
-                ->whereDate('fecha_inicio', '<=', now())
-                ->whereDate('fecha_fin', '>=', now())
-                ->orderBy('fecha_fin')
-                ->take(3)
-                ->get(), 
-        ]);
+        $promociones = Promocion::where('publicada', 1)
+            ->whereDate('fecha_inicio', '<=', now())
+            ->whereDate('fecha_fin', '>=', now())
+            ->orderBy('fecha_inicio', 'desc')
+            ->get();
+
+        return view('livewire.public.promociones', compact('promociones'));
     }
 }
+

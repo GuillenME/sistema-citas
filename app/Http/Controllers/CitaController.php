@@ -139,11 +139,7 @@ class CitaController extends Controller
         return redirect()->route('cliente.citas.index');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | SUBIR COMPROBANTE (🔥 CORREGIDO)
-    |--------------------------------------------------------------------------
-    */
+
     public function subirComprobante(Request $request, Cita $cita)
     {
         $cliente = Cliente::where('usuario_id', auth()->id())->first();
@@ -167,6 +163,9 @@ class CitaController extends Controller
             'comprobante' => $ruta,
         ]);
 
-        return back()->with('success', 'Comprobante enviado correctamente');
+        return back()->with(
+            'info',
+            '⏳ Estamos validando tu anticipo. Te notificaremos cuando sea confirmado.'
+        );
     }
 }

@@ -252,6 +252,23 @@
 
         <div class="table-card">
             <h2>Historial de citas</h2>
+            @if (session('info'))
+                <div
+                    style="
+        margin-bottom:18px;
+        padding:14px;
+        border-radius:10px;
+        background:rgba(234,179,8,.15);
+        border:1px solid rgba(234,179,8,.5);
+        color:#fde68a;
+        font-size:14px;
+        text-align:center;
+        box-shadow:0 0 12px rgba(234,179,8,.35);
+    ">
+                    {{ session('info') }}
+                </div>
+            @endif
+
 
             <table>
                 <thead>
@@ -301,9 +318,32 @@
                                 <span class="estado {{ $estadoClase }}">
                                     {{ $estadoTexto }}
                                 </span>
+
+                                @if ($cita->estado === 'cancelada' && $cita->observaciones)
+                                    <div style="margin-top:6px;font-size:12px;color:#fecaca;">
+                                        {{ $cita->observaciones }}
+                                    </div>
+                                @endif
                             </td>
+
                             <td data-label="Comprobante">
                                 @if ($cita->estado === 'pendiente_anticipo')
+                                    <div
+                                        style="
+            margin-bottom:10px;
+            padding:10px;
+            border-radius:8px;
+            background:rgba(255,255,255,.08);
+            border:1px solid rgba(255,255,255,.2);
+            font-size:12px;
+            text-align:left;
+        ">
+                                        <strong style="color:#fde68a;">Datos para anticipo</strong><br>
+                                        Banco: BBVA<br>
+                                        Cuenta: 1234567890<br>
+                                        CLABE: 012345678901234567
+                                    </div>
+
                                     @if ($cita->comprobante)
                                         <a href="{{ asset('storage/' . $cita->comprobante) }}" target="_blank"
                                             style="color:#22c55e;font-weight:bold;">
@@ -317,7 +357,15 @@
                                             <input type="file" name="comprobante" accept="image/*" required>
 
                                             <button type="submit"
-                                                style="margin-top:6px;background:#eab308;border:none;padding:6px 10px;border-radius:6px;">
+                                                style="
+                        margin-top:6px;
+                        background:#eab308;
+                        border:none;
+                        padding:6px 10px;
+                        border-radius:6px;
+                        font-weight:bold;
+                        cursor:pointer;
+                    ">
                                                 Subir comprobante
                                             </button>
                                         </form>
@@ -326,8 +374,6 @@
                                     —
                                 @endif
                             </td>
-
-
                         </tr>
                     @endforeach
                 </tbody>
