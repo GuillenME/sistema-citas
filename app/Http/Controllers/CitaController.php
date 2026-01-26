@@ -152,7 +152,7 @@ public function store(Request $request)
 
     /*
     |--------------------------------------------------------------------------
-    | SUBIR COMPROBANTE (CORREGIDO)
+    | SUBIR COMPROBANTE (🔥 CORREGIDO)
     |--------------------------------------------------------------------------
     */
     public function subirComprobante(Request $request, Cita $cita)
