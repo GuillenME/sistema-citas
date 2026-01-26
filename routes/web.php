@@ -199,3 +199,6 @@ Route::resource('promociones', AdminPromocionController::class);
 Route::get('/servicios', [ServicioPublicController::class, 'index'])
     ->name('servicios');
 
+Route::get('/promociones', function () {
+    return view('promociones.index');
+})->name('promociones');

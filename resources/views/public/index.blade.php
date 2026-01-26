@@ -140,7 +140,7 @@ footer span{
     <nav>
         <a href="#inicio">Inicio</a>
         <a href="{{ route('servicios') }}">Servicios</a>
-        <a href="#promos">Promociones</a>
+       <a href="{{ route('promociones') }}">Promociones</a>
         <a href="#contacto">Contacto</a>
         <a href="#noticias">Noticias & Novedades</a>
     </nav>
@@ -155,10 +155,6 @@ footer span{
 </div>
 
 
-{{-- PROMOCIONES --}}
-<section id="promos">
-    <livewire:public.promociones />
-</section>
 
 {{-- NOTICIAS --}}
 <section>
