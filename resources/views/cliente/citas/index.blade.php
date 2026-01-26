@@ -18,7 +18,7 @@
             margin: 0;
             min-height: 100vh;
 
-            background-image: url('{{ asset('imagenes/SalaEspera.png') }}');
+            background-image: url('{{ asset('imagenes/SalaEsperaa.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

@@ -129,7 +129,7 @@
 
         /* TARJETA BIENVENIDA */
         .welcome {
-            background: rgba(17,24,39,.65);
+            background: rgba(17,24,39,.25);
             backdrop-filter: blur(12px);
             padding: 34px;
             border-radius: 18px;
