@@ -10,7 +10,7 @@ class AdminEmpleadoController extends Controller
 {
     public function index()
     {
-        $empleados = Empleado::orderBy('nombre')->get();
+        $empleados = Empleado::orderBy('name')->get();
         return view('admin.empleados.index', compact('empleados'));
     }
 
@@ -28,10 +28,10 @@ class AdminEmpleadoController extends Controller
         ]);
 
         Empleado::create([
-            'nombre'       => $request->nombre,
-            'telefono'     => $request->telefono,
-            'especialidad' => $request->especialidad,
-            'activo'       => true,
+            'name'       => $request->nombre,
+            'phone'     => $request->telefono,
+            'specialty' => $request->especialidad,
+            'active'       => true,
         ]);
 
         return redirect()->route('admin.empleados.index')
@@ -53,10 +53,10 @@ class AdminEmpleadoController extends Controller
         ]);
 
         $empleado->update([
-            'nombre'       => $request->nombre,
-            'telefono'     => $request->telefono,
-            'especialidad' => $request->especialidad,
-            'activo'       => $request->activo,
+            'name'       => $request->nombre,
+            'phone'     => $request->telefono,
+            'specialty' => $request->especialidad,
+            'active'       => $request->activo,
         ]);
 
         return redirect()->route('admin.empleados.index')
@@ -65,7 +65,7 @@ class AdminEmpleadoController extends Controller
 
     public function destroy(Empleado $empleado)
     {
-        $empleado->update(['activo' => false]);
+        $empleado->update(['active' => false]);
 
         return back()->with('success', 'Empleado desactivado');
     }

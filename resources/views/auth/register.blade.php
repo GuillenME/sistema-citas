@@ -283,7 +283,7 @@
             <input type="password" name="password_confirmation" placeholder="Confirmar contraseña">
 
             <!-- Rol fijo -->
-            <input type="hidden" name="rol_id" value="2">
+            <input type="hidden" name="role_id" value="2">
 
             <button type="submit">REGISTRARSE</button>
         </form>

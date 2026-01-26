@@ -44,13 +44,13 @@
     @csrf
     @method('PUT')
 
-    <input type="text" value="{{ $empleado->usuario?->nombre }}" disabled>
+    <input type="text" value="{{ $empleado->user?->name }}" disabled>
 
-    <input type="text" name="especialidad" value="{{ $empleado->especialidad }}" required>
+    <input type="text" name="especialidad" value="{{ $empleado->specialty }}" required>
 
     <select name="activo">
-        <option value="1" @selected($empleado->activo)>Activo</option>
-        <option value="0" @selected(!$empleado->activo)>Inactivo</option>
+        <option value="1" @selected($empleado->active)>Activo</option>
+        <option value="0" @selected(!$empleado->active)>Inactivo</option>
     </select>
 
     <button>Actualizar</button>

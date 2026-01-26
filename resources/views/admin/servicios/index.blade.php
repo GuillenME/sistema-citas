@@ -186,6 +186,78 @@
                 inset 0 0 12px rgba(239,68,68,.6);
         }
 
+        /* Modal de confirmación */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(17, 24, 39, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
+            border: 2px solid rgba(239, 68, 68, 0.5);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .modal-content p {
+            margin-bottom: 25px;
+            color: #e5e7eb;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: transform .2s;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .modal-btn-confirm {
+            background: #ef4444;
+            color: #fff;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
+        }
+
+        .modal-btn-cancel {
+            background: #6b7280;
+            color: #fff;
+        }
+
 
         @media (max-width: 700px) {
             h1 {
@@ -218,9 +290,9 @@
             </a>
 
             <!-- Cerrar sesión -->
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" id="logoutForm">
                 @csrf
-                <button type="submit" class="btn-logout">
+                <button type="button" class="btn-logout" onclick="mostrarModalLogout()">
                     Cerrar sesión
                 </button>
             </form>
@@ -243,11 +315,11 @@
             <tbody>
                 @foreach($servicios as $servicio)
                     <tr>
-                        <td>{{ $servicio->nombre }}</td>
-                        <td>{{ $servicio->duracion_minutos }} min</td>
-                        <td>${{ $servicio->precio }}</td>
+                        <td>{{ $servicio->name }}</td>
+                        <td>{{ $servicio->duration_minutes }} min</td>
+                        <td>${{ $servicio->price }}</td>
                         <td>
-                            @if($servicio->activo)
+                            @if($servicio->active)
                                 <span class="badge badge-on">Sí</span>
                             @else
                                 <span class="badge badge-off">No</span>
@@ -262,6 +334,33 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
+</div>
+
+<script>
+// Modal de confirmación de logout
+function mostrarModalLogout() {
+    document.getElementById('modalLogout').classList.add('active');
+}
+
+function cerrarModalLogout() {
+    document.getElementById('modalLogout').classList.remove('active');
+}
+
+function confirmarLogout() {
+    document.getElementById('logoutForm').submit();
+}
+</script>
+
+<!-- Modal de confirmación de logout -->
+<div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
+    <div class="modal-content">
+        <h3>¿Cerrar sesión?</h3>
+        <p>¿Estás seguro de que deseas cerrar sesión?</p>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
+        </div>
     </div>
 </div>
 

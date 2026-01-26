@@ -13,15 +13,13 @@ class CancelarCitasSinAnticipo extends Command
 
     public function handle()
     {
-        $ahora = Carbon::now();
-
-        $citas = Cita::where('estado', 'pendiente_anticipo')
-            ->whereNull('comprobante')
-            ->where('created_at', '<=', $ahora->subMinutes(30))
+        $citas = Cita::where('status', 'pendiente_anticipo')
+            ->whereNull('receipt')
+            ->where('created_at', '<=', Carbon::now()->subMinutes(15))
             ->get();
 
         foreach ($citas as $cita) {
-            $this->cancelar($cita, 'No se recibió anticipo en 30 minutos');
+            $this->cancelar($cita, 'No se recibió anticipo en 15 minutos');
         }
 
         return Command::SUCCESS;
@@ -31,8 +29,8 @@ class CancelarCitasSinAnticipo extends Command
     protected function cancelar(Cita $cita, string $motivo)
     {
         $cita->update([
-            'estado' => 'cancelada',
-            'observaciones' => $motivo
+            'status' => 'cancelada',
+            'notes' => $motivo
         ]);
     }
 }

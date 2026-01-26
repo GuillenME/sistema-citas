@@ -189,14 +189,14 @@
         <tbody>
             @foreach ($citas as $cita)
                 <tr>
-                    <td>{{ $cita->cliente->usuario->nombre }}</td>
-                    <td>{{ $cita->servicio->nombre }}</td>
-                    <td>{{ \Carbon\Carbon::parse($cita->fecha)->format('d/m/Y') }}</td>
-                    <td>{{ $cita->hora_inicio }} - {{ $cita->hora_fin }}</td>
+                    <td>{{ $cita->client->user->name }}</td>
+                    <td>{{ $cita->service->name }}</td>
+                    <td>{{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}</td>
+                    <td>{{ $cita->start_time }} - {{ $cita->end_time }}</td>
 
                     {{-- EMPLEADO --}}
                     <td>
-                        @if ($cita->estado === 'confirmada' && !$cita->empleado_id)
+                        @if ($cita->status === 'confirmada' && !$cita->employee_id)
                             {{-- Confirmada pero sin empleado → permitir asignar --}}
                             <form method="POST" action="{{ route('admin.citas.asignarEmpleado', $cita) }}">
                                 @csrf
@@ -204,7 +204,7 @@
                                     <option value="">— Seleccionar —</option>
                                     @foreach ($empleados as $empleado)
                                         <option value="{{ $empleado->id }}">
-                                            {{ $empleado->nombre }} ({{ $empleado->especialidad }})
+                                            {{ $empleado->name }} ({{ $empleado->specialty }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -212,22 +212,22 @@
                             </form>
                         @else
                             {{-- Cualquier otro caso → solo mostrar --}}
-                            {{ $cita->empleado?->nombre ?? '— Sin asignar —' }}
+                            {{ $cita->employee?->name ?? '— Sin asignar —' }}
                         @endif
                     </td>
 
 
                     {{-- ESTADO --}}
                     <td>
-                        <span class="estado {{ $cita->estado }}">
-                            {{ str_replace('_', ' ', ucfirst($cita->estado)) }}
+                        <span class="estado {{ $cita->status }}">
+                            {{ str_replace('_', ' ', ucfirst($cita->status)) }}
                         </span>
                     </td>
 
                     {{-- COMPROBANTE --}}
                     <td>
-                        @if ($cita->comprobante)
-                            <a href="{{ asset('storage/' . $cita->comprobante) }}" target="_blank">Ver</a>
+                        @if ($cita->receipt)
+                            <a href="{{ asset('storage/' . $cita->receipt) }}" target="_blank">Ver</a>
                         @else
                             —
                         @endif
@@ -235,7 +235,7 @@
 
                     {{-- ACCIONES --}}
                     <td>
-                        @if ($cita->estado === 'pendiente_anticipo')
+                        @if ($cita->status === 'pendiente_anticipo')
                             <form method="POST" action="{{ route('admin.citas.confirmar', $cita) }}">
                                 @csrf
                                 <button class="btn btn-confirmar">Confirmar</button>
@@ -260,7 +260,7 @@
                     </td>
                     {{-- OBSERVACIONES --}}
                     <td style="max-width:200px; text-align:left;">
-                        {{ $cita->observaciones ?? '—' }}
+                        {{ $cita->notes ?? '—' }}
                     </td>
 
                 </tr>

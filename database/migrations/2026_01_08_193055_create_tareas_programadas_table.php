@@ -7,18 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('tareas_programadas', function (Blueprint $table) {
+        Schema::create('scheduled_tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->text('descripcion')->nullable();
-            $table->string('frecuencia'); // diaria, semanal, minutos
-            $table->timestamp('ultima_ejecucion')->nullable();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('frequency'); // diaria, semanal, minutos
+            $table->timestamp('last_execution')->nullable();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('tareas_programadas');
+        Schema::dropIfExists('scheduled_tasks');
     }
 };
 

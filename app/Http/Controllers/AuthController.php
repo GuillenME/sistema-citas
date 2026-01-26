@@ -52,7 +52,7 @@ class AuthController extends Controller
                 'nombre'    => ['required', 'string', 'min:3'],
                 'apellido'  => ['required', 'string', 'min:3'],
                 'telefono'  => ['required', 'digits:10'],
-                'email'     => ['required', 'email', 'unique:usuarios,email'],
+                'email'     => ['required', 'email', 'unique:users,email'],
                 'password'  => ['required', 'confirmed', 'min:6'],
             ],
             [
@@ -77,19 +77,19 @@ class AuthController extends Controller
         );
 
         $usuario = Usuario::create([
-            'nombre'   => $request->nombre,
-            'apellido' => $request->apellido,
-            'telefono' => $request->telefono,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'rol_id'   => 2,
+            'name'      => $request->nombre,
+            'last_name' => $request->apellido,
+            'phone'     => $request->telefono,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'role_id'   => 2,
         ]);
 
         // 👇 Si el usuario es cliente, crear registro en clientes
-        if ($usuario->rol_id == 2) {
+        if ($usuario->role_id == 2) {
             Cliente::create([
-                'usuario_id' => $usuario->id,
-               // 'telefono'   => $usuario->telefono,
+                'user_id' => $usuario->id,
+               // 'phone'   => $usuario->phone,
             ]);
         }
 

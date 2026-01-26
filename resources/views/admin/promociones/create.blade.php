@@ -79,13 +79,23 @@
             color: #c7d2fe;
         }
 
-        input, textarea {
+        input, textarea, select {
             background: rgba(2, 6, 23, .9);
             border: 1px solid rgba(255,255,255,.2);
             border-radius: 10px;
             padding: 12px;
             color: #e5e7eb;
             font-size: 14px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: rgba(2, 6, 23, .9);
+            color: #e5e7eb;
+            padding: 8px;
         }
 
         textarea {
@@ -225,6 +235,20 @@
                     <textarea name="descripcion" required></textarea>
                 </div>
 
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Servicios aplicables</label>
+                    <select name="servicios[]" multiple required style="min-height: 120px;">
+                        @foreach($servicios as $servicio)
+                            <option value="{{ $servicio->id }}">
+                                {{ $servicio->name }} - ${{ number_format($servicio->price, 2) }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small style="color: #9ca3af; font-size: 12px; margin-top: 4px;">
+                        Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples servicios
+                    </small>
+                </div>
+
                 <div class="checkbox">
                     <input type="checkbox" name="publicada" id="publicada">
                     <label for="publicada">Publicar promoción</label>
@@ -264,9 +288,11 @@
         const inicio = document.querySelector('[name="fecha_inicio"]').value;
         const fin = document.querySelector('[name="fecha_fin"]').value;
         const publicada = document.querySelector('[name="publicada"]').checked ? 'Sí' : 'No';
+        const serviciosSelect = document.querySelector('[name="servicios[]"]');
+        const serviciosSeleccionados = Array.from(serviciosSelect.selectedOptions).map(opt => opt.text).join(', ');
 
-        if (!titulo || !descuento || !inicio || !fin) {
-            alert('Completa todos los campos.');
+        if (!titulo || !descuento || !inicio || !fin || serviciosSelect.selectedOptions.length === 0) {
+            alert('Completa todos los campos, incluyendo al menos un servicio.');
             return;
         }
 
@@ -275,6 +301,7 @@
             <strong>Descuento:</strong> ${descuento}%<br>
             <strong>Inicio:</strong> ${inicio}<br>
             <strong>Fin:</strong> ${fin}<br>
+            <strong>Servicios:</strong> ${serviciosSeleccionados}<br>
             <strong>Publicar:</strong> ${publicada}
         `;
 

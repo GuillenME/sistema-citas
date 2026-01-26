@@ -6,38 +6,44 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cita extends Model
 {
-    protected $table = 'citas';
+    protected $table = 'appointments';
 
     protected $fillable = [
-        'cliente_id',
-        'servicio_id',
-        'empleado_id',
-        'fecha',
-        'hora_inicio',
-        'hora_fin',
-        'estado',
-        'comprobante',
-        'observaciones',
+        'client_id',
+        'service_id',
+        'employee_id',
+        'staff_id',
+        'date',
+        'start_time',
+        'end_time',
+        'status',
+        'receipt',
+        'notes',
     ];
 
     protected $casts = [
-        'fecha' => 'date',
-        'hora_inicio' => 'datetime:H:i',
-        'hora_fin' => 'datetime:H:i',
+        'date' => 'date',
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
     ];
 
-    public function cliente()
+    public function client()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(Client::class);
     }
 
-    public function servicio()
+    public function service()
     {
         return $this->belongsTo(Servicio::class);
     }
 
-    public function empleado()
+    public function employee()
     {
-        return $this->belongsTo(Empleado::class, 'empleado_id');
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
+
+    // public function staff()
+    // {
+    //     return $this->belongsTo(Staff::class, 'staff_id');
+    // }
 }

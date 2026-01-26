@@ -218,10 +218,10 @@
         <div class="services-slider" id="servicesSlider">
             @forelse($servicios as $servicio)
                 <div class="card service-card">
-                    <h3>{{ $servicio->nombre }}</h3>
-                    <p>{{ $servicio->descripcion }}</p>
-                    <p><strong>Duración:</strong> {{ $servicio->duracion_minutos }} min</p>
-                    <p><strong>Precio:</strong> ${{ number_format($servicio->precio, 2) }}</p>
+                    <h3>{{ $servicio->name }}</h3>
+                    <p>{{ $servicio->description }}</p>
+                    <p><strong>Duración:</strong> {{ $servicio->duration_minutes }} min</p>
+                    <p><strong>Precio:</strong> ${{ number_format($servicio->price, 2) }}</p>
                 </div>
             @empty
                 <p>No hay servicios disponibles.</p>
@@ -242,9 +242,9 @@
     <div class="services">
         @forelse($noticias as $noticia)
             <div class="card">
-                <h3>{{ $noticia->titulo }}</h3>
-                <p>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->contenido), 120) }}</p>
-                <small>Publicado: {{ $noticia->fecha_publicacion }}</small>
+                <h3>{{ $noticia->title }}</h3>
+                <p>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->content), 120) }}</p>
+                <small>Publicado: {{ $noticia->publication_date }}</small>
             </div>
         @empty
             <p>No hay noticias publicadas.</p>

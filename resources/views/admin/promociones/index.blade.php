@@ -187,6 +187,78 @@
                 0 0 25px rgba(239,68,68,1),
                 inset 0 0 12px rgba(239,68,68,.6);
         }
+
+        /* Modal de confirmación */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(17, 24, 39, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
+            border: 2px solid rgba(239, 68, 68, 0.5);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .modal-content p {
+            margin-bottom: 25px;
+            color: #e5e7eb;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: transform .2s;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .modal-btn-confirm {
+            background: #ef4444;
+            color: #fff;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
+        }
+
+        .modal-btn-cancel {
+            background: #6b7280;
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -206,9 +278,9 @@
                 + Nueva promoción
             </a>
 
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" id="logoutForm">
                 @csrf
-                <button type="submit" class="btn-logout">
+                <button type="button" class="btn-logout" onclick="mostrarModalLogout()">
                     Cerrar sesión
                 </button>
             </form>
@@ -221,6 +293,8 @@
             <thead>
                 <tr>
                     <th>Título</th>
+                    <th>Descuento</th>
+                    <th>Servicios</th>
                     <th>Fecha</th>
                     <th>Publicada</th>
                     <th>Acciones</th>
@@ -229,10 +303,22 @@
             <tbody>
         @foreach ($promociones as $promo)
             <tr>
-                <td>{{ $promo->titulo }}</td>
-                <td>{{ \Carbon\Carbon::parse($promo->fecha_publicacion)->format('d/m/Y') }}</td>
+                <td>{{ $promo->title }}</td>
+                <td>{{ $promo->discount }}%</td>
                 <td>
-                    @if($promo->publicada)
+                    @if($promo->servicios->count() > 0)
+                        @foreach($promo->servicios as $servicio)
+                            <span style="display: inline-block; background: rgba(99,102,241,.2); padding: 4px 8px; border-radius: 6px; margin: 2px; font-size: 12px;">
+                                {{ $servicio->name }}
+                            </span>
+                        @endforeach
+                    @else
+                        <span style="color: #9ca3af; font-size: 12px;">Sin servicios</span>
+                    @endif
+                </td>
+                <td>{{ \Carbon\Carbon::parse($promo->start_date)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($promo->end_date)->format('d/m/Y') }}</td>
+                <td>
+                    @if($promo->published)
                         <span class="badge badge-on">Sí</span>
                     @else
                         <span class="badge badge-off">No</span>
@@ -246,4 +332,36 @@
             </tr>
         @endforeach
         </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+// Modal de confirmación de logout
+function mostrarModalLogout() {
+    document.getElementById('modalLogout').classList.add('active');
+}
+
+function cerrarModalLogout() {
+    document.getElementById('modalLogout').classList.remove('active');
+}
+
+function confirmarLogout() {
+    document.getElementById('logoutForm').submit();
+}
+</script>
+
+<!-- Modal de confirmación de logout -->
+<div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
+    <div class="modal-content">
+        <h3>¿Cerrar sesión?</h3>
+        <p>¿Estás seguro de que deseas cerrar sesión?</p>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+</body>
 </html>

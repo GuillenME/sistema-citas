@@ -7,17 +7,17 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('usuarios', function (Blueprint $table) {
-            $table->boolean('aviso_enviado')
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('notice_sent')
                   ->default(0)
-                  ->after('activo');
+                  ->after('active');
         });
     }
 
     public function down(): void
     {
-        Schema::table('usuarios', function (Blueprint $table) {
-            $table->dropColumn('aviso_enviado');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('notice_sent');
         });
     }
 };
