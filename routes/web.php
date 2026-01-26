@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
+use App\Http\Controllers\ServicioPublicController;
 
 /* HOME PÚBLICO */
 
@@ -194,3 +195,7 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
     ->name('password.update');
 
 Route::resource('promociones', AdminPromocionController::class);
+
+Route::get('/servicios', [ServicioPublicController::class, 'index'])
+    ->name('servicios');
+

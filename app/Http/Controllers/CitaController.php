@@ -178,6 +178,9 @@ public function store(Request $request)
             'comprobante' => $ruta,
         ]);
 
-        return back()->with('success', 'Comprobante enviado correctamente');
+        return back()->with(
+            'info',
+            '⏳ Estamos validando tu anticipo. Te notificaremos cuando sea confirmado.'
+        );
     }
 }

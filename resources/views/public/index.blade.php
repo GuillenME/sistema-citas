@@ -2,238 +2,163 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Barbería & Spa</title>
+<meta charset="UTF-8">
+<title>Barbería & Spa</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+* { box-sizing: border-box; }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #0f172a;
-            color: #e5e7eb;
-        }
+html{
+    scroll-behavior: smooth;
+}
 
-        /* ================= HEADER ================= */
-        header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: flex-end;
-            z-index: 10;
-        }
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+}
 
-        header a {
-            margin-left: 20px;
-            color: #e5e7eb;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s ease;
-            text-shadow:
-                0 0 6px rgba(31, 78, 121, 0.7),
-                0 0 14px rgba(42, 22, 218, 0.6);
-        }
+/* ================= HEADER ================= */
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(2, 6, 23, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    z-index: 1000;
+    backdrop-filter: blur(6px);
+}
 
-        header a:hover {
-            color: #ffffff;
-            text-shadow:
-                0 0 8px #1F4E79,
-                0 0 20px rgba(42, 22, 218, 0.9),
-                0 0 35px rgba(42, 22, 218, 0.9);
-        }
+.logo{
+    font-weight: bold;
+    font-size: 25px;
+    letter-spacing: 2px;
+    color: #93c5fd;
+}
 
-        /* ================= HERO ================= */
-        .hero {
-            height: 100vh;
-            background:
-                linear-gradient(rgba(0, 0, 0, .75), rgba(0, 0, 0, .85)),
-                url("{{ asset('imagenes/registro_fondo.png') }}") center/cover no-repeat;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
+nav a{
+    margin: 0 14px;
+    color: #e5e7eb;
+    text-decoration: none;
+    font-weight: bold;
+    transition: .3s;
+}
 
-        .hero h1 {
-            font-size: 56px;
-            letter-spacing: 6px;
-            margin-bottom: 12px;
-            text-shadow:
-                0 0 10px #1F4E79,
-                0 0 25px rgba(42, 22, 218, 0.8);
-        }
+nav a:hover{
+    color: #93c5fd;
+}
 
-        .hero p {
-            font-size: 18px;
-            max-width: 600px;
-            color: #cbd5f5;
-            margin-bottom: 40px;
-        }
+.login-icon{
+    font-size: 30px;
+    color: #22c55e;
+    text-decoration: none;
+}
 
-        /* ================= FLECHA ================= */
-        .scroll-indicator {
-            font-size: 32px;
-            color: #93c5fd;
-            animation: bounce 1.8s infinite;
-            text-shadow:
-                0 0 10px rgba(31, 78, 121, 0.9),
-                0 0 20px rgba(42, 22, 218, 0.9);
-        }
+/* ================= HERO ================= */
+.hero{
+    height: 100vh;
+    background:
+        linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.85)),
+        url("{{ asset('imagenes/registro_fondo.png') }}") center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 70px;
+}
 
-        @keyframes bounce {
-            0% { transform: translateY(0); opacity: .4; }
-            50% { transform: translateY(14px); opacity: 1; }
-            100% { transform: translateY(0); opacity: .4; }
-        }
+.hero h1{
+    font-size: 80px;
+    letter-spacing: 10px;
+}
 
-        /* ================= SECTIONS ================= */
-        section {
-            padding: 80px 20px;
-            max-width: 1200px;
-            margin: auto;
-        }
+.hero p{
+    font-size: 30px;
+    max-width: 600px;
+    color: #cbd5f5;
+}
 
-        h2 {
-            text-align: center;
-            font-size: 32px;
-            margin-bottom: 50px;
-        }
+/* ================= SECTIONS ================= */
+section{
+    padding: 90px 20px;
+    max-width: 1200px;
+    margin: auto;
+}
 
-        /* ================= SLIDERS ================= */
-        .services-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+h2{
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 50px;
+}
 
-        .services-slider {
-            display: grid;
-            grid-auto-flow: column;
-            grid-auto-columns: calc(25% - 20px);
-            gap: 20px;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scroll-snap-type: x mandatory;
-            padding: 10px 0;
-        }
+/* ================= CARDS ================= */
+.card{
+    background: rgba(17, 24, 39, .9);
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.1);
+    transition: .3s;
+}
 
-        /* 👉 SOLO PROMOCIONES CENTRADAS */
-        .promo-slider-centered {
-            justify-content: center;
-        }
+.card:hover{
+    transform: translateY(-6px);
+}
 
-        .service-card {
-            scroll-snap-align: start;
-        }
+.card h3{
+    color: #93c5fd;
+}
 
-        .services-slider::-webkit-scrollbar {
-            display: none;
-        }
+/* ================= FOOTER ================= */
+footer{
+    background: #020617;
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 60px;
+}
 
-        .nav-btn {
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(255, 255, 255, .2);
-            color: #fff;
-            font-size: 32px;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 2;
-        }
+footer span{
+    color: #22c55e;
+}
+</style>
 
-        .nav-btn:hover {
-            background: #1e40af;
-        }
-
-        .nav-btn.left { margin-right: 10px; }
-        .nav-btn.right { margin-left: 10px; }
-
-        @media (max-width: 1024px) {
-            .services-slider {
-                grid-auto-columns: calc(50% - 20px);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .services-slider {
-                grid-auto-columns: 100%;
-            }
-        }
-
-        .card {
-            background: rgba(17, 24, 39, .9);
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, .1);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, .6);
-            transition: .3s;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-        }
-
-        .card h3 {
-            color: #93c5fd;
-        }
-
-        footer {
-            background: #020617;
-            padding: 25px;
-            text-align: center;
-            font-size: 14px;
-        }
-    </style>
-
-    @livewireStyles
+@livewireStyles
 </head>
 
 <body>
 
 <header>
-    <a href="{{ route('login') }}">Iniciar sesión</a>
-    <a href="{{ route('register') }}">Registrarse</a>
+    <div class="logo">Barbería & Spa</div>
+
+    <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="{{ route('servicios') }}">Servicios</a>
+        <a href="#promos">Promociones</a>
+        <a href="#contacto">Contacto</a>
+        <a href="#noticias">Noticias & Novedades</a>
+    </nav>
+
+    <a href="{{ route('login') }}" class="login-icon">👤</a>
+
 </header>
 
-<div class="hero">
+<div class="hero" id="inicio">
     <h1>BARBERÍA & SPA</h1>
     <p>Estilo, cuidado y bienestar en un solo lugar</p>
-    <div class="scroll-indicator">⬇</div>
 </div>
 
-<section>
-    <h2>Nuestros Servicios</h2>
-
-    <div class="services-wrapper">
-        <button class="nav-btn left" onclick="scrollServices(-1)">‹</button>
-
-        <div class="services-slider" id="servicesSlider">
-            @forelse($servicios as $servicio)
-                <div class="card service-card">
-                    <h3>{{ $servicio->nombre }}</h3>
-                    <p>{{ $servicio->descripcion }}</p>
-                    <p><strong>Duración:</strong> {{ $servicio->duracion_minutos }} min</p>
-                    <p><strong>Precio:</strong> ${{ number_format($servicio->precio, 2) }}</p>
-                </div>
-            @empty
-                <p>No hay servicios disponibles.</p>
-            @endforelse
-        </div>
-
-        <button class="nav-btn right" onclick="scrollServices(1)">›</button>
-    </div>
-</section>
 
 {{-- PROMOCIONES --}}
-<livewire:public.promociones />
+<section id="promos">
+    <livewire:public.promociones />
+</section>
 
 {{-- NOTICIAS --}}
 <section>
@@ -253,7 +178,8 @@
 </section>
 
 <footer>
-    © 2026 Barbería & Spa
+     © 2026 Barbería & Spa <br>
+    Desarrollado por <span>Cybac</span>
 </footer>
 
 <script>

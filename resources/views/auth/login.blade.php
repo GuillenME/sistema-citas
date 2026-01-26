@@ -262,15 +262,15 @@
 
             <input type="text" name="email" placeholder="Correo" value="{{ old('email') }}"
                 class="@error('email') input-error @enderror">
-            @error('email')
+            {{-- @error('email')
                 <span class="field-error">{{ $message }}</span>
-            @enderror
+            @enderror --}}
 
             <input type="password" name="password" placeholder="Contraseña"
                 class="@error('password') input-error @enderror">
-            @error('password')
+            {{-- @error('password')
                 <span class="field-error">{{ $message }}</span>
-            @enderror
+            @enderror --}}
 
             <button type="submit">ENTRAR</button>
         </form>
