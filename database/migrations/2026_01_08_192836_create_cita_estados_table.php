@@ -7,18 +7,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('cita_estados', function (Blueprint $table) {
+        Schema::create('appointment_states', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cita_id')->constrained('citas')->cascadeOnDelete();
-            $table->string('estado');
-            $table->foreignId('usuario_id')->constrained('usuarios');
-            $table->timestamp('fecha_cambio');
+            $table->foreignId('appointment_id')->constrained('appointments')->cascadeOnDelete();
+            $table->string('status');
+            $table->foreignId('user_id')->constrained('users');
+            $table->timestamp('change_date');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('cita_estados');
+        Schema::dropIfExists('appointment_states');
     }
 };
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <h2>Hola {{ $usuario->nombre }}</h2>
+    <h2>Hola {{ $usuario->name }}</h2>
 
     <p>
         Tu cuenta ha estado desactivada por varios días.

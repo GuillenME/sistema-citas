@@ -21,7 +21,7 @@ class RolMiddleware
             abort(403);
         }
 
-        if (!in_array(auth()->user()->rol_id, $roles)) {
+        if (!in_array(auth()->user()->role_id, $roles)) {
             abort(403);
         }
 

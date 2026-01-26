@@ -7,22 +7,22 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('usuarios', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('apellido')->nullable();
+            $table->string('name');
+            $table->string('last_name')->nullable();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('telefono')->nullable();
-            $table->foreignId('rol_id')->constrained('roles');
-            $table->boolean('activo')->default(true);
+            $table->string('phone')->nullable();
+            $table->foreignId('role_id')->constrained('roles');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('usuarios');
+        Schema::dropIfExists('users');
     }
 };
 

@@ -17,10 +17,10 @@
 
     @foreach($recepcionistas as $r)
         <tr>
-            <td>{{ $r->nombre }} {{ $r->apellido }}</td>
+            <td>{{ $r->name }} {{ $r->last_name }}</td>
             <td>{{ $r->email }}</td>
-            <td>{{ $r->telefono ?? '—' }}</td>
-            <td>{{ $r->activo ? 'Activo' : 'Inactivo' }}</td>
+            <td>{{ $r->phone ?? '—' }}</td>
+            <td>{{ $r->active ? 'Activo' : 'Inactivo' }}</td>
             <td>
                 <a href="{{ route('admin.recepcionistas.edit', $r) }}">Editar</a>
 
@@ -29,7 +29,7 @@
                       style="display:inline">
                     @csrf
                     <button>
-                        {{ $r->activo ? 'Desactivar' : 'Activar' }}
+                        {{ $r->active ? 'Desactivar' : 'Activar' }}
                     </button>
                 </form>
             </td>

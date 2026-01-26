@@ -29,11 +29,11 @@ class AdminServicioController extends Controller
         ]);
 
         Servicio::create([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'duracion_minutos' => $request->duracion_minutos,
-            'precio' => $request->precio,
-            'activo' => 1
+            'name' => $request->nombre,
+            'description' => $request->descripcion,
+            'duration_minutes' => $request->duracion_minutos,
+            'price' => $request->precio,
+            'active' => 1
         ]);
 
         return redirect()->route('admin.servicios.index')
@@ -56,11 +56,11 @@ class AdminServicioController extends Controller
         ]);
 
         $servicio->update([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'duracion_minutos' => $request->duracion_minutos,
-            'precio' => $request->precio,
-            'activo' => $request->activo
+            'name' => $request->nombre,
+            'description' => $request->descripcion,
+            'duration_minutes' => $request->duracion_minutos,
+            'price' => $request->precio,
+            'active' => $request->activo
         ]);
 
         return redirect()->route('admin.servicios.index')
@@ -70,7 +70,7 @@ class AdminServicioController extends Controller
     // En lugar de borrar → desactivar
     public function destroy(Servicio $servicio)
     {
-        $servicio->update(['activo' => 0]);
+        $servicio->update(['active' => 0]);
 
         return redirect()->route('admin.servicios.index')
             ->with('success', 'Servicio desactivado');

@@ -12,10 +12,10 @@ class EliminarClientesInactivos
 {
    public function handle()
 {
-    Usuario::where('rol_id', 2)
-        ->where('activo', 0)
+    Usuario::where('role_id', 2)
+        ->where('active', 0)
         ->where('updated_at', '<=', now()->subMinutes(3)) // para pruebas
-        ->whereNull('aviso_enviado') // o = 0 si usas boolean
+        ->whereNull('notice_sent') // o = 0 si usas boolean
         ->each(function ($usuario) {
 
             Log::info('Enviando aviso de eliminación', [
@@ -26,7 +26,7 @@ class EliminarClientesInactivos
                 ->send(new AvisoEliminacionCuenta($usuario));
 
             $usuario->update([
-                'aviso_enviado' => 1
+                'notice_sent' => 1
             ]);
         });
 }

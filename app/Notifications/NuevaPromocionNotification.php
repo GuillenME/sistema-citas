@@ -26,10 +26,10 @@ public function toMail($notifiable)
 {
     return (new MailMessage)
         ->subject('🎉 Nueva promoción disponible')
-        ->greeting('Hola ' . $notifiable->nombre)
+        ->greeting('Hola ' . $notifiable->name)
         ->line('Tenemos una nueva promoción para ti:')
-        ->line($this->promocion->titulo)
-        ->line($this->promocion->descripcion)
+        ->line($this->promocion->title)
+        ->line($this->promocion->description)
         ->action('Ver promoción', url('/promociones'))
         ->line('¡Aprovecha antes de que termine!');
 }
@@ -37,8 +37,8 @@ public function toMail($notifiable)
     public function toArray($notifiable)
     {
         return [
-            'titulo' => $this->promocion->titulo,
-            'descripcion' => $this->promocion->descripcion,
+            'title' => $this->promocion->title,
+            'description' => $this->promocion->description,
         ];
     }
 }

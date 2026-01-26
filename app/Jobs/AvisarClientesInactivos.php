@@ -29,8 +29,8 @@ class AvisarClientesInactivos implements ShouldQueue
      */
     public function handle()
     {
-        Usuario::where('rol_id', 2)
-            ->where('activo', 0)
+        Usuario::where('role_id', 2)
+            ->where('active', 0)
             ->whereDate('updated_at', Carbon::now()->subDays(25))
             ->each(function ($usuario) {
                 Mail::to($usuario->email)

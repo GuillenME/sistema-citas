@@ -98,13 +98,23 @@
             color: #c7d2fe;
         }
 
-        input, textarea {
+        input, textarea, select {
             background: rgba(2, 6, 23, .9);
             border: 1px solid rgba(255,255,255,.2);
             border-radius: 10px;
             padding: 12px;
             color: #e5e7eb;
             font-size: 14px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: rgba(2, 6, 23, .9);
+            color: #e5e7eb;
+            padding: 8px;
         }
 
         textarea {
@@ -214,35 +224,50 @@
                 <div class="form-group">
                     <label>Título</label>
                     <input type="text" name="titulo"
-                           value="{{ old('titulo', $promocion->titulo) }}" required>
+                           value="{{ old('titulo', $promocion->title) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Descuento (%)</label>
                     <input type="number" name="descuento" min="1" max="100"
-                           value="{{ old('descuento', $promocion->descuento) }}" required>
+                           value="{{ old('descuento', $promocion->discount) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Fecha inicio</label>
                     <input type="date" name="fecha_inicio"
-                           value="{{ old('fecha_inicio', $promocion->fecha_inicio) }}" required>
+                           value="{{ old('fecha_inicio', $promocion->start_date) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Fecha fin</label>
                     <input type="date" name="fecha_fin"
-                           value="{{ old('fecha_fin', $promocion->fecha_fin) }}" required>
+                           value="{{ old('fecha_fin', $promocion->end_date) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Descripción</label>
-                    <textarea name="descripcion" required>{{ old('descripcion', $promocion->descripcion) }}</textarea>
+                    <textarea name="descripcion" required>{{ old('descripcion', $promocion->description) }}</textarea>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Servicios aplicables</label>
+                    <select name="servicios[]" multiple required style="min-height: 120px;">
+                        @foreach($servicios as $servicio)
+                            <option value="{{ $servicio->id }}"
+                                {{ in_array($servicio->id, old('servicios', $serviciosSeleccionados)) ? 'selected' : '' }}>
+                                {{ $servicio->name }} - ${{ number_format($servicio->price, 2) }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small style="color: #9ca3af; font-size: 12px; margin-top: 4px;">
+                        Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples servicios
+                    </small>
                 </div>
 
                 <div class="checkbox">
                     <input type="checkbox" name="publicada"
-                           {{ old('publicada', $promocion->publicada) ? 'checked' : '' }}>
+                           {{ old('publicada', $promocion->published) ? 'checked' : '' }}>
                     <label>Publicar promoción</label>
                 </div>
             </div>

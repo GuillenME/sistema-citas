@@ -154,6 +154,28 @@ footer span{
     <p>Estilo, cuidado y bienestar en un solo lugar</p>
 </div>
 
+<section>
+    <h2>Nuestros Servicios</h2>
+
+    <div class="services-wrapper">
+        <button class="nav-btn left" onclick="scrollServices(-1)">‹</button>
+
+        <div class="services-slider" id="servicesSlider">
+            @forelse($servicios as $servicio)
+                <div class="card service-card">
+                    <h3>{{ $servicio->nombre }}</h3>
+                    <p>{{ $servicio->descripcion }}</p>
+                    <p><strong>Duración:</strong> {{ $servicio->duracion_minutos }} min</p>
+                    <p><strong>Precio:</strong> ${{ number_format($servicio->precio, 2) }}</p>
+                </div>
+            @empty
+                <p>No hay servicios disponibles.</p>
+            @endforelse
+        </div>
+
+        <button class="nav-btn right" onclick="scrollServices(1)">›</button>
+    </div>
+</section>
 
 {{-- PROMOCIONES --}}
 <section id="promos">
@@ -167,9 +189,9 @@ footer span{
     <div class="services">
         @forelse($noticias as $noticia)
             <div class="card">
-                <h3>{{ $noticia->titulo }}</h3>
-                <p>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->contenido), 120) }}</p>
-                <small>Publicado: {{ $noticia->fecha_publicacion }}</small>
+                <h3>{{ $noticia->title }}</h3>
+                <p>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->content), 120) }}</p>
+                <small>Publicado: {{ $noticia->publication_date }}</small>
             </div>
         @empty
             <p>No hay noticias publicadas.</p>

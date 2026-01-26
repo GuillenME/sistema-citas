@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::table('citas', function (Blueprint $table) {
-            $table->foreignId('personal_id')
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->foreignId('staff_id')
                   ->nullable()
                   ->change();
         });
@@ -15,8 +15,8 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::table('citas', function (Blueprint $table) {
-            $table->foreignId('personal_id')
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->foreignId('staff_id')
                   ->nullable(false)
                   ->change();
         });

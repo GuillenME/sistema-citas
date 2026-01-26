@@ -45,12 +45,12 @@
             @foreach ($clientes as $cliente)
                 <tr>
                     <td>{{ $cliente->id }}</td>
-                    <td>{{ $cliente->usuario->nombre }}</td>
-                    <td>{{ $cliente->usuario->apellido ?? '—' }}</td>
-                    <td>{{ $cliente->usuario->email }}</td>
-                    <td>{{ $cliente->usuario->telefono ?? '—' }}</td>
+                    <td>{{ $cliente->user->name }}</td>
+                    <td>{{ $cliente->user->last_name ?? '—' }}</td>
+                    <td>{{ $cliente->user->email }}</td>
+                    <td>{{ $cliente->user->phone ?? '—' }}</td>
                     <td>
-                        @if ($cliente->usuario->activo)
+                        @if ($cliente->user->active)
                             <span style="color:green;font-weight:bold;">Activo</span>
                         @else
                             <span style="color:red;font-weight:bold;">Inactivo</span>
@@ -58,7 +58,7 @@
                     </td>
 
                     <td>
-                        @if ($cliente->usuario->activo)
+                        @if ($cliente->user->active)
                             <form method="POST" action="{{ route('admin.clientes.desactivar', $cliente) }}">
                                 @csrf
                                 <button

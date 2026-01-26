@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('citas', function (Blueprint $table) {
-            $table->string('comprobante')->nullable()->after('estado');
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->string('receipt')->nullable()->after('status');
         });
     }
 
     public function down()
     {
-        Schema::table('citas', function (Blueprint $table) {
-            $table->dropColumn('comprobante');
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->dropColumn('receipt');
         });
     }
 };

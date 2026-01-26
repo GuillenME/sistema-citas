@@ -22,7 +22,7 @@ class PasswordResetController extends Controller
     public function sendResetLink(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:usuarios,email',
+            'email' => 'required|email|exists:users,email',
         ], [
             'email.required' => 'El correo es obligatorio',
             'email.email' => 'Debes ingresar un correo válido',
@@ -57,7 +57,7 @@ class PasswordResetController extends Controller
     {
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email|exists:usuarios,email',
+            'email' => 'required|email|exists:users,email',
             'password' => 'required|confirmed|min:6',
         ], [
             'email.required' => 'El correo es obligatorio',

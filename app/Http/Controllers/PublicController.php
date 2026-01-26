@@ -10,16 +10,16 @@ class PublicController extends Controller
 {
     public function index()
     {
-        $servicios = Servicio::where('activo', 1)->get();
+        $servicios = Servicio::where('active', 1)->get();
 
-        $promociones = Promocion::where('publicada', 1)
-            ->whereDate('fecha_inicio', '<=', now())
-            ->whereDate('fecha_fin', '>=', now())
-            ->orderBy('fecha_inicio', 'desc')
+        $promociones = Promocion::where('published', 1)
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->orderBy('start_date', 'desc')
             ->get();
 
-        $noticias = Noticia::where('publicada', 1)
-            ->orderBy('fecha_publicacion', 'desc')
+        $noticias = Noticia::where('published', 1)
+            ->orderBy('publication_date', 'desc')
             ->take(3)
             ->get();
 

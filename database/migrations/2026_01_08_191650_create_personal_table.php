@@ -7,19 +7,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('personal', function (Blueprint $table) {
+        Schema::create('staff', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')
-                  ->constrained('usuarios')
+            $table->foreignId('user_id')
+                  ->constrained('users')
                   ->cascadeOnDelete();
-            $table->string('especialidad')->nullable();
-            $table->boolean('activo')->default(true);
+            $table->string('specialty')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('personal');
+        Schema::dropIfExists('staff');
     }
 };

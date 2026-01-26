@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Empleado extends Model
 {
-    protected $table = 'empleados';
+    protected $table = 'employees';
 
     protected $fillable = [
-        'nombre',
-        'telefono',
-        'especialidad',
-        'activo',
+        'name',
+        'phone',
+        'specialty',
+        'active',
     ];
 
-    public function citas()
+    public function appointments()
     {
-        return $this->hasMany(Cita::class, 'empleado_id');
+        return $this->hasMany(Appointment::class, 'employee_id');
     }
 }

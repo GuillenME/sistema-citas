@@ -6,6 +6,7 @@ use App\Models\Usuario;
 use App\Notifications\NuevaPromocionNotification;
 use App\Http\Controllers\Controller;
 use App\Models\Promocion;
+use App\Models\Servicio;
 use Illuminate\Http\Request;
 
 class AdminPromocionController extends Controller
@@ -18,45 +19,53 @@ class AdminPromocionController extends Controller
 
     public function create()
     {
-        return view('admin.promociones.create');
+        $servicios = Servicio::where('active', true)->get();
+        return view('admin.promociones.create', compact('servicios'));
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'titulo' => 'required|min:5',
-        'descripcion' => 'required',
-        'descuento' => 'required|integer|min:1|max:100',
-        'fecha_inicio' => 'required|date',
-        'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-    ]);
+    {
+        $request->validate([
+            'titulo' => 'required|min:5',
+            'descripcion' => 'required',
+            'descuento' => 'required|numeric|min:1|max:100',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            'servicios' => 'required|array|min:1',
+            'servicios.*' => 'exists:services,id',
+        ]);
 
-    $promocion = Promocion::create([
-        'titulo' => $request->titulo,
-        'descripcion' => $request->descripcion,
-        'descuento' => $request->descuento,
-        'fecha_inicio' => $request->fecha_inicio,
-        'fecha_fin' => $request->fecha_fin,
-        'publicada' => $request->has('publicada'),
-    ]);
+        $promocion = Promocion::create([
+            'title' => $request->titulo,
+            'description' => $request->descripcion,
+            'discount' => $request->descuento,
+            'start_date' => $request->fecha_inicio,
+            'end_date' => $request->fecha_fin,
+            'published' => $request->has('publicada'),
+        ]);
 
-    // ✅ SOLO SI SE PUBLICA
-    if ($promocion->publicada) {
-        $usuarios = Usuario::where('activo', 1)->get();
+        // Sincronizar servicios
+        $promocion->servicios()->sync($request->servicios);
 
-        foreach ($usuarios as $usuario) {
-            $usuario->notify(new NuevaPromocionNotification($promocion));
+        // ✅ SOLO SI SE PUBLICA
+        if ($promocion->published) {
+            $usuarios = Usuario::where('active', 1)->get();
+
+            foreach ($usuarios as $usuario) {
+                $usuario->notify(new NuevaPromocionNotification($promocion));
+            }
         }
-    }
 
-    return redirect()->route('admin.promociones.index')
-        ->with('success', 'Promoción creada y notificada por correo');
-}
+        return redirect()->route('admin.promociones.index')
+            ->with('success', 'Promoción creada y notificada por correo');
+    }
 
 
     public function edit(Promocion $promocion)
     {
-        return view('admin.promociones.edit', compact('promocion'));
+        $servicios = Servicio::where('active', true)->get();
+        $serviciosSeleccionados = $promocion->servicios->pluck('id')->toArray();
+        return view('admin.promociones.edit', compact('promocion', 'servicios', 'serviciosSeleccionados'));
     }
 
     public function update(Request $request, Promocion $promocion)
@@ -64,14 +73,24 @@ class AdminPromocionController extends Controller
         $data = $request->validate([
             'titulo' => 'required|string|min:5|max:255',
             'descripcion' => 'required|string',
-            'descuento' => 'required|integer|min:1|max:100',
+            'descuento' => 'required|numeric|min:1|max:100',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+            'servicios' => 'required|array|min:1',
+            'servicios.*' => 'exists:services,id',
         ]);
 
-        $data['publicada'] = $request->has('publicada');
+        $data['published'] = $request->has('publicada');
+        $data['title'] = $request->titulo;
+        $data['description'] = $request->descripcion;
+        $data['discount'] = $request->descuento;
+        $data['start_date'] = $request->fecha_inicio;
+        $data['end_date'] = $request->fecha_fin;
 
         $promocion->update($data);
+
+        // Sincronizar servicios
+        $promocion->servicios()->sync($request->servicios);
 
         return redirect()
             ->route('admin.promociones.index')
