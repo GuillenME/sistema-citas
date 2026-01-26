@@ -26,7 +26,7 @@ header{
     left: 0;
     width: 100%;
     height: 70px;
-    background: rgba(2, 6, 23, 0.95);
+    background: rgba(6, 13, 46, 0.95);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -64,7 +64,7 @@ nav a:hover{
 .hero{
     height: 100vh;
     background:
-        linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.85)),
+        linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.85)),
         url("{{ asset('imagenes/registro_fondo.png') }}") center/cover no-repeat;
     display: flex;
     flex-direction: column;
@@ -140,7 +140,7 @@ footer span{
     <nav>
         <a href="#inicio">Inicio</a>
         <a href="{{ route('servicios') }}">Servicios</a>
-        <a href="#promos">Promociones</a>
+       <a href="{{ route('promociones') }}">Promociones</a>
         <a href="#contacto">Contacto</a>
         <a href="#noticias">Noticias & Novedades</a>
     </nav>
@@ -177,10 +177,6 @@ footer span{
     </div>
 </section>
 
-{{-- PROMOCIONES --}}
-<section id="promos">
-    <livewire:public.promociones />
-</section>
 
 {{-- NOTICIAS --}}
 <section>

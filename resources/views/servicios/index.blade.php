@@ -1,32 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Servicios | Barbería & Spa</title>
+<meta charset="UTF-8">
+<title>Barbería & Spa</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* { box-sizing: border-box; }
 
-    <style>
-        body{
-            margin:0;
-            font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top, #1e1b4b, #020617);
-            color:#e5e7eb;
-        }
+html{
+    scroll-behavior: smooth;
+}
 
-        header{
-            padding:20px 40px;
-            background:#020617;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        }
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+}
 
-        header a{
-            color:#93c5fd;
-            text-decoration:none;
-            font-weight:bold;
-        }
+/* ================= HEADER ================= */
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(2, 6, 23, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    z-index: 1000;
+    backdrop-filter: blur(6px);
+}
+
+.logo{
+    font-weight: bold;
+    font-size: 25px;
+    letter-spacing: 2px;
+    color: #93c5fd;
+}
+
+nav a{
+    margin: 0 14px;
+    color: #e5e7eb;
+    text-decoration: none;
+    font-weight: bold;
+    transition: .3s;
+}
+
+nav a:hover{
+    color: #93c5fd;
+}
+
+.login-icon{
+    font-size: 30px;
+    color: #22c55e;
+    text-decoration: none;
+}
+
+
 
         section{
             max-width:1200px;
@@ -91,15 +125,25 @@
             box-shadow:0 0 20px rgba(34,197,94,1);
         }
     </style>
+    @livewireStyles
 </head>
 
 <body>
 
 <header>
-    <div>Barbería & Spa</div>
-    <a href="{{ route('home') }}">← Volver al inicio</a>
-</header>
+    <div class="logo">Barbería & Spa</div>
 
+    <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="{{ route('servicios') }}">Servicios</a>
+        <a href="#promos">Promociones</a>
+        <a href="#contacto">Contacto</a>
+        <a href="#noticias">Noticias & Novedades</a>
+    </nav>
+
+    <a href="{{ route('login') }}" class="login-icon">👤</a>
+
+</header>
 <section>
     <h1>Nuestros Servicios</h1>
 
