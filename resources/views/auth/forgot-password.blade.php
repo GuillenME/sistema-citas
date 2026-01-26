@@ -32,7 +32,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.25);
             z-index: 0;
         }
 
@@ -43,7 +43,7 @@
             width: 100%;
             max-width: 380px;
             padding: 30px;
-            background: rgba(17, 24, 39, 0.7);
+            background: rgba(17, 24, 39, .25);
             border-radius: 14px;
             border: 1px solid rgba(255,255,255,0.15);
             backdrop-filter: blur(12px);
