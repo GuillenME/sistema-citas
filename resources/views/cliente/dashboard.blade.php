@@ -96,8 +96,12 @@
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* ===== CONTENIDO ===== */
 =======
+=======
+
+>>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
         /* Modal de confirmación */
         .modal-overlay {
             display: none;
@@ -171,7 +175,12 @@
         }
 
         /* ===== CONTENEDOR ===== */
+<<<<<<< HEAD
 >>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
+=======
+
+
+>>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
         .container {
             position: relative;
             z-index: 1;
@@ -274,10 +283,14 @@
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
 <<<<<<< HEAD
+<<<<<<< HEAD
         <button type="submit" class="logout-btn">
 =======
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
 >>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
+=======
+        <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
+>>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
             Cerrar sesión
         </button>
     </form>
