@@ -113,7 +113,9 @@
 
 <h2>Registro de cliente</h2>
 
+<<<<<<< HEAD
 <div class="grid">
+<<<<<<< HEAD
 
     <div class="card">
         <h3>Nombre</h3>
@@ -123,21 +125,120 @@
     <div class="card">
         <h3>Apellidos</h3>
         <input type="text" name="apellido" value="{{ old('apellido') }}">
+=======
+=======
+        {{-- ERRORES GENERALES --}}
+        @if ($errors->any())
+            <div class="error-box">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('register') }}" novalidate>
+            @csrf
+
+            <input type="text" name="nombre" placeholder="Nombre" value="{{ old('nombre') }}"
+                class="@error('nombre') input-error @enderror">
+            {{-- @error('nombre')
+                <span class="field-error">{{ $message }}</span>
+            @enderror --}}
+
+            <input type="text" name="apellido" placeholder="Apellidos" value="{{ old('apellido') }}"
+                class="@error('apellido') input-error @enderror">
+
+            <input type="tel" name="telefono" placeholder="Teléfono (10 dígitos)" maxlength="10"
+                inputmode="numeric"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)"
+                value="{{ old('telefono') }}"
+                class="@error('telefono') input-error @enderror">
+            {{-- @error('telefono')
+                <span class="field-error">{{ $message }}</span>
+            @enderror --}}
+
+            <input type="email" name="email" placeholder="Correo" value="{{ old('email') }}"
+                class="@error('email') input-error @enderror">
+            {{-- @error('email')
+                <span class="field-error">{{ $message }}</span>
+            @enderror --}}
+
+            <input type="password" name="password" placeholder="Contraseña"
+                class="@error('password') input-error @enderror">
+            {{-- @error('password')
+                <span class="field-error">{{ $message }}</span>
+            @enderror --}}
+
+            <input type="password" name="password_confirmation" placeholder="Confirmar contraseña">
+
+            <!-- Rol fijo -->
+            <input type="hidden" name="role_id" value="2">
+
+            <button type="submit">REGISTRARSE</button>
+        </form>
+
+        <div class="login">
+            <a href="{{ route('login') }}">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+>>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
+
+    <div class="card">
+        <h3>Nombre</h3>
+        <input type="text"
+       name="nombre"
+       value="{{ old('nombre') }}"
+       inputmode="text"
+       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
+        @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="card">
+        <h3>Apellido</h3>
+        <input type="text"
+       name="apellido"
+       value="{{ old('apellido') }}"
+       inputmode="text"
+       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
+        @error('apellido') <span class="field-error">{{ $message }}</span> @enderror
+>>>>>>> ee278f5ade49db082ecd825f02939892eeaff579
     </div>
 
     <div class="card">
         <h3>Teléfono</h3>
+<<<<<<< HEAD
         <input type="tel" name="telefono" value="{{ old('telefono') }}">
+=======
+        <input type="tel"
+       name="telefono"
+       value="{{ old('telefono') }}"
+       inputmode="numeric"
+       maxlength="10"
+       pattern="[0-9]{10}"
+       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+        @error('telefono') <span class="field-error">{{ $message }}</span> @enderror
+>>>>>>> ee278f5ade49db082ecd825f02939892eeaff579
     </div>
 
     <div class="card">
         <h3>Correo</h3>
         <input type="email" name="email" value="{{ old('email') }}">
+<<<<<<< HEAD
+=======
+        @error('email') <span class="field-error">{{ $message }}</span> @enderror
+>>>>>>> ee278f5ade49db082ecd825f02939892eeaff579
     </div>
 
     <div class="card">
         <h3>Contraseña</h3>
         <input type="password" name="password">
+<<<<<<< HEAD
+=======
+        @error('password') <span class="field-error">{{ $message }}</span> @enderror
+>>>>>>> ee278f5ade49db082ecd825f02939892eeaff579
     </div>
 
     <div class="card">

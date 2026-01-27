@@ -6,11 +6,11 @@ use App\Models\Servicio;
 
 class ServicioPublicController extends Controller
 {
-    public function index()
-    {
-        // SOLO servicios activos
-        $servicios = Servicio::where('activo', true)->get();
+   public function index()
+{
+    $servicios = Servicio::where('active', true)->get();
 
-        return view('servicios.index', compact('servicios'));
-    }
+    return view('servicios.index', compact('servicios'));
+}
+
 }
