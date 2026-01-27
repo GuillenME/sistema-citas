@@ -95,9 +95,7 @@
                 inset 0 0 10px rgba(255,45,45,.6);
         }
 
-<<<<<<< HEAD
-        /* ===== CONTENIDO ===== */
-=======
+
         /* Modal de confirmación */
         .modal-overlay {
             display: none;
@@ -171,7 +169,8 @@
         }
 
         /* ===== CONTENEDOR ===== */
->>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
+
+
         .container {
             position: relative;
             z-index: 1;
@@ -273,11 +272,7 @@
 
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
-<<<<<<< HEAD
-        <button type="submit" class="logout-btn">
-=======
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
->>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
             Cerrar sesión
         </button>
     </form>
