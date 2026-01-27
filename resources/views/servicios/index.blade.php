@@ -54,11 +54,17 @@ nav a:hover{
     color: #93c5fd;
 }
 
-.login-icon{
-    font-size: 30px;
-    color: #22c55e;
-    text-decoration: none;
+.login-icon {
+    display: inline-flex;
+    align-items: center;
 }
+
+.icon-img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
 
 
 
@@ -141,25 +147,25 @@ nav a:hover{
         <a href="#noticias">Noticias & Novedades</a>
     </nav>
 
-    <a href="{{ route('login') }}" class="login-icon">👤</a>
-
+   <a href="{{ route('login') }}" class="login-icon">
+    <img src="{{ asset('imagenes/usuario.png') }}" alt="Iniciar sesión" class="icon-img">
+</a>
 </header>
 <section>
     <h1>Nuestros Servicios</h1>
 
     <div class="services">
-        @forelse($servicios as $servicio)
-            <div class="card">
-                <h3>{{ $servicio->nombre }}</h3>
-                <p>{{ $servicio->descripcion }}</p>
-                <p class="duration">Duración: {{ $servicio->duracion_minutos }} min</p>
-                <p class="price">${{ number_format($servicio->precio, 2) }}</p>
-
-                <a href="#" class="btn">Agendar servicio</a>
-            </div>
-        @empty
-            <p>No hay servicios disponibles.</p>
-        @endforelse
+       @forelse($servicios as $servicio)
+    <div class="card">
+        <h3>{{ $servicio->name }}</h3>
+        <p>{{ $servicio->description }}</p>
+        <p class="duration">Duración: {{ $servicio->duration_minutes }} min</p>
+        <p class="price">${{ number_format($servicio->price, 2) }}</p>
+        <a href="#" class="btn">Agendar servicio</a>
+    </div>
+@empty
+    <p>No hay servicios disponibles.</p>
+@endforelse
     </div>
 </section>
 

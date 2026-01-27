@@ -169,8 +169,9 @@
         }
 
         /* ===== CONTENEDOR ===== */
-
-
+=========
+        /* ===== CONTENIDO ===== */
+>>>>>>>>> Temporary merge branch 2
         .container {
             position: relative;
             z-index: 1;
@@ -272,6 +273,9 @@
 
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
+<<<<<<< HEAD
+        <button type="submit" class="logout-btn">
+=======
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
             Cerrar sesión
         </button>
