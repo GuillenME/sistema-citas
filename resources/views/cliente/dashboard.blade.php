@@ -87,6 +87,12 @@
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+        /* ===== CONTENIDO ===== */
+=======
+=======
+
+>>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
 
         /* Modal de confirmación */
         .modal-overlay {
@@ -294,6 +300,10 @@
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
+>>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
+=======
+        <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
+>>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
             Cerrar sesión
         </button>
     </form>
