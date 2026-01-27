@@ -5,8 +5,8 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Cita;
-use App\Models\Cliente;
+use App\Models\Appointment;
+use App\Models\Client;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword as ResetPasswordTrait;
@@ -15,16 +15,16 @@ class Usuario extends Authenticatable
 {
     use HasFactory, Notifiable, ResetPasswordTrait;
 
-    protected $table = 'usuarios';
+    protected $table = 'users';
 
     protected $fillable = [
-        'nombre',
-        'apellido',
-        'telefono',
+        'name',
+        'last_name',
+        'phone',
         'email',
         'password',
-        'rol_id',
-        'activo',
+        'role_id',
+        'active',
     ];
 
     protected $hidden = [
@@ -32,14 +32,14 @@ class Usuario extends Authenticatable
         'remember_token',
     ];
 
-    public function citas()
+    public function appointments()
     {
-        return $this->hasMany(Cita::class, 'cliente_id');
+        return $this->hasMany(Appointment::class, 'client_id');
     }
 
-    public function cliente()
+    public function client()
     {
-        return $this->hasOne(Cliente::class, 'usuario_id');
+        return $this->hasOne(Client::class, 'user_id');
     }
     public function sendPasswordResetNotification($token)
     {

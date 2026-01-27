@@ -104,7 +104,7 @@
         <input
             type="text"
             name="nombre"
-            value="{{ old('nombre', $usuario->nombre) }}"
+            value="{{ old('nombre', $usuario->name) }}"
             required
         >
 
@@ -112,7 +112,7 @@
         <input
             type="text"
             name="apellido"
-            value="{{ old('apellido', $usuario->apellido) }}"
+            value="{{ old('apellido', $usuario->last_name) }}"
         >
 
         <label>Email</label>
@@ -126,7 +126,7 @@
         <input
             type="text"
             name="telefono"
-            value="{{ old('telefono', $usuario->telefono) }}"
+            value="{{ old('telefono', $usuario->phone) }}"
         >
 
         <button>Actualizar datos</button>

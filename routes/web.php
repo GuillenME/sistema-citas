@@ -18,6 +18,11 @@ use App\Http\Controllers\ServicioPublicController;
 
 Route::get('/', [PublicController::class, 'index'])->name('home');
 
+/* POLÍTICA DE PRIVACIDAD */
+Route::get('/politica-privacidad', function () {
+    return view('legal.politica-privacidad');
+})->name('politica.privacidad');
+
 /* AUTH (INVITADOS) */
 Route::middleware('guest')->group(function () {
 
@@ -46,7 +51,7 @@ Route::middleware('auth')->get(
 /* REDIRECCIÓN POR ROL */
 Route::get('/redirect', function () {
 
-    $rol = auth()->user()->rol_id;
+    $rol = auth()->user()->role_id;
 
     if ($rol == 1) {
         return redirect()->route('admin.dashboard');

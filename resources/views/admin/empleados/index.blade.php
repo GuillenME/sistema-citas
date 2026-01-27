@@ -219,10 +219,10 @@
             <tbody>
                 @foreach ($empleados as $empleado)
                     <tr>
-                        <td>{{ $empleado->nombre }}</td>
-                        <td>{{ $empleado->especialidad }}</td>
+                        <td>{{ $empleado->name }}</td>
+                        <td>{{ $empleado->specialty }}</td>
                         <td>
-                            @if($empleado->activo)
+                            @if($empleado->active)
                                 <span class="badge badge-on">Activo</span>
                             @else
                                 <span class="badge badge-off">Inactivo</span>

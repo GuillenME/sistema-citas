@@ -40,11 +40,11 @@
 
     @foreach ($promociones as $promo)
         <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
-            <strong>{{ $promo->titulo }}</strong><br>
-            {{ $promo->descripcion }}<br>
+            <strong>{{ $promo->title }}</strong><br>
+            {{ $promo->description }}<br>
             <small>
-                {{ $promo->descuento }}% |
-                {{ $promo->fecha_inicio }} - {{ $promo->fecha_fin }}
+                {{ $promo->discount }}% |
+                {{ $promo->start_date }} - {{ $promo->end_date }}
             </small>
         </div>
     @endforeach

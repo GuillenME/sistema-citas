@@ -160,21 +160,21 @@
             @method('PUT')
 
             <label>Nombre</label>
-            <input type="text" name="nombre" value="{{ $servicio->nombre }}">
+            <input type="text" name="nombre" value="{{ $servicio->name }}">
 
             <label>Descripción</label>
-            <textarea name="descripcion">{{ $servicio->descripcion }}</textarea>
+            <textarea name="descripcion">{{ $servicio->description }}</textarea>
 
             <label>Duración (min)</label>
-            <input type="number" name="duracion_minutos" value="{{ $servicio->duracion_minutos }}">
+            <input type="number" name="duracion_minutos" value="{{ $servicio->duration_minutes }}">
 
             <label>Precio</label>
-            <input type="number" step="0.01" name="precio" value="{{ $servicio->precio }}">
+            <input type="number" step="0.01" name="precio" value="{{ $servicio->price }}">
 
             <label>Activo</label>
             <select name="activo">
-                <option value="1" {{ $servicio->activo ? 'selected' : '' }}>Sí</option>
-                <option value="0" {{ !$servicio->activo ? 'selected' : '' }}>No</option>
+                <option value="1" {{ $servicio->active ? 'selected' : '' }}>Sí</option>
+                <option value="0" {{ !$servicio->active ? 'selected' : '' }}>No</option>
             </select>
 
             <button type="submit" class="btn-submit">

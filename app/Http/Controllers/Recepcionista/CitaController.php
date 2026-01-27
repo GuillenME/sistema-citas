@@ -14,11 +14,17 @@ class CitaController extends Controller
 {
     public function create()
     {
-        $servicios = Servicio::all();
+        $servicios = Servicio::where('active', 1)
+            ->with(['promociones' => function($query) {
+                $query->where('published', true)
+                    ->where('start_date', '<=', now()->toDateString())
+                    ->where('end_date', '>=', now()->toDateString());
+            }])
+            ->get();
 
-        $usuarios = Usuario::where('rol_id', 2)
-            ->where('activo', 1)
-            ->orderBy('nombre')
+        $usuarios = Usuario::where('role_id', 2)
+            ->where('active', 1)
+            ->orderBy('name')
             ->get();
 
         return view('recepcionista.citas.create', compact('servicios', 'usuarios'));
@@ -27,14 +33,24 @@ class CitaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'usuario_id' => 'required|exists:usuarios,id',
-            'servicio_id' => 'required|exists:servicios,id',
-            'fecha' => 'required|date|after_or_equal:today',
+            'usuario_id' => 'required|exists:users,id',
+            'servicio_id' => 'required|exists:services,id',
+            'fecha' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                function ($attribute, $value, $fail) {
+                    $fecha = Carbon::parse($value);
+                    if ($fecha->isSunday()) {
+                        $fail('Los domingos no se atiende. Por favor selecciona otro día.');
+                    }
+                },
+            ],
             'hora_inicio' => 'required|date_format:H:i',
             'anticipo_monto' => 'nullable|numeric|min:0',
         ]);
 
-        $cliente = Cliente::where('usuario_id', $request->usuario_id)->first();
+        $cliente = Cliente::where('user_id', $request->usuario_id)->first();
 
         if (!$cliente) {
             return back()->with('error', 'El usuario no es cliente');
@@ -43,18 +59,18 @@ class CitaController extends Controller
         $servicio = Servicio::findOrFail($request->servicio_id);
 
         $horaInicio = Carbon::parse($request->hora_inicio);
-        $horaFin = $horaInicio->copy()->addMinutes($servicio->duracion_minutos);
+        $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
 
         $anticipo = $request->filled('anticipo_monto');
 
         Cita::create([
-            'cliente_id' => $cliente->id,
-            'servicio_id' => $servicio->id,
-            'fecha' => $request->fecha,
-            'hora_inicio' => $horaInicio->format('H:i'),
-            'hora_fin' => $horaFin->format('H:i'),
-            'estado' => $anticipo ? 'confirmada' : 'pendiente_anticipo',
-            'observaciones' => $anticipo
+            'client_id' => $cliente->id,
+            'service_id' => $servicio->id,
+            'date' => $request->fecha,
+            'start_time' => $horaInicio->format('H:i'),
+            'end_time' => $horaFin->format('H:i'),
+            'status' => $anticipo ? 'confirmada' : 'pendiente_anticipo',
+            'notes' => $anticipo
                 ? 'Anticipo recibido en recepción: $' . number_format($request->anticipo_monto, 2)
                 : 'Cita creada por recepción, pendiente de anticipo',
         ]);
@@ -66,9 +82,9 @@ class CitaController extends Controller
 
     public function index()
     {
-        $citas = Cita::with(['cliente.usuario', 'servicio'])
-            ->whereDate('fecha', now())
-            ->orderBy('hora_inicio')
+        $citas = Cita::with(['client.user', 'service'])
+            ->whereDate('date', now())
+            ->orderBy('start_time')
             ->get();
 
         return view('recepcionista.citas.index', compact('citas'));

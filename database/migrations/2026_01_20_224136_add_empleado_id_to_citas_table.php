@@ -7,20 +7,20 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('citas', function (Blueprint $table) {
-            $table->foreignId('empleado_id')
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->foreignId('employee_id')
                   ->nullable()
-                  ->after('servicio_id')
-                  ->constrained('empleados')
+                  ->after('service_id')
+                  ->constrained('employees')
                   ->nullOnDelete();
         });
     }
 
     public function down(): void
     {
-        Schema::table('citas', function (Blueprint $table) {
-            $table->dropForeign(['empleado_id']);
-            $table->dropColumn('empleado_id');
+        Schema::table('appointments', function (Blueprint $table) {
+            $table->dropForeign(['employee_id']);
+            $table->dropColumn('employee_id');
         });
     }
 };

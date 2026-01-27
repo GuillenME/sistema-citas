@@ -7,21 +7,21 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('promociones', function (Blueprint $table) {
+        Schema::create('promotions', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
-            $table->text('descripcion');
-            $table->decimal('descuento', 5, 2)->nullable();
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin');
-            $table->boolean('publicada')->default(true);
+            $table->string('title');
+            $table->text('description');
+            $table->decimal('discount', 5, 2)->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->boolean('published')->default(true);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('promociones');
+        Schema::dropIfExists('promotions');
     }
 };
 

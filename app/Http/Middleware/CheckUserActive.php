@@ -15,7 +15,7 @@ class CheckUserActive
      */
     public function handle($request, Closure $next)
     {
-        if (auth()->check() && !auth()->user()->activo) {
+        if (auth()->check() && !auth()->user()->active) {
             auth()->logout();
             return redirect('/login')->withErrors([
                 'email' => 'Tu cuenta ha sido desactivada.'

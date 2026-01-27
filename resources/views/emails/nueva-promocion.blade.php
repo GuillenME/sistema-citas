@@ -36,11 +36,11 @@
 
         <p>Hola <strong>{{ $user->name }}</strong>,</p>
 
-        <p>{{ $promo->titulo }}</p>
-        <p>{{ $promo->descripcion }}</p>
+        <p>{{ $promo->title }}</p>
+        <p>{{ $promo->description }}</p>
 
-        @if($promo->descuento)
-            <p><strong>Descuento:</strong> {{ $promo->descuento }}%</p>
+        @if($promo->discount)
+            <p><strong>Descuento:</strong> {{ $promo->discount }}%</p>
         @endif
 
         <a href="{{ url('/promociones') }}" class="btn">Ver promoción</a>

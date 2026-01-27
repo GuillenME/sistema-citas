@@ -13,7 +13,7 @@ class AdminClientesController extends Controller
      */
     public function index()
     {
-        $clientes = Cliente::with('usuario')->get();
+        $clientes = Cliente::with('user')->get();
 
         return view('admin.clientes.index', compact('clientes'));
     }
@@ -69,8 +69,8 @@ class AdminClientesController extends Controller
 
     public function desactivar(Cliente $cliente)
     {
-        $cliente->usuario->update([
-            'activo' => 0
+        $cliente->user->update([
+            'active' => 0
         ]);
 
         return back()->with('success', 'Cuenta desactivada correctamente');
@@ -78,8 +78,8 @@ class AdminClientesController extends Controller
 
     public function activar(Cliente $cliente)
     {
-        $cliente->usuario->update([
-            'activo' => 1
+        $cliente->user->update([
+            'active' => 1
         ]);
 
         return back()->with('success', 'Cuenta activada correctamente');

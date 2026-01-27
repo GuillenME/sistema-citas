@@ -149,7 +149,65 @@
 
 <h2>Registro de cliente</h2>
 
+<<<<<<< HEAD
 <div class="grid">
+=======
+        {{-- ERRORES GENERALES --}}
+        @if ($errors->any())
+            <div class="error-box">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('register') }}" novalidate>
+            @csrf
+
+            <input type="text" name="nombre" placeholder="Nombre" value="{{ old('nombre') }}"
+                class="@error('nombre') input-error @enderror">
+            {{-- @error('nombre')
+                <span class="field-error">{{ $message }}</span>
+            @enderror --}}
+
+            <input type="text" name="apellido" placeholder="Apellidos" value="{{ old('apellido') }}"
+                class="@error('apellido') input-error @enderror">
+
+            <input type="tel" name="telefono" placeholder="Teléfono (10 dígitos)" maxlength="10"
+                inputmode="numeric"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)"
+                value="{{ old('telefono') }}"
+                class="@error('telefono') input-error @enderror">
+            {{-- @error('telefono')
+                <span class="field-error">{{ $message }}</span>
+            @enderror --}}
+
+            <input type="email" name="email" placeholder="Correo" value="{{ old('email') }}"
+                class="@error('email') input-error @enderror">
+            {{-- @error('email')
+                <span class="field-error">{{ $message }}</span>
+            @enderror --}}
+
+            <input type="password" name="password" placeholder="Contraseña"
+                class="@error('password') input-error @enderror">
+            {{-- @error('password')
+                <span class="field-error">{{ $message }}</span>
+            @enderror --}}
+
+            <input type="password" name="password_confirmation" placeholder="Confirmar contraseña">
+
+            <!-- Rol fijo -->
+            <input type="hidden" name="role_id" value="2">
+
+            <button type="submit">REGISTRARSE</button>
+        </form>
+
+        <div class="login">
+            <a href="{{ route('login') }}">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+>>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
 
     <div class="card">
         <h3>Nombre</h3>

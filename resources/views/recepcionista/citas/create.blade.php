@@ -54,6 +54,78 @@
             cursor: pointer;
         }
 
+        /* Modal de confirmación */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(17, 24, 39, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+            border: 2px solid rgba(255, 0, 0, 0.5);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .modal-content p {
+            margin-bottom: 25px;
+            color: #e5e7eb;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: transform .2s;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .modal-btn-confirm {
+            background: #ef4444;
+            color: #fff;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
+        }
+
+        .modal-btn-cancel {
+            background: #6b7280;
+            color: #fff;
+        }
+
         .container {
             min-height: calc(100vh - 80px);
             display: flex;
@@ -113,9 +185,9 @@
 <header>
     <a href="{{ route('recepcionista.dashboard') }}" class="back-btn">←</a>
 
-    <form method="POST" action="{{ route('logout') }}">
+    <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
-        <button class="logout-btn">Cerrar sesión</button>
+        <button type="button" class="logout-btn" onclick="mostrarModalLogout()">Cerrar sesión</button>
     </form>
 </header>
 
@@ -132,7 +204,7 @@
                 <option value="">Selecciona un cliente</option>
                 @foreach ($usuarios as $usuario)
                     <option value="{{ $usuario->id }}">
-                        {{ $usuario->nombre }} {{ $usuario->apellido }} — {{ $usuario->email }}
+                        {{ $usuario->name }} {{ $usuario->last_name }} — {{ $usuario->email }}
                     </option>
                 @endforeach
             </select>
@@ -141,12 +213,25 @@
             <select name="servicio_id" id="servicio" required>
                 <option value="">Selecciona un servicio</option>
                 @foreach ($servicios as $servicio)
-                    <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
+                    @php
+                        $promocion = $servicio->promocionActiva();
+                        $precioFinal = $servicio->precioConDescuento();
+                    @endphp
+                    <option value="{{ $servicio->id }}">
+                        {{ $servicio->name }} - 
+                        @if($promocion)
+                            <span style="text-decoration: line-through; opacity: 0.7;">${{ number_format($servicio->price, 2) }}</span>
+                            <strong style="color: #22c55e;">${{ number_format($precioFinal, 2) }}</strong>
+                            <span style="color: #fbbf24;">({{ $promocion->discount }}% OFF)</span>
+                        @else
+                            ${{ number_format($servicio->price, 2) }}
+                        @endif
+                    </option>
                 @endforeach
             </select>
 
-            <label>Fecha</label>
-            <input type="date" name="fecha" id="fecha" min="{{ now()->toDateString() }}" required>
+            <label>Fecha <small style="color: #ccc; font-weight: normal;">(Los domingos no están disponibles)</small></label>
+            <input type="date" name="fecha" id="fecha" min="{{ now()->toDateString() }}" required onkeydown="return false;">
 
             <label>Horario</label>
             <select name="hora_inicio" id="horarios" required>
@@ -180,6 +265,34 @@ anticipoCheck.addEventListener('change', () => {
     anticipoBox.style.display = anticipoCheck.checked ? 'block' : 'none';
 });
 
+// Función para verificar si una fecha es domingo
+function esDomingo(fechaString) {
+    if (!fechaString) return false;
+    const fecha = new Date(fechaString + 'T00:00:00');
+    return fecha.getDay() === 0; // 0 = domingo
+}
+
+// Bloquear domingos
+fecha.addEventListener('input', () => {
+    if (!fecha.value) return;
+    if (esDomingo(fecha.value)) {
+        alert('⚠️ Los domingos no se atiende. Por favor selecciona otro día.');
+        fecha.value = '';
+        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+    }
+});
+
+fecha.addEventListener('change', () => {
+    if (!fecha.value) return;
+    if (esDomingo(fecha.value)) {
+        alert('⚠️ Los domingos no se atiende. Por favor selecciona otro día.');
+        fecha.value = '';
+        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+        return;
+    }
+    cargarBloques();
+});
+
 async function cargarBloques() {
     if (!servicio.value || !fecha.value) return;
 
@@ -204,8 +317,33 @@ async function cargarBloques() {
 }
 
 servicio.addEventListener('change', cargarBloques);
-fecha.addEventListener('change', cargarBloques);
+// El listener 'change' de fecha ya está arriba con validación de domingos
+
+// Modal de confirmación de logout
+function mostrarModalLogout() {
+    document.getElementById('modalLogout').classList.add('active');
+}
+
+function cerrarModalLogout() {
+    document.getElementById('modalLogout').classList.remove('active');
+}
+
+function confirmarLogout() {
+    document.getElementById('logoutForm').submit();
+}
 </script>
+
+<!-- Modal de confirmación de logout -->
+<div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
+    <div class="modal-content">
+        <h3>¿Cerrar sesión?</h3>
+        <p>¿Estás seguro de que deseas cerrar sesión?</p>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

@@ -54,10 +54,15 @@ nav a:hover{
     color: #93c5fd;
 }
 
-.login-icon{
-    font-size: 30px;
-    color: #22c55e;
-    text-decoration: none;
+.login-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.icon-img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
 }
 
 /* ================= HERO ================= */
@@ -145,7 +150,10 @@ footer span{
         <a href="#noticias">Noticias & Novedades</a>
     </nav>
 
-    <a href="{{ route('login') }}" class="login-icon">👤</a>
+  <a href="{{ route('login') }}" class="login-icon">
+    <img src="{{ asset('imagenes/usuario.png') }}" alt="Iniciar sesión" class="icon-img">
+</a>
+
 
 </header>
 
@@ -163,9 +171,9 @@ footer span{
     <div class="services">
         @forelse($noticias as $noticia)
             <div class="card">
-                <h3>{{ $noticia->titulo }}</h3>
-                <p>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->contenido), 120) }}</p>
-                <small>Publicado: {{ $noticia->fecha_publicacion }}</small>
+                <h3>{{ $noticia->title }}</h3>
+                <p>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->content), 120) }}</p>
+                <small>Publicado: {{ $noticia->publication_date }}</small>
             </div>
         @empty
             <p>No hay noticias publicadas.</p>
