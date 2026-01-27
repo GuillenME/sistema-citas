@@ -29,7 +29,7 @@ class Cita extends Model
 
     public function client()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Cliente::class);
     }
 
     public function service()
@@ -39,7 +39,7 @@ class Cita extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Empleado::class, 'employee_id');
     }
 
     // public function staff()

@@ -273,9 +273,6 @@
 
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
-<<<<<<< HEAD
-        <button type="submit" class="logout-btn">
-=======
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
             Cerrar sesión
         </button>
