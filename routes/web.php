@@ -207,3 +207,17 @@ Route::get('/servicios', [ServicioPublicController::class, 'index'])
 Route::get('/promociones', function () {
     return view('promociones.index');
 })->name('promociones');
+
+/* API PARA PROMOCIONES */
+Route::get('/api/promocion/{id}', function ($id) {
+    $promocion = \App\Models\Promocion::findOrFail($id);
+    return response()->json([
+        'id' => $promocion->id,
+        'title' => $promocion->title,
+        'description' => $promocion->description,
+        'discount' => $promocion->discount,
+        'start_date' => $promocion->start_date,
+        'end_date' => $promocion->end_date,
+        'image' => $promocion->image ?? null
+    ]);
+});
