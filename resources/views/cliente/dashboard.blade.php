@@ -11,7 +11,6 @@
         body{
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #0f172a;
             color: #e5e7eb;
             background-image: url('{{ asset("imagenes/registro_fondo.png") }}');
             background-size: cover;
@@ -54,7 +53,6 @@
 
         nav {
             display: flex;
-            justify-content: center;
             gap: 45px;
         }
 
@@ -63,7 +61,6 @@
             text-decoration: none;
             font-size: 17px;
             font-weight: bold;
-            padding: 6px 0;
             transition: color .2s, text-shadow .2s;
         }
 
@@ -80,117 +77,24 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-
             box-shadow:
                 0 0 12px rgba(255,45,45,.9),
                 inset 0 0 6px rgba(255,45,45,.4);
-
-            transition: transform .2s, box-shadow .2s;
         }
 
         .logout-btn:hover {
             transform: scale(1.05);
-            box-shadow:
-                0 0 18px rgba(255,45,45,1),
-                inset 0 0 10px rgba(255,45,45,.6);
-        }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-        /* ===== CONTENIDO ===== */
-=======
-=======
-
->>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
-        /* Modal de confirmación */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: rgba(17, 24, 39, 0.95);
-            padding: 30px;
-            border-radius: 16px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(255, 45, 45, 0.6);
-            border: 2px solid rgba(255, 45, 45, 0.5);
-        }
-
-        .modal-content h3 {
-            margin-bottom: 20px;
-            font-size: 20px;
-            color: #fff;
-        }
-
-        .modal-content p {
-            margin-bottom: 25px;
-            color: #e5e7eb;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .modal-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: transform .2s;
-        }
-
-        .modal-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .modal-btn-confirm {
-            background: #ef4444;
-            color: #fff;
-            box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
-        }
-
-        .modal-btn-cancel {
-            background: #6b7280;
-            color: #fff;
         }
 
         /* ===== CONTENEDOR ===== */
-<<<<<<< HEAD
->>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
-=======
-
-
->>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
         .container {
             position: relative;
             z-index: 1;
-            min-height: calc(100vh - 90px);
-
+            min-height: 100vh;
+            padding-top: 110px;
             display: flex;
-            align-items: center;
             justify-content: center;
-
-            padding: 40px;
+            align-items: center;
         }
 
         .dashboard-content {
@@ -200,11 +104,10 @@
             max-width: 1100px;
             width: 100%;
             align-items: center;
+            padding: 40px;
         }
 
-        /* IMAGEN IZQUIERDA */
         .dashboard-image {
-            width: 107%;
             height: 360px;
             border-radius: 18px;
             background-image: url('{{ asset("imagenes/hombreCorte.png") }}');
@@ -212,14 +115,11 @@
             background-position: center;
         }
 
-        /* TARJETA BIENVENIDA */
         .welcome {
-            background: rgba(17,24,39,.25);
+            background: rgba(17,24,39,.35);
             backdrop-filter: blur(12px);
             padding: 34px;
             border-radius: 18px;
-            color: #fff;
-
             box-shadow:
                 0 0 25px rgba(42,22,218,.6),
                 inset 0 0 20px rgba(42,22,218,.25);
@@ -231,10 +131,58 @@
         }
 
         .welcome p {
-            color: #e5e7eb;
             font-size: 15px;
             line-height: 1.6;
-            margin-bottom: 0;
+        }
+
+        /* ===== MODAL LOGOUT ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(17,24,39,.95);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(255,45,45,.6);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+        }
+
+        .modal-btn-confirm {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .modal-btn-cancel {
+            background: #6b7280;
+            color: #fff;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -251,23 +199,6 @@
                 text-align: center;
             }
         }
-
-        @media (max-width: 600px) {
-            header {
-                grid-template-columns: 1fr;
-                gap: 15px;
-                text-align: center;
-            }
-
-            nav {
-                flex-wrap: wrap;
-                gap: 25px;
-            }
-
-            .logout-btn {
-                justify-self: center;
-            }
-        }
     </style>
 </head>
 <body>
@@ -282,15 +213,7 @@
 
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <button type="submit" class="logout-btn">
-=======
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
->>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
-=======
-        <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
->>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
             Cerrar sesión
         </button>
     </form>
@@ -298,38 +221,19 @@
 
 <div class="container">
     <div class="dashboard-content">
-
-        <!-- IMAGEN -->
         <div class="dashboard-image"></div>
 
-        <!-- BIENVENIDA -->
         <div class="welcome">
-            <h2>Bienvenido!!</h2>
+            <h2>Bienvenido 👋</h2>
             <p>
-                Desde aquí puedes agendar nuevas citas, consultar el estado
+                Desde aquí puedes agendar nuevas citas y consultar el estado
                 de las que ya tienes programadas.
             </p>
         </div>
-
     </div>
 </div>
 
-<script>
-// Modal de confirmación de logout
-function mostrarModalLogout() {
-    document.getElementById('modalLogout').classList.add('active');
-}
-
-function cerrarModalLogout() {
-    document.getElementById('modalLogout').classList.remove('active');
-}
-
-function confirmarLogout() {
-    document.getElementById('logoutForm').submit();
-}
-</script>
-
-<!-- Modal de confirmación de logout -->
+<!-- MODAL LOGOUT -->
 <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
     <div class="modal-content">
         <h3>¿Cerrar sesión?</h3>
@@ -340,6 +244,18 @@ function confirmarLogout() {
         </div>
     </div>
 </div>
+
+<script>
+function mostrarModalLogout() {
+    document.getElementById('modalLogout').classList.add('active');
+}
+function cerrarModalLogout() {
+    document.getElementById('modalLogout').classList.remove('active');
+}
+function confirmarLogout() {
+    document.getElementById('logoutForm').submit();
+}
+</script>
 
 </body>
 </html>
