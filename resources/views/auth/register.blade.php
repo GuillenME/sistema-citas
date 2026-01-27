@@ -18,13 +18,12 @@
 
         body::before {
             content: "";
-            position: absolute;
+            position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.25);
-            z-index: 0;
+            z-index: -1;
         }
 
-        /* FLECHA REGRESO */
         .back-arrow {
             position: absolute;
             top: 25px;
@@ -41,17 +40,8 @@
             color: #93c5fd;
             text-decoration: none;
             font-size: 22px;
-            backdrop-filter: blur(8px);
-            transition: .25s;
         }
 
-        .back-arrow:hover {
-            transform: translateX(-4px);
-            background: rgba(31,78,121,.85);
-            color: #fff;
-        }
-
-        /* CONTENEDOR */
         .register-container {
             max-width: 1100px;
             margin: 80px auto 0;
@@ -62,11 +52,8 @@
             backdrop-filter: blur(12px);
         }
 
-        h2 {
-            margin-bottom: 30px;
-        }
+        h2 { margin-bottom: 30px; }
 
-        /* GRID TARJETAS */
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -74,15 +61,9 @@
         }
 
         .card {
-            background: rgba(17, 24, 39, .45);
+            background: rgba(17,24,39,.45);
             border-radius: 14px;
             padding: 20px;
-        }
-
-        .card h3 {
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-size: 16px;
         }
 
         input {
@@ -90,28 +71,16 @@
             padding: 12px;
             border-radius: 8px;
             border: none;
-            font-size: 14px;
         }
 
-        input:focus {
-            outline: 2px solid #1F4E79;
-        }
-
-        .field-error {
-            color: #fecaca;
-            font-size: 13px;
-            margin-top: 6px;
-            display: block;
-        }
-
-        /* BOTÓN CENTRADO */
         .submit-wrapper {
             margin-top: 35px;
             text-align: center;
         }
 
         .submit-wrapper button {
-            padding: 15px;
+            width: 20%;
+            padding: 12px;
             margin-top: 12px;
             background: #1F4E79;
             border: none;
@@ -124,86 +93,52 @@
             box-shadow: 0 6px 20px rgba(42, 22, 218, 0.8);
         }
 
-        /* RESPONSIVE */
+
         @media (max-width: 900px) {
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 600px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
+            .grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 
 <body>
 
-<!-- FLECHA -->
-<a href="{{ route('login') }}" class="back-arrow" title="Volver al login">←</a>
+<a href="{{ route('login') }}" class="back-arrow">←</a>
 
 <form method="POST" action="{{ route('register') }}" class="register-container">
 @csrf
 
 <h2>Registro de cliente</h2>
 
-        {{-- ERRORES GENERALES --}}
-        @if ($errors->any())
-            <div class="error-box">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+<div class="grid">
 
-        <form method="POST" action="{{ route('register') }}" novalidate>
-            @csrf
+    <div class="card">
+        <h3>Nombre</h3>
+        <input type="text" name="nombre" value="{{ old('nombre') }}">
+    </div>
 
-            <input type="text" name="nombre" placeholder="Nombre" value="{{ old('nombre') }}"
-                class="@error('nombre') input-error @enderror">
-            {{-- @error('nombre')
-                <span class="field-error">{{ $message }}</span>
-            @enderror --}}
+    <div class="card">
+        <h3>Apellidos</h3>
+        <input type="text" name="apellido" value="{{ old('apellido') }}">
+    </div>
 
-            <input type="text" name="apellido" placeholder="Apellidos" value="{{ old('apellido') }}"
-                class="@error('apellido') input-error @enderror">
+    <div class="card">
+        <h3>Teléfono</h3>
+        <input type="tel" name="telefono" value="{{ old('telefono') }}">
+    </div>
 
-            <input type="tel" name="telefono" placeholder="Teléfono (10 dígitos)" maxlength="10"
-                inputmode="numeric"
-                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)"
-                value="{{ old('telefono') }}"
-                class="@error('telefono') input-error @enderror">
-            {{-- @error('telefono')
-                <span class="field-error">{{ $message }}</span>
-            @enderror --}}
+    <div class="card">
+        <h3>Correo</h3>
+        <input type="email" name="email" value="{{ old('email') }}">
+    </div>
 
-            <input type="email" name="email" placeholder="Correo" value="{{ old('email') }}"
-                class="@error('email') input-error @enderror">
-            {{-- @error('email')
-                <span class="field-error">{{ $message }}</span>
-            @enderror --}}
-
-            <input type="password" name="password" placeholder="Contraseña"
-                class="@error('password') input-error @enderror">
-            {{-- @error('password')
-                <span class="field-error">{{ $message }}</span>
-            @enderror --}}
-
-            <input type="password" name="password_confirmation" placeholder="Confirmar contraseña">
-
-            <!-- Rol fijo -->
-            <input type="hidden" name="rol_id" value="2">
-
-            <button type="submit">REGISTRARSE</button>
-        </form>
-
-        <div class="login">
-            <a href="{{ route('login') }}">¿Ya tienes cuenta? Inicia sesión</a>
-        </div>
+    <div class="card">
+        <h3>Contraseña</h3>
+        <input type="password" name="password">
+    </div>
 
     <div class="card">
         <h3>Confirmar contraseña</h3>
