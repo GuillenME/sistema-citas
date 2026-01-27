@@ -2,74 +2,88 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Cliente</title>
-
-    <!-- RESPONSIVE -->
+    <title>Panel del cliente</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
-        body {
-            font-family: Arial, sans-serif;
+        body{
             margin: 0;
-            min-height: 100vh;
-
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
             background-image: url('{{ asset("imagenes/registro_fondo.png") }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-
             position: relative;
         }
 
-        /* OVERLAY OSCURO (ILUMINACIÓN DE FONDO) */
+        /* OVERLAY */
         body::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0,0,0,.45);
             z-index: 0;
         }
 
         /* ===== HEADER ===== */
-        header {
-            position: relative;
-            z-index: 2;
-            background: rgba(42, 22, 218, 0.75);
-            color: #fff;
-            padding: 15px 30px;
-
+        header{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(2, 6, 23, 0.95);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-
-            box-shadow: 0 0 25px rgba(42, 22, 218, 0.6);
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+            backdrop-filter: blur(6px);
         }
 
-        header h1 {
-            margin: 0;
+        .title {
+            color: #93c5fd;
             font-size: 22px;
+            font-weight: bold;
             letter-spacing: 1px;
         }
 
-        /* LOGOUT */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 45px;
+        }
+
+        nav a {
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 17px;
+            font-weight: bold;
+            padding: 6px 0;
+            transition: color .2s, text-shadow .2s;
+        }
+
+        nav a:hover {
+            color: #93c5fd;
+            text-shadow: 0 0 10px rgba(255,255,255,.9);
+        }
+
         .logout-btn {
             background: transparent;
             border: 2px solid #ff2d2d;
-            padding: 10px 18px;
             color: #fff;
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
             font-weight: bold;
 
             box-shadow:
-                0 0 12px rgba(255, 45, 45, 0.9),
-                inset 0 0 6px rgba(255, 45, 45, 0.4);
+                0 0 12px rgba(255,45,45,.9),
+                inset 0 0 6px rgba(255,45,45,.4);
 
             transition: transform .2s, box-shadow .2s;
         }
@@ -77,121 +91,96 @@
         .logout-btn:hover {
             transform: scale(1.05);
             box-shadow:
-                0 0 18px rgba(255, 45, 45, 1),
-                inset 0 0 10px rgba(255, 45, 45, 0.6);
+                0 0 18px rgba(255,45,45,1),
+                inset 0 0 10px rgba(255,45,45,.6);
         }
 
-        /* ===== CONTENEDOR ===== */
+        /* ===== CONTENIDO ===== */
         .container {
             position: relative;
-            z-index: 2;
+            z-index: 1;
             min-height: calc(100vh - 90px);
+
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 30px;
+            justify-content: center;
+
+            padding: 40px;
         }
 
-        /* ===== TARJETAS ===== */
-        .cards {
+        .dashboard-content {
             display: grid;
-            grid-template-columns: repeat(2, minmax(250px, 1fr));
-            gap: 30px;
-            max-width: 720px;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 1100px;
             width: 100%;
+            align-items: center;
         }
 
-        .card {
-            background: rgba(17, 24, 39, 0.65);
+        /* IMAGEN IZQUIERDA */
+        .dashboard-image {
+            width: 107%;
+            height: 360px;
+            border-radius: 18px;
+            background-image: url('{{ asset("imagenes/hombreCorte.png") }}');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* TARJETA BIENVENIDA */
+        .welcome {
+            background: rgba(17,24,39,.25);
             backdrop-filter: blur(12px);
-            padding: 30px;
-            border-radius: 16px;
-            text-align: center;
-
-            border: 1px solid rgba(255, 255, 255, 0.15);
-
-            box-shadow:
-                0 10px 35px rgba(0, 0, 0, 0.45),
-                0 0 20px rgba(42, 22, 218, 0.6);
-
-            transition: transform .25s, box-shadow .25s;
-        }
-
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow:
-                0 18px 45px rgba(0, 0, 0, 0.6),
-                0 0 28px rgba(42, 22, 218, 0.9);
-        }
-
-        .card h2 {
-            margin-bottom: 12px;
+            padding: 34px;
+            border-radius: 18px;
             color: #fff;
-            font-size: 21px;
-            letter-spacing: .5px;
+
+            box-shadow:
+                0 0 25px rgba(42,22,218,.6),
+                inset 0 0 20px rgba(42,22,218,.25);
         }
 
-        .card p {
+        .welcome h2 {
+            margin-top: 0;
+            font-size: 26px;
+        }
+
+        .welcome p {
             color: #e5e7eb;
-            margin-bottom: 24px;
             font-size: 15px;
-        }
-
-        .card a {
-            display: inline-block;
-            width: 100%;
-            padding: 14px;
-            background: #1F4E79;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: bold;
-            letter-spacing: 1px;
-
-            box-shadow: 0 6px 20px rgba(42, 22, 218, 0.8);
-            transition: transform .2s, box-shadow .2s;
-        }
-
-        .card a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(42, 22, 218, 1);
+            line-height: 1.6;
+            margin-bottom: 0;
         }
 
         /* ===== RESPONSIVE ===== */
-
-        /* Tablets */
         @media (max-width: 900px) {
-            .cards {
+            .dashboard-content {
                 grid-template-columns: 1fr;
-                max-width: 520px;
+            }
+
+            .dashboard-image {
+                height: 260px;
+            }
+
+            .welcome {
+                text-align: center;
             }
         }
 
-        /* Celulares */
         @media (max-width: 600px) {
-
             header {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+                gap: 15px;
                 text-align: center;
-                padding: 15px;
             }
 
-            header h1 {
-                font-size: 20px;
-            }
-
-            .container {
-                padding: 20px;
-            }
-
-            .card {
-                padding: 24px;
+            nav {
+                flex-wrap: wrap;
+                gap: 25px;
             }
 
             .logout-btn {
-                width: 100%;
-                max-width: 240px;
+                justify-self: center;
             }
         }
     </style>
@@ -199,34 +188,37 @@
 <body>
 
 <header>
-    <h1>Cliente</h1>
+    <div class="title">Cliente</div>
+
+    <nav>
+        <a href="{{ route('cliente.citas.create') }}">Agendar cita</a>
+        <a href="{{ route('cliente.citas.index') }}">Mis citas</a>
+    </nav>
 
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button class="logout-btn" type="submit">
+        <button type="submit" class="logout-btn">
             Cerrar sesión
         </button>
     </form>
 </header>
 
 <div class="container">
+    <div class="dashboard-content">
 
-    <div class="cards">
+        <!-- IMAGEN -->
+        <div class="dashboard-image"></div>
 
-        <div class="card">
-            <h2>Agendar cita</h2>
-            <p>Reserva una nueva cita seleccionando fecha y servicio.</p>
-            <a href="{{ route('cliente.citas.create') }}">AGENDAR</a>
-        </div>
-
-        <div class="card">
-            <h2>Mis citas</h2>
-            <p>Consulta el estado de tus citas programadas.</p>
-            <a href="{{ route('cliente.citas.index') }}">VER CITAS</a>
+        <!-- BIENVENIDA -->
+        <div class="welcome">
+            <h2>Bienvenido!!</h2>
+            <p>
+                Desde aquí puedes agendar nuevas citas, consultar el estado
+                de las que ya tienes programadas.
+            </p>
         </div>
 
     </div>
-
 </div>
 
 </body>

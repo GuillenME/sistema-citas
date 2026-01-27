@@ -1,28 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Cliente</title>
+    <title>Registro</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
-            font-family: 'Arial', sans-serif;
             margin: 0;
             min-height: 100vh;
-
-            background-image: url('{{ asset('imagenes/registro_fondo.png') }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: Arial, sans-serif;
+            background: url('{{ asset('imagenes/registro_fondo.png') }}') center/cover no-repeat;
+            padding: 40px;
             position: relative;
         }
 
@@ -30,21 +20,21 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0,0,0,0.25);
             z-index: 0;
         }
 
-        /* ================= FLECHA REGRESO ================= */
+        /* FLECHA REGRESO */
         .back-arrow {
             position: absolute;
             top: 25px;
             left: 25px;
-            z-index: 3;
+            z-index: 10;
             width: 42px;
             height: 42px;
             border-radius: 50%;
-            background: rgba(17, 24, 39, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(17,24,39,.45);
+            border: 1px solid rgba(255,255,255,.15);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -52,100 +42,76 @@
             text-decoration: none;
             font-size: 22px;
             backdrop-filter: blur(8px);
-            box-shadow: 0 0 15px rgba(42, 22, 218, 0.6);
-            transition: 0.25s ease;
+            transition: .25s;
         }
 
         .back-arrow:hover {
             transform: translateX(-4px);
-            background: rgba(31, 78, 121, 0.85);
-            box-shadow: 0 0 25px rgba(42, 22, 218, 0.9);
-            color: #ffffff;
-        }
-
-        /* ================= CARD ================= */
-        .register-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 400px;
-            padding: 28px;
-            background: rgba(17, 24, 39, .65);
-            border: 1px solid rgba(255, 255, 255, .15);
-            border-radius: 14px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
+            background: rgba(31,78,121,.85);
             color: #fff;
         }
 
-        .register-container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 24px;
-            right: 24px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #1F4E79, transparent);
+        /* CONTENEDOR */
+        .register-container {
+            max-width: 1100px;
+            margin: 80px auto 0;
+            background: rgba(17,24,39,.15);
+            border-radius: 16px;
+            padding: 30px;
+            color: #fff;
+            backdrop-filter: blur(12px);
         }
 
         h2 {
-            text-align: center;
-            margin-bottom: 18px;
-            font-weight: 600;
+            margin-bottom: 30px;
         }
 
-        /* ================= ERRORES ================= */
-        .error-box {
-            background: #fee2e2;
-            border: 1px solid #f87171;
-            color: #991b1b;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 14px;
+        /* GRID TARJETAS */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
         }
 
-        .error-box ul {
-            margin: 0;
-            padding-left: 18px;
+        .card {
+            background: rgba(17, 24, 39, .45);
+            border-radius: 14px;
+            padding: 20px;
         }
 
-        /* ================= INPUTS ================= */
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
         input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 6px;
             border-radius: 8px;
             border: none;
             font-size: 14px;
-            background: rgba(255, 255, 255, .9);
-            color: #111827;
-        }
-
-        input::placeholder {
-            color: #6b7280;
         }
 
         input:focus {
             outline: 2px solid #1F4E79;
         }
 
-        .input-error {
-            outline: 2px solid #ef4444 !important;
-            background: #fee2e2;
-        }
-
         .field-error {
             color: #fecaca;
             font-size: 13px;
-            margin-bottom: 10px;
+            margin-top: 6px;
             display: block;
         }
 
-        /* ================= BUTTON ================= */
-        button {
-            width: 100%;
-            padding: 12px;
+        /* BOTÓN CENTRADO */
+        .submit-wrapper {
+            margin-top: 35px;
+            text-align: center;
+        }
+
+        .submit-wrapper button {
+            padding: 15px;
             margin-top: 12px;
             background: #1F4E79;
             border: none;
@@ -156,71 +122,18 @@
             letter-spacing: 1px;
             cursor: pointer;
             box-shadow: 0 6px 20px rgba(42, 22, 218, 0.8);
-            transition: .2s;
         }
 
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 28px rgba(42, 22, 218, 0.8);
-        }
-
-        .login {
-            text-align: center;
-            margin-top: 16px;
-        }
-
-        .login a {
-            color: #e5e7eb;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .login a:hover {
-            text-decoration: underline;
-        }
-
-        /* ================= RESPONSIVE ================= */
-        @media (max-width: 768px) {
-            body {
-                padding: 20px;
-                height: auto;
-            }
-
-            .register-container {
-                padding: 22px;
-            }
-
-            h2 {
-                font-size: 20px;
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        @media (max-width: 480px) {
-            .register-container {
-                padding: 18px;
-                border-radius: 12px;
-            }
-
-            input {
-                font-size: 13px;
-                padding: 11px;
-            }
-
-            button {
-                font-size: 14px;
-                padding: 11px;
-            }
-
-            .login a {
-                font-size: 13px;
-            }
-        }
-
-        @media (max-height: 600px) {
-            body {
-                align-items: flex-start;
-                padding-top: 40px;
-                padding-bottom: 40px;
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -228,71 +141,75 @@
 
 <body>
 
-    <!-- FLECHA REGRESO -->
-    <a href="{{ url('/') }}" class="back-arrow" title="Volver al inicio">←</a>
+<!-- FLECHA -->
+<a href="{{ route('login') }}" class="back-arrow" title="Volver al login">←</a>
 
-    <div class="register-container">
+<form method="POST" action="{{ route('register') }}" class="register-container">
+@csrf
 
-        <h2>Registro de cliente</h2>
+<h2>Registro de cliente</h2>
 
-        {{-- ERRORES GENERALES --}}
-        @if ($errors->any())
-            <div class="error-box">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+<div class="grid">
 
-        <form method="POST" action="{{ route('register') }}" novalidate>
-            @csrf
-
-            <input type="text" name="nombre" placeholder="Nombre" value="{{ old('nombre') }}"
-                class="@error('nombre') input-error @enderror">
-            @error('nombre')
-                <span class="field-error">{{ $message }}</span>
-            @enderror
-
-            <input type="text" name="apellido" placeholder="Apellidos" value="{{ old('apellido') }}"
-                class="@error('apellido') input-error @enderror">
-
-            <input type="tel" name="telefono" placeholder="Teléfono (10 dígitos)" maxlength="10"
-                inputmode="numeric"
-                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)"
-                value="{{ old('telefono') }}"
-                class="@error('telefono') input-error @enderror">
-            @error('telefono')
-                <span class="field-error">{{ $message }}</span>
-            @enderror
-
-            <input type="email" name="email" placeholder="Correo" value="{{ old('email') }}"
-                class="@error('email') input-error @enderror">
-            @error('email')
-                <span class="field-error">{{ $message }}</span>
-            @enderror
-
-            <input type="password" name="password" placeholder="Contraseña"
-                class="@error('password') input-error @enderror">
-            @error('password')
-                <span class="field-error">{{ $message }}</span>
-            @enderror
-
-            <input type="password" name="password_confirmation" placeholder="Confirmar contraseña">
-
-            <!-- Rol fijo -->
-            <input type="hidden" name="rol_id" value="2">
-
-            <button type="submit">REGISTRARSE</button>
-        </form>
-
-        <div class="login">
-            <a href="{{ route('login') }}">¿Ya tienes cuenta? Inicia sesión</a>
-        </div>
-
+    <div class="card">
+        <h3>Nombre</h3>
+        <input type="text"
+       name="nombre"
+       value="{{ old('nombre') }}"
+       inputmode="text"
+       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
+        @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
     </div>
 
-</body>
+    <div class="card">
+        <h3>Apellido</h3>
+        <input type="text"
+       name="apellido"
+       value="{{ old('apellido') }}"
+       inputmode="text"
+       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
+        @error('apellido') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
 
+    <div class="card">
+        <h3>Teléfono</h3>
+        <input type="tel"
+       name="telefono"
+       value="{{ old('telefono') }}"
+       inputmode="numeric"
+       maxlength="10"
+       pattern="[0-9]{10}"
+       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+        @error('telefono') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="card">
+        <h3>Correo</h3>
+        <input type="email" name="email" value="{{ old('email') }}">
+        @error('email') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="card">
+        <h3>Contraseña</h3>
+        <input type="password" name="password">
+        @error('password') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="card">
+        <h3>Confirmar contraseña</h3>
+        <input type="password" name="password_confirmation">
+    </div>
+
+</div>
+
+<div class="submit-wrapper">
+    <input type="hidden" name="rol_id" value="2">
+    <button type="submit">REGISTRARSE</button>
+</div>
+
+</form>
+
+</body>
 </html>
