@@ -208,11 +208,10 @@ footer span{
     </div>
 </div>
 
-<<<<<<<<< Temporary merge branch 1
+
 <section>
-<<<<<<< HEAD
-  >
-=======
+
+    
     <h2>Nuestros Servicios</h2>
 
     <div class="services-wrapper">
@@ -271,7 +270,7 @@ footer span{
         });
     }
 
-    function scrollPromos(direction) {
+    function scrollPromos(direction) { 
         const slider = document.getElementById('promoSlider');
         const cardWidth = slider.querySelector('.service-card').offsetWidth + 20;
         slider.scrollBy({
