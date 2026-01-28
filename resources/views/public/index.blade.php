@@ -208,7 +208,6 @@ footer span{
     </div>
 </div>
 
-<<<<<<<<< Temporary merge branch 1
 <section>
     <h2>Nuestros Servicios</h2>
 
@@ -218,10 +217,10 @@ footer span{
         <div class="services-slider" id="servicesSlider">
             @forelse($servicios as $servicio)
                 <div class="card service-card">
-                    <h3>{{ $servicio->name }}</h3>
-                    <p>{{ $servicio->description }}</p>
-                    <p><strong>Duración:</strong> {{ $servicio->duration_minutes }} min</p>
-                    <p><strong>Precio:</strong> ${{ number_format($servicio->price, 2) }}</p>
+                    <h3>{{ $servicio->nombre }}</h3>
+                    <p>{{ $servicio->descripcion }}</p>
+                    <p><strong>Duración:</strong> {{ $servicio->duracion_minutos }} min</p>
+                    <p><strong>Precio:</strong> ${{ number_format($servicio->precio, 2) }}</p>
                 </div>
             @empty
                 <p>No hay servicios disponibles.</p>
@@ -231,9 +230,6 @@ footer span{
         <button class="nav-btn right" onclick="scrollServices(1)">›</button>
     </div>
 </section>
-=========
->>>>>>>>> Temporary merge branch 2
-
 
 {{-- NOTICIAS --}}
 <section>

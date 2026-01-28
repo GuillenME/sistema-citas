@@ -130,6 +130,55 @@ nav a:hover{
         .btn:hover{
             box-shadow:0 0 20px rgba(34,197,94,1);
         }
+        /* ================= MODAL ================= */
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(2,6,23,.85);
+    backdrop-filter: blur(6px);
+    z-index:2000;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:rgba(17,24,39,.95);
+    padding:30px;
+    border-radius:18px;
+    width:90%;
+    max-width:420px;
+    border:1px solid rgba(255,255,255,.15);
+    box-shadow:0 0 30px rgba(99,102,241,.6);
+    animation: zoom .3s ease;
+}
+
+@keyframes zoom{
+    from{ transform:scale(.8); opacity:0 }
+    to{ transform:scale(1); opacity:1 }
+}
+
+.modal-content h2{
+    color:#93c5fd;
+    margin-bottom:10px;
+}
+
+.modal-content .close{
+    position:absolute;
+    top:15px;
+    right:20px;
+    font-size:28px;
+    cursor:pointer;
+    color:#e5e7eb;
+}
+
+.modal-content .close:hover{
+    color:#ef4444;
+}
+
     </style>
     @livewireStyles
 </head>
@@ -154,20 +203,69 @@ nav a:hover{
 <section>
     <h1>Nuestros Servicios</h1>
 
-    <div class="services">
-       @forelse($servicios as $servicio)
+   <div class="services">
+@forelse($servicios as $servicio)
     <div class="card">
         <h3>{{ $servicio->name }}</h3>
-        <p>{{ $servicio->description }}</p>
-        <p class="duration">Duración: {{ $servicio->duration_minutes }} min</p>
-        <p class="price">${{ number_format($servicio->price, 2) }}</p>
-        <a href="#" class="btn">Agendar servicio</a>
+        
+
+        <a href="#"
+           class="btn abrir-modal"
+           data-nombre="{{ $servicio->name }}"
+           data-descripcion="{{ $servicio->description }}"
+           data-duracion="{{ $servicio->duration_minutes }}"
+           data-precio="{{ number_format($servicio->price, 2) }}">
+           ver mas...
+        </a>
     </div>
 @empty
     <p>No hay servicios disponibles.</p>
 @endforelse
-    </div>
+</div>
+
 </section>
+<!-- ================= MODAL ================= -->
+<div id="modalServicio" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+        <h2 id="modalTitulo"></h2>
+        <p id="modalDescripcion"></p>
+
+        <p class="duration" id="modalDuracion"></p>
+        <p class="price" id="modalPrecio"></p>
+
+        <a href="{{ route('login') }}" class="btn">Agregar servicio</a>
+    </div>
+</div>
+
+<script>
+const modal = document.getElementById('modalServicio');
+const cerrar = document.querySelector('.close');
+
+document.querySelectorAll('.abrir-modal').forEach(btn => {
+    btn.addEventListener('click', e => {
+        e.preventDefault();
+
+        document.getElementById('modalTitulo').innerText = btn.dataset.nombre;
+        document.getElementById('modalDescripcion').innerText = btn.dataset.descripcion;
+        document.getElementById('modalDuracion').innerText = 
+            'Duración: ' + btn.dataset.duracion + ' min';
+        document.getElementById('modalPrecio').innerText = 
+            '$' + btn.dataset.precio;
+
+        modal.style.display = 'flex';
+    });
+});
+
+cerrar.onclick = () => modal.style.display = 'none';
+
+window.onclick = e => {
+    if(e.target === modal){
+        modal.style.display = 'none';
+    }
+}
+</script>
 
 </body>
 </html>

@@ -1,38 +1,70 @@
-<section>
-    <h2>Promociones</h2>
+<div class="promos-wrapper">
 
-    @if ($promociones->count())
+    <style>
+        .promos-wrapper{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
 
-        <div class="services-wrapper">
-            <button class="nav-btn left" onclick="scrollPromos(-1)">‹</button>
+        .promo-card{
+            background: rgba(17, 24, 39, .9);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.1);
+            transition: .3s;
+            text-align: center;
+        }
 
-            <div class="services-slider promo-slider-centered" id="promoSlider">
-                @foreach ($promociones as $promo)
-                    <div class="card service-card">
-                        <h3>{{ $promo->title }}</h3>
+        .promo-card:hover{
+            transform: translateY(-6px);
+        }
 
-                        <p>{{ $promo->description }}</p>
+        .promo-card h3{
+            color: #93c5fd;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
 
-                        <p style="margin-top:10px;color:#fde68a;">
-                            <strong>Descuento:</strong> {{ $promo->discount }}%
-                        </p>
+        .promo-card p{
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #e5e7eb;
+        }
 
-                        <small style="opacity:.8;">
-                            Válido del
-                            {{ \Carbon\Carbon::parse($promo->start_date)->format('d/m/Y') }}
-                            al
-                            {{ \Carbon\Carbon::parse($promo->end_date)->format('d/m/Y') }}
-                        </small>
-                    </div>
-                @endforeach
+        .promo-price{
+            font-size: 22px;
+            font-weight: bold;
+            color: #22c55e;
+            margin-top: 15px;
+            display: block;
+        }
+
+        .promo-dates{
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+    </style>
+
+    @forelse($promociones as $promo)
+        <div class="promo-card">
+            <h3>{{ $promo->title }}</h3>
+
+            <p>{{ $promo->description }}</p>
+
+            <span class="promo-price">
+                ${{ number_format($promo->price, 2) }}
+            </span>
+
+            <div class="promo-dates">
+                Vigente del {{ $promo->start_date }} al {{ $promo->end_date }}
             </div>
-
-            <button class="nav-btn right" onclick="scrollPromos(1)">›</button>
         </div>
-
-    @else
-        <p style="text-align:center;opacity:.7;">
+    @empty
+        <p style="grid-column:1/-1; text-align:center;">
             No hay promociones activas por el momento.
         </p>
-    @endif
-</section>
+    @endforelse
+
+</div>
