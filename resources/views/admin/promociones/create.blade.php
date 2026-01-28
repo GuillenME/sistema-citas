@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Crear Promoción</title>
+    <title>Crear promoción</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    @livewireStyles
+</head>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -50,7 +50,7 @@
 
         /* CARD */
         .card {
-            background: rgba(17, 24, 39, 0.75);
+            background: rgba(17,24,39,.75);
             backdrop-filter: blur(12px);
             border-radius: 16px;
             padding: 30px;
@@ -61,26 +61,18 @@
         }
 
         /* FORM */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
         label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 6px;
             font-size: 13px;
             letter-spacing: 1px;
             color: #c7d2fe;
         }
 
         input, textarea, select {
-            background: rgba(2, 6, 23, .9);
+            width: 100%;
+            background: rgba(2,6,23,.9);
             border: 1px solid rgba(255,255,255,.2);
             border-radius: 10px;
             padding: 12px;
@@ -88,29 +80,9 @@
             font-size: 14px;
         }
 
-        select {
-            cursor: pointer;
-        }
-
-        select option {
-            background: rgba(2, 6, 23, .9);
-            color: #e5e7eb;
-            padding: 8px;
-        }
-
         textarea {
             resize: vertical;
             min-height: 90px;
-            grid-column: 1 / -1;
-        }
-
-        /* CHECKBOX */
-        .checkbox {
-            grid-column: 1 / -1;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
         }
 
         /* ACTIONS */
@@ -130,21 +102,37 @@
             letter-spacing: 1px;
             cursor: pointer;
             color: #fff;
+            text-decoration: none;
             transition: transform .2s, box-shadow .2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-save {
             border: 2px solid #22c55e;
-            box-shadow: 0 0 14px rgba(34,197,94,.7), inset 0 0 8px rgba(34,197,94,.4);
+            box-shadow: 0 0 14px rgba(34,197,94,.7),
+                        inset 0 0 8px rgba(34,197,94,.4);
+        }
+
+        .btn-save:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 0 25px rgba(34,197,94,1),
+                inset 0 0 12px rgba(34,197,94,.6);
         }
 
         .btn-cancel {
             border: 2px solid #ef4444;
-            box-shadow: 0 0 14px rgba(239,68,68,.7), inset 0 0 8px rgba(239,68,68,.4);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 0 14px rgba(239,68,68,.7),
+                        inset 0 0 8px rgba(239,68,68,.4);
+        }
+
+        .btn-cancel:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 0 25px rgba(239,68,68,1),
+                inset 0 0 12px rgba(239,68,68,.6);
         }
 
         /* MODAL */
@@ -154,15 +142,15 @@
             inset: 0;
             background: rgba(0,0,0,.65);
             backdrop-filter: blur(4px);
+            z-index: 999;
             align-items: center;
             justify-content: center;
-            z-index: 999;
         }
 
         .modal-box {
             background: rgba(17,24,39,.95);
             border-radius: 16px;
-            padding: 25px;
+            padding: 28px;
             max-width: 420px;
             width: 90%;
             text-align: center;
@@ -178,7 +166,7 @@
         .modal-box p {
             font-size: 14px;
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .modal-actions {
@@ -186,136 +174,15 @@
             gap: 15px;
             justify-content: center;
         }
-
-        @media (max-width: 700px) {
-            .form-grid { grid-template-columns: 1fr; }
-        }
     </style>
-</head>
-
 <body>
 
 <div class="dashboard">
+    <h1>Crear promoción</h1>
 
-    <!-- HEADER -->
-    <div class="header">
-        <a href="{{ route('admin.promociones.index') }}" class="back-arrow">←</a>
-        <h1>Crear Promoción</h1>
-    </div>
-
-    <!-- CARD -->
-    <div class="card">
-
-        <form id="promoForm" method="POST" action="{{ route('admin.promociones.store') }}">
-            @csrf
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Título</label>
-                    <input type="text" name="titulo" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Descuento (%)</label>
-                    <input type="number" name="descuento" min="1" max="100" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Fecha inicio</label>
-                    <input type="date" name="fecha_inicio" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Fecha fin</label>
-                    <input type="date" name="fecha_fin" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <textarea name="descripcion" required></textarea>
-                </div>
-
-                <div class="form-group" style="grid-column: 1 / -1;">
-                    <label>Servicios aplicables</label>
-                    <select name="servicios[]" multiple required style="min-height: 120px;">
-                        @foreach($servicios as $servicio)
-                            <option value="{{ $servicio->id }}">
-                                {{ $servicio->name }} - ${{ number_format($servicio->price, 2) }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <small style="color: #9ca3af; font-size: 12px; margin-top: 4px;">
-                        Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples servicios
-                    </small>
-                </div>
-
-                <div class="checkbox">
-                    <input type="checkbox" name="publicada" id="publicada">
-                    <label for="publicada">Publicar promoción</label>
-                </div>
-            </div>
-
-            <div class="actions">
-                <a href="{{ route('admin.promociones.index') }}" class="btn btn-cancel">
-                    Cancelar
-                </a>
-
-                <button type="button" class="btn btn-save" onclick="confirmarPromocion()">
-                    Guardar promoción
-                </button>
-            </div>
-        </form>
-    </div>
+    <livewire:admin.promocion-create />
 </div>
 
-<!-- MODAL -->
-<div id="confirmModal">
-    <div class="modal-box">
-        <h3>¿Confirmar promoción?</h3>
-        <p id="resumenPromo"></p>
-
-        <div class="modal-actions">
-            <button class="btn btn-cancel" onclick="cerrarModal()">Seguir editando</button>
-            <button class="btn btn-save" onclick="enviarFormulario()">Sí, guardar</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    function confirmarPromocion() {
-        const titulo = document.querySelector('[name="titulo"]').value;
-        const descuento = document.querySelector('[name="descuento"]').value;
-        const inicio = document.querySelector('[name="fecha_inicio"]').value;
-        const fin = document.querySelector('[name="fecha_fin"]').value;
-        const publicada = document.querySelector('[name="publicada"]').checked ? 'Sí' : 'No';
-        const serviciosSelect = document.querySelector('[name="servicios[]"]');
-        const serviciosSeleccionados = Array.from(serviciosSelect.selectedOptions).map(opt => opt.text).join(', ');
-
-        if (!titulo || !descuento || !inicio || !fin || serviciosSelect.selectedOptions.length === 0) {
-            alert('Completa todos los campos, incluyendo al menos un servicio.');
-            return;
-        }
-
-        document.getElementById('resumenPromo').innerHTML = `
-            <strong>Título:</strong> ${titulo}<br>
-            <strong>Descuento:</strong> ${descuento}%<br>
-            <strong>Inicio:</strong> ${inicio}<br>
-            <strong>Fin:</strong> ${fin}<br>
-            <strong>Servicios:</strong> ${serviciosSeleccionados}<br>
-            <strong>Publicar:</strong> ${publicada}
-        `;
-
-        document.getElementById('confirmModal').style.display = 'flex';
-    }
-
-    function cerrarModal() {
-        document.getElementById('confirmModal').style.display = 'none';
-    }
-
-    function enviarFormulario() {
-        document.getElementById('promoForm').submit();
-    }
-</script>
-
+@livewireScripts
 </body>
 </html>

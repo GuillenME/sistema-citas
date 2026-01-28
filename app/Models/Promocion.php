@@ -13,6 +13,7 @@ class Promocion extends Model
         'title',
         'description',
         'discount',
+        'image',
         'start_date',
         'end_date',
         'published'
