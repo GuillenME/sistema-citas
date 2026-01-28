@@ -1,112 +1,70 @@
-<section>
-    <h2>Promociones</h2>
+<div class="promos-wrapper">
 
-    @if ($promociones->count())
+    <style>
+        .promos-wrapper{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
 
-        <div class="services-wrapper">
-            <button class="nav-btn left" onclick="scrollPromos(-1)">‹</button>
+        .promo-card{
+            background: rgba(17, 24, 39, .9);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.1);
+            transition: .3s;
+            text-align: center;
+        }
 
-            <div class="services-slider promo-slider-centered" id="promoSlider">
-                @foreach ($promociones as $promo)
-                    <div class="card service-card" onclick="openPromoModal({{ $promo->id }})" style="cursor: pointer;">
-                        <h3>{{ $promo->title }}</h3>
+        .promo-card:hover{
+            transform: translateY(-6px);
+        }
 
-                        <p>{{ $promo->description }}</p>
+        .promo-card h3{
+            color: #93c5fd;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
 
-                        <p style="margin-top:10px;color:#fde68a;">
-                            <strong>Descuento:</strong> {{ $promo->discount }}%
-                        </p>
+        .promo-card p{
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #e5e7eb;
+        }
 
-                        <small style="opacity:.8;">
-                            Válido del
-                            {{ \Carbon\Carbon::parse($promo->start_date)->format('d/m/Y') }}
-                            al
-                            {{ \Carbon\Carbon::parse($promo->end_date)->format('d/m/Y') }}
-                        </small>
-                    </div>
-                @endforeach
+        .promo-price{
+            font-size: 22px;
+            font-weight: bold;
+            color: #22c55e;
+            margin-top: 15px;
+            display: block;
+        }
+
+        .promo-dates{
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+    </style>
+
+    @forelse($promociones as $promo)
+        <div class="promo-card">
+            <h3>{{ $promo->title }}</h3>
+
+            <p>{{ $promo->description }}</p>
+
+            <span class="promo-price">
+                ${{ number_format($promo->price, 2) }}
+            </span>
+
+            <div class="promo-dates">
+                Vigente del {{ $promo->start_date }} al {{ $promo->end_date }}
             </div>
-
-            <button class="nav-btn right" onclick="scrollPromos(1)">›</button>
         </div>
-
-    @else
-        <p style="text-align:center;opacity:.7;">
+    @empty
+        <p style="grid-column:1/-1; text-align:center;">
             No hay promociones activas por el momento.
         </p>
-    @endif
-</section>
+    @endforelse
 
-<!-- Modal de Promoción -->
-<div id="promoModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <span class="close" onclick="closePromoModal()">&times;</span>
-        <div id="modalContent"></div>
-    </div>
 </div>
-
-<script>
-function openPromoModal(promoId) {
-    // Aquí puedes hacer una petición AJAX para obtener los detalles completos
-    fetch(`/api/promocion/${promoId}`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('modalContent').innerHTML = `
-                <h2 style="color: #d4af37;">${data.title}</h2>
-                <p>${data.description}</p>
-                <p style="color: #22c55e; font-size: 24px; font-weight: bold;">${data.discount}% DE DESCUENTO</p>
-                <p><strong>Válido desde:</strong> ${new Date(data.start_date).toLocaleDateString()}</p>
-                <p><strong>Hasta:</strong> ${new Date(data.end_date).toLocaleDateString()}</p>
-                ${data.image ? `<img src="${data.image}" alt="${data.title}" style="max-width: 100%; margin-top: 20px;">` : ''}
-            `;
-            document.getElementById('promoModal').style.display = 'block';
-        });
-}
-
-function closePromoModal() {
-    document.getElementById('promoModal').style.display = 'none';
-}
-
-// Cerrar modal al hacer clic fuera
-window.onclick = function(event) {
-    const modal = document.getElementById('promoModal');
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
-}
-</script>
-
-<style>
-.modal {
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.8);
-}
-
-.modal-content {
-    background-color: #2a2a2a;
-    margin: 10% auto;
-    padding: 30px;
-    border: 1px solid #d4af37;
-    border-radius: 16px;
-    width: 80%;
-    max-width: 600px;
-    color: #e5e7eb;
-}
-
-.close {
-    color: #d4af37;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover {
-    color: #fff;
-}
-</style>

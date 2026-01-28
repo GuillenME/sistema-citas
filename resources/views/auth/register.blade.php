@@ -25,6 +25,7 @@
             z-index: -1;
         }
 
+        /* Flecha */
         .back-arrow {
             position: absolute;
             top: 25px;
@@ -77,6 +78,13 @@
             border: none;
         }
 
+        .field-error {
+            color: #fecaca;
+            font-size: 13px;
+            margin-top: 6px;
+            display: block;
+        }
+
         .submit-wrapper {
             margin-top: 35px;
             text-align: center;
@@ -113,6 +121,7 @@
 
     <h2>Registro de cliente</h2>
 
+<<<<<<< HEAD
     <div class="grid">
 
         <div class="card">
@@ -154,6 +163,80 @@
     <div class="submit-wrapper">
         <button type="submit">REGISTRARSE</button>
     </div>
+=======
+@if ($errors->any())
+    <div class="field-error" style="margin-bottom:20px;">
+        Por favor corrige los campos marcados en rojo.
+    </div>
+@endif
+
+<div class="grid">
+
+    <div class="card">
+        <h3>Nombre</h3>
+        <input type="text"
+               name="nombre"
+               value="{{ old('nombre') }}"
+               required
+               inputmode="text"
+               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+               oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
+        @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="card">
+        <h3>Apellidos</h3>
+        <input type="text"
+               name="apellido"
+               value="{{ old('apellido') }}"
+               required
+               inputmode="text"
+               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+               oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
+        @error('apellido') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="card">
+        <h3>Teléfono</h3>
+        <input type="tel"
+               name="telefono"
+               value="{{ old('telefono') }}"
+               required
+               inputmode="numeric"
+               maxlength="10"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+        @error('telefono') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="card">
+        <h3>Correo</h3>
+        <input type="email"
+               name="email"
+               value="{{ old('email') }}"
+               required>
+        @error('email') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="card">
+        <h3>Contraseña</h3>
+        <input type="password" name="password" required>
+        @error('password') <span class="field-error">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="card">
+        <h3>Confirmar contraseña</h3>
+        <input type="password" name="password_confirmation" required>
+    </div>
+
+</div>
+
+<input type="hidden" name="role_id" value="2">
+
+<div class="submit-wrapper">
+    <button type="submit">REGISTRARSE</button>
+</div>
+
+>>>>>>> 970d87f1ca5b4c36ed10cb1a50e09e16c3bf45d1
 </form>
 
 </body>
