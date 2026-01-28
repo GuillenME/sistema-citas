@@ -19,7 +19,6 @@
             position: relative;
         }
 
-        /* OVERLAY */
         body::before {
             content: "";
             position: absolute;
@@ -48,7 +47,6 @@
             color: #93c5fd;
             font-size: 22px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
         nav {
@@ -61,117 +59,23 @@
             text-decoration: none;
             font-size: 17px;
             font-weight: bold;
-            transition: color .2s, text-shadow .2s;
         }
 
         nav a:hover {
             color: #93c5fd;
-            text-shadow: 0 0 10px rgba(255,255,255,.9);
         }
 
         .logout-btn {
             background: transparent;
-            border: 2px solid #ff2d2d;
+            border: 2px solid #ef4444;
             color: #fff;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            box-shadow:
-                0 0 12px rgba(255,45,45,.9),
-                inset 0 0 6px rgba(255,45,45,.4);
         }
 
-        .logout-btn:hover {
-            transform: scale(1.05);
-        }
-
-<<<<<<<<< Temporary merge branch 1
-
-=========
-<<<<<<< HEAD
         /* ===== CONTENIDO ===== */
-=======
->>>>>>>>> Temporary merge branch 2
-        /* Modal de confirmación */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: rgba(17, 24, 39, 0.95);
-            padding: 30px;
-            border-radius: 16px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(255, 45, 45, 0.6);
-            border: 2px solid rgba(255, 45, 45, 0.5);
-        }
-
-        .modal-content h3 {
-            margin-bottom: 20px;
-            font-size: 20px;
-            color: #fff;
-        }
-
-        .modal-content p {
-            margin-bottom: 25px;
-            color: #e5e7eb;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .modal-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: transform .2s;
-        }
-
-        .modal-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .modal-btn-confirm {
-            background: #ef4444;
-            color: #fff;
-            box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
-        }
-
-        .modal-btn-cancel {
-            background: #6b7280;
-            color: #fff;
-        }
-
-        /* ===== CONTENEDOR ===== */
-<<<<<<<<< Temporary merge branch 1
-
-
-=========
->>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
->>>>>>>>> Temporary merge branch 2
         .container {
             position: relative;
             z-index: 1;
@@ -188,7 +92,6 @@
             gap: 40px;
             max-width: 1100px;
             width: 100%;
-            align-items: center;
             padding: 40px;
         }
 
@@ -205,19 +108,6 @@
             backdrop-filter: blur(12px);
             padding: 34px;
             border-radius: 18px;
-            box-shadow:
-                0 0 25px rgba(42,22,218,.6),
-                inset 0 0 20px rgba(42,22,218,.25);
-        }
-
-        .welcome h2 {
-            margin-top: 0;
-            font-size: 26px;
-        }
-
-        .welcome p {
-            font-size: 15px;
-            line-height: 1.6;
         }
 
         /* ===== MODAL LOGOUT ===== */
@@ -239,10 +129,9 @@
             background: rgba(17,24,39,.95);
             padding: 30px;
             border-radius: 16px;
-            width: 90%;
             max-width: 400px;
+            width: 90%;
             text-align: center;
-            box-shadow: 0 0 25px rgba(255,45,45,.6);
         }
 
         .modal-buttons {
@@ -298,15 +187,7 @@
 
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
-<<<<<<<<< Temporary merge branch 1
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
-=========
-<<<<<<< HEAD
-        <button type="submit" class="logout-btn">
-=======
-        <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
->>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
->>>>>>>>> Temporary merge branch 2
             Cerrar sesión
         </button>
     </form>
