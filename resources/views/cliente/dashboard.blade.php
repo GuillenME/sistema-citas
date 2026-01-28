@@ -19,7 +19,6 @@
             position: relative;
         }
 
-        /* OVERLAY */
         body::before {
             content: "";
             position: absolute;
@@ -48,7 +47,6 @@
             color: #93c5fd;
             font-size: 22px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
         nav {
@@ -61,27 +59,23 @@
             text-decoration: none;
             font-size: 17px;
             font-weight: bold;
-            transition: color .2s, text-shadow .2s;
         }
 
         nav a:hover {
             color: #93c5fd;
-            text-shadow: 0 0 10px rgba(255,255,255,.9);
         }
 
         .logout-btn {
             background: transparent;
-            border: 2px solid #ff2d2d;
+            border: 2px solid #ef4444;
             color: #fff;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            box-shadow:
-                0 0 12px rgba(255,45,45,.9),
-                inset 0 0 6px rgba(255,45,45,.4);
         }
 
+<<<<<<< HEAD
         .logout-btn:hover {
             transform: scale(1.05);
         }
@@ -176,6 +170,9 @@
 >>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
 >>>>>>>>> Temporary merge branch 2
 >>>>>>> 970d87f1ca5b4c36ed10cb1a50e09e16c3bf45d1
+=======
+        /* ===== CONTENIDO ===== */
+>>>>>>> dc78de4e499e1671f50f3a4d41d338ce952431ac
         .container {
             position: relative;
             z-index: 1;
@@ -192,7 +189,6 @@
             gap: 40px;
             max-width: 1100px;
             width: 100%;
-            align-items: center;
             padding: 40px;
         }
 
@@ -209,19 +205,6 @@
             backdrop-filter: blur(12px);
             padding: 34px;
             border-radius: 18px;
-            box-shadow:
-                0 0 25px rgba(42,22,218,.6),
-                inset 0 0 20px rgba(42,22,218,.25);
-        }
-
-        .welcome h2 {
-            margin-top: 0;
-            font-size: 26px;
-        }
-
-        .welcome p {
-            font-size: 15px;
-            line-height: 1.6;
         }
 
         /* ===== MODAL LOGOUT ===== */
@@ -243,10 +226,9 @@
             background: rgba(17,24,39,.95);
             padding: 30px;
             border-radius: 16px;
-            width: 90%;
             max-width: 400px;
+            width: 90%;
             text-align: center;
-            box-shadow: 0 0 25px rgba(255,45,45,.6);
         }
 
         .modal-buttons {
@@ -303,6 +285,7 @@
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
 <<<<<<< HEAD
+<<<<<<< HEAD
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
 =======
 <<<<<<<<< Temporary merge branch 1
@@ -315,6 +298,9 @@
 >>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
 >>>>>>>>> Temporary merge branch 2
 >>>>>>> 970d87f1ca5b4c36ed10cb1a50e09e16c3bf45d1
+=======
+        <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
+>>>>>>> dc78de4e499e1671f50f3a4d41d338ce952431ac
             Cerrar sesión
         </button>
     </form>
