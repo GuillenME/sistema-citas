@@ -11,29 +11,29 @@
             margin: 0;
             min-height: 100vh;
             font-family: Arial, sans-serif;
-            background: url('{{ asset('imagenes/registro_fondo.png') }}') center/cover no-repeat;
+            background: url('{{ asset("imagenes/registro_fondo.png") }}') center/cover no-repeat;
             padding: 40px;
             position: relative;
+            color: #fff;
         }
 
         body::before {
             content: "";
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.25);
+            background: rgba(0,0,0,.35);
             z-index: -1;
         }
 
+        /* Flecha */
         .back-arrow {
             position: absolute;
             top: 25px;
             left: 25px;
-            z-index: 10;
             width: 42px;
             height: 42px;
             border-radius: 50%;
-            background: rgba(17,24,39,.45);
-            border: 1px solid rgba(255,255,255,.15);
+            background: rgba(17,24,39,.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -45,10 +45,9 @@
         .register-container {
             max-width: 1100px;
             margin: 80px auto 0;
-            background: rgba(17,24,39,.15);
+            background: rgba(17,24,39,.35);
             border-radius: 16px;
             padding: 30px;
-            color: #fff;
             backdrop-filter: blur(12px);
         }
 
@@ -61,9 +60,15 @@
         }
 
         .card {
-            background: rgba(17,24,39,.45);
+            background: rgba(17,24,39,.55);
             border-radius: 14px;
             padding: 20px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #c7d2fe;
         }
 
         input {
@@ -73,26 +78,29 @@
             border: none;
         }
 
+        .field-error {
+            color: #fecaca;
+            font-size: 13px;
+            margin-top: 6px;
+            display: block;
+        }
+
         .submit-wrapper {
             margin-top: 35px;
             text-align: center;
         }
 
         .submit-wrapper button {
-            width: 20%;
+            width: 220px;
             padding: 12px;
-            margin-top: 12px;
             background: #1F4E79;
             border: none;
             border-radius: 8px;
             color: #fff;
-            font-size: 15px;
             font-weight: bold;
-            letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(42, 22, 218, 0.8);
+            box-shadow: 0 6px 20px rgba(42,22,218,.8);
         }
-
 
         @media (max-width: 900px) {
             .grid { grid-template-columns: repeat(2, 1fr); }
@@ -113,143 +121,75 @@
 
 <h2>Registro de cliente</h2>
 
-<<<<<<< HEAD
-<div class="grid">
-<<<<<<< HEAD
-
-    <div class="card">
-        <h3>Nombre</h3>
-        <input type="text" name="nombre" value="{{ old('nombre') }}">
+@if ($errors->any())
+    <div class="field-error" style="margin-bottom:20px;">
+        Por favor corrige los campos marcados en rojo.
     </div>
+@endif
 
-    <div class="card">
-        <h3>Apellidos</h3>
-        <input type="text" name="apellido" value="{{ old('apellido') }}">
-=======
-=======
-        {{-- ERRORES GENERALES --}}
-        @if ($errors->any())
-            <div class="error-box">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route('register') }}" novalidate>
-            @csrf
-
-            <input type="text" name="nombre" placeholder="Nombre" value="{{ old('nombre') }}"
-                class="@error('nombre') input-error @enderror">
-            {{-- @error('nombre')
-                <span class="field-error">{{ $message }}</span>
-            @enderror --}}
-
-            <input type="text" name="apellido" placeholder="Apellidos" value="{{ old('apellido') }}"
-                class="@error('apellido') input-error @enderror">
-
-            <input type="tel" name="telefono" placeholder="Teléfono (10 dígitos)" maxlength="10"
-                inputmode="numeric"
-                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)"
-                value="{{ old('telefono') }}"
-                class="@error('telefono') input-error @enderror">
-            {{-- @error('telefono')
-                <span class="field-error">{{ $message }}</span>
-            @enderror --}}
-
-            <input type="email" name="email" placeholder="Correo" value="{{ old('email') }}"
-                class="@error('email') input-error @enderror">
-            {{-- @error('email')
-                <span class="field-error">{{ $message }}</span>
-            @enderror --}}
-
-            <input type="password" name="password" placeholder="Contraseña"
-                class="@error('password') input-error @enderror">
-            {{-- @error('password')
-                <span class="field-error">{{ $message }}</span>
-            @enderror --}}
-
-            <input type="password" name="password_confirmation" placeholder="Confirmar contraseña">
-
-            <!-- Rol fijo -->
-            <input type="hidden" name="role_id" value="2">
-
-            <button type="submit">REGISTRARSE</button>
-        </form>
-
-        <div class="login">
-            <a href="{{ route('login') }}">¿Ya tienes cuenta? Inicia sesión</a>
-        </div>
->>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
+<div class="grid">
 
     <div class="card">
         <h3>Nombre</h3>
         <input type="text"
-       name="nombre"
-       value="{{ old('nombre') }}"
-       inputmode="text"
-       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
-       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
+               name="nombre"
+               value="{{ old('nombre') }}"
+               required
+               inputmode="text"
+               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+               oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
         @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
     </div>
 
     <div class="card">
-        <h3>Apellido</h3>
+        <h3>Apellidos</h3>
         <input type="text"
-       name="apellido"
-       value="{{ old('apellido') }}"
-       inputmode="text"
-       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
-       oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
+               name="apellido"
+               value="{{ old('apellido') }}"
+               required
+               inputmode="text"
+               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+               oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
         @error('apellido') <span class="field-error">{{ $message }}</span> @enderror
->>>>>>> ee278f5ade49db082ecd825f02939892eeaff579
     </div>
 
     <div class="card">
         <h3>Teléfono</h3>
-<<<<<<< HEAD
-        <input type="tel" name="telefono" value="{{ old('telefono') }}">
-=======
         <input type="tel"
-       name="telefono"
-       value="{{ old('telefono') }}"
-       inputmode="numeric"
-       maxlength="10"
-       pattern="[0-9]{10}"
-       oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+               name="telefono"
+               value="{{ old('telefono') }}"
+               required
+               inputmode="numeric"
+               maxlength="10"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
         @error('telefono') <span class="field-error">{{ $message }}</span> @enderror
->>>>>>> ee278f5ade49db082ecd825f02939892eeaff579
     </div>
 
     <div class="card">
         <h3>Correo</h3>
-        <input type="email" name="email" value="{{ old('email') }}">
-<<<<<<< HEAD
-=======
+        <input type="email"
+               name="email"
+               value="{{ old('email') }}"
+               required>
         @error('email') <span class="field-error">{{ $message }}</span> @enderror
->>>>>>> ee278f5ade49db082ecd825f02939892eeaff579
     </div>
 
     <div class="card">
         <h3>Contraseña</h3>
-        <input type="password" name="password">
-<<<<<<< HEAD
-=======
+        <input type="password" name="password" required>
         @error('password') <span class="field-error">{{ $message }}</span> @enderror
->>>>>>> ee278f5ade49db082ecd825f02939892eeaff579
     </div>
 
     <div class="card">
         <h3>Confirmar contraseña</h3>
-        <input type="password" name="password_confirmation">
+        <input type="password" name="password_confirmation" required>
     </div>
 
 </div>
 
+<input type="hidden" name="role_id" value="2">
+
 <div class="submit-wrapper">
-    <input type="hidden" name="rol_id" value="2">
     <button type="submit">REGISTRARSE</button>
 </div>
 
