@@ -81,15 +81,25 @@
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* ===== CONTENEDOR ===== */
 =======
 <<<<<<<<< Temporary merge branch 1
 
 =========
+=======
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
 <<<<<<< HEAD
         /* ===== CONTENIDO ===== */
 =======
+<<<<<<< HEAD
 >>>>>>>>> Temporary merge branch 2
+=======
+=======
+
+>>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
+
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
         /* Modal de confirmación */
         .modal-overlay {
             display: none;
@@ -163,6 +173,7 @@
         }
 
         /* ===== CONTENEDOR ===== */
+<<<<<<< HEAD
 <<<<<<<<< Temporary merge branch 1
 
 
@@ -173,6 +184,14 @@
 =======
         /* ===== CONTENIDO ===== */
 >>>>>>> dc78de4e499e1671f50f3a4d41d338ce952431ac
+=======
+=========
+        /* ===== CONTENIDO ===== */
+>>>>>>>>> Temporary merge branch 2
+=======
+        /* ===== CONTENIDO ===== */
+>>>>>>> 1da1fa6038a8562897321dcb222fed57747efed3
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
         .container {
             position: relative;
             z-index: 1;
@@ -286,6 +305,7 @@
         @csrf
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
 =======
 <<<<<<<<< Temporary merge branch 1
@@ -294,13 +314,19 @@
 <<<<<<< HEAD
         <button type="submit" class="logout-btn">
 =======
+=======
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
 >>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
 >>>>>>>>> Temporary merge branch 2
 >>>>>>> 970d87f1ca5b4c36ed10cb1a50e09e16c3bf45d1
 =======
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
+<<<<<<< HEAD
 >>>>>>> dc78de4e499e1671f50f3a4d41d338ce952431ac
+=======
+>>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
             Cerrar sesión
         </button>
     </form>

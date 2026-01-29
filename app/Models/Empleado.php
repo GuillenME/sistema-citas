@@ -17,6 +17,6 @@ class Empleado extends Model
 
     public function appointments()
     {
-        return $this->hasMany(Appointment::class, 'employee_id');
+        return $this->hasMany(Cita::class, 'employee_id');
     }
 }

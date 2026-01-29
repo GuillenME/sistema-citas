@@ -83,8 +83,20 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
 
+        // LIVEWIRE
+        Route::get('/promociones/create', function () {
+            return view('admin.promociones.create');
+        })->name('promociones.create');
+
+        Route::get('/promociones/{promocion}/edit', function (App\Models\Promocion $promocion) {
+            return view('admin.promociones.edit', compact('promocion'));
+        })->name('promociones.edit');
+
+        // CONTROLLER (RESTO)
         Route::resource('promociones', AdminPromocionController::class)
+            ->except(['create', 'edit'])
             ->parameters(['promociones' => 'promocion']);
+
         Route::resource('servicios', AdminServicioController::class);
 
         Route::get('/empleados', [AdminEmpleadoController::class, 'index'])

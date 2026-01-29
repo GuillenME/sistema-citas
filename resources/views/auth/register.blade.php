@@ -122,6 +122,7 @@
     <h2>Registro de cliente</h2>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     <div class="grid">
 
         <div class="card">
@@ -155,9 +156,13 @@
             <h3>Confirmar contraseña</h3>
             <input type="password" name="password_confirmation" required>
         </div>
+=======
+<div class="grid">
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
 
     </div>
 
+<<<<<<< HEAD
     <input type="hidden" name="role_id" value="2">
 
     <div class="submit-wrapper">
@@ -194,10 +199,16 @@
                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
                oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
         @error('apellido') <span class="field-error">{{ $message }}</span> @enderror
+=======
+    <div class="card">
+        <h3>Apellidos</h3>
+        <input type="text" name="apellido" value="{{ old('apellido') }}">
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
     </div>
 
     <div class="card">
         <h3>Teléfono</h3>
+<<<<<<< HEAD
         <input type="tel"
                name="telefono"
                value="{{ old('telefono') }}"
@@ -206,21 +217,32 @@
                maxlength="10"
                oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
         @error('telefono') <span class="field-error">{{ $message }}</span> @enderror
+=======
+        <input type="tel" name="telefono" value="{{ old('telefono') }}">
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
     </div>
 
     <div class="card">
         <h3>Correo</h3>
+<<<<<<< HEAD
         <input type="email"
                name="email"
                value="{{ old('email') }}"
                required>
         @error('email') <span class="field-error">{{ $message }}</span> @enderror
+=======
+        <input type="email" name="email" value="{{ old('email') }}">
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
     </div>
 
     <div class="card">
         <h3>Contraseña</h3>
+<<<<<<< HEAD
         <input type="password" name="password" required>
         @error('password') <span class="field-error">{{ $message }}</span> @enderror
+=======
+        <input type="password" name="password">
+>>>>>>> bd8e14767c06c9bab9410073f77d74fac83f26be
     </div>
 
     <div class="card">

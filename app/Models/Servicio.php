@@ -14,6 +14,7 @@ class Servicio extends Model
         'description',
         'duration_minutes',
         'price',
+        'image',
         'active'
     ];
 
