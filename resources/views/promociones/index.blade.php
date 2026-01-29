@@ -7,58 +7,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        body{
-            margin:0;
-            font-family: Arial, sans-serif;
-            background:#0f172a;
-            color:#e5e7eb;
-        }
+       * { box-sizing: border-box; }
 
-        header{
-            position:fixed;
-            top:0;
-            left:0;
-            width:100%;
-            height:70px;
-            background:rgba(6,13,46,.95);
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            padding:0 40px;
-            z-index:1000;
-        }
+html{
+    scroll-behavior: smooth;
+}
 
-        .logo{
-            font-weight:bold;
-            font-size:22px;
-            color:#93c5fd;
-        }
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+}
 
-        a{
-            color:#93c5fd;
-            text-decoration:none;
-            font-weight:bold;
-        }
+  /* ================= HEADER ================= */
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(2, 6, 23, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    z-index: 1000;
+    backdrop-filter: blur(6px);
+}
 
-        section{
-            max-width:1200px;
-            margin:auto;
-            padding:120px 20px;
-        }
+.logo{
+    font-weight: bold;
+    font-size: 25px;
+    letter-spacing: 2px;
+    color: #93c5fd;
+}
 
-        h1{
-            text-align:center;
-            margin-bottom:50px;
-        }
-    </style>
+nav a{
+    margin: 0 14px;
+    color: #e5e7eb;
+    text-decoration: none;
+    font-weight: bold;
+    transition: .3s;
+}
 
+nav a:hover{
+    color: #93c5fd;
+}
+
+.login-icon {
+    display: inline-flex;
+    align-items: center;
+}
+
+.icon-img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
     @livewireStyles
 </head>
 <body>
 
 <header>
     <div class="logo">Barbería & Spa</div>
-    <a href="{{ route('home') }}">← Volver al inicio</a>
+
+    <nav>
+        <a href="{{ url('/') }}#inicio">Inicio</a>
+        <a href="{{ route('servicios') }}">Servicios</a>
+        <a href="{{ route('promociones') }}">Promociones</a>
+        <a href="{{ url('/') }}#contacto">Contacto</a>
+        <a href="{{ url('/') }}#noticias">Noticias & Novedades</a>
+    </nav>
+
+    <a href="{{ route('login') }}" class="login-icon">
+        <img src="{{ asset('imagenes/usuario.png') }}" alt="Iniciar sesión" class="icon-img">
+    </a>
 </header>
 
 <section>

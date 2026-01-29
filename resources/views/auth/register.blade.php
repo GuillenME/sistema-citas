@@ -117,10 +117,17 @@
 <a href="{{ route('login') }}" class="back-arrow">←</a>
 
 <form method="POST" action="{{ route('register') }}" class="register-container">
-@csrf
+    @csrf
 
-<h2>Registro de cliente</h2>
+    <h2>Registro de cliente</h2>
 
+<<<<<<<<< Temporary merge branch 1
+<div class="grid">
+
+    <div class="card">
+        <h3>Nombre</h3>
+        <input type="text" name="nombre" value="{{ old('nombre') }}">
+=========
 @if ($errors->any())
     <div class="field-error" style="margin-bottom:20px;">
         Por favor corrige los campos marcados en rojo.
@@ -151,10 +158,14 @@
                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
                oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
         @error('apellido') <span class="field-error">{{ $message }}</span> @enderror
+>>>>>>>>> Temporary merge branch 2
     </div>
 
     <div class="card">
         <h3>Teléfono</h3>
+<<<<<<<<< Temporary merge branch 1
+        <input type="tel" name="telefono" value="{{ old('telefono') }}">
+=========
         <input type="tel"
                name="telefono"
                value="{{ old('telefono') }}"
@@ -163,21 +174,30 @@
                maxlength="10"
                oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
         @error('telefono') <span class="field-error">{{ $message }}</span> @enderror
+>>>>>>>>> Temporary merge branch 2
     </div>
 
     <div class="card">
         <h3>Correo</h3>
+<<<<<<<<< Temporary merge branch 1
+        <input type="email" name="email" value="{{ old('email') }}">
+=========
         <input type="email"
                name="email"
                value="{{ old('email') }}"
                required>
         @error('email') <span class="field-error">{{ $message }}</span> @enderror
+>>>>>>>>> Temporary merge branch 2
     </div>
 
     <div class="card">
         <h3>Contraseña</h3>
+<<<<<<<<< Temporary merge branch 1
+        <input type="password" name="password">
+=========
         <input type="password" name="password" required>
         @error('password') <span class="field-error">{{ $message }}</span> @enderror
+>>>>>>>>> Temporary merge branch 2
     </div>
 
     <div class="card">
@@ -193,6 +213,7 @@
     <button type="submit">REGISTRARSE</button>
 </div>
 
+>>>>>>> 970d87f1ca5b4c36ed10cb1a50e09e16c3bf45d1
 </form>
 
 </body>

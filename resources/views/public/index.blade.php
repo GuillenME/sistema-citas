@@ -164,6 +164,97 @@ footer{
 footer span{
     color: #22c55e;
 }
+/* ================= NOTICIAS ================= */
+.news-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.news-card{
+    overflow: hidden;
+    padding: 0;
+}
+
+.news-card img{
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.news-content{
+    padding: 20px;
+}
+
+.news-content h3{
+    color: #93c5fd;
+    margin-bottom: 10px;
+}
+
+.news-content p{
+    font-size: 14px;
+    color: #e5e7eb;
+    margin-bottom: 12px;
+}
+
+.news-date{
+    font-size: 12px;
+    color: #22c55e;
+}
+/* ===== CONTACTO ESTILO CENTRADO ===== */
+.contact-info{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 50px 80px;   /* espacio lateral grande */
+}
+
+/* DATOS → hacia el centro-derecha */
+.contact-left{
+    justify-self: center;
+    margin-left: 80px;   /* empuja hacia la derecha */
+    max-width: 340px;
+}
+
+/* IMAGEN → hacia el centro-izquierda */
+.contact-right{
+    justify-self: center;
+    margin-right: 80px;  /* empuja hacia la izquierda */
+    display: flex;
+    justify-content: center;
+}
+
+.contact-right img{
+    width: 100%;
+    max-width: 260px;
+    object-fit: contain;
+    opacity: 0.95;
+}
+
+/* Responsive */
+@media (max-width: 900px){
+    .contact-info{
+        grid-template-columns: 1fr;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .contact-left{
+        margin-left: 0;
+        max-width: 100%;
+    }
+
+    .contact-right{
+        margin-right: 0;
+        margin-top: 25px;
+    }
+
+    .contact-right img{
+        max-width: 200px;
+    }
+}
+
 </style>
 
 @livewireStyles
@@ -208,6 +299,10 @@ footer span{
     </div>
 </div>
 
+<<<<<<<<< Temporary merge branch 1
+<<<<<<<<< Temporary merge branch 1
+=========
+>>>>>>>>> Temporary merge branch 2
 <section>
     <h2>Nuestros Servicios</h2>
 
@@ -230,24 +325,19 @@ footer span{
         <button class="nav-btn right" onclick="scrollServices(1)">›</button>
     </div>
 </section>
+<<<<<<<<< Temporary merge branch 1
 
+=========
+>>>>>>>>> Temporary merge branch 2
 
 {{-- NOTICIAS --}}
 <section>
-    <h2>Noticias & Novedades</h2>
+<livewire:noticias />
 
-    <div class="services">
-        @forelse($noticias as $noticia)
-            <div class="card">
-                <h3>{{ $noticia->title }}</h3>
-                <p>{{ \Illuminate\Support\Str::limit(strip_tags($noticia->content), 120) }}</p>
-                <small>Publicado: {{ $noticia->publication_date }}</small>
-            </div>
-        @empty
-            <p>No hay noticias publicadas.</p>
-        @endforelse
-    </div>
 </section>
+
+
+
 
 <footer>
      © 2026 Barbería & Spa <br>
@@ -264,7 +354,7 @@ footer span{
         });
     }
 
-    function scrollPromos(direction) {
+    function scrollPromos(direction) { 
         const slider = document.getElementById('promoSlider');
         const cardWidth = slider.querySelector('.service-card').offsetWidth + 20;
         slider.scrollBy({
@@ -273,6 +363,7 @@ footer span{
         });
     }
 </script>
+
 
 @livewireScripts
 
