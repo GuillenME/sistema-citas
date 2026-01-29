@@ -73,9 +73,14 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            transition: transform .2s;
         }
 
-        /* ===== CONTENIDO ===== */
+        .logout-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* ===== CONTENEDOR ===== */
         .container {
             position: relative;
             z-index: 1;
@@ -132,6 +137,9 @@
             max-width: 400px;
             width: 90%;
             text-align: center;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(255, 45, 45, 0.6);
+            border: 2px solid rgba(255, 45, 45, 0.5);
         }
 
         .modal-buttons {
@@ -147,6 +155,11 @@
             cursor: pointer;
             font-weight: bold;
             border: none;
+            transition: transform .2s;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
         }
 
         .modal-btn-confirm {
@@ -220,15 +233,17 @@
 </div>
 
 <script>
-function mostrarModalLogout() {
-    document.getElementById('modalLogout').classList.add('active');
-}
-function cerrarModalLogout() {
-    document.getElementById('modalLogout').classList.remove('active');
-}
-function confirmarLogout() {
-    document.getElementById('logoutForm').submit();
-}
+    function mostrarModalLogout() {
+        document.getElementById('modalLogout').classList.add('active');
+    }
+
+    function cerrarModalLogout() {
+        document.getElementById('modalLogout').classList.remove('active');
+    }
+
+    function confirmarLogout() {
+        document.getElementById('logoutForm').submit();
+    }
 </script>
 
 </body>

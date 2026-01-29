@@ -5,8 +5,8 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Appointment;
-use App\Models\Client;
+use App\Models\Cita;
+use App\Models\Cliente;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword as ResetPasswordTrait;
@@ -34,12 +34,12 @@ class Usuario extends Authenticatable
 
     public function appointments()
     {
-        return $this->hasMany(Appointment::class, 'client_id');
+        return $this->hasMany(Cita::class, 'client_id');
     }
 
     public function client()
     {
-        return $this->hasOne(Client::class, 'user_id');
+        return $this->hasOne(Cliente::class, 'user_id');
     }
     public function sendPasswordResetNotification($token)
     {

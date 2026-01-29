@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Editar servicio</title>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    @livewireStyles
+
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             min-height: 100vh;
@@ -29,44 +26,47 @@
             padding: 40px;
         }
 
-        /* HEADER */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 35px;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .back-arrow {
-            font-size: 28px;
-            text-decoration: none;
-            color: #a5b4fc;
-            text-shadow: 0 0 10px rgba(99,102,241,.7);
-            transition: transform .2s, text-shadow .2s;
-        }
-
-        .back-arrow:hover {
-            transform: translateX(-4px);
-            text-shadow: 0 0 20px rgba(99,102,241,1);
-        }
-
         h1 {
             font-size: 30px;
-            letter-spacing: 1px;
+            margin-bottom: 30px;
             text-shadow:
                 0 0 10px rgba(99,102,241,.8),
                 0 0 25px rgba(99,102,241,.6);
         }
 
+        /* BOTONES */
+        .btn {
+            background: transparent;
+            border-radius: 12px;
+            padding: 14px 26px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #fff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .btn-save {
+            border: 2px solid #22c55e;
+            box-shadow: 0 0 14px rgba(34,197,94,.7),
+                        inset 0 0 8px rgba(34,197,94,.4);
+        }
+
+        .btn-cancel {
+            border: 2px solid #ef4444;
+            box-shadow: 0 0 14px rgba(239,68,68,.7),
+                        inset 0 0 8px rgba(239,68,68,.4);
+        }
+
+        .btn:hover { transform: scale(1.05); }
+
         /* FORM */
         .form-container {
-            background: rgba(17, 24, 39, 0.75);
+            background: rgba(17,24,39,.75);
             backdrop-filter: blur(12px);
             border-radius: 16px;
             padding: 30px;
@@ -76,68 +76,78 @@
                 inset 0 0 10px rgba(99,102,241,.25);
         }
 
-        form label {
+        label {
             display: block;
             margin-top: 18px;
             margin-bottom: 6px;
             font-size: 14px;
-            letter-spacing: 1px;
         }
 
-        form input,
-        form textarea,
-        form select {
+        input, textarea {
             width: 100%;
             padding: 12px;
             border-radius: 10px;
             border: 1px solid rgba(255,255,255,.2);
-            background: rgba(2, 6, 23, .8);
+            background: rgba(2,6,23,.8);
             color: #fff;
-            font-size: 14px;
-            outline: none;
         }
 
-        form textarea {
-            resize: vertical;
-            min-height: 90px;
-        }
+        textarea { min-height: 90px; resize: vertical; }
 
-        form input:focus,
-        form textarea:focus,
-        form select:focus {
-            border-color: #818cf8;
-            box-shadow: 0 0 10px rgba(129,140,248,.7);
-        }
-
-        .btn-submit {
-            margin-top: 30px;
-            width: 100%;
-            background: transparent;
-            border: 2px solid #facc15;
-            color: #fff;
-            padding: 14px;
+        .preview {
+            max-width: 200px;
             border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            letter-spacing: 1px;
-            transition: transform .2s, box-shadow .2s;
-            box-shadow:
-                0 0 14px rgba(250,204,21,.7),
-                inset 0 0 8px rgba(250,204,21,.4);
+            margin-top: 10px;
+            box-shadow: 0 0 15px rgba(99,102,241,.6);
         }
 
-        .btn-submit:hover {
-            transform: scale(1.03);
-            box-shadow:
-                0 0 25px rgba(250,204,21,1),
-                inset 0 0 12px rgba(250,204,21,.6);
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
         }
 
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 24px;
-            }
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.65);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: rgba(17,24,39,.96);
+            border-radius: 18px;
+            padding: 30px;
+            max-width: 420px;
+            width: 92%;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,.18);
+            box-shadow:
+                0 0 35px rgba(99,102,241,.45),
+                inset 0 0 15px rgba(99,102,241,.25);
+        }
+
+        .modal-box h3 {
+            font-size: 22px;
+            margin-bottom: 14px;
+        }
+
+        .modal-box p {
+            font-size: 14px;
+            margin-bottom: 26px;
+            color: #c7d2fe;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
         }
     </style>
 </head>
@@ -145,45 +155,11 @@
 <body>
 
 <div class="dashboard">
+    <h1>Editar servicio</h1>
 
-    <div class="header">
-        <div class="header-left">
-            <!-- Volver a servicios -->
-            <a href="{{ route('admin.servicios.index') }}" class="back-arrow">←</a>
-            <h1>Editar servicio</h1>
-        </div>
-    </div>
-
-    <div class="form-container">
-        <form method="POST" action="{{ route('admin.servicios.update', $servicio) }}">
-            @csrf
-            @method('PUT')
-
-            <label>Nombre</label>
-            <input type="text" name="nombre" value="{{ $servicio->name }}">
-
-            <label>Descripción</label>
-            <textarea name="descripcion">{{ $servicio->description }}</textarea>
-
-            <label>Duración (min)</label>
-            <input type="number" name="duracion_minutos" value="{{ $servicio->duration_minutes }}">
-
-            <label>Precio</label>
-            <input type="number" step="0.01" name="precio" value="{{ $servicio->price }}">
-
-            <label>Activo</label>
-            <select name="activo">
-                <option value="1" {{ $servicio->active ? 'selected' : '' }}>Sí</option>
-                <option value="0" {{ !$servicio->active ? 'selected' : '' }}>No</option>
-            </select>
-
-            <button type="submit" class="btn-submit">
-                Actualizar
-            </button>
-        </form>
-    </div>
-
+    <livewire:admin.servicio-edit :servicio="$servicio" />
 </div>
 
+@livewireScripts
 </body>
 </html>

@@ -231,6 +231,7 @@ footer span{
     </div>
 </section>
 
+
 {{-- NOTICIAS --}}
 <section>
     <h2>Noticias & Novedades</h2>
