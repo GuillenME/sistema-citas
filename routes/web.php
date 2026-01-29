@@ -99,53 +99,37 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::resource('servicios', AdminServicioController::class);
 
-        Route::get('/empleados', [AdminEmpleadoController::class, 'index'])
-            ->name('empleados.index');
+        Route::get('/empleados', function () {
+            return view('admin.empleados.index');
+        })->name('empleados.index');
 
-        Route::get('/empleados/create', [AdminEmpleadoController::class, 'create'])
-            ->name('empleados.create');
+        Route::get('/empleados/create', function () {
+            return view('admin.empleados.create');
+        })->name('empleados.create');
 
-        Route::post('/empleados', [AdminEmpleadoController::class, 'store'])
-            ->name('empleados.store');
-
-        Route::get('/empleados/{empleado}/edit', [AdminEmpleadoController::class, 'edit'])
-            ->name('empleados.edit');
-
-        Route::put('/empleados/{empleado}', [AdminEmpleadoController::class, 'update'])
-            ->name('empleados.update');
-
-        Route::delete('/empleados/{empleado}', [AdminEmpleadoController::class, 'destroy'])
-            ->name('empleados.destroy');
+        Route::get('/empleados/{empleado}/edit', function (App\Models\Empleado $empleado) {
+            return view('admin.empleados.edit', compact('empleado'));
+        })->name('empleados.edit');
 
         Route::post('citas/{cita}/asignar-empleado', [AdminCitaController::class, 'asignarEmpleado'])
             ->name('citas.asignarEmpleado');
 
-        Route::get('/clientes', [AdminClientesController::class, 'index'])
-            ->name('clientes.index');
+        Route::get('/clientes', function () {
+            return view('admin.clientes.index');
+        })->name('clientes.index');
 
-        Route::post('/clientes/{cliente}/desactivar', [AdminClientesController::class, 'desactivar'])
-            ->name('clientes.desactivar');
 
-        Route::post('/clientes/{cliente}/activar', [AdminClientesController::class, 'activar'])
-            ->name('clientes.activar');
+        Route::get('/recepcionistas', function () {
+            return view('admin.recepcionistas.index');
+        })->name('recepcionistas.index');
 
-        Route::get('/recepcionistas', [AdminRecepcionistaController::class, 'index'])
-            ->name('recepcionistas.index');
+        Route::get('/recepcionistas/create', function () {
+            return view('admin.recepcionistas.create');
+        })->name('recepcionistas.create');
 
-        Route::get('/recepcionistas/create', [AdminRecepcionistaController::class, 'create'])
-            ->name('recepcionistas.create');
-
-        Route::post('/recepcionistas', [AdminRecepcionistaController::class, 'store'])
-            ->name('recepcionistas.store');
-
-        Route::get('/recepcionistas/{usuario}/edit', [AdminRecepcionistaController::class, 'edit'])
-            ->name('recepcionistas.edit');
-
-        Route::put('/recepcionistas/{usuario}', [AdminRecepcionistaController::class, 'update'])
-            ->name('recepcionistas.update');
-
-        Route::post('/recepcionistas/{usuario}/toggle', [AdminRecepcionistaController::class, 'toggleActivo'])
-            ->name('recepcionistas.toggle');
+        Route::get('/recepcionistas/{usuario}/edit', function (App\Models\Usuario $usuario) {
+            return view('admin.recepcionistas.edit', compact('usuario'));
+        })->name('recepcionistas.edit');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */

@@ -1,38 +1,31 @@
-<h1>Recepcionistas</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recepcionistas</title>
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    @livewireStyles
+</head>
 
-@if(session('success'))
-    <p style="color:green">{{ session('success') }}</p>
-@endif
+<body>
 
-<a href="{{ route('admin.recepcionistas.create') }}">➕ Nuevo recepcionista</a>
+<div class="dashboard">
 
-<table>
-    <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Teléfono</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-    </tr>
+    <div class="header">
+        <div class="header-left">
+            <a href="{{ route('admin.dashboard') }}" class="back-arrow">←</a>
+            <h1>Recepcionistas</h1>
+        </div>
 
-    @foreach($recepcionistas as $r)
-        <tr>
-            <td>{{ $r->name }} {{ $r->last_name }}</td>
-            <td>{{ $r->email }}</td>
-            <td>{{ $r->phone ?? '—' }}</td>
-            <td>{{ $r->active ? 'Activo' : 'Inactivo' }}</td>
-            <td>
-                <a href="{{ route('admin.recepcionistas.edit', $r) }}">Editar</a>
+        <a href="{{ route('admin.recepcionistas.create') }}" class="btn-create">
+            + Nuevo recepcionista
+        </a>
+    </div>
 
-                <form method="POST"
-                      action="{{ route('admin.recepcionistas.toggle', $r) }}"
-                      style="display:inline">
-                    @csrf
-                    <button>
-                        {{ $r->active ? 'Desactivar' : 'Activar' }}
-                    </button>
-                </form>
-            </td>
-        </tr>
-    @endforeach
-</table>
+    <livewire:admin.recepcionista-index />
+
+</div>
+
+@livewireScripts
+</body>
+</html>

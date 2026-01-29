@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Editar promoción</title>
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     @livewireStyles
 </head>
 

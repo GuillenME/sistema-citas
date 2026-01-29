@@ -1,13 +1,29 @@
-<h2>Nuevo recepcionista</h2>
+<!DOCTYPE html>
+<html lang="es">
 
-<form method="POST" action="{{ route('admin.recepcionistas.store') }}">
-    @csrf
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo recepcionista</title>
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    @livewireStyles
+</head>
 
-    <input name="nombre" placeholder="Nombre" required>
-    <input name="apellido" placeholder="Apellido">
-    <input name="email" placeholder="Email" required>
-    <input name="telefono" placeholder="Teléfono">
-    <input type="password" name="password" placeholder="Contraseña" required>
+<body>
 
-    <button>Guardar</button>
-</form>
+    <div class="dashboard">
+
+        <div class="header">
+            <div class="header-left">
+                <a href="{{ route('admin.recepcionistas.index') }}" class="back-arrow">←</a>
+                <h1>Nuevo recepcionista</h1>
+            </div>
+        </div>
+
+        <livewire:admin.recepcionista-create />
+
+    </div>
+
+    @livewireScripts
+</body>
+
+</html>
