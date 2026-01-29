@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/cliente.css') }}">
 </head>
 
-<body>
+<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
 
     <header>
         <a href="{{ route('cliente.dashboard') }}" class="back-btn">←</a>
@@ -78,6 +78,22 @@
                     AGENDAR CITA
                 </button>
             </form>
+            <div class="anticipo">
+                <h4>⚠ Anticipo requerido</h4>
+                <p>Se solicita un <strong>{{ $porcentajeAnticipo }}%</strong> para confirmar la cita</p>
+                <p>El <strong>{{ $porcentajeRestante }}%</strong> restante se pagará después de la cita</p>
+
+                <p style="margin-top:10px;color:#fde68a;font-weight:bold;">
+                    ⏳ Tienes <strong>15 minutos</strong> para realizar la transferencia y subir el comprobante.
+                    De lo contrario, la cita se cancelará automáticamente.
+                </p>
+
+                <p>
+                    Banco: {{ config('citas.banco.nombre') }}<br>
+                    Cuenta: {{ config('citas.banco.cuenta') }}<br>
+                    CLABE: {{ config('citas.banco.clabe') }}
+                </p>
+            </div>
 
         </div>
     </div>
