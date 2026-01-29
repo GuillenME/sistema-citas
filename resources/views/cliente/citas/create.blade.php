@@ -472,23 +472,21 @@
         }
 
         .container {
-        min-height: calc(100vh - 80px);
-        display: flex;
-        justify-content: flex-start; 
-        align-items: flex-start;
-        padding: 40px 80px; 
+            min-height: calc(100vh - 80px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
         }
 
-       .card {
-        width: 100%;
-        max-width: 1200px; 
-        background: rgba(17,24,39,.85);
-        padding: 40px; 
-        border-radius: 18px;
-        color: #fff;
-        box-shadow:
-            0 0 30px rgba(42,22,218,.6),
-            inset 0 0 20px rgba(42,22,218,.25);
+        .card {
+            width: 100%;
+            max-width: 520px;
+            background: rgba(17,24,39,.85);
+            padding: 28px;
+            border-radius: 16px;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(42,22,218,.6);
         }
 
         h2 { text-align: center; }
@@ -523,24 +521,20 @@
         .error-box ul { margin: 0; padding-left: 18px; }
 
         .input-error {
-        border: 2px solid #ef4444 !important;
-        background: rgba(239, 68, 68, 0.15);
-        box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+            outline: 2px solid #ef4444 !important;
+            background: #fee2e2;
         }
-
 
         .field-error {
-        display: block;
-        margin-top: 6px;
-        font-size: 13px;
-        color: #ef4444; 
-        font-weight: bold;
+            display: block;
+            margin-top: 4px;
+            font-size: 13px;
+            color: #fecaca;
         }
-
 
         .submit-btn {
             margin-top: 22px;
-            width: 20%;
+            width: 100%;
             padding: 12px;
             border-radius: 8px;
             background: #1F4E79;
@@ -601,18 +595,6 @@
             header { flex-direction: column; }
             .back-btn { font-size: 32px; }
         }
-
-        .submit-wrapper {
-        display: flex;
-        justify-content: center;
-        margin-top: 30px;
-        }
-
-        .submit-btn {
-            max-width: 320px;   /* ancho elegante tipo web */
-            width: 100%;
-        }
-
     </style>
 </head>
 

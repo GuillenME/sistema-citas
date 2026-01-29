@@ -80,7 +80,93 @@
             transform: scale(1.05);
         }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+        /* ===== CONTENIDO ===== */
+=======
+=======
+
+>>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
+
+        /* Modal de confirmación */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(17, 24, 39, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(255, 45, 45, 0.6);
+            border: 2px solid rgba(255, 45, 45, 0.5);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .modal-content p {
+            margin-bottom: 25px;
+            color: #e5e7eb;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: transform .2s;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .modal-btn-confirm {
+            background: #ef4444;
+            color: #fff;
+            box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
+        }
+
+        .modal-btn-cancel {
+            background: #6b7280;
+            color: #fff;
+        }
+
         /* ===== CONTENEDOR ===== */
+=========
+        /* ===== CONTENIDO ===== */
+>>>>>>>>> Temporary merge branch 2
+=======
+        /* ===== CONTENIDO ===== */
+>>>>>>> 1da1fa6038a8562897321dcb222fed57747efed3
         .container {
             position: relative;
             z-index: 1;
@@ -201,6 +287,10 @@
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
         @csrf
         <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
+>>>>>>> 40ee0b7407f89a632201d65096135d790441c34d
+=======
+        <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
+>>>>>>> 7c1b0f747b943e023a0ceb4e028ce69428fccdb3
             Cerrar sesión
         </button>
     </form>

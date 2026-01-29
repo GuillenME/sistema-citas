@@ -4,10 +4,8 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 
-class Header extends Component
+class Navbar extends Component
 {
-    public string $title = '';
-
     public function abrirLogout()
     {
         $this->dispatch('abrirLogout');
@@ -15,6 +13,6 @@ class Header extends Component
 
     public function render()
     {
-        return view('livewire.admin.header');
+        return view('livewire.admin.navbar');
     }
 }
