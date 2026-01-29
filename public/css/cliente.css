@@ -470,20 +470,19 @@ header {
 
 .container {
     min-height: calc(100vh - 80px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
+    width: 100%;
+    padding: 40px 80px;
+    display: block;        
 }
 
 .card {
     width: 100%;
-    max-width: 520px;
-    background: rgba(17, 24, 39, .85);
-    padding: 28px;
-    border-radius: 16px;
+    max-width: 100%;      
+    background: rgba(17,24,39,.70);
+    padding: 40px 60px;
+    border-radius: 0;      
     color: #fff;
-    box-shadow: 0 0 25px rgba(42, 22, 218, .6);
+    box-shadow: none;      
 }
 
 h2 {
@@ -550,29 +549,28 @@ input {
 
 /* ===== PRIVACIDAD ===== */
 .privacy-box {
-    margin-top: 18px;
+    margin-top: 20px;
     width: 100%;
 }
 
 .privacy-label {
     display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    justify-content: flex-start;
-    text-align: left;
+    align-items: center;   
+    gap: 12px;
+    cursor: pointer;
 }
 
 .privacy-checkbox {
-    margin-top: 3px;
-    flex-shrink: 0;
     width: 18px;
     height: 18px;
+    accent-color: #1F4E79; 
+    cursor: pointer;
 }
 
 .privacy-text {
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 14px;
     color: #e5e7eb;
+    line-height: 1.4;
 }
 
 .privacy-link {
@@ -629,4 +627,18 @@ input {
 .modal-servicio-info {
     font-size: 14px;
     margin-bottom: 6px;
+}
+@media (max-width: 768px) {
+    .container {
+        padding: 25px 20px;
+    }
+
+    .card {
+        padding: 25px 20px;
+    }
+}
+@media (max-width: 480px) {
+    .privacy-label {
+        align-items: flex-start;
+    }
 }
