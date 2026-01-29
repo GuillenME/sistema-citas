@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar promoción</title>
-    @livewireStyles
-</head>
+@extends('layouts.admin')
 
-<body>
-    <div class="dashboard">
-        <h1>Editar promoción</h1>
+@section('title', 'Editar promoción')
 
-        <livewire:admin.promocion-edit :promocion="$promocion" />
-    </div>
-
-    @livewireScripts
-</body>
-</html>
+@section('content')
+    <livewire:admin.promocion-edit :promocion="$promocion" />
+@endsection

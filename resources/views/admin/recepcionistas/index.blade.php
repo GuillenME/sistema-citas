@@ -1,38 +1,13 @@
-<h1>Recepcionistas</h1>
+@extends('layouts.admin')
 
-@if(session('success'))
-    <p style="color:green">{{ session('success') }}</p>
-@endif
+@section('title', 'Recepcionistas')
 
-<a href="{{ route('admin.recepcionistas.create') }}">➕ Nuevo recepcionista</a>
+@section('header-actions')
+    <a href="{{ route('admin.recepcionistas.create') }}" class="btn-create">
+        + Nuevo recepcionista
+    </a>
+@endsection
 
-<table>
-    <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Teléfono</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-    </tr>
-
-    @foreach($recepcionistas as $r)
-        <tr>
-            <td>{{ $r->name }} {{ $r->last_name }}</td>
-            <td>{{ $r->email }}</td>
-            <td>{{ $r->phone ?? '—' }}</td>
-            <td>{{ $r->active ? 'Activo' : 'Inactivo' }}</td>
-            <td>
-                <a href="{{ route('admin.recepcionistas.edit', $r) }}">Editar</a>
-
-                <form method="POST"
-                      action="{{ route('admin.recepcionistas.toggle', $r) }}"
-                      style="display:inline">
-                    @csrf
-                    <button>
-                        {{ $r->active ? 'Desactivar' : 'Activar' }}
-                    </button>
-                </form>
-            </td>
-        </tr>
-    @endforeach
-</table>
+@section('content')
+    <livewire:admin.recepcionista-index />
+@endsection
