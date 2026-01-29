@@ -1,29 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.admin')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Clientes</title>
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-    @livewireStyles
-</head>
+@section('title', 'Clientes')
 
-<body>
-
-    <div class="dashboard">
-
-        <div class="header">
-            <div class="header-left">
-                <a href="{{ route('admin.dashboard') }}" class="back-arrow">←</a>
-                <h1>Clientes</h1>
-            </div>
-        </div>
-
-        <livewire:admin.clientes-index />
-
-    </div>
-
-    @livewireScripts
-</body>
-
-</html>
+@section('content')
+    <livewire:admin.clientes-index />
+@endsection

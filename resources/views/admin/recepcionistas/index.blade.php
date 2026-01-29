@@ -1,31 +1,13 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Recepcionistas</title>
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-    @livewireStyles
-</head>
+@extends('layouts.admin')
 
-<body>
+@section('title', 'Recepcionistas')
 
-<div class="dashboard">
+@section('header-actions')
+    <a href="{{ route('admin.recepcionistas.create') }}" class="btn-create">
+        + Nuevo recepcionista
+    </a>
+@endsection
 
-    <div class="header">
-        <div class="header-left">
-            <a href="{{ route('admin.dashboard') }}" class="back-arrow">←</a>
-            <h1>Recepcionistas</h1>
-        </div>
-
-        <a href="{{ route('admin.recepcionistas.create') }}" class="btn-create">
-            + Nuevo recepcionista
-        </a>
-    </div>
-
+@section('content')
     <livewire:admin.recepcionista-index />
-
-</div>
-
-@livewireScripts
-</body>
-</html>
+@endsection

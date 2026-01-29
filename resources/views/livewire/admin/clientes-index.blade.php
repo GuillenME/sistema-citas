@@ -74,3 +74,6 @@
     @endif
 
 </div>
+    <div class="pagination-wrapper">
+        {{ $items->links() }}
+    </div>

@@ -4,9 +4,14 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use App\Models\Usuario;
+use Livewire\WithPagination;
 
 class RecepcionistaIndex extends Component
 {
+
+    use WithPagination;
+    protected $paginationTheme = 'simple-bootstrap';
+    
     public function toggleActivo(Usuario $usuario)
     {
         abort_if($usuario->role_id !== 3, 403);
@@ -19,7 +24,7 @@ class RecepcionistaIndex extends Component
     public function render()
     {
         return view('livewire.admin.recepcionista-index', [
-            'recepcionistas' => Usuario::where('role_id', 3)->get()
+            'recepcionistas' => Usuario::where('role_id', 3)->orderBy('id')->paginate(5)
         ]);
     }
 }

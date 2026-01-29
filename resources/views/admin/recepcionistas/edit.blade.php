@@ -1,29 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.admin')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Editar recepcionista</title>
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-    @livewireStyles
-</head>
+@section('title', 'Editar recepcionista')
 
-<body>
-
-    <div class="dashboard">
-
-        <div class="header">
-            <div class="header-left">
-                <a href="{{ route('admin.recepcionistas.index') }}" class="back-arrow">←</a>
-                <h1>Editar recepcionista</h1>
-            </div>
-        </div>
-
-        <livewire:admin.recepcionista-edit :usuario="$usuario" />
-
-    </div>
-
-    @livewireScripts
-</body>
-
-</html>
+@section('content')
+    <livewire:admin.recepcionista-edit :usuario="$usuario" />
+@endsection

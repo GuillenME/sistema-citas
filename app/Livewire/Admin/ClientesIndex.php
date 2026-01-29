@@ -4,14 +4,17 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use App\Models\Cliente;
+use Livewire\WithPagination;
 
 class ClientesIndex extends Component
 {
+    use WithPagination;
+
     public $clientes = [];
     public $clienteSeleccionado;
     public $accion; // activar | desactivar
     public $confirmar = false;
-
+    protected $paginationTheme = 'simple-bootstrap';
     public function mount()
     {
         $this->cargarClientes();
@@ -41,6 +44,6 @@ class ClientesIndex extends Component
 
     public function render()
     {
-        return view('livewire.admin.clientes-index');
+        return view('livewire.admin.clientes-index', ['items' => Cliente::orderBy('id')->paginate(5)]);
     }
 }
