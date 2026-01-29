@@ -4,13 +4,13 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 
 class LogoutModal extends Component
 {
-    public $mostrar = false;
+    public bool $mostrar = false;
 
-    protected $listeners = ['abrirLogout' => 'abrir'];
-
+    #[On('abrirLogout')]
     public function abrir()
     {
         $this->mostrar = true;
