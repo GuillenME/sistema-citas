@@ -299,10 +299,6 @@ footer span{
     </div>
 </div>
 
-<<<<<<<<< Temporary merge branch 1
-<<<<<<<<< Temporary merge branch 1
-=========
->>>>>>>>> Temporary merge branch 2
 <section>
     <h2>Nuestros Servicios</h2>
 
@@ -325,18 +321,12 @@ footer span{
         <button class="nav-btn right" onclick="scrollServices(1)">›</button>
     </div>
 </section>
-<<<<<<<<< Temporary merge branch 1
-
-=========
->>>>>>>>> Temporary merge branch 2
 
 {{-- NOTICIAS --}}
 <section>
 <livewire:noticias />
 
 </section>
-
-
 
 
 <footer>
@@ -363,7 +353,6 @@ footer span{
         });
     }
 </script>
-
 
 @livewireScripts
 
