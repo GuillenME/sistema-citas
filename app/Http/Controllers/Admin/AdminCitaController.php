@@ -12,11 +12,15 @@ class AdminCitaController extends Controller
 {
     public function index()
     {
-        $citas = Cita::with(['client', 'service', 'employee'])->get();
+        $citas = Cita::with(['client', 'service', 'employee'])
+            ->orderBy('date', 'desc')
+            ->paginate(5);
+
         $empleados = Empleado::where('active', 1)->get();
 
         return view('admin.citas.index', compact('citas', 'empleados'));
     }
+
 
     public function confirmar(Cita $cita)
     {

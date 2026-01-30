@@ -20,20 +20,21 @@
                         <td>${{ number_format($servicio->price, 2) }}</td>
                         <td>
                             @if ($servicio->active)
-                                <span class="badge badge-on">Sí</span>
+                                <span class="status-badge on">Activo</span>
                             @else
-                                <span class="badge badge-off">No</span>
+                                <span class="status-badge off">Inactivo</span>
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('admin.servicios.edit', $servicio) }}" class="btn-edit">
+                            <a href="{{ route('admin.servicios.edit', $servicio) }}"
+                               class="action-link edit">
                                 Editar
                             </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" style="text-align:center; color:#9ca3af;">
+                        <td colspan="5" class="table-empty">
                             No hay servicios registrados
                         </td>
                     </tr>
@@ -42,7 +43,6 @@
         </table>
     </div>
 
-    {{-- PAGINACIÓN --}}
     <div class="pagination-wrapper">
         {{ $servicios->links() }}
     </div>
