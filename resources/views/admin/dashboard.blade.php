@@ -5,7 +5,6 @@
 @section('content')
 <div class="admin-home-wrapper">
 <div class="admin-home">
-<h1>Panel del Administrador</h1>
    
 
     <div class="admin-cards">
