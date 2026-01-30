@@ -47,7 +47,7 @@ class PromocionCreate extends Component
         $promocion = Promocion::create([
             'title' => $this->titulo,
             'description' => $this->descripcion,
-            'discount_percent' => $this->descuento,
+            'discount' => $this->descuento,
             'start_date' => $this->fecha_inicio,
             'end_date' => $this->fecha_fin,
             'image' => $path,
