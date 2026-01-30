@@ -1,16 +1,36 @@
-<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <title>
+        @hasSection('title')
+            @yield('title') | Sistema Citas
+        @else
+            Sistema Citas
+        @endif
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    @livewireStyles
+</head>
 <body>
 
     <livewire:admin.navbar />
 
     <main class="dashboard">
+
+        {{-- SOLO mostrar header si la vista lo define --}}
+        @hasSection('page-title')
         <header class="page-header">
-            <h1>@yield('title')</h1>
+            <h1>@yield('page-title')</h1>
 
             <div class="page-actions">
                 @yield('header-actions')
             </div>
         </header>
+        @endif
 
         @yield('content')
     </main>
@@ -19,3 +39,4 @@
 
     @livewireScripts
 </body>
+</html>

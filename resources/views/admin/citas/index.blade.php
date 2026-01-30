@@ -3,16 +3,7 @@
 @section('title', 'Gestión de citas')
 
 @section('content')
-
-    {{-- MENSAJES --}}
-    @if (session('success'))
-        <div class="alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert-error">{{ session('error') }}</div>
-    @endif
-
+<div class="full-table">
     <div class="table-container">
         <table>
             <thead>
@@ -28,44 +19,30 @@
                     <th>Observaciones</th>
                 </tr>
             </thead>
-
             <tbody>
                 @foreach ($citas as $cita)
-                    <tr>
-                        <td>{{ $cita->client->user->name }}</td>
-                        <td>{{ $cita->service->name }}</td>
-                        <td>{{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}</td>
-                        <td>{{ $cita->start_time }} - {{ $cita->end_time }}</td>
-
-                        <td>
-                            {{ $cita->employee?->name ?? '— Sin asignar —' }}
-                        </td>
-
-                        <td>
-                            <span class="estado {{ $cita->status }}">
-                                {{ str_replace('_', ' ', ucfirst($cita->status)) }}
-                            </span>
-                        </td>
-
-                        <td>
-                            @if ($cita->receipt)
-                                <a href="{{ asset('storage/' . $cita->receipt) }}" target="_blank">Ver</a>
-                            @else
-                                —
-                            @endif
-                        </td>
-
-                        <td>
+                <tr>
+                    <td>{{ $cita->client->user->name }}</td>
+                    <td>{{ $cita->service->name }}</td>
+                    <td>{{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}</td>
+                    <td>{{ $cita->start_time }} - {{ $cita->end_time }}</td>
+                    <td>{{ $cita->employee?->name ?? '— Sin asignar —' }}</td>
+                    <td>{{ ucfirst($cita->status) }}</td>
+                    <td>
+                        @if ($cita->receipt)
+                            <a href="{{ asset('storage/'.$cita->receipt) }}">Ver</a>
+                        @else
                             —
-                        </td>
-
-                        <td style="max-width:200px; text-align:left;">
-                            {{ $cita->notes ?? '—' }}
-                        </td>
-                    </tr>
+                        @endif
+                    </td>
+                    <td>—</td>
+                    <td class="notes-cell">
+                        {{ $cita->notes ?? '—' }}
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-
+</div>
 @endsection

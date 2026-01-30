@@ -4,6 +4,7 @@
             Sistema Citas
         </a>
 
+        <a href="{{ route('admin.citas.index') }}">Citas</a>
         <a href="{{ route('admin.promociones.index') }}">Promociones</a>
         <a href="{{ route('admin.servicios.index') }}">Servicios</a>
         <a href="{{ route('admin.clientes.index') }}">Clientes</a>
