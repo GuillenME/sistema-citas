@@ -15,9 +15,17 @@ html{
 body{
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #0f172a;
     color: #e5e7eb;
+
+    background-image: 
+        linear-gradient(rgba(2,6,23,0.15), rgba(2,6,23,0.45)),
+        url("{{ asset('imagenes/serviciosFon.png') }}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
+
 
 /* ================= HEADER ================= */
 header{
@@ -87,25 +95,25 @@ nav a:hover{
         }
 
         .card{
-            background: rgba(17, 24, 39, 0.85);
+            background: rgba(101, 193, 240, 0.45);
             border-radius:16px;
-            padding:30px;
+            padding:15px;
             border:1px solid rgba(255,255,255,.15);
             transition:.3s;
         }
 
         .card:hover{
             transform: translateY(-6px);
-            box-shadow:0 0 25px rgba(99,102,241,.5);
+            box-shadow:0 0 25px rgba(99,102,241,.9);
         }
 
         .card h3{
-            color:#93c5fd;
+            color: #fff;
             margin-bottom:10px;
         }
 
         .price{
-            color:#4ade80;
+            color: #4ade80;
             font-weight:bold;
             margin-top:10px;
         }
@@ -120,15 +128,15 @@ nav a:hover{
             margin-top:15px;
             padding:10px 16px;
             border-radius:10px;
-            border:1px solid #22c55e;
-            color:#fff;
+            border:1px solid #4ade80;
+            color: #fff;
             text-decoration:none;
             font-size:13px;
-            box-shadow:0 0 12px rgba(34,197,94,.6);
+            box-shadow:0 0 12px rgba(40, 197, 34, 0.6);
         }
 
         .btn:hover{
-            box-shadow:0 0 20px rgba(34,197,94,1);
+            box-shadow:0 0 20px rgb(34, 197, 42);
         }
         /* ================= MODAL ================= */
 .modal{
@@ -146,13 +154,13 @@ nav a:hover{
 }
 
 .modal-content{
-    background:rgba(17,24,39,.95);
+    background:rgba(101, 193, 240, 0.45);
     padding:30px;
     border-radius:18px;
     width:90%;
     max-width:420px;
     border:1px solid rgba(255,255,255,.15);
-    box-shadow:0 0 30px rgba(99,102,241,.6);
+    box-shadow:0 0 30px rgba(101, 193, 240, 0.45);
     animation: zoom .3s ease;
 }
 
@@ -162,7 +170,7 @@ nav a:hover{
 }
 
 .modal-content h2{
-    color:#93c5fd;
+    color:#fff;
     margin-bottom:10px;
 }
 
@@ -189,13 +197,12 @@ nav a:hover{
     <div class="logo">Barbería & Spa</div>
 
     <nav>
-    <a href="{{ url('/') }}#inicio">Inicio</a>
-    <a href="{{ route('servicios') }}">Servicios</a>
-    <a href="{{ route('promociones') }}">Promociones</a>
-    <a href="{{ url('/') }}#contacto">Contacto</a>
-    <a href="{{ url('/') }}#noticias">Noticias & Novedades</a>
-</nav>
-
+        <a href="#inicio">Inicio</a>
+        <a href="{{ route('servicios') }}">Servicios</a>
+        <a href="#promos">Promociones</a>
+        <a href="#contacto">Contacto</a>
+        <a href="#noticias">Noticias & Novedades</a>
+    </nav>
 
    <a href="{{ route('login') }}" class="login-icon">
     <img src="{{ asset('imagenes/usuario.png') }}" alt="Iniciar sesión" class="icon-img">
