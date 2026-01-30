@@ -197,7 +197,7 @@ nav a:hover{
     <div class="logo">Barbería & Spa</div>
 
     <nav>
-        <a href="#inicio">Inicio</a>
+        <a href="{{ route('home') }}">Inicio</a>
         <a href="{{ route('servicios') }}">Servicios</a>
         <a href="#promos">Promociones</a>
         <a href="#contacto">Contacto</a>

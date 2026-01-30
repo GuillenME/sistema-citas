@@ -13,6 +13,7 @@ class LogoutModal extends Component
     #[On('abrirLogout')]
     public function abrir()
     {
+        logger('MODAL RECIBIÓ EVENTO');
         $this->mostrar = true;
     }
 

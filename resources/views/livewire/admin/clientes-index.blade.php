@@ -1,3 +1,4 @@
+<div class="card">
 <div class="table-container">
 
     <table>
@@ -74,6 +75,8 @@
     @endif
 
 </div>
+
     <div class="pagination-wrapper">
         {{ $items->links() }}
     </div>
+</div>

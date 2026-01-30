@@ -3,6 +3,7 @@
 @section('title', 'Gestión de citas')
 
 @section('content')
+<h1>Gestión de Citas</h1>
 <div class="full-table">
     <div class="table-container">
         <table>

@@ -1,3 +1,4 @@
+<div class="card">
 <div class="table-container">
 
     <table>
@@ -42,6 +43,9 @@
         </tbody>
     </table>
 </div>
+
     <div class="pagination-wrapper">
         {{ $recepcionistas->links() }}
+ 
+ </div>
     </div>
