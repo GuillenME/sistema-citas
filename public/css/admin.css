@@ -365,13 +365,13 @@ select:focus {
 /* Confirmar */
 
 .btn-save {
-    background: linear-gradient(135deg, #ef4444, #ef4444);
+    background: linear-gradient(135deg, #22c55e, #16a34a);
     border: none;
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.9);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.9);
 }
 
 .btn-save:hover {
-    box-shadow: 0 0 25px rgba(239, 68, 68, 0.9);
+    box-shadow: 0 0 25px rgba(34, 197, 94, 1);
 }
 
 .modal-overlay.active {
@@ -400,11 +400,6 @@ select:focus {
     transform: scale(1.05);
     box-shadow: 0 0 20px rgba(239, 68, 68, 1);
 }
-
-
-/* =========================
-   PREVIEW DE IMAGEN
-========================= */
 
 .preview {
     max-width: 220px;
