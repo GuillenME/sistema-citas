@@ -1,10 +1,11 @@
 @extends('layouts.admin')
 
-@section('title', 'Panel del Administrador')
+@section('title', 'Administrador')
 
 @section('content')
+<div class="admin-home-wrapper">
 <div class="admin-home">
-
+<h1>Panel del Administrador</h1>
    
 
     <div class="admin-cards">
@@ -40,6 +41,6 @@
         </a>
 
     </div>
-
+</div>
 </div>
 @endsection
