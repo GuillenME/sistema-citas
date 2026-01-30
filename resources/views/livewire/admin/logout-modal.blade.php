@@ -13,6 +13,7 @@
                     <button class="btn btn-save" wire:click="logout">
                         Sí, cerrar sesión
                     </button>
+
                 </div>
             </div>
         </div>

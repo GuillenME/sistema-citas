@@ -2,13 +2,14 @@
 
 namespace App\Livewire\Admin;
 
+use App\Livewire\Admin\LogoutModal;
 use Livewire\Component;
 
 class Navbar extends Component
 {
     public function abrirLogout()
     {
-        $this->dispatch('abrirLogout');
+        $this->dispatch('abrirLogout')->to(LogoutModal::class);
     }
 
     public function render()

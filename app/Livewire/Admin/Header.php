@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
+use App\Livewire\Admin\LogoutModal;
 
 class Header extends Component
 {
@@ -10,7 +11,7 @@ class Header extends Component
 
     public function abrirLogout()
     {
-        $this->dispatch('abrirLogout');
+        $this->dispatch('abrirLogout')->to(LogoutModal::class);
     }
 
     public function render()
@@ -18,3 +19,4 @@ class Header extends Component
         return view('livewire.admin.header');
     }
 }
+

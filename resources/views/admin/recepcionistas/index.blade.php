@@ -3,11 +3,13 @@
 @section('title', 'Recepcionistas')
 
 @section('header-actions')
-    <a href="{{ route('admin.recepcionistas.create') }}" class="btn-create">
-        + Nuevo recepcionista
-    </a>
+    
 @endsection
 
 @section('content')
+<a href="{{ route('admin.recepcionistas.create') }}" class="btn-create">
+        + Nuevo recepcionista
+    </a>
+    <h1>Recepcionistas</h1>
     <livewire:admin.recepcionista-index />
 @endsection
