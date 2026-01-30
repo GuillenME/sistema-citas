@@ -34,7 +34,8 @@
 
         <div class="form-group full">
             <label>Servicios aplicables</label>
-            <select multiple wire:model.defer="servicios">
+            {{-- 🔥 SIN defer para evitar bugs --}}
+            <select multiple wire:model="servicios">
                 @foreach($listaServicios as $servicio)
                     <option value="{{ $servicio->id }}">
                         {{ $servicio->name }}
@@ -42,6 +43,12 @@
                 @endforeach
             </select>
             @error('servicios') <span class="error">{{ $message }}</span> @enderror
+        </div>
+
+        {{-- ✅ CHECKBOX ARREGLADO --}}
+        <div class="form-group full checkbox">
+            <input type="checkbox" id="publicada" wire:model="publicada">
+            <label for="publicada">Publicar promoción</label>
         </div>
 
         <div class="form-group">
@@ -60,11 +67,6 @@
             </div>
         @endif
 
-        <div class="form-group full checkbox">
-            <input type="checkbox" wire:model="publicada">
-            <label>Publicar promoción</label>
-        </div>
-
     </div>
 
     <div class="actions">
@@ -79,7 +81,7 @@
         </button>
     </div>
 
-    {{-- MODAL --}}
+    {{-- MODAL CONFIRMACIÓN --}}
     @if ($confirmar)
         <div class="modal-overlay" wire:click.self="$set('confirmar', false)">
             <div class="modal-box">
@@ -93,8 +95,10 @@
                     </button>
 
                     <button class="btn btn-save"
-                            wire:click="actualizar">
-                        Sí, guardar
+                            wire:click="actualizar"
+                            wire:loading.attr="disabled">
+                        <span wire:loading.remove>Sí, guardar</span>
+                        <span wire:loading>Guardando…</span>
                     </button>
                 </div>
             </div>

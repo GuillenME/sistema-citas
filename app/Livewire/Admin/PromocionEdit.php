@@ -27,61 +27,66 @@ class PromocionEdit extends Component
     protected $rules = [
         'titulo' => 'required|min:3',
         'descripcion' => 'required|min:10',
-        'descuento' => 'required|integer|min:1|max:100',
+        'descuento' => 'required|numeric|min:1|max:100',
         'fecha_inicio' => 'required|date',
         'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
         'servicios' => 'required|array|min:1',
         'image' => 'nullable|image|max:2048',
     ];
 
+
     public function mount(Promocion $promocion)
     {
         $this->promocion = $promocion;
 
-        $this->titulo = $promocion->title;
-        $this->descripcion = $promocion->description;
-        $this->descuento = $promocion->discount;
+        $this->titulo       = $promocion->title;
+        $this->descripcion  = $promocion->description;
+        $this->descuento    = $promocion->discount;
+        $this->fecha_inicio = optional($promocion->start_date)->format('Y-m-d');
+        $this->fecha_fin    = optional($promocion->end_date)->format('Y-m-d');
+        $this->publicada    = (bool) $promocion->published;
 
-        // ⚠️ FORMATO CORRECTO PARA INPUT DATE
-        $this->fecha_inicio = $promocion->start_date?->format('Y-m-d');
-        $this->fecha_fin    = $promocion->end_date?->format('Y-m-d');
-
-        $this->publicada = (bool) $promocion->active;
-        $this->servicios = $promocion->servicios->pluck('id')->toArray();
+        $this->servicios = $promocion
+            ->servicios()
+            ->pluck('services.id')
+            ->toArray();
     }
 
     public function abrirConfirmacion()
     {
-        //dd('SI ENTRA A ABRIR CONFIRMACION');
-        $this->validate();
+        // 🚨 SIN VALIDAR AQUÍ
         $this->confirmar = true;
     }
 
     public function actualizar()
     {
+        $this->validate();
+
         if ($this->image) {
-            $this->promocion->image = $this->image->store('promociones', 'public');
+            $this->promocion->image =
+                $this->image->store('promociones', 'public');
         }
 
         $this->promocion->update([
-            'title' => $this->titulo,
+            'title'       => $this->titulo,
             'description' => $this->descripcion,
-            'discount' => $this->descuento,
-            'start_date' => $this->fecha_inicio,
-            'end_date' => $this->fecha_fin,
-            'active' => $this->publicada,
+            'discount'    => (float) $this->descuento,
+            'start_date'  => $this->fecha_inicio,
+            'end_date'    => $this->fecha_fin,
+            'published'   => $this->publicada,
         ]);
 
         $this->promocion->servicios()->sync($this->servicios);
 
+        $this->confirmar = false;
+
         return redirect()->route('admin.promociones.index');
     }
 
-    
+
 
     public function render()
     {
-        logger('RENDER PROMOCION EDIT');
         return view('livewire.admin.promocion-edit', [
             'listaServicios' => Servicio::where('active', true)->get(),
         ]);

@@ -361,6 +361,7 @@ select:focus {
 }
 
 /* =========================
+<<<<<<< HEAD
    BOTÓN CERRAR SESIÓN (ADMIN)
 ========================= */
 .btn-logout {
@@ -381,3 +382,49 @@ select:focus {
     box-shadow: 0 0 20px rgba(239, 68, 68, 1);
 }
 
+=======
+   PREVIEW DE IMAGEN
+========================= */
+.preview {
+    max-width: 220px;
+    max-height: 160px;
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-top: 10px;
+    border: 1px solid rgba(255,255,255,.15);
+    box-shadow: 0 0 12px rgba(99,102,241,.4);
+}
+
+.image-preview-wrapper {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* =========================
+   CHECKBOX ADMIN
+========================= */
+.form-group.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.form-group.checkbox label {
+    margin: 0;
+    font-size: 14px;
+    color: #c7d2fe;
+    cursor: pointer;
+}
+
+/* Reset solo para checkbox */
+.form-group.checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #6366f1;
+    cursor: pointer;
+}
+>>>>>>> 191a69ea3b93488925865a3a192ab0ea2da2b5ce
