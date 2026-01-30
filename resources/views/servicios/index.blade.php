@@ -196,13 +196,13 @@ nav a:hover{
 <header>
     <div class="logo">Barbería & Spa</div>
 
-    <nav>
-        <a href="{{ route('home') }}">Inicio</a>
-        <a href="{{ route('servicios') }}">Servicios</a>
-        <a href="#promos">Promociones</a>
-        <a href="#contacto">Contacto</a>
-        <a href="#noticias">Noticias & Novedades</a>
-    </nav>
+   <nav>
+    <a href="{{ url('/') }}#inicio">Inicio</a>
+    <a href="{{ route('servicios') }}">Servicios</a>
+    <a href="{{ route('promociones') }}">Promociones</a>
+    <a href="{{ url('/') }}#contacto">Contacto</a>
+    <a href="{{ url('/') }}#noticias">Noticias & Novedades</a>
+</nav>
 
    <a href="{{ route('login') }}" class="login-icon">
     <img src="{{ asset('imagenes/usuario.png') }}" alt="Iniciar sesión" class="icon-img">
