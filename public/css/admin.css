@@ -1,15 +1,18 @@
 /* =========================
    RESET
 ========================= */
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+
 /* =========================
    BODY (NEUTRO PARA ADMIN)
 ========================= */
+
 body {
     min-height: 100vh;
     font-family: Arial, sans-serif;
@@ -18,9 +21,11 @@ body {
     color: #e5e7eb;
 }
 
+
 /* =========================
    NAVBAR
 ========================= */
+
 .navbar {
     position: sticky;
     top: 0;
@@ -50,17 +55,21 @@ body {
     margin-right: 25px;
 }
 
+
 /* =========================
    DASHBOARD BASE
 ========================= */
+
 .dashboard {
     width: 100%;
     padding: 40px;
 }
 
+
 /* =========================
    PAGE HEADER (TÍTULOS)
 ========================= */
+
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -71,14 +80,14 @@ body {
 .page-header h1 {
     font-size: 30px;
     letter-spacing: 1px;
-    text-shadow:
-        0 0 10px rgba(99, 102, 241, .8),
-        0 0 25px rgba(99, 102, 241, .6);
+    text-shadow: 0 0 10px rgba(99, 102, 241, .8), 0 0 25px rgba(99, 102, 241, .6);
 }
+
 
 /* =========================
    ADMIN HOME (DASHBOARD BONITO)
 ========================= */
+
 .admin-home-wrapper {
     min-height: calc(100vh - 70px);
     background: radial-gradient(circle at top, #1e1b4b, #020617);
@@ -86,11 +95,10 @@ body {
     justify-content: center;
     align-items: center;
     margin: -40px;
-    margin-top: -30px; 
+    margin-top: -30px;
     padding: 40px;
     width: calc(100% + 80px);
 }
-
 
 .admin-home {
     width: 100%;
@@ -104,9 +112,7 @@ body {
     margin-bottom: 40px;
     font-size: 32px;
     letter-spacing: 1px;
-    text-shadow:
-        0 0 10px rgba(99, 102, 241, .8),
-        0 0 25px rgba(99, 102, 241, .6);
+    text-shadow: 0 0 10px rgba(99, 102, 241, .8), 0 0 25px rgba(99, 102, 241, .6);
 }
 
 .admin-cards {
@@ -125,16 +131,12 @@ body {
     color: #fff;
     border: 1px solid rgba(255, 255, 255, .15);
     transition: transform .25s, box-shadow .25s;
-    box-shadow:
-        0 0 25px rgba(99, 102, 241, .35),
-        inset 0 0 10px rgba(99, 102, 241, .25);
+    box-shadow: 0 0 25px rgba(99, 102, 241, .35), inset 0 0 10px rgba(99, 102, 241, .25);
 }
 
 .admin-card:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow:
-        0 0 35px rgba(99, 102, 241, .9),
-        inset 0 0 15px rgba(99, 102, 241, .5);
+    box-shadow: 0 0 35px rgba(99, 102, 241, .9), inset 0 0 15px rgba(99, 102, 241, .5);
 }
 
 .admin-card span {
@@ -148,23 +150,25 @@ body {
     letter-spacing: 1px;
 }
 
+
 /* =========================
    CARDS (FORMULARIOS / CAJAS)
 ========================= */
+
 .card {
     background: rgba(17, 24, 39, .75);
     backdrop-filter: blur(12px);
     border-radius: 16px;
     padding: 30px;
     border: 1px solid rgba(255, 255, 255, .15);
-    box-shadow:
-        0 0 25px rgba(99, 102, 241, .35),
-        inset 0 0 10px rgba(99, 102, 241, .25);
+    box-shadow: 0 0 25px rgba(99, 102, 241, .35), inset 0 0 10px rgba(99, 102, 241, .25);
 }
+
 
 /* =========================
    FORMULARIOS
 ========================= */
+
 label {
     display: block;
     margin-top: 18px;
@@ -199,9 +203,11 @@ select:focus {
     box-shadow: 0 0 12px rgba(129, 140, 248, .6);
 }
 
+
 /* =========================
    BOTONES
 ========================= */
+
 .btn {
     background: transparent;
     border-radius: 10px;
@@ -218,9 +224,11 @@ select:focus {
     transform: scale(1.05);
 }
 
+
 /* =========================
    TABLAS (GESTIÓN)
 ========================= */
+
 .full-table {
     margin-left: -40px;
     margin-right: -40px;
@@ -263,9 +271,11 @@ select:focus {
     line-height: 1.4;
 }
 
+
 /* =========================
    PAGINACIÓN
 ========================= */
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -288,9 +298,11 @@ select:focus {
     background: rgba(99, 102, 241, .45);
 }
 
+
 /* =========================
    MODAL (ADMIN STYLE)
 ========================= */
+
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -308,18 +320,18 @@ select:focus {
     padding: 30px;
     width: 100%;
     max-width: 420px;
-    border: 1px solid rgba(255,255,255,.15);
-    box-shadow:
-        0 0 30px rgba(99,102,241,.6),
-        inset 0 0 15px rgba(99,102,241,.25);
+    border: 1px solid rgba(255, 255, 255, .15);
+    box-shadow: 0 0 30px rgba(99, 102, 241, .6), inset 0 0 15px rgba(99, 102, 241, .25);
     color: #e5e7eb;
 }
 
+
 /* Texto */
+
 .modal-box h3 {
     font-size: 20px;
     margin-bottom: 10px;
-    text-shadow: 0 0 10px rgba(99,102,241,.6);
+    text-shadow: 0 0 10px rgba(99, 102, 241, .6);
 }
 
 .modal-box p {
@@ -328,7 +340,9 @@ select:focus {
     color: #c7d2fe;
 }
 
+
 /* Botones */
+
 .modal-actions {
     display: flex;
     gap: 15px;
@@ -339,13 +353,17 @@ select:focus {
     padding: 10px 20px;
 }
 
+
 /* Cancelar */
+
 .btn-cancel {
-    border: 1px solid rgba(255,255,255,.3);
+    border: 1px solid rgba(255, 255, 255, .3);
     background: transparent;
 }
 
+
 /* Confirmar */
+
 .btn-save {
     background: linear-gradient(135deg, #ef4444, #ef4444);
     border: none;
@@ -360,10 +378,11 @@ select:focus {
     display: flex;
 }
 
+
 /* =========================
-<<<<<<< HEAD
    BOTÓN CERRAR SESIÓN (ADMIN)
 ========================= */
+
 .btn-logout {
     background: transparent;
     border: 2px solid #ef4444;
@@ -382,9 +401,11 @@ select:focus {
     box-shadow: 0 0 20px rgba(239, 68, 68, 1);
 }
 
-=======
+
+/* =========================
    PREVIEW DE IMAGEN
 ========================= */
+
 .preview {
     max-width: 220px;
     max-height: 160px;
@@ -393,8 +414,8 @@ select:focus {
     object-fit: contain;
     border-radius: 12px;
     margin-top: 10px;
-    border: 1px solid rgba(255,255,255,.15);
-    box-shadow: 0 0 12px rgba(99,102,241,.4);
+    border: 1px solid rgba(255, 255, 255, .15);
+    box-shadow: 0 0 12px rgba(99, 102, 241, .4);
 }
 
 .image-preview-wrapper {
@@ -403,9 +424,11 @@ select:focus {
     justify-content: flex-start;
 }
 
+
 /* =========================
    CHECKBOX ADMIN
 ========================= */
+
 .form-group.checkbox {
     display: flex;
     align-items: center;
@@ -420,11 +443,12 @@ select:focus {
     cursor: pointer;
 }
 
+
 /* Reset solo para checkbox */
+
 .form-group.checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
     accent-color: #6366f1;
     cursor: pointer;
 }
->>>>>>> 191a69ea3b93488925865a3a192ab0ea2da2b5ce
