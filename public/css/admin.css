@@ -238,16 +238,16 @@ select:focus {
     border-collapse: collapse;
 }
 
-.table-container th {
+/* .table-container th {
     text-align: left;
     padding: 14px;
     font-size: 14px;
     color: #c7d2fe;
     border-bottom: 1px solid rgba(255, 255, 255, .2);
     white-space: nowrap;
-}
+} */
 
-.table-container td {
+/* .table-container td {
     padding: 14px;
     font-size: 14px;
     border-bottom: 1px solid rgba(255, 255, 255, .08);
@@ -256,7 +256,7 @@ select:focus {
 
 .table-container tr:hover {
     background: rgba(99, 102, 241, .08);
-}
+} */
 
 .notes-cell {
     max-width: 280px;
@@ -426,4 +426,29 @@ select:focus {
     height: 18px;
     accent-color: #6366f1;
     cursor: pointer;
+}
+
+/* =========================
+   HEADER FIX (BOTONES + TÍTULO)
+========================= */
+.page-header {
+    margin-bottom: 35px;
+}
+
+.page-actions .btn {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    box-shadow: 0 0 18px rgba(239, 68, 68, 0.9);
+}
+
+.page-actions .btn:hover {
+    box-shadow: 0 0 28px rgba(239, 68, 68, 1);
+}
+
+.page-actions .btn-save {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.9);
+}
+
+.page-actions .btn-save:hover {
+    box-shadow: 0 0 25px rgba(34, 197, 94, 1);
 }

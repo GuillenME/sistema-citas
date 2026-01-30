@@ -1,7 +1,7 @@
-<div class="card">
+<div class="card table-card">
 
     <div class="table-container">
-        <table>
+        <table class="admin-table">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -19,21 +19,20 @@
                         <td>{{ $servicio->duration_minutes }} min</td>
                         <td>${{ number_format($servicio->price, 2) }}</td>
                         <td>
-                            @if ($servicio->active)
-                                <span class="badge badge-on">Sí</span>
-                            @else
-                                <span class="badge badge-off">No</span>
-                            @endif
+                            <span class="badge {{ $servicio->active ? 'badge-on' : 'badge-off' }}">
+                                {{ $servicio->active ? 'Activo' : 'Inactivo' }}
+                            </span>
                         </td>
-                        <td>
-                            <a href="{{ route('admin.servicios.edit', $servicio) }}" class="btn-edit">
+                        <td class="table-actions">
+                            <a href="{{ route('admin.servicios.edit', $servicio) }}"
+                               class="action-link edit">
                                 Editar
                             </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" style="text-align:center; color:#9ca3af;">
+                        <td colspan="5" class="table-empty">
                             No hay servicios registrados
                         </td>
                     </tr>
@@ -42,7 +41,6 @@
         </table>
     </div>
 
-    {{-- PAGINACIÓN --}}
     <div class="pagination-wrapper">
         {{ $servicios->links() }}
     </div>

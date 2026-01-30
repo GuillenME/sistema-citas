@@ -1,6 +1,7 @@
-<div>
-    <div class="card table-container">
-        <table>
+<div class="card table-card">
+    <div class="table-container">
+
+        <table class="admin-table">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -16,13 +17,11 @@
                         <td>{{ $e->name }}</td>
                         <td>{{ $e->specialty }}</td>
                         <td>
-                            @if($e->active)
-                                <span class="badge badge-on">Activo</span>
-                            @else
-                                <span class="badge badge-off">Inactivo</span>
-                            @endif
+                            <span class="badge {{ $e->active ? 'badge-on' : 'badge-off' }}">
+                                {{ $e->active ? 'Activo' : 'Inactivo' }}
+                            </span>
                         </td>
-                        <td class="actions">
+                        <td class="table-actions">
                             <a href="{{ route('admin.empleados.edit', $e) }}" class="btn-edit">
                                 Editar
                             </a>
@@ -34,7 +33,9 @@
                     </tr>
                 @endforeach
             </tbody>
+
         </table>
+
     </div>
 
     <div class="pagination-wrapper">
