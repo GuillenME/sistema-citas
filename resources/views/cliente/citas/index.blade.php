@@ -7,7 +7,7 @@
 
     <!-- RESPONSIVE -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ asset('css/cliente-mis-citas.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/clientes/cliente-mis-citas.css') }}">
 
 
 </head>

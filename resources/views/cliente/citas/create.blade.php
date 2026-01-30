@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Agendar cita</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ asset('css/cliente.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/clientes/cliente.css') }}">
 </head>
 
 <body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
