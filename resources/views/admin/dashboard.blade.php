@@ -34,6 +34,11 @@
             <strong>Gestionar clientes</strong>
         </a>
 
+        <a href="{{ route('admin.noticias.index') }}" class="admin-card">
+            <span>📰</span>
+            <strong>Gestionar noticias</strong>
+        </a>
+
         <a href="{{ route('admin.recepcionistas.index') }}" class="admin-card">
             <span>👩🏽‍💻👨🏽‍💻</span>
             <strong>Gestionar recepcionistas</strong>

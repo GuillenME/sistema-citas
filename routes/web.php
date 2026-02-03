@@ -97,6 +97,16 @@ Route::middleware(['auth', 'rol:1'])
             ->except(['create', 'edit'])
             ->parameters(['promociones' => 'promocion']);
 
+        Route::get('/servicios/plantilla', [AdminServicioController::class, 'downloadTemplate'])
+            ->name('servicios.template');
+
+        Route::get('/servicios/import', function () {
+            return view('admin.servicios.import');
+        })->name('servicios.import');
+
+        Route::post('/servicios/import', [AdminServicioController::class, 'importCsv'])
+            ->name('servicios.import.store');
+
         Route::resource('servicios', AdminServicioController::class);
 
         Route::get('/empleados', function () {
@@ -110,6 +120,18 @@ Route::middleware(['auth', 'rol:1'])
         Route::get('/empleados/{empleado}/edit', function (App\Models\Empleado $empleado) {
             return view('admin.empleados.edit', compact('empleado'));
         })->name('empleados.edit');
+
+        Route::get('/noticias', function () {
+            return view('admin.noticias.index');
+        })->name('noticias.index');
+
+        Route::get('/noticias/create', function () {
+            return view('admin.noticias.create');
+        })->name('noticias.create');
+
+        Route::get('/noticias/{noticia}/edit', function (App\Models\Noticia $noticia) {
+            return view('admin.noticias.edit', compact('noticia'));
+        })->name('noticias.edit');
 
         Route::post('citas/{cita}/asignar-empleado', [AdminCitaController::class, 'asignarEmpleado'])
             ->name('citas.asignarEmpleado');

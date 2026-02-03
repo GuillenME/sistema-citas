@@ -35,7 +35,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('cliente.citas.store') }}">
+            <form method="POST" action="{{ route('cliente.citas.store') }}" id="formAgendarCita">
                 @csrf
 
                 {{-- SERVICIO --}}
@@ -69,12 +69,12 @@
                 </select>
 
                 {{-- PRIVACIDAD --}}
-                 <label class="privacy-label">
-                <input type="checkbox" name="acepta_privacidad" class="privacy-checkbox">
-                <span class="privacy-text">
-                    Acepto la <a href="#" class="privacy-link">política de privacidad</a>
-                </span>
-            </label>
+                <label class="privacy-label">
+                    <input type="checkbox" name="acepta_privacidad" class="privacy-checkbox">
+                    <span class="privacy-text">
+                        Acepto la <a href="#" class="privacy-link">política de privacidad</a>
+                    </span>
+                </label>
 
                 <button type="button" class="submit-btn" onclick="mostrarModalConfirmar()">
                     AGENDAR CITA
@@ -133,19 +133,47 @@
     <!-- ================= MODAL CONFIRMAR CITA ================= -->
     <div id="modalConfirmar" class="modal-confirm-overlay" onclick="if(event.target === this) cerrarModalConfirmar()">
         <div class="modal-confirm-content">
+
             <h3>📅 Confirmar cita</h3>
 
             <p><strong>Servicio:</strong> <span id="mcServicio"></span></p>
             <p><strong>Fecha:</strong> <span id="mcFecha"></span></p>
             <p><strong>Horario:</strong> <span id="mcHorario"></span></p>
 
-            <div class="modal-confirm-buttons">
-                <button class="modal-confirm-btn modal-confirm-btn-submit" onclick="confirmarAgendar()">Agendar</button>
-                <button class="modal-confirm-btn modal-confirm-btn-cancel"
-                    onclick="cerrarModalConfirmar()">Cancelar</button>
+            <hr style="margin:15px 0; opacity:.3">
+
+            <h4 style="color:#fde68a;">⚠ Anticipo requerido</h4>
+
+            <p>
+                Se solicita un <strong>{{ $porcentajeAnticipo }}%</strong> para confirmar la cita.<br>
+                El <strong>{{ $porcentajeRestante }}%</strong> restante se paga después del servicio.
+            </p>
+
+            <p style="margin-top:10px; color:#fca5a5; font-weight:bold;">
+                ⏳ Tienes <strong>15 minutos</strong> para realizar el depósito y subir el comprobante.<br>
+                Si no se recibe en ese tiempo, la cita será cancelada automáticamente.
+            </p>
+
+            <div style="margin-top:10px; background:#111827; padding:10px; border-radius:8px;">
+                <p style="margin:0; font-size:14px;">
+                    <strong>Banco:</strong> {{ config('citas.banco.nombre') }}<br>
+                    <strong>Cuenta:</strong> {{ config('citas.banco.cuenta') }}<br>
+                    <strong>CLABE:</strong> {{ config('citas.banco.clabe') }}
+                </p>
+            </div>
+
+            <div class="modal-confirm-buttons" style="margin-top:15px;">
+                <button class="modal-confirm-btn modal-confirm-btn-submit" onclick="confirmarAgendar()">
+                    Confirmar y agendar
+                </button>
+
+                <button class="modal-confirm-btn modal-confirm-btn-cancel" onclick="cerrarModalConfirmar()">
+                    Cancelar
+                </button>
             </div>
         </div>
     </div>
+
 
     <!-- ================= MODAL LOGOUT ================= -->
     <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
@@ -158,124 +186,7 @@
         </div>
     </div>
 
-    <script>
-        const servicio = document.getElementById('servicio');
-        const fecha = document.getElementById('fecha');
-        const horarios = document.getElementById('horarios');
-
-        let servicioConfirmado = false;
-
-        /* ===== MODAL SERVICIO ===== */
-        servicio.addEventListener('change', function() {
-            if (!this.value) return;
-
-            servicioConfirmado = false;
-
-            const opt = this.options[this.selectedIndex];
-
-            // Nombre
-            document.getElementById('msNombre').textContent = opt.textContent;
-
-            // Imagen
-            const img = document.getElementById('msImagen');
-            img.src = opt.dataset.imagen;
-            img.style.display = 'block';
-
-            // Descripción
-            document.getElementById('msDescripcion').textContent =
-                opt.dataset.descripcion || 'Sin descripción disponible';
-
-            // Duración
-            document.getElementById('msDuracion').textContent =
-                opt.dataset.duracion;
-
-            // Precio
-            if (opt.dataset.tienePromocion === '1') {
-                document.getElementById('msPrecio').innerHTML = `
-            <span style="text-decoration: line-through; opacity:.6">
-                $${parseFloat(opt.dataset.precio).toFixed(2)}
-            </span>
-            <strong style="color:#22c55e; margin-left:6px">
-                $${parseFloat(opt.dataset.precioDescuento).toFixed(2)}
-            </strong>
-        `;
-            } else {
-                document.getElementById('msPrecio').textContent =
-                    `$${parseFloat(opt.dataset.precio).toFixed(2)}`;
-            }
-
-            document.getElementById('modalServicioConfirmar').classList.add('active');
-        });
-
-
-        function confirmarServicio() {
-            servicioConfirmado = true;
-            document.getElementById('modalServicioConfirmar').classList.remove('active');
-        }
-
-        function cancelarServicio() {
-            servicio.value = '';
-            fecha.value = '';
-            horarios.innerHTML = '<option value="">Selecciona un horario</option>';
-            servicioConfirmado = false;
-            document.getElementById('modalServicioConfirmar').classList.remove('active');
-        }
-
-        /* ===== HORARIOS ===== */
-        async function cargarHorarios() {
-            if (!servicioConfirmado || !fecha.value) return;
-
-            const res = await fetch(`/cliente/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`);
-            const data = await res.json();
-
-            horarios.innerHTML = '';
-            data.forEach(h => {
-                const opt = document.createElement('option');
-                opt.value = h.inicio;
-                opt.textContent = `${h.inicio} - ${h.fin}`;
-                horarios.appendChild(opt);
-            });
-        }
-
-        fecha.addEventListener('change', cargarHorarios);
-
-        /* ===== MODAL CONFIRMAR CITA ===== */
-        function mostrarModalConfirmar() {
-            if (!servicioConfirmado || !fecha.value || !horarios.value) {
-                alert('Completa y confirma todo primero');
-                return;
-            }
-
-            document.getElementById('mcServicio').textContent =
-                servicio.options[servicio.selectedIndex].textContent;
-            document.getElementById('mcFecha').textContent = fecha.value;
-            document.getElementById('mcHorario').textContent =
-                horarios.options[horarios.selectedIndex].textContent;
-
-            document.getElementById('modalConfirmar').classList.add('active');
-        }
-
-        function cerrarModalConfirmar() {
-            document.getElementById('modalConfirmar').classList.remove('active');
-        }
-
-        function confirmarAgendar() {
-            document.querySelector('form[action="{{ route('cliente.citas.store') }}"]').submit();
-        }
-
-        /* ===== LOGOUT ===== */
-        function mostrarModalLogout() {
-            document.getElementById('modalLogout').classList.add('active');
-        }
-
-        function cerrarModalLogout() {
-            document.getElementById('modalLogout').classList.remove('active');
-        }
-
-        function confirmarLogout() {
-            document.getElementById('logoutForm').submit();
-        }
-    </script>
+    <script src="{{ asset('js/cliente/citas.js') }}"></script>
 
 </body>
 

@@ -7,6 +7,7 @@
         <a href="{{ route('admin.citas.index') }}">Citas</a>
         <a href="{{ route('admin.promociones.index') }}">Promociones</a>
         <a href="{{ route('admin.servicios.index') }}">Servicios</a>
+        <a href="{{ route('admin.noticias.index') }}">Noticias</a>
         <a href="{{ route('admin.clientes.index') }}">Clientes</a>
         <a href="{{ route('admin.empleados.index') }}">Empleados</a>
         <a href="{{ route('admin.recepcionistas.index') }}">Recepcionistas</a>

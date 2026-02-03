@@ -6,6 +6,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Promocion;
 use App\Models\Servicio;
+use App\Models\Usuario;
+use App\Notifications\NuevaPromocionNotification;
 
 class PromocionCreate extends Component
 {
@@ -51,10 +53,17 @@ class PromocionCreate extends Component
             'start_date' => $this->fecha_inicio,
             'end_date' => $this->fecha_fin,
             'image' => $path,
-            'active' => $this->publicada,
+            'published' => $this->publicada ? 1 : 0,
         ]);
 
         $promocion->servicios()->sync($this->servicios);
+
+        if ($promocion->published) {
+            $usuarios = Usuario::where('active', 1)->get();
+            foreach ($usuarios as $usuario) {
+                $usuario->notify(new NuevaPromocionNotification($promocion));
+            }
+        }
 
         return redirect()->route('admin.promociones.index');
     }

@@ -6,6 +6,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Promocion;
 use App\Models\Servicio;
+use App\Models\Usuario;
+use App\Notifications\NuevaPromocionNotification;
 
 class PromocionEdit extends Component
 {
@@ -62,6 +64,8 @@ class PromocionEdit extends Component
     {
         $this->validate();
 
+        $wasPublished = (bool) $this->promocion->published;
+
         if ($this->image) {
             $this->promocion->image =
                 $this->image->store('promociones', 'public');
@@ -77,6 +81,13 @@ class PromocionEdit extends Component
         ]);
 
         $this->promocion->servicios()->sync($this->servicios);
+
+        if (!$wasPublished && $this->publicada) {
+            $usuarios = Usuario::where('active', 1)->get();
+            foreach ($usuarios as $usuario) {
+                $usuario->notify(new NuevaPromocionNotification($this->promocion));
+            }
+        }
 
         $this->confirmar = false;
 
