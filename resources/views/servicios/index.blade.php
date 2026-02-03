@@ -19,7 +19,7 @@ body{
 
     background-image: 
         linear-gradient(rgba(2,6,23,0.15), rgba(2,6,23,0.45)),
-        url("{{ asset('imagenes/serviciosFon.png') }}");
+        url("{{ asset('imagenes/serviciosFon2.png') }}");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -34,7 +34,7 @@ header{
     left: 0;
     width: 100%;
     height: 70px;
-    background: rgba(2, 6, 23, 0.95);
+    background: #8c4030;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -47,7 +47,7 @@ header{
     font-weight: bold;
     font-size: 25px;
     letter-spacing: 2px;
-    color: #93c5fd;
+    color: #e48815;
 }
 
 nav a{
@@ -59,7 +59,7 @@ nav a{
 }
 
 nav a:hover{
-    color: #93c5fd;
+    color: #e48815;
 }
 
 .login-icon {
@@ -85,7 +85,7 @@ nav a:hover{
         h1{
             text-align:center;
             margin-bottom:50px;
-            text-shadow:0 0 15px rgba(99,102,241,.8);
+            text-shadow:0 0 15px #fccc7c;
         }
 
         .services{
@@ -95,16 +95,16 @@ nav a:hover{
         }
 
         .card{
-            background: rgba(101, 193, 240, 0.45);
+            background: #5f4636;
             border-radius:16px;
             padding:15px;
-            border:1px solid rgba(255,255,255,.15);
+            border:1px solid #c0a799;
             transition:.3s;
         }
 
         .card:hover{
             transform: translateY(-6px);
-            box-shadow:0 0 25px rgba(99,102,241,.9);
+            box-shadow:0 0 25px #c0a799;
         }
 
         .card h3{
@@ -113,7 +113,7 @@ nav a:hover{
         }
 
         .price{
-            color: #4ade80;
+            color: #e48815;
             font-weight:bold;
             margin-top:10px;
         }
@@ -128,15 +128,15 @@ nav a:hover{
             margin-top:15px;
             padding:10px 16px;
             border-radius:10px;
-            border:1px solid #4ade80;
+            border:1px solid #e48815;
             color: #fff;
             text-decoration:none;
             font-size:13px;
-            box-shadow:0 0 12px rgba(40, 197, 34, 0.6);
+            box-shadow:0 0 12px #e48815
         }
 
         .btn:hover{
-            box-shadow:0 0 20px rgb(34, 197, 42);
+            box-shadow:0 0 20px #e48815
         }
         /* ================= MODAL ================= */
 .modal{
@@ -146,7 +146,7 @@ nav a:hover{
     left:0;
     width:100%;
     height:100%;
-    background:rgba(2,6,23,.85);
+    background:rgba(43, 24, 5, 0.85);
     backdrop-filter: blur(6px);
     z-index:2000;
     justify-content:center;
@@ -154,13 +154,14 @@ nav a:hover{
 }
 
 .modal-content{
-    background:rgba(101, 193, 240, 0.45);
+    position: relative;
+    background: #5f4636;
     padding:30px;
     border-radius:18px;
     width:90%;
     max-width:420px;
-    border:1px solid rgba(255,255,255,.15);
-    box-shadow:0 0 30px rgba(101, 193, 240, 0.45);
+    border:1px solid #fccc7c;
+    box-shadow:0 0 30px  #c0a799;
     animation: zoom .3s ease;
 }
 
@@ -184,8 +185,23 @@ nav a:hover{
 }
 
 .modal-content .close:hover{
-    color:#ef4444;
+    color:#e48815;
 }
+
+.close{
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0,0,0,.3);
+}
+
+.close:hover{
+    background: rgba(0,0,0,.5);
+}
+
 
     </style>
     @livewireStyles
@@ -242,8 +258,6 @@ nav a:hover{
 
         <p class="duration" id="modalDuracion"></p>
         <p class="price" id="modalPrecio"></p>
-
-        <a href="{{ route('login') }}" class="btn">Agregar servicio</a>
     </div>
 </div>
 

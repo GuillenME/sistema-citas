@@ -15,8 +15,8 @@ html{
 body{
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: #e5e7eb;
+    background: #b28562;
+    color: #ffffff;
 }
 
 /* ================= HEADER ================= */
@@ -26,7 +26,7 @@ header{
     left: 0;
     width: 100%;
     height: 70px;
-    background: rgba(6, 13, 46, 0.95);
+    background:#8c4030;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -39,7 +39,7 @@ header{
     font-weight: bold;
     font-size: 25px;
     letter-spacing: 2px;
-    color: #93c5fd;
+    color: #e48815;
 }
 
 nav a{
@@ -51,7 +51,7 @@ nav a{
 }
 
 nav a:hover{
-    color: #93c5fd;
+    color: #e48815;
 }
 
 .login-icon {
@@ -69,8 +69,8 @@ nav a:hover{
 .hero{
     height: 100vh;
     background:
-        linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.85)),
-        url("{{ asset('imagenes/registro_fondo.png') }}") center/cover no-repeat;
+        linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.30)),
+        url("{{ asset('imagenes/registro_fondo3.png') }}") center/cover no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -84,13 +84,24 @@ nav a:hover{
     letter-spacing: 15px;
     line-height: 1.1;
     margin-bottom: 20px;
+      color: #fccc7c;
 }
+.hero h1{
+    text-shadow:
+        -2px -2px 0 #000,
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000,
+         6px  6px 0 rgba(0,0,0,.4);
+}
+
 .hero p{
     font-size: 32px;
     max-width: 800px;
-    color: #cbd5f5;
+    color: #fccc7c;
     margin-bottom: 30px;
 }
+
 .hero .subtitle{
     font-size: 24px;
     color: #93c5fd;
@@ -105,7 +116,7 @@ nav a:hover{
 }
 
 .hero .feature{
-    background: rgba(17, 24, 39, 0.8);
+    background: #5f4636;
     padding: 20px;
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.1);
@@ -113,7 +124,7 @@ nav a:hover{
 }
 
 .hero .feature h3{
-    color: #22c55e;
+    color: #fccc7c;
     margin-bottom: 10px;
     font-size: 18px;
 }
@@ -122,9 +133,10 @@ nav a:hover{
     font-size: 14px;
     color: #e5e7eb;
 }
+
 /* ================= SECTIONS ================= */
 section{
-    padding: 90px 20px;
+ padding: 40px 25px; /* antes 90px */
     max-width: 1200px;
     margin: auto;
 }
@@ -137,7 +149,7 @@ h2{
 
 /* ================= CARDS ================= */
 .card{
-    background: rgba(17, 24, 39, .9);
+    background: #5f4636;
     padding: 30px;
     border-radius: 16px;
     border: 1px solid rgba(255,255,255,.1);
@@ -149,12 +161,13 @@ h2{
 }
 
 .card h3{
-    color: #93c5fd;
+    color: #e48815;
+
 }
 
 /* ================= FOOTER ================= */
 footer{
-    background: #020617;
+    background: #8c4030;
     padding: 30px 20px;
     text-align: center;
     font-size: 14px;
@@ -162,7 +175,7 @@ footer{
 }
 
 footer span{
-    color: #22c55e;
+    color: #fccc7c;
 }
 /* ================= NOTICIAS ================= */
 .news-grid{
@@ -188,7 +201,7 @@ footer span{
 }
 
 .news-content h3{
-    color: #93c5fd;
+    color: #fccc7c;
     margin-bottom: 10px;
 }
 
@@ -200,7 +213,7 @@ footer span{
 
 .news-date{
     font-size: 12px;
-    color: #22c55e;
+    color: #e48815;
 }
 /* ===== CONTACTO ESTILO CENTRADO ===== */
 .contact-info{
@@ -302,11 +315,8 @@ footer span{
 {{-- CONTACTOS --}}
 <livewire:contactos />
 {{-- NOTICIAS --}}
-<section>
+
 <livewire:noticias />
-
-</section>
-
 
 <footer>
      © 2026 Barbería & Spa <br>
