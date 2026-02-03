@@ -112,6 +112,17 @@ nav a:hover{
             margin-bottom:10px;
         }
 
+        .card img{
+            width:100%;
+            height:180px;
+            object-fit:contain;
+            object-position:center;
+            border-radius:12px;
+            margin-bottom:12px;
+            border:1px solid rgba(255,255,255,.12);
+            background: rgba(0,0,0,.25);
+        }
+
         .price{
             color: #e48815;
             font-weight:bold;
@@ -175,6 +186,17 @@ nav a:hover{
     margin-bottom:10px;
 }
 
+.modal-content img{
+    width:100%;
+    height:220px;
+    object-fit:contain;
+    object-position:center;
+    border-radius:12px;
+    margin-bottom:12px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.25);
+}
+
 .modal-content .close{
     position:absolute;
     top:15px;
@@ -230,6 +252,10 @@ nav a:hover{
    <div class="services">
 @forelse($servicios as $servicio)
     <div class="card">
+        <img
+            src="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
+            alt="{{ $servicio->name }}"
+        >
         <h3>{{ $servicio->name }}</h3>
         
 
@@ -238,7 +264,8 @@ nav a:hover{
            data-nombre="{{ $servicio->name }}"
            data-descripcion="{{ $servicio->description }}"
            data-duracion="{{ $servicio->duration_minutes }}"
-           data-precio="{{ number_format($servicio->price, 2) }}">
+           data-precio="{{ number_format($servicio->price, 2) }}"
+           data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}">
            ver mas...
         </a>
     </div>
@@ -253,6 +280,7 @@ nav a:hover{
     <div class="modal-content">
         <span class="close">&times;</span>
 
+        <img id="modalImagen" src="" alt="Servicio">
         <h2 id="modalTitulo"></h2>
         <p id="modalDescripcion"></p>
 
@@ -271,6 +299,7 @@ document.querySelectorAll('.abrir-modal').forEach(btn => {
 
         document.getElementById('modalTitulo').innerText = btn.dataset.nombre;
         document.getElementById('modalDescripcion').innerText = btn.dataset.descripcion;
+        document.getElementById('modalImagen').src = btn.dataset.imagen;
         document.getElementById('modalDuracion').innerText = 
             'Duración: ' + btn.dataset.duracion + ' min';
         document.getElementById('modalPrecio').innerText = 

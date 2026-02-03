@@ -192,7 +192,8 @@ footer span{
 .news-card img{
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
+    background: rgba(0,0,0,.25);
     display: block;
 }
 
