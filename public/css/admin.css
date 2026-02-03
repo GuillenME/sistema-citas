@@ -16,7 +16,7 @@
 body {
     min-height: 100vh;
     font-family: Arial, sans-serif;
-    background: #020617;
+    background: radial-gradient(circle at top, #b28562, #8c4030);
     /* neutro */
     color: #e5e7eb;
 }
@@ -30,13 +30,13 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: rgba(17, 24, 39, .95);
+    background: #8c4030;
     backdrop-filter: blur(12px);
     padding: 14px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    border-bottom: 1px solid#8c4030;
 }
 
 .navbar a {
@@ -47,7 +47,7 @@ body {
 }
 
 .navbar a:hover {
-    color: #fff;
+    color: #e48815;
 }
 
 .logo {
@@ -55,9 +55,9 @@ body {
     margin-right: 25px;
     padding: 6px 12px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #1f2937, #0f172a);
-    border: 1px solid rgba(99, 102, 241, 0.5);
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.45);
+    background: linear-gradient(#c0a799, #cf997a);
+    border: 1px solid#8c4030;
+    box-shadow: 0 0 12px#8c4030;
     letter-spacing: 0.4px;
     text-transform: uppercase;
     color: #ffffff;
@@ -85,37 +85,10 @@ body {
     margin-bottom: 35px;
 }
 
-<<<<<<<<< Temporary merge branch 1
-.back-arrow {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    margin-right: 14px;
-    border-radius: 10px;
-    color: #e5e7eb;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 18px;
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(99, 102, 241, 0.45);
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
-    transition: transform .15s, box-shadow .2s;
-}
-
-.back-arrow:hover {
-    transform: translateX(-2px);
-    box-shadow: 0 0 18px rgba(99, 102, 241, 0.55);
-}
-
-
-=========
->>>>>>>>> Temporary merge branch 2
 .page-header h1 {
     font-size: 30px;
     letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(99, 102, 241, .8), 0 0 25px rgba(99, 102, 241, .6);
+    text-shadow: 0 0 10px #fccc7c;
 }
 
 
@@ -125,7 +98,7 @@ body {
 
 .admin-home-wrapper {
     min-height: calc(100vh - 70px);
-    background: radial-gradient(circle at top, #1e1b4b, #020617);
+    background: radial-gradient(circle at top, #b28562, #8c4030);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -147,7 +120,7 @@ body {
     margin-bottom: 40px;
     font-size: 32px;
     letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(99, 102, 241, .8), 0 0 25px rgba(99, 102, 241, .6);
+    text-shadow: 0 0 10px#5f4636;
 }
 
 .admin-cards {
@@ -157,7 +130,7 @@ body {
 }
 
 .admin-card {
-    background: rgba(17, 24, 39, .75);
+    background: #5f4636;
     backdrop-filter: blur(12px);
     border-radius: 16px;
     padding: 30px 20px;
@@ -166,12 +139,12 @@ body {
     color: #fff;
     border: 1px solid rgba(255, 255, 255, .15);
     transition: transform .25s, box-shadow .25s;
-    box-shadow: 0 0 25px rgba(99, 102, 241, .35), inset 0 0 10px rgba(99, 102, 241, .25);
+    box-shadow: 0 0 25px #5f4636;
 }
 
 .admin-card:hover {
     transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 0 35px rgba(99, 102, 241, .9), inset 0 0 15px rgba(99, 102, 241, .5);
+    box-shadow: 0 0 35px #c0a799;
 }
 
 .admin-card span {
@@ -191,12 +164,12 @@ body {
 ========================= */
 
 .card {
-    background: rgba(17, 24, 39, .75);
+    background: #5f4636;
     backdrop-filter: blur(12px);
     border-radius: 16px;
     padding: 30px;
-    border: 1px solid rgba(255, 255, 255, .15);
-    box-shadow: 0 0 25px rgba(99, 102, 241, .35), inset 0 0 10px rgba(99, 102, 241, .25);
+    border: 1px solid#c0a799;
+    box-shadow: 0 0 25px#b28562;
 }
 
 
@@ -217,8 +190,8 @@ input,
 textarea,
 select {
     width: 100%;
-    background: rgba(2, 6, 23, .9);
-    border: 1px solid rgba(255, 255, 255, .2);
+    background: #5f4636;
+    border: 1px solid#c0a799;
     border-radius: 10px;
     padding: 12px;
     color: #e5e7eb;
@@ -234,8 +207,8 @@ input:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: #818cf8;
-    box-shadow: 0 0 12px rgba(129, 140, 248, .6);
+    border-color: #fccc7c;
+    box-shadow: 0 0 12px #f1be65;
 }
 
 
@@ -326,13 +299,13 @@ select:focus {
     border-radius: 10px;
     font-size: 14px;
     color: #e5e7eb;
-    background: rgba(17, 24, 39, .8);
-    border: 1px solid rgba(255, 255, 255, .15);
+    background: #5f4636;
+    border: 1px solid#c0a799;
     text-decoration: none;
 }
 
 .page-item.active .page-link {
-    background: rgba(99, 102, 241, .45);
+    background: #b28562;
 }
 
 
@@ -343,7 +316,7 @@ select:focus {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(2, 6, 23, 0.85);
+    background: #5f4636;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -351,14 +324,14 @@ select:focus {
 }
 
 .modal-box {
-    background: rgba(17, 24, 39, .95);
+    background: #b28562;
     backdrop-filter: blur(14px);
     border-radius: 16px;
     padding: 30px;
     width: 100%;
     max-width: 420px;
-    border: 1px solid rgba(255, 255, 255, .15);
-    box-shadow: 0 0 30px rgba(99, 102, 241, .6), inset 0 0 15px rgba(99, 102, 241, .25);
+    border: 1px solid#c0a799;
+    box-shadow: 0 0 30px#FCCC7C;
     color: #e5e7eb;
 }
 
@@ -368,7 +341,7 @@ select:focus {
 .modal-box h3 {
     font-size: 20px;
     margin-bottom: 10px;
-    text-shadow: 0 0 10px rgba(99, 102, 241, .6);
+    text-shadow: 0 0 10px #5f4636;
 }
 
 .modal-box p {
@@ -411,65 +384,6 @@ select:focus {
     box-shadow: 0 0 25px rgba(34, 197, 94, 1);
 }
 
-<<<<<<<<< Temporary merge branch 1
-/* =========================
-   BOTONES EDITAR / ELIMINAR
-========================= */
-.btn-edit,
-.btn-delete {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: bold;
-    text-decoration: none;
-    border: 1px solid transparent;
-    transition: transform .15s, box-shadow .2s, background .2s, border-color .2s;
-}
-
-.btn-edit {
-    color: #e0f2fe;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.35));
-    border-color: rgba(59, 130, 246, 0.45);
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.35);
-}
-
-.btn-edit:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 16px rgba(59, 130, 246, 0.55);
-}
-
-.csv-btn {
-    color: #e5e7eb;
-    background: linear-gradient(135deg, rgba(148, 163, 184, 0.25), rgba(71, 85, 105, 0.45));
-    border-color: rgba(148, 163, 184, 0.45);
-    box-shadow: 0 0 10px rgba(148, 163, 184, 0.35);
-}
-
-.csv-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 16px rgba(148, 163, 184, 0.55);
-}
-
-.btn-delete {
-    color: #fecaca;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(185, 28, 28, 0.35));
-    border-color: rgba(239, 68, 68, 0.45);
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
-    cursor: pointer;
-}
-
-.btn-delete:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 16px rgba(239, 68, 68, 0.55);
-}
-
-
-=========
->>>>>>>>> Temporary merge branch 2
 .modal-overlay.active {
     display: flex;
 }
@@ -505,8 +419,8 @@ select:focus {
     object-fit: contain;
     border-radius: 12px;
     margin-top: 10px;
-    border: 1px solid rgba(255, 255, 255, .15);
-    box-shadow: 0 0 12px rgba(99, 102, 241, .4);
+    border: 1px solid#c0a799;
+    box-shadow: 0 0 12px#e48815;
 }
 
 .image-preview-wrapper {
@@ -540,18 +454,50 @@ select:focus {
 .form-group.checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
-    accent-color: #6366f1;
+    accent-color: #e48815;
     cursor: pointer;
 }
-<<<<<<<<< Temporary merge branch 1
-=========
+
 
 /* =========================
    HEADER FIX (BOTONES + TÍTULO)
 ========================= */
 
 .page-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 35px;
+}
+
+.page-header h1 {
+    margin: 0;
+    text-align: center;
+}
+
+.back-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    color: #e5e7eb;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    background: #c0a799;
+    border: 1px solid#e48815;
+    box-shadow: 0 0 12px#bd7012;
+    transition: transform .15s, box-shadow .2s;
+    position: absolute;
+    left: 0;
+}
+
+.back-arrow:hover {
+    transform: translateX(-2px);
+    box-shadow: 0 0 18px#e48815;
 }
 
 .page-actions .btn {
@@ -563,9 +509,10 @@ select:focus {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-left: auto;
-    flex: 1;
     justify-content: flex-start;
+    position: absolute;
+    left: 52px;
+    right: 0;
 }
 
 .actions-split {
@@ -592,20 +539,9 @@ select:focus {
 
 .page-actions .btn-save:hover {
     box-shadow: 0 0 25px rgba(34, 197, 94, 1);
-<<<<<<<<< Temporary merge branch 1
 }
 
-.page-actions .csv-btn {
-    color: #e5e7eb;
-    background: linear-gradient(135deg, rgba(148, 163, 184, 0.25), rgba(71, 85, 105, 0.45));
-    border-color: rgba(148, 163, 184, 0.45);
-    box-shadow: 0 0 10px rgba(148, 163, 184, 0.35);
-}
 
-.page-actions .csv-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 16px rgba(148, 163, 184, 0.55);
-}
 /* =========================
    TABLAS ADMIN UNIFICADAS
 ========================= */
@@ -633,8 +569,8 @@ select:focus {
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #a5b4fc;
-    border-bottom: 1px solid rgba(255, 255, 255, .2);
+    color: #b28562;
+    border-bottom: 1px solid#c0a799;
     white-space: nowrap;
 }
 
@@ -644,11 +580,11 @@ select:focus {
 .admin-table tbody td {
     padding: 15px 14px;
     font-size: 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, .08);
+    border-bottom: 1px solid#cab799;
 }
 
 .admin-table tbody tr:hover {
-    background: rgba(99, 102, 241, .12);
+    background: #b28562;
 }
 
 
@@ -735,7 +671,7 @@ select:focus {
     font-weight: normal;
     line-height: 1;
     color: #e5e7eb;
-    background: rgba(17, 24, 39, .85);
+    background: #b28562;
     border: 1px solid rgba(255, 255, 255, .15);
     border-radius: 10px;
     cursor: pointer;
@@ -745,15 +681,15 @@ select:focus {
 /* HOVER */
 
 .pagination .page-link:hover {
-    background: rgba(99, 102, 241, .35);
+    background: #b28562;
 }
 
 
 /* ACTIVO */
 
 .pagination .page-item.active .page-link {
-    background: rgba(99, 102, 241, .55);
-    box-shadow: 0 0 12px rgba(99, 102, 241, .6);
+    background: #fccc7c;
+    box-shadow: 0 0 12px#ffd791;
 }
 
 
@@ -785,6 +721,3 @@ select:focus {
     width: auto;
     height: auto;
 }
-=========
-}
->>>>>>>>> Temporary merge branch 2
