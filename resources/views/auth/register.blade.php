@@ -63,7 +63,7 @@
             backdrop-filter: blur(12px);
         }
 
-        h2 { margin-bottom: 30px; }
+        h2 { margin-bottom: 25px; }
 
         .grid {
             display: grid;
@@ -80,7 +80,7 @@
         .card h3 {
             margin-bottom: 10px;
             font-size: 14px;
-            color: #000000;
+            color: #000;
         }
 
         input {
@@ -88,13 +88,30 @@
             padding: 12px;
             border-radius: 8px;
             border: none;
+            font-size: 14px;
+            background: rgba(255,255,255,.9);
+            color: #111827;
         }
 
-        .field-error {
-            color: #fecaca;
-            font-size: 13px;
-            margin-top: 6px;
-            display: block;
+        /* ===== ERRORES (IGUAL QUE LOGIN) ===== */
+        .error-box {
+            background: #fee2e2;
+            border: 1px solid #f87171;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .error-box ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .input-error {
+            outline: 2px solid #ef4444 !important;
+            background: #fee2e2;
         }
 
         .submit-wrapper {
@@ -119,7 +136,6 @@
             box-shadow: 0 10px 28px #cf997a;
         }
 
-
         @media (max-width: 900px) {
             .grid { grid-template-columns: repeat(2, 1fr); }
         }
@@ -134,73 +150,84 @@
 
 <a href="{{ route('login') }}" class="back-arrow">←</a>
 
-<form method="POST" action="{{ route('register') }}" class="register-container">
+<form method="POST"
+      action="{{ route('register') }}"
+      class="register-container"
+      novalidate>
     @csrf
 
     <h2>Registro de cliente</h2>
 
+    {{-- ERRORES GENERALES --}}
     @if ($errors->any())
-        <div class="field-error" style="margin-bottom:20px;">
-            Por favor corrige los campos marcados en rojo.
+        <div class="error-box">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
     <div class="grid">
 
+        <!-- NOMBRE -->
         <div class="card">
             <h3>Nombre</h3>
             <input type="text"
                    name="nombre"
                    value="{{ old('nombre') }}"
-                   required
+                   class="@error('nombre') input-error @enderror"
                    inputmode="text"
                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
                    oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
-            @error('nombre') <span class="field-error">{{ $message }}</span> @enderror
         </div>
 
+        <!-- APELLIDOS -->
         <div class="card">
             <h3>Apellidos</h3>
             <input type="text"
                    name="apellido"
                    value="{{ old('apellido') }}"
-                   required
+                   class="@error('apellido') input-error @enderror"
                    inputmode="text"
                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
                    oninput="this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')">
-            @error('apellido') <span class="field-error">{{ $message }}</span> @enderror
         </div>
 
+        <!-- TELÉFONO -->
         <div class="card">
             <h3>Teléfono</h3>
             <input type="tel"
                    name="telefono"
                    value="{{ old('telefono') }}"
-                   required
+                   class="@error('telefono') input-error @enderror"
                    inputmode="numeric"
                    maxlength="10"
                    oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
-            @error('telefono') <span class="field-error">{{ $message }}</span> @enderror
         </div>
 
+        <!-- CORREO -->
         <div class="card">
             <h3>Correo</h3>
             <input type="email"
                    name="email"
                    value="{{ old('email') }}"
-                   required>
-            @error('email') <span class="field-error">{{ $message }}</span> @enderror
+                   class="@error('email') input-error @enderror">
         </div>
 
+        <!-- CONTRASEÑA -->
         <div class="card">
             <h3>Contraseña</h3>
-            <input type="password" name="password" required>
-            @error('password') <span class="field-error">{{ $message }}</span> @enderror
+            <input type="password"
+                   name="password"
+                   class="@error('password') input-error @enderror">
         </div>
 
+        <!-- CONFIRMAR -->
         <div class="card">
             <h3>Confirmar contraseña</h3>
-            <input type="password" name="password_confirmation" required>
+            <input type="password" name="password_confirmation">
         </div>
 
     </div>
