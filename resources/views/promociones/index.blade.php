@@ -76,8 +76,8 @@ nav a:hover{
         <a href="{{ route('home') }}">Inicio</a>
         <a href="{{ url('/') }}#servicios">Servicios</a>
         <a href="{{ url('/') }}#promociones">Promociones</a>
-        <a href="{{ url('/') }}#contacto">Contacto</a>
         <a href="{{ url('/') }}#noticias">Noticias & Novedades</a>
+        <a href="{{ url('/') }}#contacto">Contacto</a>
     </nav>
 
     <a href="{{ route('login') }}" class="login-icon">

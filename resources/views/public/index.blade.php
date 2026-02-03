@@ -362,9 +362,9 @@ footer span{
     <nav>
         <a href="{{ route('home') }}">Inicio</a>
         <a href="#servicios">Servicios</a>
-       <a href="#promociones">Promociones</a>
-        <a href="#contacto">Contacto</a>
+        <a href="#promociones">Promociones</a>
         <a href="#noticias">Noticias & Novedades</a>
+        <a href="#contacto">Contacto</a>
     </nav>
 
   <a href="{{ route('login') }}" class="login-icon">
