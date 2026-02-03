@@ -23,6 +23,9 @@
     <main class="dashboard">
 
         <header class="page-header">
+            @if (!request()->routeIs('admin.dashboard'))
+                <a href="{{ route('admin.dashboard') }}" class="back-arrow" title="Volver al menú principal">←</a>
+            @endif
             <h1>@yield('title')</h1>
 
             <div class="page-actions">
