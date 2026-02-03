@@ -14,7 +14,7 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             height: 100vh;
-            background-image: url('{{ asset('imagenes/registro_fondo.png') }}');
+            background-image: url('{{ asset('imagenes/registro_fondo3.png') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -63,18 +63,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #93c5fd;
+            color: #fccc7c;
             text-decoration: none;
             font-size: 22px;
             backdrop-filter: blur(8px);
-            box-shadow: 0 0 15px rgba(42, 22, 218, 0.6);
+            box-shadow: 0 0 15px #e48815;
             transition: .25s ease;
         }
 
         .back-arrow:hover {
             transform: translateX(-4px);
-            background: rgba(31, 78, 121, 0.85);
-            box-shadow: 0 0 25px rgba(42, 22, 218, 0.9);
+            background: #f88b07;
+            box-shadow: 0 0 25px #e48815;
             color: #ffffff;
         }
 
@@ -93,9 +93,9 @@
             letter-spacing: 6px;
             color: #ffffff;
             text-shadow:
-                0 0 6px #1F4E79,
-                0 0 16px rgba(42, 22, 218, 0.8),
-                0 0 32px rgba(42, 22, 218, 0.8);
+                0 0 6px #fccc7c,
+                0 0 16px rgba(218, 117, 22, 0.8),
+                0 0 32px rgba(218, 117, 22, 0.8);
             animation: neon-flicker 4s infinite;
         }
 
@@ -167,7 +167,7 @@
             width: 100%;
             padding: 12px;
             margin-top: 12px;
-            background: #1F4E79;
+            background: #8c4030;
             border: none;
             border-radius: 8px;
             color: #fff;
@@ -175,8 +175,14 @@
             font-weight: bold;
             letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(42, 22, 218, 0.8);
+            box-shadow: 0 6px 20px #c0a799;
         }
+        
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 28px #cf997a;
+        }
+
 
         /* ================= LINKS ================= */
         .register {
@@ -185,7 +191,7 @@
         }
 
         .register a {
-            color: #4f85f1;
+            color: #e48815;
             text-decoration: none;
             font-size: 14px;
         }

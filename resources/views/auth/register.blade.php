@@ -11,10 +11,10 @@
             margin: 0;
             min-height: 100vh;
             font-family: Arial, sans-serif;
-            background: url('{{ asset("imagenes/registro_fondo.png") }}') center/cover no-repeat;
+            background: url('{{ asset("imagenes/registro_fondo3.png") }}') center/cover no-repeat;
             padding: 40px;
             position: relative;
-            color: #fff;
+            color: #e48815;
         }
 
         body::before {
@@ -27,25 +27,37 @@
 
         /* Flecha */
         .back-arrow {
-            position: absolute;
+            position: fixed;
             top: 25px;
             left: 25px;
+            z-index: 5;
             width: 42px;
             height: 42px;
             border-radius: 50%;
-            background: rgba(17,24,39,.6);
+            background: rgba(17, 24, 39, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #93c5fd;
+            color: #fccc7c;
             text-decoration: none;
             font-size: 22px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 15px #e48815;
+            transition: .25s ease;
+        }
+
+        .back-arrow:hover {
+            transform: translateX(-4px);
+            background: #f88b07;
+            box-shadow: 0 0 25px #e48815;
+            color: #ffffff;
         }
 
         .register-container {
             max-width: 1100px;
             margin: 80px auto 0;
-            background: rgba(17,24,39,.35);
+            background: rgba(80, 73, 34, 0.589);
             border-radius: 16px;
             padding: 30px;
             backdrop-filter: blur(12px);
@@ -60,7 +72,7 @@
         }
 
         .card {
-            background: rgba(17,24,39,.55);
+            background: #be743b;
             border-radius: 14px;
             padding: 20px;
         }
@@ -68,7 +80,7 @@
         .card h3 {
             margin-bottom: 10px;
             font-size: 14px;
-            color: #c7d2fe;
+            color: #000000;
         }
 
         input {
@@ -93,14 +105,20 @@
         .submit-wrapper button {
             width: 220px;
             padding: 12px;
-            background: #1F4E79;
+            background: #8c4030;
             border: none;
             border-radius: 8px;
             color: #fff;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(42,22,218,.8);
+            box-shadow: 0 6px 20px #c0a799;
         }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 28px #cf997a;
+        }
+
 
         @media (max-width: 900px) {
             .grid { grid-template-columns: repeat(2, 1fr); }

@@ -51,7 +51,7 @@
         .card h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: #93c5fd;
+            color: #fccc7c;
             font-weight: 600;
             letter-spacing: 1px;
         }
@@ -78,14 +78,14 @@
         }
 
         input:focus {
-            outline: 2px solid #1F4E79;
+            outline: 2px solid #c0a799;
         }
 
         button {
             width: 100%;
             padding: 12px;
             margin-top: 12px;
-            background: #1F4E79;
+            background: #8c4030;
             border: none;
             border-radius: 8px;
             color: #fff;
@@ -93,13 +93,13 @@
             font-weight: bold;
             letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(42, 22, 218, 0.7);
+            box-shadow: 0 6px 20px #c0a799;
             transition: 0.2s ease;
         }
 
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 28px rgba(42, 22, 218, 0.8);
+            box-shadow: 0 10px 28px #cf997a;
         }
 
         @media (max-width: 480px) {
@@ -110,7 +110,7 @@
     </style>
 </head>
 
-<body style="background-image: url('{{ asset('imagenes/SalaEspera.png') }}');">
+<body style="background-image: url('{{ asset('imagenes/SalaEsperaa.png') }}');">
 
     <div class="card">
         <h2>Nueva contraseña</h2>
