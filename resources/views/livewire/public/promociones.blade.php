@@ -8,10 +8,10 @@
         }
 
         .promo-card{
-            background: rgba(17, 24, 39, .9);
+            background: #5f4636;
             padding: 25px;
             border-radius: 16px;
-            border: 1px solid rgba(255,255,255,.1);
+            border: 1px solid #5f4636;
             transition: .3s;
             text-align: center;
         }
@@ -21,7 +21,7 @@
         }
 
         .promo-card h3{
-            color: #93c5fd;
+            color: #fccc7c;
             margin-bottom: 12px;
             font-size: 20px;
         }
@@ -35,14 +35,14 @@
         .promo-price{
             font-size: 22px;
             font-weight: bold;
-            color: #22c55e;
+            color: #e48815;
             margin-top: 15px;
             display: block;
         }
 
         .promo-dates{
             font-size: 12px;
-            color: #94a3b8;
+            color: #c0a799;
             margin-top: 8px;
         }
     </style>

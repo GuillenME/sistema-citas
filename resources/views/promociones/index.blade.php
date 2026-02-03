@@ -16,7 +16,7 @@ html{
 body{
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #0f172a;
+    background: #b28562;
     color: #e5e7eb;
 }
 
@@ -27,7 +27,7 @@ header{
     left: 0;
     width: 100%;
     height: 70px;
-    background: rgba(2, 6, 23, 0.95);
+    background: #8c4030;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -40,7 +40,7 @@ header{
     font-weight: bold;
     font-size: 25px;
     letter-spacing: 2px;
-    color: #93c5fd;
+    color: #e48815;
 }
 
 nav a{
@@ -52,7 +52,7 @@ nav a{
 }
 
 nav a:hover{
-    color: #93c5fd;
+    color: #e48815;
 }
 
 .login-icon {
@@ -65,6 +65,7 @@ nav a:hover{
     height: 55px;
     object-fit: contain;
     @livewireStyles
+}
 </head>
 <body>
 

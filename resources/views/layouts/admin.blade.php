@@ -12,6 +12,7 @@
     </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     @livewireStyles
 </head>
@@ -21,18 +22,16 @@
 
     <main class="dashboard">
 
-        {{-- SOLO mostrar header si la vista lo define --}}
-        @hasSection('page-title')
         <header class="page-header">
-            <h1>@yield('page-title')</h1>
+            <h1>@yield('title')</h1>
 
             <div class="page-actions">
                 @yield('header-actions')
             </div>
         </header>
-        @endif
 
         @yield('content')
+
     </main>
 
     <livewire:admin.logout-modal />
