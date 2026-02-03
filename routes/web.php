@@ -111,6 +111,18 @@ Route::middleware(['auth', 'rol:1'])
             return view('admin.empleados.edit', compact('empleado'));
         })->name('empleados.edit');
 
+        Route::get('/noticias', function () {
+            return view('admin.noticias.index');
+        })->name('noticias.index');
+
+        Route::get('/noticias/create', function () {
+            return view('admin.noticias.create');
+        })->name('noticias.create');
+
+        Route::get('/noticias/{noticia}/edit', function (App\Models\Noticia $noticia) {
+            return view('admin.noticias.edit', compact('noticia'));
+        })->name('noticias.edit');
+
         Route::post('citas/{cita}/asignar-empleado', [AdminCitaController::class, 'asignarEmpleado'])
             ->name('citas.asignarEmpleado');
 
