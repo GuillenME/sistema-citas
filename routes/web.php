@@ -97,6 +97,16 @@ Route::middleware(['auth', 'rol:1'])
             ->except(['create', 'edit'])
             ->parameters(['promociones' => 'promocion']);
 
+        Route::get('/servicios/plantilla', [AdminServicioController::class, 'downloadTemplate'])
+            ->name('servicios.template');
+
+        Route::get('/servicios/import', function () {
+            return view('admin.servicios.import');
+        })->name('servicios.import');
+
+        Route::post('/servicios/import', [AdminServicioController::class, 'importCsv'])
+            ->name('servicios.import.store');
+
         Route::resource('servicios', AdminServicioController::class);
 
         Route::get('/empleados', function () {

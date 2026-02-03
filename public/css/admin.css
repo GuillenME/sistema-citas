@@ -418,6 +418,18 @@ select:focus {
     box-shadow: 0 0 16px rgba(59, 130, 246, 0.55);
 }
 
+.csv-btn {
+    color: #e5e7eb;
+    background: linear-gradient(135deg, rgba(148, 163, 184, 0.25), rgba(71, 85, 105, 0.45));
+    border-color: rgba(148, 163, 184, 0.45);
+    box-shadow: 0 0 10px rgba(148, 163, 184, 0.35);
+}
+
+.csv-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 16px rgba(148, 163, 184, 0.55);
+}
+
 .btn-delete {
     color: #fecaca;
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(185, 28, 28, 0.35));
@@ -515,6 +527,28 @@ select:focus {
     box-shadow: 0 0 18px rgba(239, 68, 68, 0.9);
 }
 
+.page-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.actions-split {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+}
+
+.actions-right {
+    display: flex;
+    gap: 10px;
+}
+
 .page-actions .btn:hover {
     box-shadow: 0 0 28px rgba(239, 68, 68, 1);
 }
@@ -526,6 +560,18 @@ select:focus {
 
 .page-actions .btn-save:hover {
     box-shadow: 0 0 25px rgba(34, 197, 94, 1);
+}
+
+.page-actions .csv-btn {
+    color: #e5e7eb;
+    background: linear-gradient(135deg, rgba(148, 163, 184, 0.25), rgba(71, 85, 105, 0.45));
+    border-color: rgba(148, 163, 184, 0.45);
+    box-shadow: 0 0 10px rgba(148, 163, 184, 0.35);
+}
+
+.page-actions .csv-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 16px rgba(148, 163, 184, 0.55);
 }
 /* =========================
    TABLAS ADMIN UNIFICADAS
@@ -594,6 +640,13 @@ select:focus {
 .table-actions {
     display: flex;
     gap: 12px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-top: 16px;
 }
 
 .action-toggle {
