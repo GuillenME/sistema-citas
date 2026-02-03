@@ -246,6 +246,86 @@ footer span{
     opacity: 0.95;
 }
 
+/* ================= HOME SECTIONS ================= */
+.home-section{
+    max-width:1200px;
+    margin: 0 auto;
+    padding:60px 20px;
+}
+
+.home-section h2{
+    text-align:center;
+    margin-bottom:30px;
+    text-shadow:0 0 15px #fccc7c;
+}
+
+.home-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:22px;
+}
+
+.home-card{
+    background:#5f4636;
+    border-radius:16px;
+    padding:14px;
+    border:1px solid #c0a799;
+    transition:.3s;
+}
+
+.home-card:hover{
+    transform: translateY(-4px);
+    box-shadow:0 0 20px rgba(0,0,0,.2);
+}
+
+.home-card img{
+    width:100%;
+    height:140px;
+    object-fit:contain;
+    object-position:center;
+    border-radius:12px;
+    margin-bottom:10px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.25);
+}
+
+.home-card h3{
+    color:#fff;
+    margin:6px 0 6px;
+    font-size:17px;
+}
+
+.home-card p{
+    font-size:13px;
+    opacity:.9;
+}
+
+.home-card .price{
+    color:#e48815;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.home-actions{
+    text-align:center;
+    margin-top:20px;
+}
+
+.home-actions .btn{
+    display:inline-block;
+    padding:10px 16px;
+    border-radius:10px;
+    border:1px solid #e48815;
+    color:#fff;
+    text-decoration:none;
+    font-size:13px;
+    box-shadow:0 0 12px #e48815;
+}
+
+.home-actions .btn:hover{
+    box-shadow:0 0 20px #e48815;
+}
+
 /* Responsive */
 @media (max-width: 900px){
     .contact-info{
@@ -281,8 +361,8 @@ footer span{
 
     <nav>
         <a href="{{ route('home') }}">Inicio</a>
-        <a href="{{ route('servicios') }}">Servicios</a>
-       <a href="{{ route('promociones') }}">Promociones</a>
+        <a href="#servicios">Servicios</a>
+       <a href="#promociones">Promociones</a>
         <a href="#contacto">Contacto</a>
         <a href="#noticias">Noticias & Novedades</a>
     </nav>
@@ -313,11 +393,54 @@ footer span{
     </div>
 </div>
 
+<section id="servicios" class="home-section">
+    <h2>Servicios</h2>
+    <div class="home-grid">
+        @forelse($homeServicios as $servicio)
+            <div class="home-card">
+                <img
+                    src="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
+                    alt="{{ $servicio->name }}"
+                >
+                <h3>{{ $servicio->name }}</h3>
+                <p>{{ \Illuminate\Support\Str::limit($servicio->description, 80) }}</p>
+                <div class="price">${{ number_format($servicio->price, 2) }}</div>
+            </div>
+        @empty
+            <p>No hay servicios disponibles.</p>
+        @endforelse
+    </div>
+    <div class="home-actions">
+        <a href="{{ route('servicios') }}" class="btn">Ver más</a>
+    </div>
+</section>
+
+<section id="promociones" class="home-section">
+    <h2>Promociones</h2>
+    <div class="home-grid">
+        @forelse($homePromociones as $promo)
+            <div class="home-card">
+                <img
+                    src="{{ $promo->image ? asset('storage/' . $promo->image) : asset('imagenes/servicio_default.png') }}"
+                    alt="{{ $promo->title }}"
+                >
+                <h3>{{ $promo->title }}</h3>
+                <p>{{ \Illuminate\Support\Str::limit($promo->description, 80) }}</p>
+                <div class="price">{{ $promo->discount }}% OFF</div>
+            </div>
+        @empty
+            <p>No hay promociones activas por el momento.</p>
+        @endforelse
+    </div>
+    <div class="home-actions">
+        <a href="{{ route('promociones') }}" class="btn">Ver más</a>
+    </div>
+</section>
+
+{{-- NOTICIAS --}}
+<livewire:noticias />
 {{-- CONTACTOS --}}
 <livewire:contactos />
-{{-- NOTICIAS --}}
-
-<livewire:noticias />
 
 <footer>
      © 2026 Barbería & Spa <br>

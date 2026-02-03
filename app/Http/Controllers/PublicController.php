@@ -11,11 +11,22 @@ class PublicController extends Controller
     public function index()
     {
         $servicios = Servicio::where('active', 1)->get();
+        $homeServicios = Servicio::where('active', 1)
+            ->orderBy('id', 'desc')
+            ->take(4)
+            ->get();
 
         $promociones = Promocion::where('published', 1)
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->orderBy('start_date', 'desc')
+            ->get();
+
+        $homePromociones = Promocion::where('published', 1)
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->orderBy('start_date', 'desc')
+            ->take(4)
             ->get();
 
         $noticias = Noticia::where('published', 1)
@@ -26,6 +37,8 @@ class PublicController extends Controller
         return view('public.index', compact(
             'servicios',
             'promociones',
+            'homeServicios',
+            'homePromociones',
             'noticias'
         ));
     }
