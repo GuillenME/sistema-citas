@@ -17,6 +17,7 @@ class ServicioEdit extends Component
     public $duracion_minutos;
     public $precio;
     public $image;
+    public $activo;
 
     public $confirmar = false;
 
@@ -25,6 +26,7 @@ class ServicioEdit extends Component
         'duracion_minutos' => 'required|integer|min:5',
         'precio' => 'required|numeric|min:0',
         'image' => 'nullable|image|max:2048',
+        'activo' => 'boolean',
     ];
 
     public function mount(Servicio $servicio)
@@ -34,6 +36,7 @@ class ServicioEdit extends Component
         $this->descripcion = $servicio->description;
         $this->duracion_minutos = $servicio->duration_minutes;
         $this->precio = $servicio->price;
+        $this->activo = (bool) $servicio->active;
     }
 
     public function abrirConfirmacion()
@@ -53,6 +56,7 @@ class ServicioEdit extends Component
             'description' => $this->descripcion,
             'duration_minutes' => $this->duracion_minutos,
             'price' => $this->precio,
+            'active' => $this->activo ? 1 : 0,
         ]);
 
         return redirect()->route('admin.servicios.index');

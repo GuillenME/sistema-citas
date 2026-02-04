@@ -15,6 +15,10 @@
     <input type="number" step="0.01" wire:model.defer="precio">
     @error('precio') <small style="color:#f87171">{{ $message }}</small> @enderror
 
+    <label>Activo</label>
+    <input type="checkbox" wire:model.defer="activo">
+    @error('activo') <small style="color:#f87171">{{ $message }}</small> @enderror
+
     <label>Imagen actual</label>
     @if ($servicio->image)
         <img src="{{ asset('storage/'.$servicio->image) }}" class="preview">

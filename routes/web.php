@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServicioPublicController;
 
 /* HOME PÚBLICO */
@@ -198,6 +199,12 @@ Route::middleware(['auth', 'rol:2'])
 
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');
+
+        Route::get('/comentarios', [ReviewController::class, 'index'])
+            ->name('comentarios');
+
+        Route::post('/comentarios', [ReviewController::class, 'store'])
+            ->name('comentarios.store');
     });
 
 /* RECUPERAR CONTRASEÑA */

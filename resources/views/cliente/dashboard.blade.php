@@ -14,6 +14,7 @@
     <nav>
         <a href="{{ route('cliente.citas.create') }}">Agendar cita</a>
         <a href="{{ route('cliente.citas.index') }}">Mis citas</a>
+        <a href="{{ route('cliente.comentarios') }}">Comentarios</a>
     </nav>
 
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">

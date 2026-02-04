@@ -326,6 +326,32 @@ footer span{
     box-shadow:0 0 20px #e48815;
 }
 
+/* ================= RESEÑAS ================= */
+.reviews-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:20px;
+}
+
+.review-card{
+    background:#5f4636;
+    border-radius:16px;
+    padding:18px;
+    border:1px solid #c0a799;
+}
+
+.review-meta{
+    font-size:12px;
+    opacity:.85;
+    margin-top:8px;
+}
+
+.review-rating{
+    color:#fccc7c;
+    font-weight:bold;
+    margin-top:6px;
+}
+
 /* Responsive */
 @media (max-width: 900px){
     .contact-info{
@@ -434,6 +460,42 @@ footer span{
     </div>
     <div class="home-actions">
         <a href="{{ route('promociones') }}" class="btn">Ver más</a>
+    </div>
+</section>
+
+<section id="reviews" class="home-section">
+    <h2>Comentarios</h2>
+    <div class="reviews-grid">
+        @forelse($reviews as $review)
+            <div class="review-card">
+                <p>{{ $review->comment }}</p>
+
+                @if ($review->rating)
+                    <div class="review-rating">Calificación: {{ $review->rating }}/5</div>
+                @endif
+
+                @php
+                    $email = $review->user_email ?? '';
+                    $parts = explode('@', $email, 2);
+                    $user = $parts[0] ?? '';
+                    $domain = $parts[1] ?? '';
+                    $userMasked = $user === '' ? 'Usuario' : substr($user, 0, 2) . str_repeat('*', max(strlen($user) - 2, 0));
+                    $domainParts = explode('.', $domain, 2);
+                    $domainName = $domainParts[0] ?? '';
+                    $domainTld = $domainParts[1] ?? '';
+                    $domainMasked = $domainName === '' ? '' : substr($domainName, 0, 1) . str_repeat('*', max(strlen($domainName) - 1, 0));
+                    $maskedEmail = $domainMasked && $domainTld
+                        ? $userMasked . '@' . $domainMasked . '.' . $domainTld
+                        : $userMasked;
+                @endphp
+
+                <div class="review-meta">
+                    {{ $maskedEmail }} · {{ $review->created_at->format('d/m/Y') }}
+                </div>
+            </div>
+        @empty
+            <p>No hay comentarios aún.</p>
+        @endforelse
     </div>
 </section>
 
