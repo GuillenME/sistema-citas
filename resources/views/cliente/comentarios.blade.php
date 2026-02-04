@@ -17,7 +17,7 @@
 
         .comentarios-card {
             background: #5f4636;
-            border: 1px solid rgba(255,255,255,.12);
+            border: 1px solid rgba(250, 17, 17, 0.12);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
@@ -39,7 +39,7 @@
             border-radius: 10px;
             border: 1px solid rgba(255,255,255,.2);
             background: rgba(0,0,0,.2);
-            color: #fff;
+            color: #000;
         }
 
         .comentarios-card textarea {
