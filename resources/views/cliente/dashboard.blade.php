@@ -14,6 +14,7 @@
     <nav>
         <a href="{{ route('cliente.citas.create') }}">Agendar cita</a>
         <a href="{{ route('cliente.citas.index') }}">Mis citas</a>
+        <a href="{{ route('cliente.comentarios') }}">Comentarios</a>
     </nav>
 
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
@@ -29,7 +30,7 @@
         <div class="dashboard-image"></div>
 
         <div class="welcome">
-            <h2>Bienvenido 👋</h2>
+            <h2>Bienvenid@!! 🫰🏽</h2>
             <p>
                 Desde aquí puedes agendar nuevas citas y consultar el estado
                 de las que ya tienes programadas.

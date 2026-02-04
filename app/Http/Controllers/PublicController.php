@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Servicio;
 use App\Models\Promocion;
 use App\Models\Noticia;
+use App\Models\Review;
 
 class PublicController extends Controller
 {
@@ -34,12 +35,17 @@ class PublicController extends Controller
             ->take(3)
             ->get();
 
+        $reviews = Review::orderBy('created_at', 'desc')
+            ->take(6)
+            ->get();
+
         return view('public.index', compact(
             'servicios',
             'promociones',
             'homeServicios',
             'homePromociones',
-            'noticias'
+            'noticias',
+            'reviews'
         ));
     }
 }
