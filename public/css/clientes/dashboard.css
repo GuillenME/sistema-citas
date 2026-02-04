@@ -1,7 +1,7 @@
         * {
             box-sizing: border-box;
         }
-
+        
         body {
             margin: 0;
             font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@
             background-repeat: no-repeat;
             position: relative;
         }
-
+        
         body::before {
             content: "";
             position: absolute;
@@ -20,15 +20,15 @@
             background: rgba(0, 0, 0, .45);
             z-index: 0;
         }
-
         /* ===== HEADER ===== */
+        
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 70px;
-            background: rgba(2, 6, 23, 0.95);
+            background: #8c4030;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -36,29 +36,29 @@
             z-index: 1000;
             backdrop-filter: blur(6px);
         }
-
+        
         .title {
-            color: #93c5fd;
+            color: #e48815;
             font-size: 22px;
             font-weight: bold;
         }
-
+        
         nav {
             display: flex;
             gap: 45px;
         }
-
+        
         nav a {
             color: #e5e7eb;
             text-decoration: none;
             font-size: 17px;
             font-weight: bold;
         }
-
+        
         nav a:hover {
-            color: #93c5fd;
+            color: #e48815;
         }
-
+        
         .logout-btn {
             background: transparent;
             border: 2px solid #ef4444;
@@ -69,12 +69,12 @@
             font-weight: bold;
             transition: transform .2s;
         }
-
+        
         .logout-btn:hover {
             transform: scale(1.05);
         }
-
         /* ===== CONTENIDO ===== */
+        
         .container {
             position: relative;
             z-index: 1;
@@ -84,7 +84,7 @@
             justify-content: center;
             align-items: center;
         }
-
+        
         .dashboard-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -93,7 +93,7 @@
             width: 100%;
             padding: 40px;
         }
-
+        
         .dashboard-image {
             height: 360px;
             border-radius: 18px;
@@ -101,16 +101,20 @@
             background-size: cover;
             background-position: center;
         }
-
-
+        
         .welcome {
-            background: rgba(17, 24, 39, .35);
-            backdrop-filter: blur(12px);
-            padding: 34px;
+            background: #11182759;
+            backdrop-filter: #5f4636;
+            padding: 30px;
             border-radius: 18px;
         }
-
+        
+        .welcome p {
+            text-align: justify;
+            text-justify: inter-word;
+        }
         /* ===== MODAL LOGOUT ===== */
+        
         .modal-overlay {
             display: none;
             position: fixed;
@@ -120,11 +124,11 @@
             justify-content: center;
             align-items: center;
         }
-
+        
         .modal-overlay.active {
             display: flex;
         }
-
+        
         .modal-content {
             background: rgba(17, 24, 39, .95);
             padding: 30px;
@@ -136,14 +140,14 @@
             box-shadow: 0 0 25px rgba(255, 45, 45, 0.6);
             border: 2px solid rgba(255, 45, 45, 0.5);
         }
-
+        
         .modal-buttons {
             display: flex;
             gap: 15px;
             justify-content: center;
             margin-top: 20px;
         }
-
+        
         .modal-btn {
             padding: 10px 20px;
             border-radius: 8px;
@@ -152,31 +156,29 @@
             border: none;
             transition: transform .2s;
         }
-
+        
         .modal-btn:hover {
             transform: scale(1.05);
         }
-
+        
         .modal-btn-confirm {
             background: #ef4444;
             color: #fff;
         }
-
+        
         .modal-btn-cancel {
-            background: #6b7280;
+            background: #c0a799;
             color: #fff;
         }
-
         /* ===== RESPONSIVE ===== */
+        
         @media (max-width: 900px) {
             .dashboard-content {
                 grid-template-columns: 1fr;
             }
-
             .dashboard-image {
                 height: 260px;
             }
-
             .welcome {
                 text-align: center;
             }
