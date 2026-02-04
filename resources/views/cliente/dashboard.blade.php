@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="{{ asset('css/clientes/dashboard.css') }}">
 </head>
-<body style="--bg-url: url('{{ asset('imagenes/registro_fondo.png') }}');">
+<body style="--bg-url: url('{{ asset('imagenes/registro_fondo3.png') }}');">
 
 <header>
     <div class="title">Cliente</div>
@@ -30,10 +30,11 @@
         <div class="dashboard-image"></div>
 
         <div class="welcome">
-            <h2>Bienvenid@!! 🫰🏽</h2>
+            <h2>Bienvenido 👋</h2>
             <p>
-                Desde aquí puedes agendar nuevas citas y consultar el estado
-                de las que ya tienes programadas.
+                En Barbería & Spa nos especializamos en ofrecerte mucho más que un simple corte de cabello. Aquí encontrarás un espacio pensado para tu comodidad, donde el estilo, el cuidado personal y la atención al detalle se combinan para brindarte una experiencia única.
+
+Nuestro equipo de profesionales está comprometido con ayudarte a lucir y sentirte mejor, utilizando técnicas modernas, productos de alta calidad y un ambiente relajado que te permita desconectarte del estrés diario. Ya sea que busques un cambio de imagen, un mantenimiento de tu estilo habitual o un momento de relajación, estás en el lugar indicado.
             </p>
         </div>
     </div>

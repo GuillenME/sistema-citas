@@ -29,7 +29,7 @@ header,
 }
 
 header {
-    background: rgba(115, 114, 126, .85);
+    background: #8c4030;
     color: #fff;
     padding: 15px 30px;
     display: flex;
@@ -60,7 +60,9 @@ header {
     box-shadow: 0 0 14px rgba(255, 0, 0, 1);
 }
 
+
 /* Modal de confirmación */
+
 .modal-overlay {
     display: none;
     position: fixed;
@@ -132,7 +134,9 @@ header {
     color: #fff;
 }
 
+
 /* Modal de confirmación de agendar cita */
+
 .modal-confirm-overlay {
     display: none;
     position: fixed;
@@ -153,14 +157,14 @@ header {
 }
 
 .modal-confirm-content {
-    background: rgba(17, 24, 39, 0.98);
+    background: #5f4030;
     padding: 35px;
     border-radius: 16px;
     max-width: 900px;
     width: 90%;
     color: #fff;
-    box-shadow: 0 0 30px rgba(42, 22, 218, 0.8);
-    border: 2px solid rgba(42, 22, 218, 0.5);
+    box-shadow: 0 0 30px#b28562;
+    border: 2px solid #b28562;
     margin: auto;
     max-height: 90vh;
     overflow-y: auto;
@@ -171,7 +175,7 @@ header {
     font-size: 22px;
     color: #fff;
     text-align: center;
-    text-shadow: 0 0 10px rgba(42, 22, 218, 0.8);
+    text-shadow: 0 0 10px#b28562;
 }
 
 .modal-confirm-info {
@@ -194,7 +198,7 @@ header {
 }
 
 .modal-confirm-info-label {
-    color: #93c5fd;
+    color: #e48815;
     font-weight: bold;
     display: inline-block;
     min-width: 120px;
@@ -248,15 +252,15 @@ header {
 }
 
 .modal-confirm-bank {
-    background: rgba(42, 22, 218, 0.2);
-    border: 2px solid rgba(42, 22, 218, 0.4);
+    background: #c0a799;
+    border: 2px solid#8c4030;
     padding: 18px;
     border-radius: 12px;
     margin-bottom: 20px;
 }
 
 .modal-confirm-bank h4 {
-    color: #93c5fd;
+    color: #b28562;
     margin-bottom: 12px;
     font-size: 15px;
     text-align: center;
@@ -308,14 +312,15 @@ header {
     color: #fff;
 }
 
+
 /* Responsive para el modal */
+
 @media (max-width: 768px) {
     .modal-confirm-overlay {
         padding: 10px;
         align-items: flex-start;
         padding-top: 20px;
     }
-
     .modal-confirm-content {
         max-width: 100%;
         width: 100%;
@@ -324,72 +329,58 @@ header {
         max-height: 95vh;
         border-radius: 12px;
     }
-
     .modal-confirm-content h3 {
         font-size: 20px;
         margin-bottom: 15px;
     }
-
     .modal-confirm-info {
         padding: 15px;
     }
-
     .modal-confirm-info-item {
         font-size: 13px;
         margin-bottom: 10px;
         flex-direction: column;
         gap: 4px;
     }
-
     .modal-confirm-info-label {
         min-width: auto;
         margin-bottom: 0;
         font-size: 12px;
         width: 100%;
     }
-
     .modal-confirm-info-value {
         font-size: 13px;
         word-break: break-word;
     }
-
     .modal-confirm-payment {
         padding: 15px;
     }
-
     .modal-confirm-payment h4 {
         font-size: 14px;
     }
-
     .modal-confirm-payment-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
         font-size: 13px;
     }
-
     .modal-confirm-payment-item:last-child {
         align-items: center;
     }
-
     .modal-confirm-bank {
         padding: 15px;
     }
-
     .modal-confirm-bank h4 {
         font-size: 14px;
     }
-
     .modal-confirm-bank-data {
         font-size: 13px;
         line-height: 1.6;
     }
-
     .modal-confirm-buttons {
         flex-direction: column;
         gap: 10px;
     }
-
     .modal-confirm-btn {
         width: 100%;
         padding: 14px;
@@ -402,7 +393,6 @@ header {
         padding: 5px;
         padding-top: 10px;
     }
-
     .modal-confirm-content {
         padding: 20px 15px;
         max-width: 100%;
@@ -410,58 +400,45 @@ header {
         border-radius: 10px;
         max-height: 98vh;
     }
-
     .modal-confirm-content h3 {
         font-size: 18px;
     }
-
     .modal-confirm-info {
         padding: 12px;
     }
-
     .modal-confirm-info-item {
         font-size: 12px;
         gap: 3px;
     }
-
     .modal-confirm-info-label {
         font-size: 11px;
         width: 100%;
     }
-
     .modal-confirm-info-value {
         font-size: 12px;
     }
-
     .modal-confirm-payment {
         padding: 12px;
     }
-
     .modal-confirm-payment h4 {
         font-size: 13px;
     }
-
     .modal-confirm-payment-item {
         font-size: 12px;
         gap: 3px;
     }
-
     .modal-confirm-payment-item:last-child {
         align-items: center;
     }
-
     .modal-confirm-bank {
         padding: 12px;
     }
-
     .modal-confirm-bank h4 {
         font-size: 13px;
     }
-
     .modal-confirm-bank-data {
         font-size: 12px;
     }
-
     .modal-confirm-btn {
         padding: 12px;
         font-size: 13px;
@@ -472,17 +449,17 @@ header {
     min-height: calc(100vh - 80px);
     width: 100%;
     padding: 40px 80px;
-    display: block;        
+    display: block;
 }
 
 .card {
     width: 100%;
-    max-width: 100%;      
-    background: rgba(17,24,39,.70);
+    max-width: 100%;
+    background: #5f4030;
     padding: 40px 60px;
-    border-radius: 0;      
+    border-radius: 0;
     color: #fff;
-    box-shadow: none;      
+    box-shadow: none;
 }
 
 h2 {
@@ -506,7 +483,9 @@ input {
     font-size: 14px;
 }
 
+
 /* ===== ERRORES ===== */
+
 .error-box {
     background: #fee2e2;
     border: 1px solid #f87171;
@@ -539,15 +518,17 @@ input {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
-    background: #1F4E79;
-    color: #fff;
+    background: #fccc7c;
+    color: #000;
     font-weight: bold;
     cursor: pointer;
     border: none;
-    box-shadow: 0 6px 20px rgba(42, 22, 218, .8);
+    box-shadow: 0 6px 20px#b28562;
 }
 
+
 /* ===== PRIVACIDAD ===== */
+
 .privacy-box {
     margin-top: 20px;
     width: 100%;
@@ -555,7 +536,7 @@ input {
 
 .privacy-label {
     display: flex;
-    align-items: center;   
+    align-items: center;
     gap: 12px;
     cursor: pointer;
 }
@@ -563,7 +544,7 @@ input {
 .privacy-checkbox {
     width: 18px;
     height: 18px;
-    accent-color: #1F4E79; 
+    accent-color: #e48815;
     cursor: pointer;
 }
 
@@ -574,7 +555,7 @@ input {
 }
 
 .privacy-link {
-    color: #93c5fd;
+    color: #c0a799;
     text-decoration: underline;
 }
 
@@ -599,7 +580,6 @@ input {
     header {
         flex-direction: column;
     }
-
     .back-btn {
         font-size: 32px;
     }
@@ -620,7 +600,7 @@ input {
 
 .modal-servicio-desc {
     font-size: 14px;
-    color: #9ca3af;
+    color: #c0a799;
     margin-bottom: 12px;
 }
 
@@ -628,15 +608,16 @@ input {
     font-size: 14px;
     margin-bottom: 6px;
 }
+
 @media (max-width: 768px) {
     .container {
         padding: 25px 20px;
     }
-
     .card {
         padding: 25px 20px;
     }
 }
+
 @media (max-width: 480px) {
     .privacy-label {
         align-items: flex-start;
