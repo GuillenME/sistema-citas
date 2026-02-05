@@ -43,6 +43,10 @@
             <span>👩🏽‍💻👨🏽‍💻</span>
             <strong>Gestionar recepcionistas</strong>
         </a>
+        <a href="{{ route('admin.home_settings.edit') }}" class="admin-card">
+            <span>🏠</span>
+            <strong>Gestionar configuración de home</strong>
+        </a>
 
     </div>
 </div>

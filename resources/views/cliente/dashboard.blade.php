@@ -30,7 +30,7 @@
         <div class="dashboard-image"></div>
 
         <div class="welcome">
-            <h2>Bienvenido 🫰🏽</h2>
+            <h2>Bienvenido!!</h2>
             <p>
                 En Barbería & Spa nos especializamos en ofrecerte mucho más que un simple corte de cabello. Aquí encontrarás un espacio pensado para tu comodidad, donde el estilo, el cuidado personal y la atención al detalle se combinan para brindarte una experiencia única.
 

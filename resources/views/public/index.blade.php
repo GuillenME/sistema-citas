@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.public')
 
-<head>
-<meta charset="UTF-8">
-<title>Barbería & Spa</title>
+@section('title', 'Barbería & Spa')
 
+@section('styles')
 <style>
 * { box-sizing: border-box; }
 
@@ -19,58 +17,12 @@ body{
     color: #ffffff;
 }
 
-/* ================= HEADER ================= */
-header{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    background:#8c4030;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    z-index: 1000;
-    backdrop-filter: blur(6px);
-}
-
-.logo{
-    font-weight: bold;
-    font-size: 25px;
-    letter-spacing: 2px;
-    color: #e48815;
-}
-
-nav a{
-    margin: 0 14px;
-    color: #e5e7eb;
-    text-decoration: none;
-    font-weight: bold;
-    transition: .3s;
-}
-
-nav a:hover{
-    color: #e48815;
-}
-
-.login-icon {
-    display: inline-flex;
-    align-items: center;
-}
-
-.icon-img {
-    width: 55px;
-    height: 55px;
-    object-fit: contain;
-}
-
 /* ================= HERO ================= */
 .hero{
     height: 100vh;
     background:
         linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.30)),
-        url("{{ asset('imagenes/registro_fondo3.png') }}") center/cover no-repeat;
+        url("{{ $homeSetting && $homeSetting->hero_image ? asset('storage/' . $homeSetting->hero_image) : asset('imagenes/registro_fondo3.png') }}") center/cover no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -121,6 +73,11 @@ nav a:hover{
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.1);
     backdrop-filter: blur(10px);
+    width: 260px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .hero .feature h3{
@@ -224,14 +181,14 @@ footer span{
     padding: 50px 80px;   /* espacio lateral grande */
 }
 
-/* DATOS → hacia el centro-derecha */
+/* DATOS -> hacia el centro-derecha */
 .contact-left{
     justify-self: center;
     margin-left: 80px;   /* empuja hacia la derecha */
     max-width: 340px;
 }
 
-/* IMAGEN → hacia el centro-izquierda */
+/* IMAGEN -> hacia el centro-izquierda */
 .contact-right{
     justify-self: center;
     margin-right: 80px;  /* empuja hacia la izquierda */
@@ -326,7 +283,7 @@ footer span{
     box-shadow:0 0 20px #e48815;
 }
 
-/* ================= RESEÑAS ================= */
+/* ================= RESENAS ================= */
 .reviews-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
@@ -376,45 +333,25 @@ footer span{
 }
 
 </style>
+@endsection
 
-@livewireStyles
-</head>
-
-<body>
-
-<header>
-    <div class="logo">Barbería & Spa</div>
-
-    <nav>
-        <a href="{{ route('home') }}">Inicio</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#promociones">Promociones</a>
-        <a href="#noticias">Noticias & Novedades</a>
-        <a href="#contacto">Contacto</a>
-    </nav>
-
-  <a href="{{ route('login') }}" class="login-icon">
-    <img src="{{ asset('imagenes/usuario.png') }}" alt="Iniciar sesión" class="icon-img">
-</a>
-
-
-</header>
+@section('content')
 <div class="hero" id="inicio">
-    <h1>BARBERÍA & SPA</h1>
-    <p>Estilo, cuidado y bienestar en un solo lugar</p>
+    <h1>{{ optional($homeSetting)->hero_title ?? 'BARBERÍA & SPA' }}</h1>
+    <p>{{ optional($homeSetting)->hero_subtitle ?? 'Estilo, cuidado y bienestar en un solo lugar' }}</p>
 
     <div class="features">
         <div class="feature">
-            <h3>✂️ Cortes Modernos</h3>
-            <p>Técnicas actuales y tendencias</p>
+            <h3>{{ optional($homeSetting)->feature_1_title ?? 'Cortes Modernos' }}</h3>
+            <p>{{ optional($homeSetting)->feature_1_description ?? 'Técnicas actuales y tendencias' }}</p>
         </div>
         <div class="feature">
-            <h3>💇‍♂️ Tratamientos Spa</h3>
-            <p>Relajación y cuidado personal</p>
+            <h3>{{ optional($homeSetting)->feature_2_title ?? 'Tratamientos Spa' }}</h3>
+            <p>{{ optional($homeSetting)->feature_2_description ?? 'Relajación y cuidado personal' }}</p>
         </div>
         <div class="feature">
-            <h3>⭐ Calidad Premium</h3>
-            <p>Productos de primera línea</p>
+            <h3>{{ optional($homeSetting)->feature_3_title ?? 'Calidad Premium' }}</h3>
+            <p>{{ optional($homeSetting)->feature_3_description ?? 'Productos de primera línea' }}</p>
         </div>
     </div>
 </div>
@@ -505,13 +442,16 @@ footer span{
 <livewire:contactos />
 
 <footer>
-     © 2026 Barbería & Spa <br>
+  © 2026 Barbería & Spa <br>
     Desarrollado por <span>Cybac</span>
 </footer>
+@endsection
 
+@section('scripts')
 <script>
     function scrollServices(direction) {
         const slider = document.getElementById('servicesSlider');
+        if (!slider) return;
         const cardWidth = slider.querySelector('.service-card').offsetWidth + 20;
         slider.scrollBy({
             left: direction * cardWidth,
@@ -519,8 +459,9 @@ footer span{
         });
     }
 
-    function scrollPromos(direction) { 
+    function scrollPromos(direction) {
         const slider = document.getElementById('promoSlider');
+        if (!slider) return;
         const cardWidth = slider.querySelector('.service-card').offsetWidth + 20;
         slider.scrollBy({
             left: direction * cardWidth,
@@ -528,8 +469,4 @@ footer span{
         });
     }
 </script>
-
-@livewireScripts
-
-</body>
-</html>
+@endsection

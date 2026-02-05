@@ -6,6 +6,7 @@ use App\Models\Servicio;
 use App\Models\Promocion;
 use App\Models\Noticia;
 use App\Models\Review;
+use App\Models\HomeSetting;
 
 class PublicController extends Controller
 {
@@ -39,13 +40,16 @@ class PublicController extends Controller
             ->take(6)
             ->get();
 
+        $homeSetting = HomeSetting::first();
+
         return view('public.index', compact(
             'servicios',
             'promociones',
             'homeServicios',
             'homePromociones',
             'noticias',
-            'reviews'
+            'reviews',
+            'homeSetting'
         ));
     }
 }

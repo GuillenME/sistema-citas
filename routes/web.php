@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminEmpleadoController;
 use App\Http\Controllers\Admin\AdminPromocionController;
 use App\Http\Controllers\Admin\AdminRecepcionistaController;
 use App\Http\Controllers\Admin\AdminServicioController;
+use App\Http\Controllers\Admin\HomeSettingController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
@@ -153,6 +154,12 @@ Route::middleware(['auth', 'rol:1'])
         Route::get('/recepcionistas/{usuario}/edit', function (App\Models\Usuario $usuario) {
             return view('admin.recepcionistas.edit', compact('usuario'));
         })->name('recepcionistas.edit');
+
+        Route::get('/home-settings', [HomeSettingController::class, 'edit'])
+            ->name('home_settings.edit');
+
+        Route::put('/home-settings', [HomeSettingController::class, 'update'])
+            ->name('home_settings.update');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */
