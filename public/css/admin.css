@@ -245,7 +245,7 @@ select:focus {
 
 .table-container {
     width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 .table-container table {
@@ -572,6 +572,22 @@ select:focus {
     padding: 25px;
 }
 
+.table-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.table-search {
+    max-width: 320px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid #c0a799;
+    background: #5f4636;
+    color: #e5e7eb;
+}
+
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -579,7 +595,6 @@ select:focus {
 
 .admin-table {
     width: 100%;
-    min-width: 1000px;
     border-collapse: collapse;
 }
 
@@ -589,14 +604,39 @@ select:focus {
 
 .admin-table-fixed th,
 .admin-table-fixed td {
-    white-space: nowrap;
+    white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
     vertical-align: middle;
+    text-align: center;
+    word-break: break-word;
 }
 
 .admin-table-fixed .notes-cell {
     max-width: 320px;
+}
+
+.col-cliente { width: 16%; }
+.col-servicio { width: 30%; }
+.col-fecha { width: 24%; }
+.col-estado { width: 14%; }
+.col-acciones { width: 16%; white-space: nowrap; }
+
+.btn-compact {
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.select-compact {
+    height: 30px;
+    font-size: 12px;
+}
+
+.assign-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 /* HEAD */
@@ -644,6 +684,43 @@ select:focus {
 .badge-off {
     background: rgba(239, 68, 68, .15);
     color: #f87171;
+}
+
+.badge-pending {
+    background: rgba(59, 130, 246, .15);
+    color: #60a5fa;
+}
+
+.badge-today {
+    margin-left: 8px;
+    background: rgba(16, 185, 129, .2);
+    color: #34d399;
+}
+
+.badge-soon {
+    margin-left: 8px;
+    background: rgba(245, 158, 11, .2);
+    color: #fbbf24;
+}
+
+.row-today {
+    box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.35);
+}
+
+.row-soon {
+    box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.35);
+}
+
+.notes-modal textarea {
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #c0a799;
+    background: #5f4636;
+    color: #e5e7eb;
+    resize: vertical;
 }
 
 

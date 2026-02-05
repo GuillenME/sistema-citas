@@ -4,6 +4,16 @@ const horarios = document.getElementById('horarios');
 
 let servicioConfirmado = false;
 
+function formatHora12(hora24) {
+    if (!hora24) return '';
+    const partes = hora24.split(':');
+    const h = parseInt(partes[0], 10);
+    const m = partes[1] || '00';
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = ((h + 11) % 12) + 1;
+    return `${h12}:${m} ${ampm}`;
+}
+
 /* ===== MODAL SERVICIO ===== */
 servicio.addEventListener('change', function() {
     if (!this.value) return;
@@ -70,7 +80,7 @@ async function cargarHorarios() {
     data.forEach(h => {
         const opt = document.createElement('option');
         opt.value = h.inicio;
-        opt.textContent = `${h.inicio} - ${h.fin}`;
+        opt.textContent = `${formatHora12(h.inicio)} - ${formatHora12(h.fin)}`;
         horarios.appendChild(opt);
     });
 }

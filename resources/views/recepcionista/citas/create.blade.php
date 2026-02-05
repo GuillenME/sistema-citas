@@ -261,6 +261,16 @@ const horarios = document.getElementById('horarios');
 const anticipoCheck = document.getElementById('anticipo_check');
 const anticipoBox = document.getElementById('anticipo_box');
 
+function formatHora12(hora24) {
+    if (!hora24) return '';
+    const partes = hora24.split(':');
+    const h = parseInt(partes[0], 10);
+    const m = partes[1] || '00';
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = ((h + 11) % 12) + 1;
+    return `${h12}:${m} ${ampm}`;
+}
+
 anticipoCheck.addEventListener('change', () => {
     anticipoBox.style.display = anticipoCheck.checked ? 'block' : 'none';
 });
@@ -311,7 +321,7 @@ async function cargarBloques() {
     bloques.forEach(b => {
         const opt = document.createElement('option');
         opt.value = b.inicio;
-        opt.textContent = `${b.inicio} - ${b.fin}`;
+        opt.textContent = `${formatHora12(b.inicio)} - ${formatHora12(b.fin)}`;
         horarios.appendChild(opt);
     });
 }
