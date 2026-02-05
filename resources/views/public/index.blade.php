@@ -73,6 +73,11 @@ body{
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.1);
     backdrop-filter: blur(10px);
+    width: 260px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .hero .feature h3{
