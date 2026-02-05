@@ -4,42 +4,68 @@
     <meta charset="UTF-8">
     <title>Comentarios</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('css/clientes/cliente-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/clientes/dashboard.css') }}">
     <style>
         .comentarios-wrap {
-            max-width: 900px;
-            margin: 90px auto 40px;
+            max-width: 1100px;
+            margin: 100px auto 50px;
             padding: 0 20px;
             color: #fff;
             position: relative;
             z-index: 1;
         }
 
+        .comentarios-title {
+            font-family: "Playfair Display", serif;
+            font-size: 28px;
+            margin: 0 0 18px;
+            text-align: center;
+            color: #fff7ef;
+        }
+
+        .comentarios-subtitle {
+            text-align: center;
+            color: #f0e2d2;
+            font-size: 13px;
+            margin-bottom: 26px;
+        }
+
+        .comentarios-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
         .comentarios-card {
-            background: #5f4636;
-            border: 1px solid rgba(250, 17, 17, 0.12);
+            background: rgba(79, 50, 34, 0.82);
+            border: 1px solid rgba(252, 204, 124, 0.25);
             border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 22px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
         }
 
         .comentarios-card h2 {
             margin: 0 0 12px;
+            font-size: 18px;
         }
 
         .comentarios-card label {
             display: block;
             margin: 12px 0 6px;
+            color: #f0e2d2;
+            font-size: 13px;
         }
 
         .comentarios-card textarea,
         .comentarios-card select {
             width: 100%;
-            padding: 10px;
+            padding: 10px 12px;
             border-radius: 10px;
-            border: 1px solid rgba(255,255,255,.2);
-            background: rgba(0,0,0,.2);
-            color: #000;
+            border: 1px solid rgba(252, 204, 124, 0.25);
+            background: rgba(0, 0, 0, 0.25);
+            color: #fffaf4;
+            outline: none;
         }
 
         .comentarios-card textarea {
@@ -47,30 +73,96 @@
             resize: vertical;
         }
 
+        .comentarios-card textarea:focus,
+        .comentarios-card select:focus {
+            border-color: rgba(252, 204, 124, 0.55);
+            box-shadow: 0 0 0 2px rgba(252, 204, 124, 0.15);
+        }
+
         .comentarios-card .btn-save {
-            margin-top: 12px;
-            padding: 10px 16px;
+            margin-top: 14px;
+            padding: 10px 18px;
             border-radius: 10px;
-            border: 1px solid #e48815;
-            background: transparent;
-            color: #fff;
+            border: 1px solid rgba(252, 204, 124, 0.6);
+            background: rgba(252, 204, 124, 0.35);
+            color: #1f140d;
             cursor: pointer;
-            box-shadow: 0 0 12px #e48815;
+            font-weight: 600;
+            transition: transform .2s ease, box-shadow .2s ease;
         }
 
         .comentarios-card .btn-save:hover {
-            box-shadow: 0 0 20px #e48815;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
         }
 
         .comentario-item {
-            border-top: 1px solid rgba(255,255,255,.1);
+            border-top: 1px solid rgba(255,255,255,.18);
             padding-top: 14px;
             margin-top: 14px;
         }
 
+        .comentario-item > div:first-child {
+            color: #fffaf4;
+        }
+
         .comentario-meta {
             font-size: 12px;
-            opacity: .85;
+            color: #efe0cf;
+            margin-top: 6px;
+        }
+
+        .comentario-rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(252, 204, 124, 0.15);
+            border: 1px solid rgba(252, 204, 124, 0.4);
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            color: #ffdca0;
+        }
+
+        .comentarios-pagination {
+            margin-top: 16px;
+        }
+
+        .comentarios-pagination .pagination {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .comentarios-pagination .page-link {
+            background: rgba(252, 204, 124, 0.12);
+            border: 1px solid rgba(252, 204, 124, 0.35);
+            color: #fffaf4;
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+
+        .comentarios-pagination .page-item.active .page-link {
+            background: rgba(252, 204, 124, 0.35);
+            border-color: rgba(252, 204, 124, 0.6);
+        }
+
+        .rating-stars {
+            display: inline-flex;
+            gap: 2px;
+            margin-left: 6px;
+            font-size: 12px;
+        }
+
+        .rating-stars .filled {
+            color: #fccc7c;
+        }
+
+        .rating-stars .empty {
+            color: rgba(255, 255, 255, 0.35);
         }
 
         .alert-success {
@@ -79,30 +171,26 @@
             padding: 10px 12px;
             border-radius: 10px;
             margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .comentarios-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body style="--bg-url: url('{{ asset('imagenes/registro_fondo.png') }}');">
 
-<header>
-    <div class="title">Cliente</div>
-
-    <nav>
-        <a href="{{ route('cliente.citas.create') }}">Agendar cita</a>
-        <a href="{{ route('cliente.citas.index') }}">Mis citas</a>
-        <a href="{{ route('cliente.comentarios') }}">Comentarios</a>
-    </nav>
-
-    <form method="POST" action="{{ route('logout') }}" id="logoutForm">
-        @csrf
-        <button type="button" class="logout-btn" onclick="mostrarModalLogout()">
-            Cerrar sesión
-        </button>
-    </form>
-</header>
+@include('cliente.partials.menu')
 
 <div class="comentarios-wrap">
-    <div class="comentarios-card">
+    <h1 class="comentarios-title">Comentarios</h1>
+    <p class="comentarios-subtitle">Tu opinion nos ayuda a mejorar.</p>
+
+    <div class="comentarios-grid">
+        <div class="comentarios-card">
         <h2>Dejar comentario</h2>
 
         @if (session('success'))
@@ -115,9 +203,9 @@
             <textarea id="comment" name="comment" required>{{ old('comment') }}</textarea>
             @error('comment') <small style="color:#f87171">{{ $message }}</small> @enderror
 
-            <label for="rating">Calificación (opcional)</label>
+            <label for="rating">Calificacion (opcional)</label>
             <select id="rating" name="rating">
-                <option value="">Sin calificación</option>
+                <option value="">Sin calificacion</option>
                 <option value="5" @selected(old('rating') == 5)>5</option>
                 <option value="4" @selected(old('rating') == 4)>4</option>
                 <option value="3" @selected(old('rating') == 3)>3</option>
@@ -138,13 +226,31 @@
                 <div class="comentario-meta">
                     {{ $review->created_at->format('d/m/Y H:i') }}
                     @if ($review->rating)
-                        · Calificación: {{ $review->rating }}/5
+                        <span class="comentario-rating">
+                            Calificacion: {{ $review->rating }}/5
+                            <span class="rating-stars" aria-hidden="true">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $review->rating)
+                                        <span class="filled">★</span>
+                                    @else
+                                        <span class="empty">☆</span>
+                                    @endif
+                                @endfor
+                            </span>
+                        </span>
                     @endif
                 </div>
             </div>
         @empty
-            <p>Aún no has dejado comentarios.</p>
+            <p>Aun no has dejado comentarios.</p>
         @endforelse
+
+        @if ($reviews->hasPages())
+            <div class="comentarios-pagination">
+                {{ $reviews->links('pagination::simple-bootstrap-4') }}
+            </div>
+        @endif
+        </div>
     </div>
 </div>
 
@@ -176,3 +282,6 @@
 
 </body>
 </html>
+
+
+

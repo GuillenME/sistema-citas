@@ -1,6 +1,7 @@
 const servicio = document.getElementById('servicio');
 const fecha = document.getElementById('fecha');
 const horarios = document.getElementById('horarios');
+const fechaInput = document.getElementById('fecha');
 
 let servicioConfirmado = false;
 
@@ -85,7 +86,27 @@ async function cargarHorarios() {
     });
 }
 
-fecha.addEventListener('change', cargarHorarios);
+if (window.flatpickr && fechaInput) {
+    flatpickr(fechaInput, {
+        inline: true,
+        dateFormat: 'Y-m-d',
+        minDate: 'today',
+        disableMobile: true,
+        onChange: function () {
+            cargarHorarios();
+        }
+    });
+} else if (fechaInput) {
+    fechaInput.removeAttribute('readonly');
+    fechaInput.type = 'date';
+    fechaInput.min = new Date().toISOString().split('T')[0];
+    fechaInput.addEventListener('focus', function () {
+        if (fechaInput.showPicker) fechaInput.showPicker();
+    });
+    fechaInput.addEventListener('change', cargarHorarios);
+} else {
+    fecha.addEventListener('change', cargarHorarios);
+}
 
 /* ===== MODAL CONFIRMAR CITA ===== */
 function mostrarModalConfirmar() {

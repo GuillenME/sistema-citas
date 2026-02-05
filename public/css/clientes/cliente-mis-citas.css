@@ -183,6 +183,183 @@
             letter-spacing: 1px;
             font-size: 28px;
         }
+
+        /* ===== LISTA DE CITAS ===== */
+
+        .citas-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(180px, 1fr));
+            gap: 18px 24px;
+        }
+
+        .cita-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.35);
+            border-radius: 6px;
+            padding: 14px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 8px;
+        }
+
+        .cita-header {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+            text-align: center;
+        }
+
+        .cita-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+        }
+
+        .cita-when {
+            font-size: 12px;
+            color: #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cita-price {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            font-size: 12px;
+            color: #e5e7eb;
+        }
+
+        .price-label {
+            color: #fccc7c;
+            font-weight: bold;
+        }
+
+        .price-original {
+            text-decoration: line-through;
+            opacity: 0.6;
+            color: #c0a799;
+        }
+
+        .price-final {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .price-discount {
+            color: #22c55e;
+            font-size: 11px;
+        }
+
+        .price-restante {
+            color: #93c5fd;
+        }
+
+        .cita-notes {
+            font-size: 12px;
+            color: #fecaca;
+        }
+
+        .cita-details {
+            margin-top: auto;
+            font-size: 12px;
+            color: #e5e7eb;
+        }
+
+        .cita-details summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #fde68a;
+            list-style: none;
+            background: rgba(252, 204, 124, 0.18);
+            border: 1px solid rgba(252, 204, 124, 0.45);
+            color: #fccc7c;
+            padding: 6px 10px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .cita-details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .cita-details[open] summary {
+            background: rgba(34, 197, 94, 0.18);
+            border-color: rgba(34, 197, 94, 0.45);
+            color: #22c55e;
+        }
+
+        .cita-details-body {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .anticipo-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .anticipo-hint {
+            color: #9ca3af;
+            font-size: 11px;
+        }
+
+        .upload-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .btn-upload {
+            background: #eab308;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .link-green {
+            color: #22c55e;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .link-green:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 1100px) {
+            .citas-grid {
+                grid-template-columns: repeat(3, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .citas-grid {
+                grid-template-columns: repeat(2, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .citas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
         /* ===== TABLA ===== */
         
         .table-wrapper {
@@ -238,6 +415,8 @@
             font-size: 12px;
             font-weight: bold;
             display: inline-block;
+            align-self: center;
+            text-align: center;
         }
         
         .estado.pendiente {

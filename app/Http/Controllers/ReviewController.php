@@ -11,7 +11,7 @@ class ReviewController extends Controller
     {
         $reviews = Review::where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(3);
 
         return view('cliente.comentarios', compact('reviews'));
     }
@@ -34,4 +34,3 @@ class ReviewController extends Controller
             ->with('success', 'Gracias por tu comentario.');
     }
 }
-
