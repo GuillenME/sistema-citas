@@ -5,19 +5,14 @@
     <meta charset="UTF-8">
     <title>Agendar cita</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{{ asset('css/clientes/cliente-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/clientes/cliente.css') }}">
 </head>
 
 <body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
 
-    <header>
-        <a href="{{ route('cliente.dashboard') }}" class="back-btn">←</a>
-
-        <form method="POST" action="{{ route('logout') }}" id="logoutForm">
-            @csrf
-            <button type="button" class="logout-btn" onclick="mostrarModalLogout()">Cerrar sesión</button>
-        </form>
-    </header>
+    @include('cliente.partials.menu')
 
     <div class="container">
         <div class="card">
@@ -35,67 +30,81 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('cliente.citas.store') }}" id="formAgendarCita">
-                @csrf
+            <form method="POST" action="{{ route('cliente.citas.store') }}" id="formAgendarCita" class="form-grid">
+    @csrf
 
-                {{-- SERVICIO --}}
-                <label>Servicio</label>
-                <select name="servicio_id" id="servicio" required>
-                    <option value="">Selecciona un servicio</option>
-                    @foreach ($servicios as $servicio)
-                        @php
-                            $promo = $servicio->promocionActiva();
-                            $precioFinal = $servicio->precioConDescuento();
-                        @endphp
-                        <option value="{{ $servicio->id }}" data-precio="{{ $servicio->price }}"
-                            data-precio-descuento="{{ $precioFinal }}" data-tiene-promocion="{{ $promo ? '1' : '0' }}"
-                            data-descripcion="{{ $servicio->description }}"
-                            data-duracion="{{ $servicio->duration_minutes }}"
-                            data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}">
-                            {{ $servicio->name }}
-                        </option>
-                    @endforeach
-                </select>
+    {{-- SERVICIO --}}
+    <div class="field">
+        <label>Servicio</label>
+        <select name="servicio_id" id="servicio" required>
+            <option value="">Selecciona un servicio</option>
+            @foreach ($servicios as $servicio)
+                @php
+                    $promo = $servicio->promocionActiva();
+                    $precioFinal = $servicio->precioConDescuento();
+                @endphp
+                <option value="{{ $servicio->id }}" data-precio="{{ $servicio->price }}"
+                    data-precio-descuento="{{ $precioFinal }}" data-tiene-promocion="{{ $promo ? '1' : '0' }}"
+                    data-descripcion="{{ $servicio->description }}"
+                    data-duracion="{{ $servicio->duration_minutes }}"
+                    data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}">
+                    {{ $servicio->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
 
-                {{-- FECHA --}}
-                <label>Fecha</label>
-                <input type="date" id="fecha" name="fecha" min="{{ now()->toDateString() }}"
-                    onkeydown="return false;">
+    {{-- FECHA --}}
+                <div class="field date-field">
+                    <label>Fecha</label>
+                    <input type="text" id="fecha" name="fecha" class="date-inline" placeholder="Selecciona una fecha"
+                        onkeydown="return false;" readonly>
+                </div>
 
                 {{-- HORARIO --}}
-                <label>Horario</label>
-                <select id="horarios" name="hora_inicio">
-                    <option value="">Selecciona un horario</option>
-                </select>
+                <div class="field horario-field">
+                    <label>Horario</label>
+                    <select id="horarios" name="hora_inicio">
+                        <option value="">Selecciona un horario</option>
+                    </select>
+                </div>
 
-                {{-- PRIVACIDAD --}}
-                <label class="privacy-label">
-                    <input type="checkbox" name="acepta_privacidad" class="privacy-checkbox">
-                    <span class="privacy-text">
-                        Acepto la <a href="#" class="privacy-link">política de privacidad</a>
-                    </span>
-                </label>
+                <div class="field anticipo-field">
+                    <div class="anticipo">
+                        <h4>Anticipo requerido</h4>
+                        <p>Se solicita un <strong>{{ $porcentajeAnticipo }}%</strong> para confirmar la cita</p>
+                        <p>El <strong>{{ $porcentajeRestante }}%</strong> restante se pagara despues de la cita</p>
 
-                <button type="button" class="submit-btn" onclick="mostrarModalConfirmar()">
-                    AGENDAR CITA
-                </button>
-            </form>
-            <div class="anticipo">
-                <h4>⚠ Anticipo requerido</h4>
-                <p>Se solicita un <strong>{{ $porcentajeAnticipo }}%</strong> para confirmar la cita</p>
-                <p>El <strong>{{ $porcentajeRestante }}%</strong> restante se pagará después de la cita</p>
+                        <p style="margin-top:10px;color:#fde68a;font-weight:bold;">
+                            Tienes <strong>15 minutos</strong> para realizar la transferencia y subir el comprobante.
+                            De lo contrario, la cita se cancelara automaticamente.
+                        </p>
 
-                <p style="margin-top:10px;color:#fde68a;font-weight:bold;">
-                    ⏳ Tienes <strong>15 minutos</strong> para realizar la transferencia y subir el comprobante.
-                    De lo contrario, la cita se cancelará automáticamente.
-                </p>
+                        <p>
+                            Banco: {{ config('citas.banco.nombre') }}<br>
+                            Cuenta: {{ config('citas.banco.cuenta') }}<br>
+                            CLABE: {{ config('citas.banco.clabe') }}
+                        </p>
+                    </div>
+                </div>
 
-                <p>
-                    Banco: {{ config('citas.banco.nombre') }}<br>
-                    Cuenta: {{ config('citas.banco.cuenta') }}<br>
-                    CLABE: {{ config('citas.banco.clabe') }}
-                </p>
-            </div>
+{{-- PRIVACIDAD --}}
+    <div class="field full privacy-field">
+        <label class="privacy-label">
+            <input type="checkbox" name="acepta_privacidad" class="privacy-checkbox">
+            <span class="privacy-text">
+                Acepto la <a href="#" class="privacy-link">política de privacidad</a>
+            </span>
+        </label>
+    </div>
+
+    <div class="field full center">
+        <button type="button" class="submit-btn" onclick="mostrarModalConfirmar()">
+            AGENDAR CITA
+        </button>
+    </div>
+</form>
+
 
         </div>
     </div>
@@ -186,8 +195,10 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{{ asset('js/cliente/citas.js') }}"></script>
 
 </body>
 
 </html>
+

@@ -40,5 +40,6 @@
     <livewire:admin.logout-modal />
 
     @livewireScripts
+    @yield('scripts')
 </body>
 </html>
