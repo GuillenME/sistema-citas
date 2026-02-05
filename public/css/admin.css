@@ -388,6 +388,28 @@ select:focus {
     display: flex;
 }
 
+/* =========================
+   NOTAS (MODAL SIMPLE)
+========================= */
+
+.notes-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(95, 70, 54, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.notes-modal.active {
+    display: flex;
+}
+
+.notes-modal .modal-box {
+    max-width: 520px;
+}
+
 
 /* =========================
    BOTÓN CERRAR SESIÓN (ADMIN)
@@ -561,6 +583,21 @@ select:focus {
     border-collapse: collapse;
 }
 
+.admin-table-fixed {
+    table-layout: fixed;
+}
+
+.admin-table-fixed th,
+.admin-table-fixed td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+.admin-table-fixed .notes-cell {
+    max-width: 320px;
+}
 
 /* HEAD */
 
@@ -615,8 +652,15 @@ select:focus {
 ========================= */
 
 .table-actions {
-    display: flex;
+    text-align: center;
+}
+
+.table-actions .actions-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     gap: 12px;
+    width: 100%;
 }
 
 .action-toggle {

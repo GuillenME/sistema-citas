@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Gestión de citas')
+@section('title', 'Gestion de citas')
 
 @section('content')
 
@@ -9,7 +9,7 @@
     <div class="card table-card">
         <div class="table-container">
 
-            <table class="admin-table">
+            <table class="admin-table admin-table-fixed">
                 <thead>
                     <tr>
                         <th>Cliente</th>
@@ -34,11 +34,24 @@
                             <td>{{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}</td>
 
                             <td>
-                                {{ $cita->start_time }} – {{ $cita->end_time }}
+                                {{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($cita->end_time)->format('H:i') }}
                             </td>
 
                             <td>
-                                {{ $cita->employee?->name ?? '— Sin asignar —' }}
+                                @if (!$cita->employee_id && $cita->status === 'confirmada')
+                                    <form method="POST" action="{{ route('admin.citas.asignarEmpleado', $cita) }}">
+                                        @csrf
+                                        <select name="empleado_id">
+                                            <option value="">Seleccionar empleado</option>
+                                            @foreach ($empleados as $empleado)
+                                                <option value="{{ $empleado->id }}">{{ $empleado->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="btn btn-save">Asignar</button>
+                                    </form>
+                                @else
+                                    {{ $cita->employee?->name ?? '- Sin asignar -' }}
+                                @endif
                             </td>
 
                             <td>
@@ -61,16 +74,38 @@
                                         Ver
                                     </a>
                                 @else
-                                    —
+                                    -
                                 @endif
                             </td>
 
                             <td class="table-actions">
-                                —
+                                <div class="actions-wrap">
+                                    @if ($cita->receipt && $cita->status === 'pendiente_anticipo')
+                                        <form method="POST" action="{{ route('admin.citas.confirmar', $cita) }}">
+                                            @csrf
+                                            <button type="submit" class="btn btn-save">Confirmar</button>
+                                        </form>
+
+                                        <form method="POST" action="{{ route('admin.citas.cancelar', $cita) }}">
+                                            @csrf
+                                            <button type="submit" class="btn btn-cancel">Cancelar</button>
+                                        </form>
+                                    @else
+                                        <span>-</span>
+                                    @endif
+                                </div>
                             </td>
 
                             <td class="notes-cell">
-                                {{ $cita->notes ?? '—' }}
+                                @if ($cita->notes)
+                                    <button type="button"
+                                        class="btn btn-edit notes-btn"
+                                        data-notes="{{ e($cita->notes) }}">
+                                        Ver
+                                    </button>
+                                @else
+                                    -
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -91,4 +126,50 @@
         </div>
     </div>
 
+    <div id="notesModal" class="notes-modal" aria-hidden="true">
+        <div class="modal-box">
+            <h3>Observaciones</h3>
+            <p id="notesModalText">-</p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-cancel" id="notesModalClose">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
 @endsection
+
+@section('scripts')
+<script>
+    (function () {
+        var modal = document.getElementById('notesModal');
+        var modalText = document.getElementById('notesModalText');
+        var closeBtn = document.getElementById('notesModalClose');
+
+        if (!modal || !modalText || !closeBtn) return;
+
+        document.querySelectorAll('.notes-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var text = btn.getAttribute('data-notes') || '-';
+                modalText.textContent = text;
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+            });
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) closeModal();
+        });
+    })();
+</script>
+@endsection
+
+
+
