@@ -15,7 +15,7 @@ class PublicController extends Controller
         $servicios = Servicio::where('active', 1)->get();
         $homeServicios = Servicio::where('active', 1)
             ->orderBy('id', 'desc')
-            ->take(4)
+            ->take(10)
             ->get();
 
         $promociones = Promocion::where('published', 1)
@@ -28,12 +28,12 @@ class PublicController extends Controller
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->orderBy('start_date', 'desc')
-            ->take(4)
+            ->take(1)
             ->get();
 
         $noticias = Noticia::where('published', 1)
             ->orderBy('publication_date', 'desc')
-            ->take(3)
+            ->take(4)
             ->get();
 
         $reviews = Review::orderBy('created_at', 'desc')
