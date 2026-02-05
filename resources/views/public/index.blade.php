@@ -135,43 +135,54 @@ footer span{
     color: #fccc7c;
 }
 /* ================= NOTICIAS ================= */
-.news-grid{
+.news-editorial{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 50px;
 }
 
-.news-card{
-    overflow: hidden;
-    padding: 0;
+.news-item{
+    background: transparent;
 }
 
-.news-card img{
+.news-item.up{
+    margin-top: 0;
+}
+
+.news-item.down{
+    margin-top: 60px;
+}
+
+.news-item img{
     width: 100%;
-    height: 200px;
-    object-fit: contain;
-    background: rgba(0,0,0,.25);
-    display: block;
+    height: 320px;
+    object-fit: cover;
 }
 
-.news-content{
-    padding: 20px;
-}
-
-.news-content h3{
-    color: #fccc7c;
-    margin-bottom: 10px;
-}
-
-.news-content p{
-    font-size: 14px;
-    color: #e5e7eb;
-    margin-bottom: 12px;
+.news-text{
+    margin-top: 16px;
+    text-align: center;
 }
 
 .news-date{
     font-size: 12px;
-    color: #e48815;
+    text-align: center;
+    color: #000;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.news-text h3{
+    font-size: 20px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.news-text p{
+    font-size: 14px;
+    text-align: center;
+    opacity: .9;
 }
 /* ===== CONTACTO ESTILO CENTRADO ===== */
 .contact-info{
@@ -331,7 +342,281 @@ footer span{
         max-width: 200px;
     }
 }
+/* ================= CARRUSEL SERVICIOS ================= */
+.services-wrapper{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
+.services-slider{
+    display: flex;
+    gap: 0px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 0px;
+}
+
+.services-slider::-webkit-scrollbar{
+    display: none;
+}
+
+.service-card{
+    min-width: 320px;   /*  más grandes */
+    max-width: 320px;
+    height: 220px;      /*  altura fija tipo galería */
+    flex-shrink: 0;
+    border-radius: 0;   /*  se ven unidas */
+}
+
+/* BOTONES */
+.nav-btn{
+    background: #8c4030;
+    color: #fff;
+    border: none;
+    font-size: 28px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0,0,0,.4);
+    transition: .2s;
+}
+
+.nav-btn:hover{
+    background: #e48815;
+}
+
+.nav-btn.left{
+    margin-right: 10px;
+}
+
+.nav-btn.right{
+    margin-left: 10px;
+}
+
+/* TARJETAS MÁS COMPACTAS */
+.home-card img{
+    height: 120px; 
+}
+
+.home-card p{
+    font-size: 12px;
+}
+/* ===== TARJETA SOLO IMAGEN ===== */
+.service-card{
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.service-card img{
+    width: 100%;
+    height: 160px;
+    object-fit: cover; /*  llena toda la tarjeta */
+    border-radius: 0px;
+    margin: 0;
+}
+.service-card:hover{
+    transform: none;
+    box-shadow: none;
+}
+/* efecto hover */
+.service-card:hover img{
+    transform: scale(1.04);
+    transition: .3s;
+}
+/* ===== MODAL BASE ===== */
+.modal{
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CONTENEDOR */
+.modal-box{
+    background: #6b4f3f;
+    width: 90%;
+    max-width: 780px;
+    height: 420px;
+    display: flex;               /* 🔥 AQUÍ está el cambio */
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* X */
+.modal-close{
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* IZQUIERDA (IMAGEN) */
+.modal-left{
+    flex: 1.2;
+}
+
+.modal-left img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* DERECHA (INFO) */
+.modal-right{
+    flex: 1;
+    padding: 28px;
+    color: #fff;
+    text-align: center;
+}
+
+.modal-right h2{
+    margin-top: 40px;
+    font-size: 26px;
+}
+
+.modal-right p{
+    font-size: 14px;
+    margin: 18px 0;
+}
+
+.modal-right .price{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px){
+    .modal-box{
+        flex-direction: column;
+        height: auto;
+    }
+
+    .modal-left{
+        height: 220px;
+    }
+}
+
+.close{
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 26px;
+    cursor: pointer;
+    color: #fff;
+}
+/* ===== FIX BORDE CAFÉ ===== */
+.service-card{
+    background: transparent !important; /*  quita el café */
+    border: none !important;
+    height: 240px; /* un poco más alto */
+}
+
+/* Asegura que la imagen tape TODO */
+.service-card img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+body.modal-open{
+    overflow: hidden;
+}
+/* ================= PROMO BANNER ================= */
+.promo-section{
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.promo-box{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: stretch;
+    border-radius: 0px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e8ff9c, #caff4d);
+}
+
+/* IZQUIERDA */
+.promo-info{
+    flex: 1;
+    padding: 60px 50px;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.promo-badge{
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.promo-info h2{
+    font-size: 80px;
+    margin: 0 0 20px;
+    font-weight: 900;
+}
+
+.promo-text{
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.promo-code{
+    font-size: 14px;
+}
+
+/* DERECHA */
+.promo-image{
+    flex: 1;
+    height: 100%;
+}
+
+.promo-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px){
+    .promo-box{
+        flex-direction: column-reverse;
+    }
+
+    .promo-info{
+        padding: 30px;
+        text-align: center;
+    }
+
+    .promo-info h2{
+        font-size: 48px;
+    }
+
+    .promo-image{
+        height: 260px;
+    }
+}
+#promociones{
+    padding: 0 !important;
+    max-width: 100% !important;
+}
 </style>
 @endsection
 
@@ -358,46 +643,65 @@ footer span{
 
 <section id="servicios" class="home-section">
     <h2>Servicios</h2>
-    <div class="home-grid">
-        @forelse($homeServicios as $servicio)
-            <div class="home-card">
-                <img
-                    src="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
-                    alt="{{ $servicio->name }}"
-                >
-                <h3>{{ $servicio->name }}</h3>
-                <p>{{ \Illuminate\Support\Str::limit($servicio->description, 80) }}</p>
-                <div class="price">${{ number_format($servicio->price, 2) }}</div>
-            </div>
-        @empty
-            <p>No hay servicios disponibles.</p>
-        @endforelse
-    </div>
-    <div class="home-actions">
-        <a href="{{ route('servicios') }}" class="btn">Ver más</a>
+
+    <div class="services-wrapper">
+        <button class="nav-btn left" onclick="scrollServices(-1)">‹</button>
+
+        <div class="services-slider" id="servicesSlider">
+            @forelse($homeServicios as $servicio)
+                <div 
+    class="home-card service-card service-click"
+    data-nombre="{{ $servicio->name }}"
+    data-descripcion="{{ $servicio->description }}"
+    data-precio="${{ number_format($servicio->price, 2) }}"
+    data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
+>
+    <img
+        src="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
+        alt="{{ $servicio->name }}"
+    >
+</div>
+            @empty
+                <p>No hay servicios disponibles.</p>
+            @endforelse
+        </div>
+
+        <button class="nav-btn right" onclick="scrollServices(1)">›</button>
     </div>
 </section>
 
-<section id="promociones" class="home-section">
-    <h2>Promociones</h2>
-    <div class="home-grid">
-        @forelse($homePromociones as $promo)
-            <div class="home-card">
+<section id="promociones" class="promo-section">
+
+    {{-- PROMOCIÓN (por ahora usa la primera, luego será la más reciente) --}}
+    @if($homePromociones->count())
+        @php $promo = $homePromociones->first(); @endphp
+
+        <div class="promo-box">
+
+            <!-- IZQUIERDA: INFO -->
+            <div class="promo-info">
+                <span class="promo-badge">¡DESCUENTO EN PROMOCIÓN!</span>
+
+                <h2>
+                    DEL {{ $promo->discount }}%
+                </h2>
+
+                <p class="promo-text">
+                    {{ $promo->description }}
+                </p>
+            </div>
+
+            <!-- DERECHA: IMAGEN -->
+            <div class="promo-image">
                 <img
                     src="{{ $promo->image ? asset('storage/' . $promo->image) : asset('imagenes/servicio_default.png') }}"
                     alt="{{ $promo->title }}"
                 >
-                <h3>{{ $promo->title }}</h3>
-                <p>{{ \Illuminate\Support\Str::limit($promo->description, 80) }}</p>
-                <div class="price">{{ $promo->discount }}% OFF</div>
             </div>
-        @empty
-            <p>No hay promociones activas por el momento.</p>
-        @endforelse
-    </div>
-    <div class="home-actions">
-        <a href="{{ route('promociones') }}" class="btn">Ver más</a>
-    </div>
+
+        </div>
+    @endif
+
 </section>
 
 <section id="reviews" class="home-section">
@@ -440,7 +744,23 @@ footer span{
 <livewire:noticias />
 {{-- CONTACTOS --}}
 <livewire:contactos />
+<div id="modalServicio" class="modal">
+    <div class="modal-box">
 
+        <button class="modal-close">&times;</button>
+
+        <div class="modal-left">
+            <img id="modalImagen">
+        </div>
+
+        <div class="modal-right">
+            <h2 id="modalTitulo"></h2>
+            <p id="modalDescripcion"></p>
+            <div class="price" id="modalPrecio"></div>
+        </div>
+
+    </div>
+</div>
 <footer>
   © 2026 Barbería & Spa <br>
     Desarrollado por <span>Cybac</span>
@@ -449,24 +769,49 @@ footer span{
 
 @section('scripts')
 <script>
+    // ===== CARRUSEL =====
     function scrollServices(direction) {
         const slider = document.getElementById('servicesSlider');
         if (!slider) return;
-        const cardWidth = slider.querySelector('.service-card').offsetWidth + 20;
+
+        const cardWidth =
+            slider.querySelector('.service-card').offsetWidth + 16;
+
         slider.scrollBy({
             left: direction * cardWidth,
             behavior: 'smooth'
         });
     }
 
-    function scrollPromos(direction) {
-        const slider = document.getElementById('promoSlider');
-        if (!slider) return;
-        const cardWidth = slider.querySelector('.service-card').offsetWidth + 20;
-        slider.scrollBy({
-            left: direction * cardWidth,
-            behavior: 'smooth'
-        });
+    // ===== MODAL SERVICIO =====
+    const modal = document.getElementById('modalServicio');
+    const cerrar = document.querySelector('.modal-close');
+
+    document.querySelectorAll('.service-click').forEach(card => {
+        card.addEventListener('click', () => abrirModal(card));
+    });
+
+    function abrirModal(card){
+        document.getElementById('modalTitulo').innerText = card.dataset.nombre;
+        document.getElementById('modalDescripcion').innerText = card.dataset.descripcion;
+        document.getElementById('modalPrecio').innerText = card.dataset.precio;
+        document.getElementById('modalImagen').src = card.dataset.imagen;
+
+        modal.style.display = 'flex';
+        document.body.classList.add('modal-open'); // 🔒 bloquea scroll
     }
+
+    function cerrarModal(){
+        modal.style.display = 'none';
+        document.body.classList.remove('modal-open'); // 🔓 libera scroll
+    }
+
+    cerrar.addEventListener('click', cerrarModal);
+
+    window.addEventListener('click', e => {
+        if (e.target === modal) {
+            cerrarModal();
+        }
+    });
 </script>
 @endsection
