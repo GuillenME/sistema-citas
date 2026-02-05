@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Promociones | Barbería & Spa</title>
+@extends('layouts.public')
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@section('title', 'Promociones | Barbería & Spa')
 
-    <style>
-       * { box-sizing: border-box; }
+@section('styles')
+<style>
+* { box-sizing: border-box; }
 
 html{
     scroll-behavior: smooth;
@@ -20,78 +17,25 @@ body{
     color: #e5e7eb;
 }
 
-  /* ================= HEADER ================= */
-header{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    background: #8c4030;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    z-index: 1000;
-    backdrop-filter: blur(6px);
+section{
+    max-width: 1200px;
+    margin: auto;
+    padding: 90px 20px 60px;
 }
 
-.logo{
-    font-weight: bold;
-    font-size: 25px;
-    letter-spacing: 2px;
-    color: #e48815;
+h1{
+    text-align: center;
+    margin-bottom: 40px;
+    text-shadow: 0 0 15px #fccc7c;
 }
+</style>
+@endsection
 
-nav a{
-    margin: 0 14px;
-    color: #e5e7eb;
-    text-decoration: none;
-    font-weight: bold;
-    transition: .3s;
-}
-
-nav a:hover{
-    color: #e48815;
-}
-
-.login-icon {
-    display: inline-flex;
-    align-items: center;
-}
-
-.icon-img {
-    width: 55px;
-    height: 55px;
-    object-fit: contain;
-    @livewireStyles
-}
-</head>
-<body>
-
-<header>
-    <div class="logo">Barbería & Spa</div>
-
-    <nav>
-        <a href="{{ route('home') }}">Inicio</a>
-        <a href="{{ url('/') }}#servicios">Servicios</a>
-        <a href="{{ url('/') }}#promociones">Promociones</a>
-        <a href="{{ url('/') }}#noticias">Noticias & Novedades</a>
-        <a href="{{ url('/') }}#contacto">Contacto</a>
-    </nav>
-
-    <a href="{{ route('login') }}" class="login-icon">
-        <img src="{{ asset('imagenes/usuario.png') }}" alt="Iniciar sesión" class="icon-img">
-    </a>
-</header>
-
+@section('content')
 <section>
     <h1>Promociones</h1>
 
     {{-- MISMAS PROMOS DEL INDEX --}}
     <livewire:public.promociones />
 </section>
-
-@livewireScripts
-</body>
-</html>
+@endsection
