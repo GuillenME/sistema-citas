@@ -45,6 +45,9 @@
                             <a href="{{ route('admin.promociones.edit', $promo) }}" class="btn-edit">
                                 Editar
                             </a>
+                            <button class="btn-delete" wire:click="confirmDelete({{ $promo->id }})">
+                                Eliminar
+                            </button>
                         </td>
                     </tr>
                 @empty
@@ -63,4 +66,25 @@
     <div class="pagination-wrapper">
         {{ $promociones->links() }}
     </div>
+
+    @if ($confirmDeleteId)
+        <div class="modal-overlay" wire:click.self="cancelDelete">
+            <div class="modal-box">
+                <h3>¿Eliminar promoción?</h3>
+
+                <p>Esta acción no se puede deshacer.</p>
+
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" wire:click="cancelDelete">
+                        Cancelar
+                    </button>
+
+                    <button class="btn btn-save" wire:click="deleteConfirmed" wire:loading.attr="disabled">
+                        <span wire:loading.remove>Eliminar</span>
+                        <span wire:loading>Eliminando...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
