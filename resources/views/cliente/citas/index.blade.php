@@ -41,9 +41,10 @@
 
 
             @php
-                $citasOrdenadas = $citas instanceof \Illuminate\Pagination\LengthAwarePaginator
-                    ? $citas->getCollection()->sortByDesc('date')
-                    : $citas->sortByDesc('date');
+                $citasOrdenadas =
+                    $citas instanceof \Illuminate\Pagination\LengthAwarePaginator
+                        ? $citas->getCollection()->sortByDesc('date')
+                        : $citas->sortByDesc('date');
             @endphp
 
             <div class="citas-grid">
@@ -100,20 +101,24 @@
                         <details class="cita-details">
                             <summary>Ver detalles</summary>
                             <div class="cita-details-body">
-                                <div>Anticipo ({{ $porcentajeAnticipo }}%): <strong>${{ number_format($anticipo, 2) }}</strong></div>
-                                <div>Restante ({{ $porcentajeRestante }}%): <strong class="price-restante">${{ number_format($restante, 2) }}</strong></div>
+                                <div>Anticipo ({{ $porcentajeAnticipo }}%):
+                                    <strong>${{ number_format($anticipo, 2) }}</strong></div>
+                                <div>Restante ({{ $porcentajeRestante }}%): <strong
+                                        class="price-restante">${{ number_format($restante, 2) }}</strong></div>
 
                                 @if ($cita->status === 'pendiente_anticipo')
                                     <div class="anticipo-info">
                                         <div>Banco: {{ config('citas.banco.nombre') }}</div>
                                         <div>Cuenta: {{ config('citas.banco.cuenta') }}</div>
                                         <div>CLABE: {{ config('citas.banco.clabe') }}</div>
-                                        <div class="anticipo-hint">El {{ $porcentajeRestante }}% restante se paga despues de la cita.</div>
+                                        <div class="anticipo-hint">El {{ $porcentajeRestante }}% restante se paga
+                                            despues de la cita.</div>
                                         <div class="anticipo-hint">Tienes 15 minutos para subir el comprobante.</div>
                                     </div>
 
                                     @if ($cita->receipt)
-                                        <a class="link-green" href="{{ asset('storage/' . $cita->receipt) }}" target="_blank">
+                                        <a class="link-green" href="{{ asset('storage/' . $cita->receipt) }}"
+                                            target="_blank">
                                             Ver comprobante
                                         </a>
                                     @else
@@ -125,7 +130,8 @@
                                         </form>
                                     @endif
                                 @elseif ($cita->receipt)
-                                    <a class="link-green" href="{{ asset('storage/' . $cita->receipt) }}" target="_blank">
+                                    <a class="link-green" href="{{ asset('storage/' . $cita->receipt) }}"
+                                        target="_blank">
                                         Ver comprobante
                                     </a>
                                 @endif

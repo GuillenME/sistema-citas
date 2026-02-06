@@ -1,0 +1,150 @@
+.help-text {
+    color: #c0a799;
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.anticipo-label {
+    margin-top: 18px;
+}
+
+.is-hidden {
+    display: none;
+}
+
+.recep-citas .cita-card {
+    min-height: 200px;
+}
+
+.recep-citas .cita-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    color: #e5e7eb;
+}
+
+.recep-citas .cita-meta strong {
+    color: #fde68a;
+}
+
+/* Ajustes formulario recepcionista */
+.recep-form .container {
+    padding: 40px 24px;
+}
+
+.recep-form .card {
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 18px;
+    padding: 28px 32px 36px;
+}
+
+.recep-form .form-grid {
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    gap: 16px 28px;
+    align-items: start;
+}
+
+.recep-form label {
+    font-size: 15px;
+    letter-spacing: 0.2px;
+}
+
+.recep-form .form-grid select,
+.recep-form .form-grid input:not([type="checkbox"]) {
+    height: 26px;
+    padding: 4px 8px;
+    border-radius: 2px;
+    background: #ffffff;
+    border: none;
+    box-shadow: none;
+}
+
+.recep-form .field {
+    max-width: none;
+}
+
+.recep-form .date-field {
+    grid-column: 1 / 2;
+    grid-row: 2 / span 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.recep-form .horario-field {
+    grid-column: 2 / 3;
+    grid-row: 2;
+}
+
+.recep-form .flatpickr-calendar.inline,
+.recep-form .date-field .flatpickr-calendar {
+    position: static;
+    transform: none;
+    margin: 10px 0 0;
+    width: 100%;
+    max-width: 240px;
+    padding-top: 6px;
+    overflow: hidden;
+}
+
+.recep-form .flatpickr-months {
+    position: relative;
+    padding-top: 2px;
+}
+
+.recep-form .flatpickr-prev-month,
+.recep-form .flatpickr-next-month {
+    top: 6px;
+}
+
+.recep-form .flatpickr-day {
+    font-size: 12px;
+}
+
+.recep-form .flatpickr-weekday {
+    font-size: 10px;
+}
+
+.recep-form .anticipo-field {
+    grid-column: 2 / 3;
+    grid-row: 3;
+    align-self: start;
+    margin-top: 48px;
+}
+
+.recep-form .submit-btn {
+    max-width: 360px;
+}
+
+@media (max-width: 900px) {
+    .recep-form .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .recep-form .date-field,
+    .recep-form .horario-field,
+    .recep-form .anticipo-field {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    .recep-form .anticipo-field {
+        margin-top: 8px;
+    }
+
+    .recep-form .card {
+        padding: 24px 20px 32px;
+    }
+}
+
+@media (max-width: 600px) {
+    .recep-form .container {
+        padding: 28px 16px;
+    }
+
+    .recep-form .submit-btn {
+        max-width: 100%;
+    }
+}

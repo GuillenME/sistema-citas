@@ -12,6 +12,29 @@ use Carbon\Carbon;
 
 class CitaController extends Controller
 {
+    public function dashboard()
+    {
+        $today = now()->toDateString();
+
+        $citasHoy = Cita::whereDate('date', $today)->count();
+        $pendientes = Cita::whereDate('date', $today)
+            ->whereIn('status', ['pendiente', 'pendiente_anticipo'])
+            ->count();
+        $confirmadas = Cita::whereDate('date', $today)
+            ->where('status', 'confirmada')
+            ->count();
+        $canceladas = Cita::whereDate('date', $today)
+            ->where('status', 'cancelada')
+            ->count();
+
+        return view('recepcionista.dashboard', compact(
+            'citasHoy',
+            'pendientes',
+            'confirmadas',
+            'canceladas'
+        ));
+    }
+
     public function create()
     {
         $servicios = Servicio::where('active', 1)

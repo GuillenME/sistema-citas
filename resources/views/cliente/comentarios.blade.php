@@ -38,7 +38,7 @@
         }
 
         .comentarios-card {
-            background: rgba(79, 50, 34, 0.82);
+            background: #5f4030;
             border: 1px solid rgba(252, 204, 124, 0.25);
             border-radius: 16px;
             padding: 22px;
