@@ -1,24 +1,30 @@
-<div class="news-editorial">
-    @foreach ($noticias as $index => $noticia)
-        <article class="news-item {{ $index % 2 === 0 ? 'down' : 'up' }}">
-            
-            <img
-                src="{{ $noticia->image ? asset('storage/' . $noticia->image) : asset('imagenes/servicio_default.png') }}"
-                alt="{{ $noticia->title }}"
-            >
+<section id="noticias" class="home-section">
+    <h2>Noticias & Novedades</h2>
 
-            <div class="news-text">
-                <span class="news-date">
-                    {{ \Carbon\Carbon::parse($noticia->publication_date)->format('d M Y') }}
-                </span>
+    <div class="news-editorial">
+        @foreach ($noticias as $index => $noticia)
+            <article class="news-item {{ $index % 2 === 0 ? 'down' : 'up' }}">
+                
+                <img
+                    src="{{ $noticia->image 
+                        ? asset('storage/' . $noticia->image) 
+                        : asset('imagenes/servicio_default.png') }}"
+                    alt="{{ $noticia->title }}"
+                >
 
-                <h3>{{ $noticia->title }}</h3>
+                <div class="news-text">
+                    <span class="news-date">
+                        {{ \Carbon\Carbon::parse($noticia->publication_date)->format('d M Y') }}
+                    </span>
 
-                <p>
-                    {{ \Illuminate\Support\Str::limit($noticia->content, 120) }}
-                </p>
-            </div>
+                    <h3>{{ $noticia->title }}</h3>
 
-        </article>
-    @endforeach
-</div>
+                    <p>
+                        {{ \Illuminate\Support\Str::limit($noticia->content, 120) }}
+                    </p>
+                </div>
+
+            </article>
+        @endforeach
+    </div>
+</section>
