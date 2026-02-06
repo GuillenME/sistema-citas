@@ -39,11 +39,48 @@ body {
     border-bottom: 1px solid#8c4030;
 }
 
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.navbar-left::-webkit-scrollbar {
+    height: 6px;
+}
+
+.navbar-left::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+}
+
+.navbar-left::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 .navbar a {
     color: #c7d2fe;
-    margin-right: 16px;
+    margin-right: 0;
     font-weight: bold;
     text-decoration: none;
+    font-size: 14px;
+}
+
+.navbar a.active {
+    color: #fccc7c;
+    text-shadow: 0 0 8px rgba(252, 204, 124, 0.6);
+}
+
+.navbar a.active::after {
+    content: '';
+    display: block;
+    height: 2px;
+    margin-top: 4px;
+    background: linear-gradient(90deg, rgba(252, 204, 124, 0), rgba(252, 204, 124, 0.9), rgba(252, 204, 124, 0));
 }
 
 .navbar a:hover {
@@ -51,16 +88,31 @@ body {
 }
 
 .logo {
-    font-size: 18px;
-    margin-right: 25px;
-    padding: 6px 12px;
-    border-radius: 10px;
-    background: linear-gradient(#c0a799, #cf997a);
-    border: 1px solid#8c4030;
-    box-shadow: 0 0 12px#8c4030;
-    letter-spacing: 0.4px;
+    font-size: 15px;
+    margin-right: 18px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: none;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    color: #ffffff;
+    color: #f9e9dc;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo.has-image {
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+.logo img {
+    height: 70px;
+    width: auto;
+    display: block;
 }
 
 
@@ -478,6 +530,18 @@ select:focus {
     height: 18px;
     accent-color: #e48815;
     cursor: pointer;
+}
+
+/* =========================
+   ACCIONES FORMULARIOS
+========================= */
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+    flex-wrap: wrap;
 }
 
 
@@ -905,4 +969,3 @@ select:focus {
     width: auto;
     height: auto;
 }
-

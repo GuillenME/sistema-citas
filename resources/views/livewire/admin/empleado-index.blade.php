@@ -15,7 +15,17 @@
                 @foreach($empleados as $e)
                     <tr>
                         <td>{{ $e->name }}</td>
-                        <td>{{ $e->specialty }}</td>
+                        <td>
+                            @if ($e->servicios && $e->servicios->count())
+                                @foreach ($e->servicios as $servicio)
+                                    <span class="badge badge-on">
+                                        {{ $servicio->name }}
+                                    </span>
+                                @endforeach
+                            @else
+                                {{ $e->specialty ?? '—' }}
+                            @endif
+                        </td>
                         <td>
                             <span class="badge {{ $e->active ? 'badge-on' : 'badge-off' }}">
                                 {{ $e->active ? 'Activo' : 'Inactivo' }}

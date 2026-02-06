@@ -32,6 +32,12 @@ class Servicio extends Model
             ->withTimestamps();
     }
 
+    public function empleados(): BelongsToMany
+    {
+        return $this->belongsToMany(Empleado::class, 'employee_service', 'service_id', 'employee_id')
+            ->withTimestamps();
+    }
+
     /**
      * Obtener la promoción activa para este servicio
      */

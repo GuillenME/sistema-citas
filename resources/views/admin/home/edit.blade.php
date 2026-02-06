@@ -87,9 +87,11 @@
                 <textarea id="feature_3_description" name="feature_3_description" rows="2">{{ old('feature_3_description', $homeSetting->feature_3_description) }}</textarea>
             </section>
 
-            <button type="submit" class="btn">
-                Guardar cambios
-            </button>
+            <div class="actions">
+                <button type="submit" class="btn">
+                    Guardar cambios
+                </button>
+            </div>
         </form>
     </div>
 @endsection
