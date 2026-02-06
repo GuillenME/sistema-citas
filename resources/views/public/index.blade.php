@@ -890,8 +890,8 @@ body.modal-open{
     <h2>Comentarios</h2>
 
     <div class="reviews-grid google-style">
-        @forelse($reviews as $review)
-
+        @forelse($reviews->sortByDesc('created_at')->take(3) as $review)
+        
             @php
             $email = $review->user_email ?? '';
             $parts = explode('@', $email, 2);
