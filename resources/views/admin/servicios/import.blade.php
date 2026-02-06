@@ -2,6 +2,7 @@
 
 @section('title', 'Importar servicios')
 
+@section('back-url', route('admin.servicios.index'))
 @section('content')
     <div class="card">
         <h1>Importar servicios</h1>
@@ -33,3 +34,4 @@
         </form>
     </div>
 @endsection
+

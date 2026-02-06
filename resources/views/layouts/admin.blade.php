@@ -24,7 +24,10 @@
 
         <header class="page-header">
             @if (!request()->routeIs('admin.dashboard'))
-                <a href="{{ route('admin.dashboard') }}" class="back-arrow" title="Volver al menú principal">←</a>
+                @php
+                    $backUrl = trim($__env->yieldContent('back-url'));
+                @endphp
+                <a href="{{ $backUrl !== '' ? $backUrl : route('admin.dashboard') }}" class="back-arrow" title="Volver al menu principal">&larr;</a>
             @endif
             <h1>@yield('title')</h1>
 

@@ -2,6 +2,7 @@
 
 @section('title', 'Editar Home público')
 
+@section('back-url', route('admin.dashboard'))
 @section('content')
     <div class="card">
         <h1>Editar Home público</h1>
@@ -92,3 +93,4 @@
         </form>
     </div>
 @endsection
+
