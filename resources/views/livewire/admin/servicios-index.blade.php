@@ -28,6 +28,9 @@
                                class="action-link edit">
                                 Editar
                             </a>
+                            <button class="btn-delete" wire:click="confirmDelete({{ $servicio->id }})">
+                                Eliminar
+                            </button>
                         </td>
                     </tr>
                 @empty
@@ -44,5 +47,26 @@
     <div class="pagination-wrapper">
         {{ $servicios->links() }}
     </div>
+
+    @if ($confirmDeleteId)
+        <div class="modal-overlay" wire:click.self="cancelDelete">
+            <div class="modal-box">
+                <h3>¿Eliminar servicio?</h3>
+
+                <p>Esta acción desactivará el servicio.</p>
+
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" wire:click="cancelDelete">
+                        Cancelar
+                    </button>
+
+                    <button class="btn btn-save" wire:click="deleteConfirmed" wire:loading.attr="disabled">
+                        <span wire:loading.remove>Eliminar</span>
+                        <span wire:loading>Eliminando...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 
 </div>
