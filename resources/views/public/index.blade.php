@@ -408,31 +408,38 @@ footer span{
 .services-slider::-webkit-scrollbar{
     display: none;
 }
+.services-slider{
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
 
 .service-card{
-    min-width: 320px;   
+    min-width: 320px;
     max-width: 320px;
-    height: 220px;      
+    height: 220px;
     flex-shrink: 0;
-    border-radius: 0;   
+    border-radius: 0;
 }
 
 /* BOTONES */
 .nav-btn{
-    background: #8c4030;
+    background: rgba(255,255,255,0.12);
     color: #fff;
-    border: none;
-    font-size: 28px;
+    border: 1px solid rgba(255,255,255,0.25);
+    font-size: 26px;
     width: 44px;
     height: 44px;
-    border-radius: 50%;
+    border-radius: 999px;
     cursor: pointer;
-    box-shadow: 0 0 12px rgba(0,0,0,.4);
-    transition: .2s;
+    box-shadow: 0 10px 22px rgba(0,0,0,.35);
+    transition: .2s ease;
+    backdrop-filter: blur(6px);
 }
 
 .nav-btn:hover{
     background: #e48815;
+    border-color: #e48815;
+    transform: translateY(-1px);
 }
 
 .nav-btn.left{
@@ -456,6 +463,7 @@ footer span{
     padding: 0;
     overflow: hidden;
     cursor: pointer;
+    position: relative;
 }
 
 .service-card img{
@@ -473,6 +481,20 @@ footer span{
 .service-card:hover img{
     transform: scale(1.04);
     transition: .3s;
+}
+
+.service-name{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 10px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(0deg, rgba(0,0,0,.7), rgba(0,0,0,0));
+    text-transform: uppercase;
+    letter-spacing: .6px;
 }
 /* ===== MODAL BASE ===== */
 .modal{
@@ -566,9 +588,9 @@ footer span{
 }
 /* ===== FIX BORDE CAFÉ ===== */
 .service-card{
-    background: transparent !important; 
+    background: transparent !important;
     border: none !important;
-    height: 240px; 
+    height: 240px;
 }
 
 /* Asegura que la imagen tape TODO */
@@ -831,18 +853,19 @@ body.modal-open{
 
         <div class="services-slider" id="servicesSlider">
             @forelse($homeServicios as $servicio)
-                <div 
-    class="home-card service-card service-click"
-    data-nombre="{{ $servicio->name }}"
-    data-descripcion="{{ $servicio->description }}"
-    data-precio="${{ number_format($servicio->price, 2) }}"
-    data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
->
-    <img
-        src="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
-        alt="{{ $servicio->name }}"
-    >
-</div>
+                <div
+                    class="home-card service-card service-click"
+                    data-nombre="{{ $servicio->name }}"
+                    data-descripcion="{{ $servicio->description }}"
+                    data-precio="${{ number_format($servicio->price, 2) }}"
+                    data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
+                >
+                    <img
+                        src="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
+                        alt="{{ $servicio->name }}"
+                    >
+                    <div class="service-name">{{ $servicio->name }}</div>
+                </div>
             @empty
                 <p>No hay servicios disponibles.</p>
             @endforelse
