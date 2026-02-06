@@ -166,12 +166,12 @@
             max-width: 95%;
             width: 100%;
             margin: auto;
-            background: #5f4636;
+            background: #5f4030;
             backdrop-filter: blur(12px);
             border-radius: 16px;
             padding: 30px;
             border: 1px solid#c0a799;
-            box-shadow: 0 20px 50px#fccc7c;
+            box-shadow: 0 20px 50px#825944;
             overflow-x: auto;
         }
         
