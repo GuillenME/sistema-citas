@@ -692,6 +692,113 @@ body.modal-open{
         margin-top: 80px;
     }
 }
+/* ================= REVIEWS GOOGLE STYLE ================= */
+
+.reviews-grid.google-style{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 28px;
+}
+
+.google-card{
+    background: #000;
+    color: #fff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.45);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 220px;
+}
+
+/* ESTRELLAS */
+.google-stars{
+    color: #fbbc04;
+    font-size: 24px;      
+    margin-bottom: 14px;
+    text-align: center;  
+    letter-spacing: 3px;
+}
+
+
+/* TEXTO */
+.google-comment{
+    min-height: 72px;
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: .95;
+    margin-bottom: 20px;
+}
+
+/* USUARIO */
+.google-user{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* AVATAR CON INICIAL */
+.google-avatar{
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #8c4030;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+/* META */
+.google-meta{
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+}
+
+.google-meta span{
+    opacity: .7;
+    font-size: 12px;
+}
+.google-card{
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.google-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,.55);
+}
+/* ===== REVIEWS CARRUSEL EN MOVIL ===== */
+@media (max-width: 768px){
+    .reviews-grid.google-style{
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .reviews-grid.google-style::-webkit-scrollbar{
+        display: none;
+    }
+
+    .google-card{
+        min-width: 85%;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+}
+@media (max-width: 768px){
+    .google-card{
+        box-shadow: 0 14px 35px rgba(0,0,0,.55);
+    }
+}
+
 </style>
 @endsection
 
@@ -781,34 +888,69 @@ body.modal-open{
 
 <section id="reviews" class="home-section">
     <h2>Comentarios</h2>
-    <div class="reviews-grid">
+
+    <div class="reviews-grid google-style">
         @forelse($reviews as $review)
-            <div class="review-card">
-                <p>{{ $review->comment }}</p>
 
-                @if ($review->rating)
-                    <div class="review-rating">Calificación: {{ $review->rating }}/5</div>
-                @endif
+            @php
+            $email = $review->user_email ?? '';
+            $parts = explode('@', $email, 2);
+            $user = $parts[0] ?? '';
+            $domain = $parts[1] ?? '';
 
-                @php
-                    $email = $review->user_email ?? '';
-                    $parts = explode('@', $email, 2);
-                    $user = $parts[0] ?? '';
-                    $domain = $parts[1] ?? '';
-                    $userMasked = $user === '' ? 'Usuario' : substr($user, 0, 2) . str_repeat('*', max(strlen($user) - 2, 0));
-                    $domainParts = explode('.', $domain, 2);
-                    $domainName = $domainParts[0] ?? '';
-                    $domainTld = $domainParts[1] ?? '';
-                    $domainMasked = $domainName === '' ? '' : substr($domainName, 0, 1) . str_repeat('*', max(strlen($domainName) - 1, 0));
-                    $maskedEmail = $domainMasked && $domainTld
-                        ? $userMasked . '@' . $domainMasked . '.' . $domainTld
-                        : $userMasked;
+            $userMasked = $user === ''
+                ? 'Usuario'
+                : substr($user, 0, 2) . str_repeat('*', max(strlen($user) - 2, 0));
+
+            $domainParts = explode('.', $domain, 2);
+            $domainName = $domainParts[0] ?? '';
+            $domainTld = $domainParts[1] ?? '';
+
+            $domainMasked = $domainName === ''
+                ? ''
+                : substr($domainName, 0, 1) . str_repeat('*', max(strlen($domainName) - 1, 0));
+
+            $maskedEmail = ($domainMasked && $domainTld)
+                ? $userMasked . '@' . $domainMasked . '.' . $domainTld
+                : $userMasked;
+
+            $initial = strtoupper(substr($maskedEmail, 0, 1));
+        @endphp
+            <div class="review-card google-card">
+
+                <!-- ESTRELLAS -->
+                <div class="google-stars">
+                    @php
+                $rating = max(1, min($review->rating ?? 5, 5));
                 @endphp
+                @for ($i = 0; $i < $rating; $i++)
+                ★
+                @endfor
 
-                <div class="review-meta">
-                    {{ $maskedEmail }} · {{ $review->created_at->format('d/m/Y') }}
                 </div>
+
+                <!-- TEXTO -->
+                <p class="google-comment">
+                    {{ $review->comment }}
+                </p>
+
+                <!-- FOOTER -->
+                <div class="google-user">
+                    <div class="google-avatar">
+                        {{ $initial }}
+                    </div>
+
+                    <div class="google-meta">
+                    <strong>{{ $maskedEmail }}</strong>
+                    <span>
+                    {{ $review->created_at->format('d/m/Y') }}
+                    </span>
+                </div>
+
+                </div>
+
             </div>
+
         @empty
             <p>No hay comentarios aún.</p>
         @endforelse
