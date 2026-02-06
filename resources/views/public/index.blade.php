@@ -124,11 +124,12 @@ h2{
 
 /* ================= FOOTER ================= */
 footer{
+    border-top: 4px solid #e48815;
     background: #8c4030;
     padding: 30px 20px;
     text-align: center;
     font-size: 14px;
-    margin-top: 60px;
+    margin-top: 0; 
 }
 
 footer span{
@@ -184,36 +185,83 @@ footer span{
     text-align: center;
     opacity: .9;
 }
-/* ===== CONTACTO ESTILO CENTRADO ===== */
-.contact-info{
+/* ================= CONTACTO NUEVO ================= */
+.contact-section{
+    max-width: 100%;
+    padding: 80px 20px 0;
+    background: #e48815; 
+}
+
+.contact-section h2{
+    text-align: center;
+    letter-spacing: 4px;
+    margin-bottom: 50px;
+}
+
+/* FORMULARIO */
+.contact-form{
+    max-width: 900px;
+    margin: 0 auto 60px;
+}
+
+.contact-grid{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center;
-    padding: 50px 80px;   /* espacio lateral grande */
+    gap: 40px;
 }
 
-/* DATOS -> hacia el centro-derecha */
-.contact-left{
-    justify-self: center;
-    margin-left: 80px;   /* empuja hacia la derecha */
-    max-width: 340px;
+.field label{
+    font-size: 13px;
+    color: #fff;
 }
 
-/* IMAGEN -> hacia el centro-izquierda */
-.contact-right{
-    justify-self: center;
-    margin-right: 80px;  /* empuja hacia la izquierda */
-    display: flex;
-    justify-content: center;
-}
-
-.contact-right img{
+.field input,
+.field textarea{
     width: 100%;
-    max-width: 260px;
-    object-fit: contain;
-    opacity: 0.95;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    padding: 10px 4px;
+    color: #fff;
+    outline: none;
 }
 
+.field.full{
+    grid-column: 1 / -1;
+}
+
+.contact-actions{
+    text-align: right;
+    margin-top: 30px;
+}
+
+.contact-actions button{
+    padding: 12px 36px;
+    background: #fff;
+    color: #000;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* MAPA */
+.contact-map iframe{
+    width: 100%;
+    height: 300px;
+    border: none;
+    display: block;
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px){
+    .contact-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .contact-actions{
+        text-align: center;
+    }
+}
 /* ================= HOME SECTIONS ================= */
 .home-section{
     max-width:1200px;
@@ -362,11 +410,11 @@ footer span{
 }
 
 .service-card{
-    min-width: 320px;   /*  más grandes */
+    min-width: 320px;   
     max-width: 320px;
-    height: 220px;      /*  altura fija tipo galería */
+    height: 220px;      
     flex-shrink: 0;
-    border-radius: 0;   /*  se ven unidas */
+    border-radius: 0;   
 }
 
 /* BOTONES */
@@ -443,7 +491,7 @@ footer span{
     width: 90%;
     max-width: 780px;
     height: 420px;
-    display: flex;               /* 🔥 AQUÍ está el cambio */
+    display: flex;               
     border-radius: 20px;
     overflow: hidden;
     position: relative;
@@ -518,9 +566,9 @@ footer span{
 }
 /* ===== FIX BORDE CAFÉ ===== */
 .service-card{
-    background: transparent !important; /*  quita el café */
+    background: transparent !important; 
     border: none !important;
-    height: 240px; /* un poco más alto */
+    height: 240px; 
 }
 
 /* Asegura que la imagen tape TODO */
@@ -548,7 +596,7 @@ body.modal-open{
     align-items: stretch;
     border-radius: 0px;
     overflow: hidden;
-    background: linear-gradient(135deg, #e8ff9c, #caff4d);
+    background: linear-gradient(135deg, #fccc7c, #5f4636);
 }
 
 /* IZQUIERDA */
@@ -616,6 +664,33 @@ body.modal-open{
 #promociones{
     padding: 0 !important;
     max-width: 100% !important;
+}
+/* ===== CONTACTO FULL WIDTH ===== */
+.contact-section{
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    padding: 80px 40px;
+}
+@media(min-width:1200px){
+    .contact-section{
+        padding: 100px 120px;
+    }
+}
+/* ===== SEPARACIÓN NOTICIAS → CONTACTO ===== */
+.contact-section{
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    padding: 80px 40px 80px; 
+    background: #e48815;
+}
+@media (max-width: 768px){
+    .contact-section{
+        margin-top: 80px;
+    }
 }
 </style>
 @endsection
@@ -762,8 +837,9 @@ body.modal-open{
     </div>
 </div>
 <footer>
-  © 2026 Barbería & Spa <br>
-    Desarrollado por <span>Cybac</span>
+    📍 Calle Principal #123 · Guadalajara <br>
+    📞 33 1234 5678 · ⏰ Lun–Sáb 9:00–20:00 <br>
+    © 2026 Barbería & Spa · <span>Cybac</span>
 </footer>
 @endsection
 
@@ -798,12 +874,12 @@ body.modal-open{
         document.getElementById('modalImagen').src = card.dataset.imagen;
 
         modal.style.display = 'flex';
-        document.body.classList.add('modal-open'); // 🔒 bloquea scroll
+        document.body.classList.add('modal-open'); 
     }
 
     function cerrarModal(){
         modal.style.display = 'none';
-        document.body.classList.remove('modal-open'); // 🔓 libera scroll
+        document.body.classList.remove('modal-open'); 
     }
 
     cerrar.addEventListener('click', cerrarModal);

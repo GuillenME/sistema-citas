@@ -1,48 +1,51 @@
-<section id="contacto"> <h2>Contacto</h2>
-<div class="card contact-info">
+<section id="contacto" class="home-section contact-section">
 
-    {{-- IZQUIERDA: DATOS --}}
-    <div class="contact-left">
-        <h3>📍 Barbería & Spa</h3>
+    <h2>CONTACTO</h2>
 
-        <p><strong>Dirección:</strong><br>
-            Av. Central #123, Col. Centro<br>
-            Tuxtla Gutiérrez, Chiapas
-        </p>
+    <!-- FORMULARIO -->
+    <form class="contact-form">
 
-        <p><strong>Teléfono:</strong><br>
-            📞 961 123 4567
-        </p>
-
-        <p><strong>Email:</strong><br>
-            ✉️ contacto@barberiayspa.com
-        </p>
-
-        <p><strong>Horario:</strong><br>
-            🕒 Lunes a Sábado: 9:00 AM – 8:00 PM
-        </p>
-    </div>
-
-    {{-- DERECHA: IMAGEN / LOGO --}}
-    <div class="contact-right">
-        <img src="{{ asset('imagenes/contacto/logo.jpg') }}" alt="Barbería & Spa">
-    </div>
-
+        <div class="contact-grid">
+            <div class="field">
+    <label>Nombre</label>
+    <input type="text" wire:model.defer="nombre">
 </div>
-            
-    {{-- IMAGEN --}}
-   
 
-            <div class="card map-card">
-                <iframe
-                    src="https://www.google.com/maps?q=Tuxtla%20Guti%C3%A9rrez%20Chiapas&output=embed"
-                    width="100%"
-                    height="350"
-                    style="border:0; border-radius:12px;"
-                    loading="lazy">
-                </iframe>
-            </div>
+<div class="field">
+    <label>Apellido</label>
+    <input type="text" wire:model.defer="apellido">
+</div>
 
+<div class="field">
+    <label>Email *</label>
+    <input type="email" wire:model.defer="email">
+</div>
+
+<div class="field">
+    <label>Asunto</label>
+    <input type="text" wire:model.defer="asunto">
+</div>
+
+<div class="field full">
+    <label>Mensaje *</label>
+    <textarea rows="4" wire:model.defer="mensaje"></textarea>
+</div>
         </div>
-    </section>
-</div>
+
+        <div class="contact-actions">
+            <button type="submit" wire:click.prevent="enviar">
+                Enviar
+            </button>
+        </div>
+
+    </form>
+
+    <!-- MAPA (SE QUEDA COMO LO TENÍAS) -->
+    <div class="contact-map">
+        <iframe
+            src="https://www.google.com/maps?q=Guadalajara%20Centro&output=embed"
+            loading="lazy">
+        </iframe>
+    </div>
+
+</section>
