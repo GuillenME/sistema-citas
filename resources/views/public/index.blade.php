@@ -823,6 +823,16 @@ body.modal-open{
 
 </style>
 @endsection
+<body>
+
+    @include('partials.navbar')
+
+    <main>
+        @yield('content')
+    </main>
+
+</body>
+
 
 @section('content')
 <div class="hero" id="inicio">
