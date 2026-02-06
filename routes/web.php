@@ -168,9 +168,8 @@ Route::middleware(['auth', 'rol:3'])
     ->name('recepcionista.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('recepcionista.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [RecepcionistaCitaController::class, 'dashboard'])
+            ->name('dashboard');
 
         Route::get('/citas/create', [RecepcionistaCitaController::class, 'create'])
             ->name('citas.create');
