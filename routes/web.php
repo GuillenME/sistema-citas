@@ -19,6 +19,8 @@ use App\Http\Controllers\ServicioPublicController;
 /* HOME PÚBLICO */
 
 Route::get('/', [PublicController::class, 'index'])->name('home');
+Route::get('/servicios', [ServicioPublicController::class, 'index'])
+    ->name('servicios');
 
 /* POLÍTICA DE PRIVACIDAD */
 Route::get('/politica-privacidad', function () {
@@ -230,10 +232,8 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
     ->middleware('guest')
     ->name('password.update');
 
-Route::resource('promociones', AdminPromocionController::class);
 
-Route::get('/servicios', [ServicioPublicController::class, 'index'])
-    ->name('servicios');
+
 
 Route::get('/promociones', function () {
     return view('promociones.index');
