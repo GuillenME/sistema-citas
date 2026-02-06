@@ -15,6 +15,7 @@ body{
     font-family: Arial, sans-serif;
     background: #b28562;
     color: #ffffff;
+    overflow-x: hidden;
 }
 
 /* ================= HERO ================= */
