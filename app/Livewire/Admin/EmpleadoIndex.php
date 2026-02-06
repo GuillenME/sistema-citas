@@ -46,7 +46,7 @@ class EmpleadoIndex extends Component
     public function render()
     {
         return view('livewire.admin.empleado-index', [
-            'empleados' => Empleado::orderBy('id')->paginate(5),
+            'empleados' => Empleado::with('servicios')->orderBy('id')->paginate(5),
         ]);
     }
 }

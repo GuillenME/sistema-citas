@@ -15,6 +15,12 @@ class Empleado extends Model
         'active',
     ];
 
+    public function servicios()
+    {
+        return $this->belongsToMany(Servicio::class, 'employee_service', 'employee_id', 'service_id')
+            ->withTimestamps();
+    }
+
     public function appointments()
     {
         return $this->hasMany(Cita::class, 'employee_id');
