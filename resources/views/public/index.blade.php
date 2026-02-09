@@ -130,7 +130,7 @@ footer{
     padding: 30px 20px;
     text-align: center;
     font-size: 14px;
-    margin-top: 0; 
+    margin-top: 0;
 }
 
 footer span{
@@ -190,7 +190,7 @@ footer span{
 .contact-section{
     max-width: 100%;
     padding: 80px 20px 0;
-    background: #e48815; 
+    background: #e48815;
 }
 
 .contact-section h2{
@@ -330,17 +330,22 @@ footer span{
 
 .home-actions .btn{
     display:inline-block;
-    padding:10px 16px;
-    border-radius:10px;
-    border:1px solid #e48815;
-    color:#fff;
+    padding:12px 22px;
+    border-radius:999px;
+    border:2px solid #fccc7c;
+    color:#ffffff;
     text-decoration:none;
     font-size:13px;
-    box-shadow:0 0 12px #e48815;
+    font-weight:bold;
+    letter-spacing:1px;
+    background:linear-gradient(135deg, #e48815, #8c4030);
+    box-shadow:0 10px 22px rgba(0,0,0,.45), 0 0 16px rgba(252,204,124,.85);
 }
 
 .home-actions .btn:hover{
-    box-shadow:0 0 20px #e48815;
+    transform:translateY(-2px);
+    filter:brightness(1.05);
+    box-shadow:0 14px 28px rgba(0,0,0,.5), 0 0 22px rgba(252,204,124,1);
 }
 
 /* ================= RESENAS ================= */
@@ -453,7 +458,7 @@ footer span{
 
 /* TARJETAS MÁS COMPACTAS */
 .home-card img{
-    height: 120px; 
+    height: 120px;
 }
 
 .home-card p{
@@ -514,7 +519,7 @@ footer span{
     width: 90%;
     max-width: 780px;
     height: 420px;
-    display: flex;               
+    display: flex;
     border-radius: 20px;
     overflow: hidden;
     position: relative;
@@ -713,7 +718,7 @@ body.modal-open{
     max-width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
-    padding: 80px 40px 80px; 
+    padding: 80px 40px 80px;
     background: #e48815;
 }
 @media (max-width: 768px){
@@ -727,6 +732,26 @@ body.modal-open{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 28px;
+}
+
+.reviews-actions{
+    margin-top: 14px;
+    text-align: center;
+}
+
+.reviews-actions a{
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #8c4030;
+    color: #fccc7c;
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.reviews-actions a:hover{
+    filter: brightness(1.1);
 }
 
 .google-card{
@@ -744,9 +769,9 @@ body.modal-open{
 /* ESTRELLAS */
 .google-stars{
     color: #fbbc04;
-    font-size: 24px;      
+    font-size: 24px;
     margin-bottom: 14px;
-    text-align: center;  
+    text-align: center;
     letter-spacing: 3px;
 }
 
@@ -891,7 +916,7 @@ body.modal-open{
         <button class="nav-btn right" onclick="scrollServices(1)">›</button>
     </div>
     <div class="home-actions">
-        <a class="btn" href="{{ route('servicios') }}">Ver más</a>
+        <a class="btn" href="{{ route('servicios') }}">Ver todos los servicios</a>
     </div>
 </section>
 
@@ -940,7 +965,7 @@ body.modal-open{
 
     <div class="reviews-grid google-style">
         @forelse($reviews->sortByDesc('created_at')->take(3) as $review)
-        
+
             @php
             $email = $review->user_email ?? '';
             $parts = explode('@', $email, 2);
@@ -1004,6 +1029,9 @@ body.modal-open{
             <p>No hay comentarios aún.</p>
         @endforelse
     </div>
+    <div class="reviews-actions">
+        <a href="{{ route('comentarios.publicos') }}">Ver todos los comentarios</a>
+    </div>
 </section>
 
 {{-- NOTICIAS --}}
@@ -1065,12 +1093,12 @@ body.modal-open{
         document.getElementById('modalImagen').src = card.dataset.imagen;
 
         modal.style.display = 'flex';
-        document.body.classList.add('modal-open'); 
+        document.body.classList.add('modal-open');
     }
 
     function cerrarModal(){
         modal.style.display = 'none';
-        document.body.classList.remove('modal-open'); 
+        document.body.classList.remove('modal-open');
     }
 
     cerrar.addEventListener('click', cerrarModal);
