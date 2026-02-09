@@ -969,3 +969,14 @@ select:focus {
     width: auto;
     height: auto;
 }
+/* Alertas visibles */
+.alert-error{
+    background: #ffebe9;
+    color: #8a1f1a;
+    border: 1px solid #ffb3ad;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin: 0 0 16px;
+    font-size: 14px;
+    font-weight: 600;
+}

@@ -1,4 +1,17 @@
 <div class="card">
+    @if ($errors->has('servicios'))
+        <div id="promoErrorModalEdit" class="modal-overlay" onclick="document.getElementById('promoErrorModalEdit').style.display='none'">
+            <div class="modal-box" onclick="event.stopPropagation()">
+                <h3>No se pudo guardar</h3>
+                <p>{{ $errors->first('servicios') }}</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="document.getElementById('promoErrorModalEdit').style.display='none'">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <div class="form-grid">
 

@@ -15,6 +15,7 @@ body{
     font-family: Arial, sans-serif;
     background: #b28562;
     color: #ffffff;
+    overflow-x: hidden;
 }
 
 /* ================= HERO ================= */
@@ -648,6 +649,12 @@ body.modal-open{
     margin-bottom: 12px;
 }
 
+.promo-dates{
+    font-size: 14px;
+    opacity: .9;
+    margin-bottom: 10px;
+}
+
 .promo-code{
     font-size: 14px;
 }
@@ -883,6 +890,9 @@ body.modal-open{
 
         <button class="nav-btn right" onclick="scrollServices(1)">›</button>
     </div>
+    <div class="home-actions">
+        <a class="btn" href="{{ route('servicios') }}">Ver más</a>
+    </div>
 </section>
 
 <section id="promociones" class="promo-section">
@@ -904,6 +914,12 @@ body.modal-open{
                 <p class="promo-text">
                     {{ $promo->description }}
                 </p>
+                @if($promo->start_date && $promo->end_date)
+                    <div class="promo-dates">
+                        Vigente del {{ \Carbon\Carbon::parse($promo->start_date)->format('d/m/Y') }}
+                        al {{ \Carbon\Carbon::parse($promo->end_date)->format('d/m/Y') }}
+                    </div>
+                @endif
             </div>
 
             <!-- DERECHA: IMAGEN -->
