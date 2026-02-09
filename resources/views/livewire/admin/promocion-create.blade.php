@@ -1,4 +1,17 @@
 <div class="form-container">
+    @if ($errors->has('servicios'))
+        <div id="promoErrorModalCreate" class="modal-overlay" onclick="document.getElementById('promoErrorModalCreate').style.display='none'">
+            <div class="modal-box" onclick="event.stopPropagation()">
+                <h3>No se pudo guardar</h3>
+                <p>{{ $errors->first('servicios') }}</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="document.getElementById('promoErrorModalCreate').style.display='none'">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <label>Título</label>
     <input type="text" wire:model.defer="titulo">
