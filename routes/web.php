@@ -23,6 +23,8 @@ Route::get('/servicios', [ServicioPublicController::class, 'index'])
     ->name('servicios');
 Route::get('/comentarios-publicos', [PublicController::class, 'comentarios'])
     ->name('comentarios.publicos');
+Route::get('/noticias', [PublicController::class, 'noticias'])
+    ->name('noticias.publicas');
 
 /* POLÍTICA DE PRIVACIDAD */
 Route::get('/politica-privacidad', function () {

@@ -60,4 +60,13 @@ class PublicController extends Controller
 
         return view('public.comentarios', compact('reviews'));
     }
+
+    public function noticias()
+    {
+        $noticias = Noticia::where('published', 1)
+            ->orderBy('publication_date', 'desc')
+            ->paginate(9);
+
+        return view('public.noticias', compact('noticias'));
+    }
 }
