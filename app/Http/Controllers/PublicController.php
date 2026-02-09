@@ -64,6 +64,7 @@ class PublicController extends Controller
     public function noticias()
     {
         $noticias = Noticia::where('published', 1)
+            ->whereDate('publication_date', '<=', today())
             ->orderBy('publication_date', 'desc')
             ->paginate(9);
 
