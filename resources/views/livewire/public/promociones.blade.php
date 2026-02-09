@@ -51,11 +51,12 @@
         }
 
         .promo-price{
-            font-size: 20px;
-            font-weight: bold;
-            color: #e48815;
-            margin-top: auto;
-            display: block;
+        background:#e48815;
+        color:#000;
+        padding:6px 12px;
+        border-radius:999px;
+        font-size:16px;
+        display:inline-block;
         }
 
         .promo-dates{
@@ -76,12 +77,16 @@
             <p>{{ $promo->description }}</p>
 
             <span class="promo-price">
-                ${{ number_format($promo->price, 2) }}
+            {{ $promo->discount }}% OFF
             </span>
 
             <div class="promo-dates">
-                Vigente del {{ $promo->start_date }} al {{ $promo->end_date }}
+            Vigente del
+            {{ \Carbon\Carbon::parse($promo->start_date)->format('d/m/Y') }}
+            al
+            {{ \Carbon\Carbon::parse($promo->end_date)->format('d/m/Y') }}
             </div>
+
         </div>
     @empty
         <p style="grid-column:1/-1; text-align:center;">
