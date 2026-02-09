@@ -58,6 +58,20 @@
                 <input type="file" name="navbar_logo" id="navbar_logo">
                 <small>Formatos: JPG, PNG, SVG o WEBP. Máximo 2MB.</small>
             </section>
+            <section class="form-section">
+                <h2>Footer</h2>
+                <label for="footer_address">Ubicacion</label>
+                <input type="text" id="footer_address" name="footer_address"
+                    value="{{ old('footer_address', $homeSetting->footer_address) }}">
+
+                <label for="footer_phone">Telefono</label>
+                <input type="text" id="footer_phone" name="footer_phone"
+                    value="{{ old('footer_phone', $homeSetting->footer_phone) }}">
+
+                <label for="footer_hours">Horarios</label>
+                <input type="text" id="footer_hours" name="footer_hours"
+                    value="{{ old('footer_hours', $homeSetting->footer_hours) }}">
+            </section>
 
 
             <section class="form-section">
@@ -95,4 +109,6 @@
         </form>
     </div>
 @endsection
+
+
 

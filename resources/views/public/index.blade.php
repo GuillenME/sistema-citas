@@ -123,19 +123,6 @@ h2{
 
 }
 
-/* ================= FOOTER ================= */
-footer{
-    border-top: 4px solid #e48815;
-    background: #8c4030;
-    padding: 30px 20px;
-    text-align: center;
-    font-size: 14px;
-    margin-top: 0;
-}
-
-footer span{
-    color: #fccc7c;
-}
 /* ================= NOTICIAS ================= */
 .news-header{
     text-align: center;
@@ -1181,11 +1168,6 @@ body.modal-open{
 
     </div>
 </div>
-<footer>
-    📍 Calle Principal #123 · Guadalajara <br>
-    📞 33 1234 5678 · ⏰ Lun–Sáb 9:00–20:00 <br>
-    © 2026 Barbería & Spa · <span>Cybac</span>
-</footer>
 @endsection
 
 @section('scripts')
@@ -1236,3 +1218,4 @@ body.modal-open{
     });
 </script>
 @endsection
+
