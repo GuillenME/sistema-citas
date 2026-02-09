@@ -21,6 +21,8 @@ use App\Http\Controllers\ServicioPublicController;
 Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/servicios', [ServicioPublicController::class, 'index'])
     ->name('servicios');
+Route::get('/comentarios-publicos', [PublicController::class, 'comentarios'])
+    ->name('comentarios.publicos');
 
 /* POLÍTICA DE PRIVACIDAD */
 Route::get('/politica-privacidad', function () {
