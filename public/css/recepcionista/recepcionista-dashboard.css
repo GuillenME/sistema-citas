@@ -100,7 +100,7 @@ main {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px rgba(178, 133, 98, 0.75);
 }
-    
+
 .action-title {
     font-weight: bold;
     font-size: 15px;
@@ -202,7 +202,7 @@ main {
 }
 
 .checklist li::before {
-    content: "○";
+    content: "●";
     position: absolute;
     left: 0;
     color: #fccc7c;

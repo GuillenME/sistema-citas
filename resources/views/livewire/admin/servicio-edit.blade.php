@@ -1,35 +1,52 @@
 <div class="form-container">
 
-    <label>Nombre</label>
-    <input type="text" wire:model.defer="nombre">
-    @error('nombre') <small style="color:#f87171">{{ $message }}</small> @enderror
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" wire:model.defer="nombre">
+            @error('nombre') <small class="error">{{ $message }}</small> @enderror
+        </div>
 
-    <label>Descripción</label>
-    <textarea wire:model.defer="descripcion"></textarea>
+        <div class="form-group">
+            <label>Duración (min)</label>
+            <input type="number" wire:model.defer="duracion_minutos">
+            @error('duracion_minutos') <small class="error">{{ $message }}</small> @enderror
+        </div>
 
-    <label>Duración (min)</label>
-    <input type="number" wire:model.defer="duracion_minutos">
-    @error('duracion_minutos') <small style="color:#f87171">{{ $message }}</small> @enderror
+        <div class="form-group full">
+            <label>Descripción</label>
+            <textarea wire:model.defer="descripcion"></textarea>
+        </div>
 
-    <label>Precio</label>
-    <input type="number" step="0.01" wire:model.defer="precio">
-    @error('precio') <small style="color:#f87171">{{ $message }}</small> @enderror
+        <div class="form-group">
+            <label>Imagen del servicio</label>
+            <input type="file" wire:model="image">
+        </div>
 
-    <label>Activo</label>
-    <input type="checkbox" wire:model.defer="activo">
-    @error('activo') <small style="color:#f87171">{{ $message }}</small> @enderror
 
-    <label>Imagen actual</label>
-    @if ($servicio->image)
-        <img src="{{ asset('storage/'.$servicio->image) }}" class="preview">
-    @endif
 
-    <label>Cambiar imagen</label>
-    <input type="file" wire:model="image">
+        <div class="form-group">
+            <label>Precio</label>
+            <input type="number" step="0.01" wire:model.defer="precio">
+            @error('precio') <small class="error">{{ $message }}</small> @enderror
+        </div>
+        <div class="form-group">
+            <label>Vista previa</label>
+            @if ($image)
+                <img src="{{ $image->temporaryUrl() }}" class="preview preview-wide">
+            @elseif ($servicio->image)
+                <img src="{{ asset('storage/'.$servicio->image) }}" class="preview preview-wide">
+            @else
+                <div class="preview-empty">Sin imagen</div>
+            @endif
+        </div>
 
-    @if ($image)
-        <img src="{{ $image->temporaryUrl() }}" class="preview">
-    @endif
+        <div class="form-group">
+            <label>Activo</label>
+            <input type="checkbox" wire:model.defer="activo">
+            @error('activo') <small class="error">{{ $message }}</small> @enderror
+        </div>
+    </div>
 
     <div class="actions">
         <a href="{{ route('admin.servicios.index') }}" class="btn btn-cancel">

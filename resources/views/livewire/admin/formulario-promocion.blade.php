@@ -23,22 +23,22 @@
                 @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
 
-            <div class="row">
-                <div class="col-md-4">
+            <div class="form-row">
+                <div class="form-col">
                     <div class="mb-3">
                         <label class="form-label">Descuento (%) <span class="text-danger">*</span></label>
                         <input type="number" class="form-control @error('discount') is-invalid @enderror" wire:model.blur="discount" step="0.01" min="0" max="100" required>
                         @error('discount') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="form-col">
                     <div class="mb-3">
                         <label class="form-label">Fecha Inicio <span class="text-danger">*</span></label>
                         <input type="date" class="form-control @error('start_date') is-invalid @enderror" wire:model.blur="start_date" required>
                         @error('start_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="form-col">
                     <div class="mb-3">
                         <label class="form-label">Fecha Fin <span class="text-danger">*</span></label>
                         <input type="date" class="form-control @error('end_date') is-invalid @enderror" wire:model.blur="end_date" required>
@@ -54,19 +54,16 @@
                 
                 <small class="text-muted d-block mt-2">Formatos permitidos: JPEG, PNG, JPG, GIF, WebP. Tamaño máximo: 2MB</small>
 
-                @if ($imagen_actual && !$image)
-                    <div class="mt-3">
-                        <p class="mb-2"><strong>Imagen actual:</strong></p>
-                        <img src="{{ asset('storage/' . $imagen_actual) }}" alt="Imagen actual" class="img-thumbnail" style="max-width: 200px;">
-                    </div>
-                @endif
-
-                @if ($image)
-                    <div class="mt-3">
-                        <p class="mb-2"><strong>Vista previa:</strong></p>
-                        <img src="{{ $image->temporaryUrl() }}" alt="Preview" class="img-thumbnail" style="max-width: 200px;">
-                    </div>
-                @endif
+                <div class="mt-3">
+                    <p class="mb-2"><strong>Vista previa:</strong></p>
+                    @if ($image)
+                        <img src="{{ $image->temporaryUrl() }}" alt="Preview" class="preview preview-wide">
+                    @elseif ($imagen_actual)
+                        <img src="{{ asset('storage/' . $imagen_actual) }}" alt="Imagen actual" class="preview preview-wide">
+                    @else
+                        <div class="preview-empty">Sin imagen</div>
+                    @endif
+                </div>
             </div>
 
             <div class="mb-3 form-check">

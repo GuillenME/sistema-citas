@@ -4,9 +4,51 @@
 
 @section('back-url', route('admin.dashboard'))
 @section('content')
-    <div class="card">
-        <h1>Editar Home público</h1>
+    <style>
+        .home-settings-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
 
+        .form-section{
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid #c0a799;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .form-section h2{
+            margin: 0 0 12px;
+            font-size: 18px;
+            color: #fccc7c;
+        }
+
+        .form-section label{
+            display: block;
+            margin: 10px 0 6px;
+            font-size: 13px;
+            opacity: .9;
+        }
+
+        .form-section input[type="text"],
+        .form-section textarea,
+        .form-section input[type="file"]{
+            width: 100%;
+        }
+
+        .form-section small{
+            display: block;
+            margin-top: 6px;
+            opacity: .85;
+        }
+
+        .actions{
+            margin-top: 20px;
+        }
+    </style>
+    <div class="card">
         @if (session('success'))
             <div class="alert-success">{{ session('success') }}</div>
         @endif
@@ -25,6 +67,7 @@
             @csrf
             @method('PUT')
 
+            <div class="home-settings-grid">
             <section class="form-section">
                 <h2>Hero</h2>
 
@@ -100,6 +143,7 @@
                 <label for="feature_3_description">Descripción</label>
                 <textarea id="feature_3_description" name="feature_3_description" rows="2">{{ old('feature_3_description', $homeSetting->feature_3_description) }}</textarea>
             </section>
+            </div>
 
             <div class="actions">
                 <button type="submit" class="btn">
@@ -109,6 +153,7 @@
         </form>
     </div>
 @endsection
+
 
 
 
