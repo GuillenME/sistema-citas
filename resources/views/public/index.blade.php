@@ -831,7 +831,7 @@ body.modal-open{
     max-width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
-    padding: 80px 40px 80px;
+    padding: 80px 40px 0;
     background: #e48815;
 }
 @media (max-width: 768px){

@@ -52,7 +52,7 @@ nav a:hover{
 }
 
 footer{
-    margin-top: 60px;
+    margin-top: 0;
     background: #8c4030;
     border-top: 4px solid #e48815;
     color: #ffffff;
