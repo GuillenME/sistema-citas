@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use App\Models\Usuario;
+use Illuminate\Support\Facades\Hash;
 
 class RecepcionistaEdit extends Component
 {
@@ -12,11 +13,14 @@ class RecepcionistaEdit extends Component
     public $nombre;
     public $apellido;
     public $telefono;
+    public $password;
+    public $password_confirmation;
 
     public $confirmar = false;
 
     protected $rules = [
         'nombre' => 'required|string|min:3',
+        'password' => 'nullable|min:6|confirmed',
     ];
 
     public function mount(Usuario $usuario)
@@ -42,6 +46,12 @@ class RecepcionistaEdit extends Component
             'last_name' => $this->apellido,
             'phone' => $this->telefono,
         ]);
+
+        if ($this->password) {
+            $this->usuario->update([
+                'password' => Hash::make($this->password),
+            ]);
+        }
 
         session()->flash('success', 'Recepcionista actualizado correctamente');
 
