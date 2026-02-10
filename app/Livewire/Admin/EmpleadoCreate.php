@@ -42,6 +42,8 @@ class EmpleadoCreate extends Component
 
         $empleado->servicios()->sync($this->serviciosSeleccionados);
 
+        session()->flash('success', 'Empleado creado correctamente');
+
         return redirect()->route('admin.empleados.index');
     }
 

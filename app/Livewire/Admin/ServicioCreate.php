@@ -47,6 +47,8 @@ class ServicioCreate extends Component
             'active' => 1,
         ]);
 
+        session()->flash('success', 'Servicio creado correctamente');
+
         return redirect()->route('admin.servicios.index');
     }
 

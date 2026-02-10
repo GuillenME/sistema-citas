@@ -48,6 +48,8 @@ class EmpleadoEdit extends Component
 
         $this->empleado->servicios()->sync($this->serviciosSeleccionados);
 
+        session()->flash('success', 'Empleado actualizado correctamente');
+
         return redirect()->route('admin.empleados.index');
     }
 

@@ -43,6 +43,8 @@ class RecepcionistaEdit extends Component
             'phone' => $this->telefono,
         ]);
 
+        session()->flash('success', 'Recepcionista actualizado correctamente');
+
         return redirect()->route('admin.recepcionistas.index');
     }
 

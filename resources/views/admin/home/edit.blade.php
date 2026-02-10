@@ -47,12 +47,9 @@
         .actions{
             margin-top: 20px;
         }
+
     </style>
     <div class="card">
-        @if (session('success'))
-            <div class="alert-success">{{ session('success') }}</div>
-        @endif
-
         @if ($errors->any())
             <div class="alert-error">
                 <ul>
@@ -153,7 +150,5 @@
         </form>
     </div>
 @endsection
-
-
 
 
