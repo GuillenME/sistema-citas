@@ -20,22 +20,26 @@
         </div>
 
         <div class="form-group">
-            <label>Precio</label>
-            <input type="number" step="0.01" wire:model.defer="precio">
-            @error('precio') <span class="error">{{ $message }}</span> @enderror
-        </div>
-
-        <div class="form-group full">
             <label>Imagen del servicio</label>
             <input type="file" wire:model="image">
             @error('image') <span class="error">{{ $message }}</span> @enderror
         </div>
 
-        @if ($image)
-            <div class="form-group full">
-                <img src="{{ $image->temporaryUrl() }}" class="preview">
-            </div>
-        @endif
+
+
+        <div class="form-group">
+            <label>Precio</label>
+            <input type="number" step="0.01" wire:model.defer="precio">
+            @error('precio') <span class="error">{{ $message }}</span> @enderror
+        </div>
+        <div class="form-group">
+            <label>Vista previa</label>
+            @if ($image)
+                <img src="{{ $image->temporaryUrl() }}" class="preview preview-wide">
+            @else
+                <div class="preview-empty">Sin imagen</div>
+            @endif
+        </div>
 
     </div>
 

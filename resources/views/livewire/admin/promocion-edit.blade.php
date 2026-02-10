@@ -45,7 +45,7 @@
             @error('descripcion') <span class="error">{{ $message }}</span> @enderror
         </div>
 
-        <div class="form-group full">
+        <div class="form-group">
             <label>Servicios aplicables</label>
             {{-- 🔥 SIN defer para evitar bugs --}}
             <select multiple wire:model="servicios">
@@ -59,26 +59,29 @@
         </div>
 
         {{-- ✅ CHECKBOX ARREGLADO --}}
+        <div class="form-group">
+            <label>Imagen</label>
+            <input type="file" wire:model="image">
+            @error('image') <span class="error">{{ $message }}</span> @enderror
+            @if ($image)
+                <div class="image-preview-wrapper inline">
+                    <img src="{{ $image->temporaryUrl() }}" class="preview preview-wide">
+                </div>
+            @elseif ($promocion->image)
+                <div class="image-preview-wrapper inline">
+                    <img src="{{ asset('storage/'.$promocion->image) }}" class="preview preview-wide">
+                </div>
+            @else
+                <div class="preview-empty">Sin imagen</div>
+            @endif
+        </div>
+
         <div class="form-group full checkbox">
             <input type="checkbox" id="publicada" wire:model="publicada">
             <label for="publicada">Publicar promoción</label>
         </div>
 
-        <div class="form-group">
-            <label>Imagen</label>
-            <input type="file" wire:model="image">
-            @error('image') <span class="error">{{ $message }}</span> @enderror
-        </div>
-
-        @if ($image)
-            <div class="form-group full">
-                <img src="{{ $image->temporaryUrl() }}" class="preview">
-            </div>
-        @elseif ($promocion->image)
-            <div class="form-group full">
-                <img src="{{ asset('storage/'.$promocion->image) }}" class="preview">
-            </div>
-        @endif
+        
 
     </div>
 
@@ -119,3 +122,6 @@
     @endif
 
 </div>
+
+
+

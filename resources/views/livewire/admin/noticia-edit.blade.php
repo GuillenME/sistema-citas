@@ -1,43 +1,54 @@
 <div class="form-container">
 
-    <label>Titulo</label>
-    <input type="text" wire:model.defer="titulo">
-    @error('titulo')
-        <small class="error">{{ $message }}</small>
-    @enderror
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Titulo</label>
+            <input type="text" wire:model.defer="titulo">
+            @error('titulo')
+                <small class="error">{{ $message }}</small>
+            @enderror
+        </div>
 
-    <label>Contenido</label>
-    <textarea wire:model.defer="contenido"></textarea>
-    @error('contenido')
-        <small class="error">{{ $message }}</small>
-    @enderror
+        <div class="form-group">
+            <label>Fecha publicacion</label>
+            <input type="date" wire:model.defer="fecha_publicacion">
+            @error('fecha_publicacion')
+                <small class="error">{{ $message }}</small>
+            @enderror
+        </div>
 
-    <label>Fecha publicacion</label>
-    <input type="date" wire:model.defer="fecha_publicacion">
-    @error('fecha_publicacion')
-        <small class="error">{{ $message }}</small>
-    @enderror
+        <div class="form-group full">
+            <label>Contenido</label>
+            <textarea wire:model.defer="contenido"></textarea>
+            @error('contenido')
+                <small class="error">{{ $message }}</small>
+            @enderror
+        </div>
 
-    <div class="form-group checkbox">
-        <input type="checkbox" wire:model="publicada" id="publicada">
-        <label for="publicada">Publicar noticia</label>
+        <div class="form-group">
+            <label>Imagen</label>
+            <input type="file" wire:model="image">
+            @error('image')
+                <small class="error">{{ $message }}</small>
+            @enderror
+            @if ($image)
+                <div class="image-preview-wrapper inline">
+                    <img src="{{ $image->temporaryUrl() }}" class="preview preview-wide">
+                </div>
+            @elseif ($noticia->image)
+                <div class="image-preview-wrapper inline">
+                    <img src="{{ asset('storage/' . $noticia->image) }}" class="preview preview-wide">
+                </div>
+            @else
+                <div class="preview-empty">Sin imagen</div>
+            @endif
+        </div>
+
+        <div class="form-group checkbox">
+            <input type="checkbox" wire:model="publicada" id="publicada">
+            <label for="publicada">Publicar noticia</label>
+        </div>
     </div>
-
-    <label>Imagen</label>
-    <input type="file" wire:model="image">
-    @error('image')
-        <small class="error">{{ $message }}</small>
-    @enderror
-
-    @if ($image)
-        <div class="image-preview-wrapper">
-            <img src="{{ $image->temporaryUrl() }}" class="preview">
-        </div>
-    @elseif ($noticia->image)
-        <div class="image-preview-wrapper">
-            <img src="{{ asset('storage/' . $noticia->image) }}" class="preview">
-        </div>
-    @endif
 
     <div class="actions">
         <a href="{{ route('admin.noticias.index') }}" class="btn btn-cancel">
