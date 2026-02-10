@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\HomeSetting;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,8 +19,12 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
+   
     public function boot(): void
-    {
-        //
-    }
+{
+    View::composer('*', function ($view) {
+        $homeSetting = HomeSetting::first();
+        $view->with('homeSetting', $homeSetting);
+    });
+}
 }

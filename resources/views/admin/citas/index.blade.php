@@ -1,274 +1,263 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.admin')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Gestión de citas</title>
+@section('title', 'Gestion de citas')
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #0f172a;
-            color: #e5e7eb;
-            padding: 40px;
+@section('content')
+
+
+
+    <div class="card table-card">
+        <div class="table-toolbar">
+            <input type="text" id="citasSearch" class="table-search" placeholder="Buscar cliente o servicio">
+        </div>
+        <div class="table-container">
+
+            <table class="admin-table admin-table-fixed">
+                <colgroup>
+                    <col class="col-cliente">
+                    <col class="col-servicio">
+                    <col class="col-fecha">
+                    <col class="col-estado">
+                    <col class="col-acciones">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="col-cliente">Cliente</th>
+                        <th class="col-servicio">Servicio</th>
+                        <th class="col-fecha">Fecha/Hora</th>
+                        <th class="col-estado">Estado</th>
+                        <th class="col-acciones">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse ($citas as $cita)
+                        @php
+                            $isToday = \Carbon\Carbon::parse($cita->date)->isToday();
+                            $isTomorrow = \Carbon\Carbon::parse($cita->date)->isTomorrow();
+                            $rowClass = $isToday ? 'row-today' : ($isTomorrow ? 'row-soon' : '');
+                            $searchText = strtolower(trim(
+                                ($cita->client->user->name ?? '') . ' ' .
+                                ($cita->service->name ?? '') . ' ' .
+                                ($cita->status ?? '')
+                            ));
+                        @endphp
+                        <tr class="{{ $rowClass }}" data-search="{{ $searchText }}">
+                            <td class="col-cliente">{{ $cita->client->user->name }}</td>
+
+                            <td class="col-servicio">{{ $cita->service->name }}</td>
+
+                            <td class="col-fecha">
+                                {{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}
+                                {{ \Carbon\Carbon::parse($cita->start_time)->format('h:i A') }}-{{ \Carbon\Carbon::parse($cita->end_time)->format('h:i A') }}
+                                @if ($isToday)
+                                    <span class="badge badge-today">Hoy</span>
+                                @elseif ($isTomorrow)
+                                    <span class="badge badge-soon">Ma&ntilde;ana</span>
+                                @endif
+                            </td>
+
+                            <td class="col-estado">
+                                @php
+                                    $statusClass = match ($cita->status) {
+                                        'confirmada' => 'badge-on',
+                                        'cancelada' => 'badge-off',
+                                        'pendiente_anticipo' => 'badge-pending',
+                                        default => 'badge-off',
+                                    };
+                                @endphp
+
+                                <span class="badge {{ $statusClass }}">
+                                    {{ ucfirst($cita->status) }}
+                                </span>
+                            </td>
+
+                            <td class="table-actions col-acciones">
+                                <div class="actions-wrap">
+                                    <button type="button"
+                                        class="btn btn-edit btn-compact notes-btn"
+                                        data-notes="{{ e($cita->notes ?? '') }}"
+                                        data-employee="{{ e($cita->employee?->name ?? '- Sin asignar -') }}"
+                                        data-receipt="{{ $cita->receipt ? asset('storage/' . $cita->receipt) : '' }}"
+                                        data-assign-action="{{ route('admin.citas.asignarEmpleado', $cita) }}"
+                                        data-can-assign="{{ $cita->status === 'confirmada' && !$cita->employee_id ? '1' : '0' }}"
+                                        data-can-confirm="{{ $cita->receipt && $cita->status === 'pendiente_anticipo' ? '1' : '0' }}"
+                                        data-confirm-action="{{ route('admin.citas.confirmar', $cita) }}"
+                                        data-cancel-action="{{ route('admin.citas.cancelar', $cita) }}">
+                                        Detalles
+                                    </button>
+
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="table-empty">
+                                No hay citas registradas
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="pagination-wrapper">
+            {{ $citas->links('pagination::simple-bootstrap-4') }}
+        </div>
+    </div>
+
+    <div id="notesModal" class="notes-modal" aria-hidden="true">
+        <div class="modal-box">
+            <h3>Detalle de la cita</h3>
+            <p><strong>Empleado:</strong> <span id="notesModalEmployee">-</span></p>
+            <p><strong>Comprobante:</strong> <span id="notesModalReceipt">-</span></p>
+            <p><strong>Comentario:</strong> <span id="notesModalText">-</span></p>
+            <form method="POST" id="assignForm" class="assign-inline">
+                @csrf
+                <select name="empleado_id" id="assignEmployeeSelect" class="select-compact">
+                    <option value="">Seleccionar empleado</option>
+                    @foreach ($empleados as $empleado)
+                        <option value="{{ $empleado->id }}">{{ $empleado->name }}</option>
+                    @endforeach
+                </select>
+                <button type="submit" class="btn btn-save btn-compact">Asignar</button>
+            </form>
+            <form method="POST" id="confirmForm" class="assign-inline">
+                @csrf
+                <button type="submit" class="btn btn-save btn-compact">Confirmar</button>
+                <button type="button" class="btn btn-cancel btn-compact" id="openCancelFromModal">Cancelar</button>
+            </form>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-cancel" id="notesModalClose">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cancelModal" class="notes-modal" aria-hidden="true">
+        <div class="modal-box">
+            <h3>Cancelar cita</h3>
+            <form method="POST" id="cancelForm">
+                @csrf
+                <label for="cancelNotes">Observaciones (opcional)</label>
+                <textarea id="cancelNotes" name="observaciones" rows="4" placeholder="Motivo de cancelacion..."></textarea>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" id="cancelModalClose">Cerrar</button>
+                    <button type="submit" class="btn btn-save">Confirmar cancelacion</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+@endsection
+
+@section('scripts')
+<script>
+    (function () {
+        var searchInput = document.getElementById('citasSearch');
+        var rows = Array.prototype.slice.call(document.querySelectorAll('tbody tr[data-search]'));
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                var q = searchInput.value.toLowerCase().trim();
+                rows.forEach(function (row) {
+                    var haystack = row.getAttribute('data-search') || '';
+                    row.style.display = haystack.includes(q) ? '' : 'none';
+                });
+            });
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
+        var modal = document.getElementById('notesModal');
+        var modalText = document.getElementById('notesModalText');
+        var modalEmployee = document.getElementById('notesModalEmployee');
+        var modalReceipt = document.getElementById('notesModalReceipt');
+        var assignForm = document.getElementById('assignForm');
+        var assignSelect = document.getElementById('assignEmployeeSelect');
+        var confirmForm = document.getElementById('confirmForm');
+        var openCancelFromModal = document.getElementById('openCancelFromModal');
+        var closeBtn = document.getElementById('notesModalClose');
+
+        if (!modal || !modalText || !closeBtn) return;
+
+        document.querySelectorAll('.notes-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var text = btn.getAttribute('data-notes') || '-';
+                var employee = btn.getAttribute('data-employee') || '-';
+                var receipt = btn.getAttribute('data-receipt') || '';
+                var assignAction = btn.getAttribute('data-assign-action') || '';
+                var canAssign = btn.getAttribute('data-can-assign') === '1';
+                var canConfirm = btn.getAttribute('data-can-confirm') === '1';
+                var confirmAction = btn.getAttribute('data-confirm-action') || '';
+                var cancelAction = btn.getAttribute('data-cancel-action') || '';
+
+                modalText.textContent = text;
+                modalEmployee.textContent = employee;
+
+                if (receipt) {
+                    modalReceipt.innerHTML = '<a href="' + receipt + '" target="_blank" rel="noopener">Ver comprobante</a>';
+                } else {
+                    modalReceipt.textContent = '-';
+                }
+
+                if (assignForm && assignSelect) {
+                    assignForm.style.display = canAssign ? 'inline-flex' : 'none';
+                    assignForm.setAttribute('action', assignAction);
+                    assignSelect.value = '';
+                }
+                if (confirmForm) {
+                    confirmForm.style.display = canConfirm ? 'inline-flex' : 'none';
+                    confirmForm.setAttribute('action', confirmAction);
+                }
+                if (openCancelFromModal) {
+                    openCancelFromModal.setAttribute('data-cancel-action', cancelAction);
+                }
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+            });
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(17, 24, 39, .85);
-            border-radius: 12px;
-            overflow: hidden;
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) closeModal();
+        });
+
+        var cancelModal = document.getElementById('cancelModal');
+        var cancelForm = document.getElementById('cancelForm');
+        var cancelClose = document.getElementById('cancelModalClose');
+        if (cancelModal && cancelForm && cancelClose) {
+            function openCancel(action) {
+                cancelForm.setAttribute('action', action);
+                cancelModal.classList.add('active');
+                cancelModal.setAttribute('aria-hidden', 'false');
+            }
+
+            if (openCancelFromModal) {
+                openCancelFromModal.addEventListener('click', function () {
+                    var action = openCancelFromModal.getAttribute('data-cancel-action');
+                    if (action) {
+                        closeModal();
+                        openCancel(action);
+                    }
+                });
+            }
+
+            function closeCancel() {
+                cancelModal.classList.remove('active');
+                cancelModal.setAttribute('aria-hidden', 'true');
+            }
+
+            cancelClose.addEventListener('click', closeCancel);
+            cancelModal.addEventListener('click', function (e) {
+                if (e.target === cancelModal) closeCancel();
+            });
         }
-
-        th,
-        td {
-            padding: 14px;
-            text-align: center;
-        }
-
-        th {
-            background: rgba(31, 41, 55, .9);
-            text-transform: uppercase;
-            font-size: 13px;
-        }
-
-        tr:not(:last-child) {
-            border-bottom: 1px solid rgba(255, 255, 255, .1);
-        }
-
-        .estado {
-            padding: 6px 12px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .pendiente_anticipo {
-            background: rgba(234, 179, 8, .2);
-            color: #fde68a;
-        }
-
-        .confirmada {
-            background: rgba(34, 197, 94, .2);
-            color: #bbf7d0;
-        }
-
-        .cancelada {
-            background: rgba(239, 68, 68, .2);
-            color: #fecaca;
-        }
-
-        select {
-            background: #020617;
-            color: #e5e7eb;
-            border-radius: 6px;
-            padding: 6px;
-            border: 1px solid rgba(255, 255, 255, .2);
-        }
-
-        .btn {
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            color: white;
-            font-size: 13px;
-        }
-
-        .btn-confirmar {
-            background: rgba(34, 197, 94, .2);
-        }
-
-        .btn-cancelar {
-            background: rgba(239, 68, 68, .2);
-        }
-
-        .btn-asignar {
-            background: #3b82f6;
-        }
-
-        a {
-            color: #93c5fd;
-            text-decoration: none;
-        }
-
-        .alert-success {
-            background: #16a34a;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .alert-error {
-            background: #dc2626;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .admin-back-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-
-            padding: 10px 16px;
-            border-radius: 12px;
-
-            background: rgba(17, 24, 39, .85);
-            color: #fff;
-            font-weight: bold;
-            font-size: 14px;
-            text-decoration: none;
-
-            box-shadow: 0 0 18px rgba(42, 22, 218, .6);
-            backdrop-filter: blur(6px);
-
-            transition: all .25s ease;
-            z-index: 1000;
-        }
-
-        .admin-back-btn span {
-            font-size: 20px;
-            line-height: 1;
-        }
-
-        .admin-back-btn:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 0 25px rgba(42, 22, 218, .9);
-            background: rgba(31, 41, 55, .95);
-        }
-    </style>
-</head>
-
-<body>
-    
-<a href="{{ route('admin.dashboard') }}" class="admin-back-btn">
-    <span>←</span>
-    Panel
-</a>
-
-    <h1>Gestión de citas</h1>
-
-    {{-- MENSAJES --}}
-    @if (session('success'))
-        <div class="alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert-error">{{ session('error') }}</div>
-    @endif
-
-    <table>
-        <thead>
-            <tr>
-                <th>Cliente</th>
-                <th>Servicio</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Empleado</th>
-                <th>Estado</th>
-                <th>Comprobante</th>
-                <th>Acciones</th>
-                <th>Observaciones</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach ($citas as $cita)
-                <tr>
-                    <td>{{ $cita->cliente->usuario->nombre }}</td>
-                    <td>{{ $cita->servicio->nombre }}</td>
-                    <td>{{ \Carbon\Carbon::parse($cita->fecha)->format('d/m/Y') }}</td>
-                    <td>{{ $cita->hora_inicio }} - {{ $cita->hora_fin }}</td>
-
-                    {{-- EMPLEADO --}}
-                    <td>
-                        @if ($cita->estado === 'confirmada' && !$cita->empleado_id)
-                            {{-- Confirmada pero sin empleado → permitir asignar --}}
-                            <form method="POST" action="{{ route('admin.citas.asignarEmpleado', $cita) }}">
-                                @csrf
-                                <select name="empleado_id" required>
-                                    <option value="">— Seleccionar —</option>
-                                    @foreach ($empleados as $empleado)
-                                        <option value="{{ $empleado->id }}">
-                                            {{ $empleado->nombre }} ({{ $empleado->especialidad }})
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <button class="btn btn-asignar" title="Asignar empleado">✔</button>
-                            </form>
-                        @else
-                            {{-- Cualquier otro caso → solo mostrar --}}
-                            {{ $cita->empleado?->nombre ?? '— Sin asignar —' }}
-                        @endif
-                    </td>
-
-
-                    {{-- ESTADO --}}
-                    <td>
-                        <span class="estado {{ $cita->estado }}">
-                            {{ str_replace('_', ' ', ucfirst($cita->estado)) }}
-                        </span>
-                    </td>
-
-                    {{-- COMPROBANTE --}}
-                    <td>
-                        @if ($cita->comprobante)
-                            <a href="{{ asset('storage/' . $cita->comprobante) }}" target="_blank">Ver</a>
-                        @else
-                            —
-                        @endif
-                    </td>
-
-                    {{-- ACCIONES --}}
-                    <td>
-                        @if ($cita->estado === 'pendiente_anticipo')
-                            <form method="POST" action="{{ route('admin.citas.confirmar', $cita) }}">
-                                @csrf
-                                <button class="btn btn-confirmar">Confirmar</button>
-                            </form>
-
-                            <form method="POST" action="{{ route('admin.citas.cancelar', $cita) }}">
-                                @csrf
-                                <textarea name="observaciones" rows="2" placeholder="Motivo de cancelación"
-                                    style="
-            width:100%;
-            margin-bottom:6px;
-            border-radius:6px;
-            padding:6px;
-            font-size:12px;
-        "></textarea>
-
-                                <button class="btn btn-cancelar">Cancelar</button>
-                            </form>
-                        @else
-                            —
-                        @endif
-                    </td>
-                    {{-- OBSERVACIONES --}}
-                    <td style="max-width:200px; text-align:left;">
-                        {{ $cita->observaciones ?? '—' }}
-                    </td>
-
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-    <br>
-    </a>
-</body>
-</html>
+    })();
+</script>
+@endsection

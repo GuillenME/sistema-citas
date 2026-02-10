@@ -7,22 +7,22 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('noticias', function (Blueprint $table) {
+        Schema::create('news', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
+            $table->string('title');
             $table->string('slug')->unique();
-            $table->longText('contenido');
-            $table->string('imagen')->nullable();
-            $table->date('fecha_publicacion');
-            $table->boolean('publicada')->default(false);
-            $table->foreignId('usuario_id')->constrained('usuarios');
+            $table->longText('content');
+            $table->string('image')->nullable();
+            $table->date('publication_date');
+            $table->boolean('published')->default(false);
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('noticias');
+        Schema::dropIfExists('news');
     }
 };
 

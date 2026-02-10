@@ -8,24 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 class CitaEstado extends Model
 {
     use HasFactory;
-    protected $table = 'cita_estados';
+    protected $table = 'appointment_states';
 
     protected $fillable = [
-        'cita_id',
-        'estado',
-        'usuairio_id',
-        'fecha_cambio'
+        'appointment_id',
+        'status',
+        'user_id',
+        'change_date'
     ];
 
     public $timestamps = false;
 
-    public function cita()
+    public function appointment()
     {
-        return $this->belongsTo(Cita::class, 'cita_id');
+        return $this->belongsTo(Cita::class, 'appointment_id');
     }   
 
-    public function usuario()
+    public function user()
     {
-        return $this->belongsTo(Usuario::class, 'usuairio_id');
+        return $this->belongsTo(Usuario::class, 'user_id');
     }
 }

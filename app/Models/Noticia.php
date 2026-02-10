@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 // app/Models/Noticia.php
 class Noticia extends Model
 {
-    protected $table = 'noticias';
+    protected $table = 'news';
 
     protected $fillable = [
-        'titulo',
+        'title',
         'slug',
-        'contenido',
-        'imagen',
-        'fecha_publicacion',
-        'publicada',
-        'usuario_id'
+        'content',
+        'image',
+        'publication_date',
+        'published',
+        'user_id'
     ];
 }

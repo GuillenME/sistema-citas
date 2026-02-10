@@ -1,13 +1,9 @@
-<h2>Nuevo recepcionista</h2>
+@extends('layouts.admin')
 
-<form method="POST" action="{{ route('admin.recepcionistas.store') }}">
-    @csrf
+@section('title', 'Nuevo recepcionista')
 
-    <input name="nombre" placeholder="Nombre" required>
-    <input name="apellido" placeholder="Apellido">
-    <input name="email" placeholder="Email" required>
-    <input name="telefono" placeholder="Teléfono">
-    <input type="password" name="password" placeholder="Contraseña" required>
+@section('back-url', route('admin.recepcionistas.index'))
+@section('content')
+    <livewire:admin.recepcionista-create />
+@endsection
 
-    <button>Guardar</button>
-</form>

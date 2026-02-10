@@ -1,411 +1,204 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Agendar cita</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            background-image: url('{{ asset("imagenes/RegistrarSala.png") }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-        }
-
-        body::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,.55);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        header, .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        header {
-            background: rgba(115,114,126,.85);
-            color: #fff;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .back-btn {
-            font-size: 38px;
-            color: #fff;
-            text-decoration: none;
-            text-shadow: 0 0 10px rgba(255,255,255,.8);
-            transition: .2s;
-        }
-
-        .back-btn:hover { transform: scale(1.2); }
-
-        .logout-btn {
-            background: transparent;
-            border: 2px solid #ff0000;
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 0 14px rgba(255,0,0,1);
-        }
-
-        .container {
-            min-height: calc(100vh - 80px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 520px;
-            background: rgba(17,24,39,.85);
-            padding: 28px;
-            border-radius: 16px;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(42,22,218,.6);
-        }
-
-        h2 { text-align: center; }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            border-radius: 8px;
-            border: none;
-            font-size: 14px;
-        }
-
-        /* ===== ERRORES ===== */
-        .error-box {
-            background: #fee2e2;
-            border: 1px solid #f87171;
-            color: #991b1b;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 18px;
-            font-size: 14px;
-        }
-
-        .error-box ul { margin: 0; padding-left: 18px; }
-
-        .input-error {
-            outline: 2px solid #ef4444 !important;
-            background: #fee2e2;
-        }
-
-        .field-error {
-            display: block;
-            margin-top: 4px;
-            font-size: 13px;
-            color: #fecaca;
-        }
-
-        .submit-btn {
-            margin-top: 22px;
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            background: #1F4E79;
-            color: #fff;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 6px 20px rgba(42,22,218,.8);
-        }
-        /* ===== PRIVACIDAD ===== */
-        .privacy-box {
-            margin-top: 18px;
-            width: 100%;
-        }
-
-        .privacy-label {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            justify-content: flex-start;
-            text-align: left;
-        }
-
-        .privacy-checkbox {
-            margin-top: 3px;
-            flex-shrink: 0;
-            width: 18px;
-            height: 18px;
-        }
-
-        .privacy-text {
-            font-size: 13px;
-            line-height: 1.4;
-            color: #e5e7eb;
-        }
-
-        .privacy-link {
-            color: #93c5fd;
-            text-decoration: underline;
-        }
-
-        .privacy-link:hover {
-            color: #bfdbfe;
-        }
-
-        .anticipo {
-            margin-top: 25px;
-            padding: 18px;
-            background: rgba(255,255,255,.08);
-            border-radius: 12px;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .anticipo h4 { color: #fde68a; }
-
-        @media (max-width: 600px) {
-            header { flex-direction: column; }
-            .back-btn { font-size: 32px; }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{{ asset('css/clientes/cliente-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/clientes/cliente.css') }}">
 </head>
 
-<body>
+<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
 
-<header>
-    <a href="{{ route('cliente.dashboard') }}" class="back-btn">←</a>
+    @include('cliente.partials.menu')
 
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button class="logout-btn">Cerrar sesión</button>
-    </form>
-</header>
+    <div class="container">
+        <div class="card">
 
-<div class="container">
-    <div class="card">
+            <h2>Agendar cita</h2>
 
-        <h2>Agendar cita</h2>
+            {{-- ERRORES --}}
+            @if ($errors->any())
+                <div class="error-box">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        {{-- ERRORES GENERALES --}}
-        @if ($errors->any())
-            <div class="error-box">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+            <form method="POST" action="{{ route('cliente.citas.store') }}" id="formAgendarCita" class="form-grid">
+    @csrf
 
-        <form method="POST" action="{{ route('cliente.citas.store') }}">
-            @csrf
-
-            <label>Servicio</label>
-            <select name="servicio_id" id="servicio" class="@error('servicio_id') input-error @enderror">
-                <option value="">Selecciona un servicio</option>
-                @foreach ($servicios as $servicio)
-                    <option value="{{ $servicio->id }}" {{ old('servicio_id') == $servicio->id ? 'selected' : '' }}>
-                        {{ $servicio->nombre }}
-                    </option>
-                @endforeach
-            </select>
-            @error('servicio_id')
-                <span class="field-error">{{ $message }}</span>
-            @enderror
-
-            <label>Fecha</label>
-            <input type="date" name="fecha" id="fecha"
-                   min="{{ now()->toDateString() }}"
-                   value="{{ old('fecha') }}"
-                   class="@error('fecha') input-error @enderror">
-            @error('fecha')
-                <span class="field-error">{{ $message }}</span>
-            @enderror
-
-            <label>Horario</label>
-            <select name="hora_inicio" id="horarios" class="@error('hora_inicio') input-error @enderror">
-                <option value="">Selecciona un horario</option>
-            </select>
-            @error('hora_inicio')
-                <span class="field-error">{{ $message }}</span>
-            @enderror
-
-           {{-- POLÍTICA DE PRIVACIDAD --}}
-        <div class="privacy-box">
-            <label class="privacy-label">
-                <input type="checkbox"
-                    name="acepta_privacidad"
-                    value="1"
-                    class="privacy-checkbox @error('acepta_privacidad') input-error @enderror"
-                    {{ old('acepta_privacidad') ? 'checked' : '' }}>
-
-                <span class="privacy-text">
-                    Acepto la
-                    <a href="{{ route('politica.privacidad') }}" target="_blank" class="privacy-link">
-                        Política de privacidad
-                    </a>
-                    y autorizo el uso de mis datos para la gestión de mi cita.
-                </span>
-            </label>
-
-            @error('acepta_privacidad')
-                <span class="field-error">{{ $message }}</span>
-            @enderror
-        </div>
-
-
-            <button type="submit" class="submit-btn">
-                AGENDAR CITA
-            </button>
-        </form>
-
-        <div class="anticipo">
-            <h4>⚠ Anticipo requerido</h4>
-            <p>Se solicita un <strong>50%</strong> para confirmar la cita</p>
-            <p>Banco: BBVA<br>Cuenta: 1234567890<br>CLABE: 012345678901234567</p>
-        </div>
-
+    {{-- SERVICIO --}}
+    <div class="field">
+        <label>Servicio</label>
+        <select name="servicio_id" id="servicio" required>
+            <option value="">Selecciona un servicio</option>
+            @foreach ($servicios as $servicio)
+                @php
+                    $promo = $servicio->promocionActiva();
+                    $precioFinal = $servicio->precioConDescuento();
+                @endphp
+                <option value="{{ $servicio->id }}" data-precio="{{ $servicio->price }}"
+                    data-precio-descuento="{{ $precioFinal }}" data-tiene-promocion="{{ $promo ? '1' : '0' }}"
+                    data-descripcion="{{ $servicio->description }}"
+                    data-duracion="{{ $servicio->duration_minutes }}"
+                    data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}">
+                    {{ $servicio->name }}
+                </option>
+            @endforeach
+        </select>
     </div>
-</div>
 
-<<<<<<< HEAD
-            <h2>AGENDAR CITAS</h2>
-            <form method="POST" action="{{ route('cliente.citas.store') }}">
-                @csrf
-=======
-<script>
-const servicio = document.getElementById('servicio');
-const fecha = document.getElementById('fecha');
-const horarios = document.getElementById('horarios');
->>>>>>> 07914fc6e41783d5e32bb82da6c3d4634c7d0feb
+    {{-- FECHA --}}
+                <div class="field date-field">
+                    <label>Fecha</label>
+                    <input type="text" id="fecha" name="fecha" class="date-inline" placeholder="Selecciona una fecha"
+                        onkeydown="return false;" readonly>
+                </div>
 
-// Bloquear domingos
-fecha.addEventListener('input', () => {
-    if (!fecha.value) return;
-    if (new Date(fecha.value + 'T00:00:00').getDay() === 0) {
-        alert('Los domingos no se atiende');
-        fecha.value = '';
-        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
-    }
-});
+                {{-- HORARIO --}}
+                <div class="field horario-field">
+                    <label>Horario</label>
+                    <select id="horarios" name="hora_inicio">
+                        <option value="">Selecciona un horario</option>
+                    </select>
+                </div>
 
-async function cargarBloques() {
-    horarios.innerHTML = '<option>Cargando horarios...</option>';
+                <div class="field anticipo-field">
+                    <div class="anticipo">
+                        <h4>Anticipo requerido</h4>
+                        <p>Se solicita un <strong>{{ $porcentajeAnticipo }}%</strong> para confirmar la cita</p>
+                        <p>El <strong>{{ $porcentajeRestante }}%</strong> restante se pagara despues de la cita</p>
 
-    if (!servicio.value || !fecha.value) return;
+                        <p style="margin-top:10px;color:#fde68a;font-weight:bold;">
+                            Tienes <strong>15 minutos</strong> para realizar la transferencia y subir el comprobante.
+                            De lo contrario, la cita se cancelara automaticamente.
+                        </p>
 
-    try {
-        const res = await fetch(
-            `/cliente/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`
-        );
+                        <p>
+                            Banco: {{ config('citas.banco.nombre') }}<br>
+                            Cuenta: {{ config('citas.banco.cuenta') }}<br>
+                            CLABE: {{ config('citas.banco.clabe') }}
+                        </p>
+                    </div>
+                </div>
 
-        const bloques = await res.json();
-        horarios.innerHTML = '';
+{{-- PRIVACIDAD --}}
+    <div class="field full privacy-field">
+        <label class="privacy-label">
+            <input type="checkbox" name="acepta_privacidad" class="privacy-checkbox">
+            <span class="privacy-text">
+                Acepto la <a href="#" class="privacy-link">política de privacidad</a>
+            </span>
+        </label>
+    </div>
 
-<<<<<<< HEAD
-                <p>
-                    <strong>Banco:</strong> BBVA<br>
-                    <strong>Cuenta:</strong> 1234567890<br>
-                    <strong>CLABE:</strong> 012345678901234567 <br>
-                    <strong>Numero tel:</strong> 9614633455 <br>
-                </p>
+    <div class="field full center">
+        <button type="button" class="submit-btn" onclick="mostrarModalConfirmar()">
+            AGENDAR CITA
+        </button>
+    </div>
+</form>
 
-                <p style="font-size:13px; opacity:.85;">
-                    Envía tu comprobante por WhatsApp para confirmar tu cita.
+
+        </div>
+    </div>
+
+    <!-- ================= MODAL CONFIRMAR SERVICIO ================= -->
+    <div id="modalServicioConfirmar" class="modal-confirm-overlay"
+        onclick="if(event.target === this) cancelarServicio()">
+        <div class="modal-confirm-content modal-servicio">
+
+            <img id="msImagen" class="modal-servicio-img" src="" alt="Servicio">
+
+            <h3 id="msNombre"></h3>
+
+            <p id="msDescripcion" class="modal-servicio-desc"></p>
+
+            <p class="modal-servicio-info">
+                ⏱ <strong>Duración:</strong> <span id="msDuracion"></span> minutos
+            </p>
+
+            <p class="modal-servicio-info">
+                💰 <strong>Precio:</strong> <span id="msPrecio"></span>
+            </p>
+
+            <div class="modal-confirm-buttons">
+                <button class="modal-confirm-btn modal-confirm-btn-submit" onclick="confirmarServicio()">Confirmar
+                    servicio</button>
+
+                <button class="modal-confirm-btn modal-confirm-btn-cancel" onclick="cancelarServicio()">Cambiar
+                    servicio</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL CONFIRMAR CITA ================= -->
+    <div id="modalConfirmar" class="modal-confirm-overlay" onclick="if(event.target === this) cerrarModalConfirmar()">
+        <div class="modal-confirm-content">
+
+            <h3>📅 Confirmar cita</h3>
+
+            <p><strong>Servicio:</strong> <span id="mcServicio"></span></p>
+            <p><strong>Fecha:</strong> <span id="mcFecha"></span></p>
+            <p><strong>Horario:</strong> <span id="mcHorario"></span></p>
+
+            <hr style="margin:15px 0; opacity:.3">
+
+            <h4 style="color:#fde68a;">⚠ Anticipo requerido</h4>
+
+            <p>
+                Se solicita un <strong>{{ $porcentajeAnticipo }}%</strong> para confirmar la cita.<br>
+                El <strong>{{ $porcentajeRestante }}%</strong> restante se paga después del servicio.
+            </p>
+
+            <p style="margin-top:10px; color:#fca5a5; font-weight:bold;">
+                ⏳ Tienes <strong>15 minutos</strong> para realizar el depósito y subir el comprobante.<br>
+                Si no se recibe en ese tiempo, la cita será cancelada automáticamente.
+            </p>
+
+            <div style="margin-top:10px; background:#111827; padding:10px; border-radius:8px;">
+                <p style="margin:0; font-size:14px;">
+                    <strong>Banco:</strong> {{ config('citas.banco.nombre') }}<br>
+                    <strong>Cuenta:</strong> {{ config('citas.banco.cuenta') }}<br>
+                    <strong>CLABE:</strong> {{ config('citas.banco.clabe') }}
                 </p>
             </div>
 
-            <script>
-        const servicio = document.getElementById('servicio');
-        const fecha = document.getElementById('fecha');
-        const horarios = document.getElementById('horarios');
+            <div class="modal-confirm-buttons" style="margin-top:15px;">
+                <button class="modal-confirm-btn modal-confirm-btn-submit" onclick="confirmarAgendar()">
+                    Confirmar y agendar
+                </button>
+
+                <button class="modal-confirm-btn modal-confirm-btn-cancel" onclick="cerrarModalConfirmar()">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
 
 
-        fecha.addEventListener('input', () => {
-            if (!fecha.value) return;
+    <!-- ================= MODAL LOGOUT ================= -->
+    <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
+        <div class="modal-content">
+            <h3>¿Cerrar sesión?</h3>
+            <div class="modal-buttons">
+                <button onclick="confirmarLogout()">Sí</button>
+                <button onclick="cerrarModalLogout()">No</button>
+            </div>
+        </div>
+    </div>
 
-            const d = new Date(fecha.value + 'T00:00:00').getDay();
-            if (d === 0) {
-                alert('Los domingos no se atiende');
-                fecha.value = '';
-                horarios.innerHTML = '<option value="">Selecciona un horario</option>';
-            }
-        });
-
-        async function cargarBloques() {
-            horarios.innerHTML = '<option>Cargando horarios...</option>';
-
-            if (!servicio.value || !fecha.value) return;
-
-            try {
-                const res = await fetch(
-                    `/citas/bloques?servicio_id=${servicio.value}&fecha=${fecha.value}`
-                );
-
-                if (!res.ok) {
-                    horarios.innerHTML = '<option>Error al cargar horarios</option>';
-                    return;
-                }
-
-                const bloques = await res.json();
-                horarios.innerHTML = '';
-
-                if (bloques.length === 0) {
-                    horarios.innerHTML = '<option>No hay horarios disponibles</option>';
-                    return;
-                }
-
-                bloques.forEach(b => {
-                    const opt = document.createElement('option');
-                    opt.value = b.inicio;
-                    opt.textContent = `${b.inicio} - ${b.fin}`;
-                    horarios.appendChild(opt);
-                });
-
-            } catch (error) {
-                horarios.innerHTML = '<option>Error al cargar horarios</option>';
-            }
-=======
-        if (bloques.length === 0) {
-            horarios.innerHTML = '<option>No hay horarios disponibles</option>';
-            return;
->>>>>>> 07914fc6e41783d5e32bb82da6c3d4634c7d0feb
-        }
-
-        bloques.forEach(b => {
-            const opt = document.createElement('option');
-            opt.value = b.inicio;
-            opt.textContent = `${b.inicio} - ${b.fin}`;
-            horarios.appendChild(opt);
-        });
-    } catch {
-        horarios.innerHTML = '<option>Error al cargar horarios</option>';
-    }
-}
-
-servicio.addEventListener('change', cargarBloques);
-fecha.addEventListener('change', cargarBloques);
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="{{ asset('js/cliente/citas.js') }}"></script>
 
 </body>
+
 </html>
+

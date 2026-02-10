@@ -7,19 +7,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('paginas', function (Blueprint $table) {
+        Schema::create('pages', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo');
+            $table->string('title');
             $table->string('slug')->unique();
-            $table->longText('contenido');
-            $table->boolean('publicada')->default(true);
+            $table->longText('content');
+            $table->boolean('published')->default(true);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('paginas');
+        Schema::dropIfExists('pages');
     }
 };
 

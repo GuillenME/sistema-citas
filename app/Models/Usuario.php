@@ -15,16 +15,16 @@ class Usuario extends Authenticatable
 {
     use HasFactory, Notifiable, ResetPasswordTrait;
 
-    protected $table = 'usuarios';
+    protected $table = 'users';
 
     protected $fillable = [
-        'nombre',
-        'apellido',
-        'telefono',
+        'name',
+        'last_name',
+        'phone',
         'email',
         'password',
-        'rol_id',
-        'activo',
+        'role_id',
+        'active',
     ];
 
     protected $hidden = [
@@ -32,14 +32,14 @@ class Usuario extends Authenticatable
         'remember_token',
     ];
 
-    public function citas()
+    public function appointments()
     {
-        return $this->hasMany(Cita::class, 'cliente_id');
+        return $this->hasMany(Cita::class, 'client_id');
     }
 
-    public function cliente()
+    public function client()
     {
-        return $this->hasOne(Cliente::class, 'usuario_id');
+        return $this->hasOne(Cliente::class, 'user_id');
     }
     public function sendPasswordResetNotification($token)
     {

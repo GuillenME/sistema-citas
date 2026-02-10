@@ -7,20 +7,20 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('servicios', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->text('descripcion')->nullable();
-            $table->integer('duracion_minutos');
-            $table->decimal('precio', 8, 2);
-            $table->boolean('activo')->default(true);
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->integer('duration_minutes');
+            $table->decimal('price', 8, 2);
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('servicios');
+        Schema::dropIfExists('services');
     }
 };
 

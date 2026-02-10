@@ -1,0 +1,90 @@
+<div class="card table-card">
+    <div class="table-container">
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descuento</th>
+                    <th>Servicios</th>
+                    <th>Fecha</th>
+                    <th>Publicada</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @forelse ($promociones as $promo)
+                    <tr>
+                        <td>{{ $promo->title }}</td>
+                        <td>{{ $promo->discount }}%</td>
+
+                        <td>
+                            @forelse ($promo->servicios as $servicio)
+                                <span class="badge badge-on">
+                                    {{ $servicio->name }}
+                                </span>
+                            @empty
+                                <span class="table-empty">Sin servicios</span>
+                            @endforelse
+                        </td>
+
+                        <td>
+                            {{ \Carbon\Carbon::parse($promo->start_date)->format('d/m/Y') }}
+                            –
+                            {{ \Carbon\Carbon::parse($promo->end_date)->format('d/m/Y') }}
+                        </td>
+
+                        <td>
+                            <span class="badge {{ $promo->published ? 'badge-on' : 'badge-off' }}">
+                                {{ $promo->published ? 'Sí' : 'No' }}
+                            </span>
+                        </td>
+
+                        <td class="table-actions">
+                            <a href="{{ route('admin.promociones.edit', $promo) }}" class="btn-edit">
+                                Editar
+                            </a>
+                            <button class="btn-delete" wire:click="confirmDelete({{ $promo->id }})">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="table-empty">
+                            No hay promociones registradas
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="pagination-wrapper">
+        {{ $promociones->links() }}
+    </div>
+
+    @if ($confirmDeleteId)
+        <div class="modal-overlay" wire:click.self="cancelDelete">
+            <div class="modal-box">
+                <h3>¿Eliminar promoción?</h3>
+
+                <p>Esta acción no se puede deshacer.</p>
+
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" wire:click="cancelDelete">
+                        Cancelar
+                    </button>
+
+                    <button class="btn btn-save" wire:click="deleteConfirmed" wire:loading.attr="disabled">
+                        <span wire:loading.remove>Eliminar</span>
+                        <span wire:loading>Eliminando...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+</div>

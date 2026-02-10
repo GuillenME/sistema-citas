@@ -1,312 +1,90 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>Citas - Recepci√≥n</title>
+    <title>Citas - Recepcion</title>
 
     <!-- RESPONSIVE -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            min-height: 100vh;
-
-            background-image: url('{{ asset("imagenes/recepFon.png") }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-
-            position: relative;
-        }
-
-        /* Overlay oscuro */
-        body::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.65);
-            z-index: 0;
-        }
-
-        /* ===== HEADER ===== */
-        header {
-            position: relative;
-            z-index: 2;
-            background: rgba(100, 100, 100, 0.85);
-            color: #fff;
-            padding: 15px 30px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 22px;
-            letter-spacing: 1px;
-        }
-
-        /* Flecha */
-        .back-btn {
-            background: transparent;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 34px;
-            font-weight: bold;
-            cursor: pointer;
-
-            text-shadow:
-                0 0 6px rgba(255, 255, 255, 0.8),
-                0 0 16px rgba(180, 180, 180, 0.8);
-
-            transition: transform .2s;
-        }
-
-        .back-btn:hover {
-            transform: scale(1.2);
-        }
-
-        /* Logout */
-        .logout-btn {
-            background: transparent;
-            border: 2px solid #ff2d2d;
-            padding: 8px 18px;
-            color: #fff;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-
-            box-shadow:
-                0 0 12px rgba(255, 45, 45, 0.9),
-                inset 0 0 6px rgba(255, 45, 45, 0.4);
-
-            transition: transform .2s;
-        }
-
-        .logout-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* ===== CONTENEDOR ===== */
-        .container {
-            position: relative;
-            z-index: 2;
-            padding: 40px 30px;
-        }
-
-        .table-card {
-            max-width: 1100px;
-            margin: auto;
-
-            background: rgba(17, 24, 39, 0.65);
-            backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 25px;
-
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, 0.45),
-                0 0 20px rgba(180, 180, 180, 0.6);
-        }
-
-        .table-card h2 {
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #fff;
-            letter-spacing: 1px;
-        }
-
-        /* ===== TABLA ===== */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            color: #e5e7eb;
-            font-size: 14px;
-        }
-
-        thead {
-            background: rgba(31, 41, 55, 0.9);
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: center;
-        }
-
-        th {
-            text-transform: uppercase;
-            font-size: 13px;
-            letter-spacing: 1px;
-            color: #fff;
-        }
-
-        tbody tr {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        tbody tr:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Estado */
-        .estado {
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-        }
-
-        .estado.pendiente {
-            background: rgba(234, 179, 8, 0.2);
-            color: #fde68a;
-        }
-
-        .estado.confirmada {
-            background: rgba(34, 197, 94, 0.2);
-            color: #bbf7d0;
-        }
-
-        .estado.cancelada {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fecaca;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 700px) {
-
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-
-            thead {
-                display: none;
-            }
-
-            tbody tr {
-                margin-bottom: 15px;
-                padding: 12px;
-                border-radius: 12px;
-                background: rgba(255, 255, 255, 0.05);
-            }
-
-            td {
-                text-align: right;
-                position: relative;
-                padding-left: 50%;
-            }
-
-            td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 12px;
-                top: 50%;
-                transform: translateY(-50%);
-                font-weight: bold;
-                color: #9ca3af;
-                text-align: left;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-citas.css') }}">
 </head>
 
-<body>
+<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
 
-<header>
-    <div class="header-left">
-        <a href="{{ route('recepcionista.dashboard') }}" class="back-btn">‚Üê</a>
+    @include('recepcionista.partials.menu')
+
+    <div class="container">
+
+        <div class="table-card">
+            <h2>Historial de citas</h2>
+
+            <div class="citas-grid">
+                @foreach ($citas as $cita)
+                    @php
+                        $estadoClase = match ($cita->status) {
+                            'pendiente_anticipo' => 'pendiente',
+                            'confirmada' => 'confirmada',
+                            'cancelada' => 'cancelada',
+                            default => 'pendiente',
+                        };
+
+                        $estadoTexto = match ($cita->status) {
+                            'pendiente_anticipo' => 'Pendiente de anticipo',
+                            'confirmada' => 'Confirmada',
+                            'cancelada' => 'Cancelada',
+                            default => ucfirst($cita->status),
+                        };
+                    @endphp
+
+                    <div class="cita-card">
+                        <div class="cita-header">
+                            <div class="cita-title">{{ $cita->service->name }}</div>
+                            <span class="estado {{ $estadoClase }}">{{ $estadoTexto }}</span>
+                        </div>
+
+                        <div class="cita-meta">
+                            <div><strong>Cliente:</strong> {{ $cita->client->user->name ?? '' }} {{ $cita->client->user->last_name ?? '' }}</div>
+                            <div><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}</div>
+                            <div><strong>Hora:</strong> {{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($cita->end_time)->format('H:i') }}</div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+        </div>
+
     </div>
 
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button class="logout-btn" type="submit">Cerrar sesi√≥n</button>
-    </form>
-</header>
+    <script>
+        // Modal de confirmacion de logout
+        function mostrarModalLogout() {
+            document.getElementById('modalLogout').classList.add('active');
+        }
 
-<div class="container">
+        function cerrarModalLogout() {
+            document.getElementById('modalLogout').classList.remove('active');
+        }
 
-    <div class="table-card">
-        <h2>Historial de citas</h2>
+        function confirmarLogout() {
+            document.getElementById('logoutForm').submit();
+        }
+    </script>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Cliente</th>
-                    <th>Servicio</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Estado</th>
-                </tr>
-            </thead>
-
-            <tbody>
-            @foreach ($citas as $cita)
-                <tr>
-                    <td data-label="Cliente">
-                        {{ $cita->cliente->usuario->nombre ?? '' }}
-                        {{ $cita->cliente->usuario->apellido ?? '' }}
-                    </td>
-
-                    <td data-label="Servicio">
-                        {{ $cita->servicio->nombre }}
-                    </td>
-
-                    <td data-label="Fecha">
-                        {{ \Carbon\Carbon::parse($cita->fecha)->format('d/m/Y') }}
-                    </td>
-
-                    <td data-label="Hora">
-                        {{ \Carbon\Carbon::parse($cita->hora_inicio)->format('H:i') }}
-                        -
-                        {{ \Carbon\Carbon::parse($cita->hora_fin)->format('H:i') }}
-                    </td>
-
-                    <td data-label="Estado">
-                        @php
-                            $estadoClase = match ($cita->estado) {
-                                'pendiente_anticipo' => 'pendiente',
-                                'confirmada' => 'confirmada',
-                                'cancelada' => 'cancelada',
-                                default => 'pendiente',
-                            };
-
-                            $estadoTexto = match ($cita->estado) {
-                                'pendiente_anticipo' => 'Pendiente de anticipo',
-                                'confirmada' => 'Confirmada',
-                                'cancelada' => 'Cancelada',
-                                default => ucfirst($cita->estado),
-                            };
-                        @endphp
-
-                        <span class="estado {{ $estadoClase }}">
-                            {{ $estadoTexto }}
-                        </span>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-
-        </table>
+    <!-- Modal de confirmacion de logout -->
+    <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
+        <div class="modal-content">
+            <h3>øCerrar sesion?</h3>
+            <p>øEstas seguro de que deseas cerrar sesion?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Si, cerrar sesion</button>
+                <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
+            </div>
+        </div>
     </div>
-
-</div>
 
 </body>
+
 </html>

@@ -12,24 +12,28 @@ class AdminCitaController extends Controller
 {
     public function index()
     {
-        $citas = Cita::with(['cliente', 'servicio', 'empleado'])->get();
-        $empleados = Empleado::where('activo', 1)->get();
+        $citas = Cita::with(['client', 'service', 'employee'])
+            ->orderBy('date', 'desc')
+            ->paginate(5);
+
+        $empleados = Empleado::where('active', 1)->get();
 
         return view('admin.citas.index', compact('citas', 'empleados'));
     }
 
+
     public function confirmar(Cita $cita)
     {
         $cita->update([
-            'estado' => 'confirmada',
-            'observaciones' => 'Cita confirmada por el administrador',
+            'status' => 'confirmada',
+            'notes' => 'Cita confirmada por el administrador',
         ]);
 
         CitaEstado::create([
-            'cita_id' => $cita->id,
-            'estado' => 'confirmada',
-            'usuario_id' => auth()->id(),
-            'fecha_cambio' => now()
+            'appointment_id' => $cita->id,
+            'status' => 'confirmada',
+            'user_id' => auth()->id(),
+            'change_date' => now()
         ]);
 
         return back()->with('success', 'Cita confirmada correctamente');
@@ -43,16 +47,16 @@ class AdminCitaController extends Controller
         ]);
 
         $cita->update([
-            'estado' => 'cancelada',
-            'observaciones' => $request->observaciones
+            'status' => 'cancelada',
+            'notes' => $request->observaciones
                 ?? 'Cancelada por el administrador',
         ]);
 
         CitaEstado::create([
-            'cita_id' => $cita->id,
-            'estado' => 'cancelada',
-            'usuario_id' => auth()->id(),
-            'fecha_cambio' => now()
+            'appointment_id' => $cita->id,
+            'status' => 'cancelada',
+            'user_id' => auth()->id(),
+            'change_date' => now()
         ]);
 
         return back()->with('success', 'Cita cancelada correctamente');
@@ -61,20 +65,20 @@ class AdminCitaController extends Controller
 
     public function asignarEmpleado(Request $request, Cita $cita)
     {
-        if ($cita->estado !== 'confirmada') {
+        if ($cita->status !== 'confirmada') {
             return back()->with('error', 'Solo se puede asignar empleado a citas confirmadas');
         }
 
-        if ($cita->empleado_id) {
+        if ($cita->employee_id) {
             return back()->with('error', 'Esta cita ya tiene un empleado asignado');
         }
 
         $request->validate([
-            'empleado_id' => 'required|exists:empleados,id',
+            'empleado_id' => 'required|exists:employees,id',
         ]);
 
         $cita->update([
-            'empleado_id' => $request->empleado_id,
+            'employee_id' => $request->empleado_id,
         ]);
 
         return back()->with('success', 'Empleado asignado correctamente');

@@ -6,17 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Empleado extends Model
 {
-    protected $table = 'empleados';
+    protected $table = 'employees';
 
     protected $fillable = [
-        'nombre',
-        'telefono',
-        'especialidad',
-        'activo',
+        'name',
+        'phone',
+        'specialty',
+        'active',
     ];
 
-    public function citas()
+    public function servicios()
     {
-        return $this->hasMany(Cita::class, 'empleado_id');
+        return $this->belongsToMany(Servicio::class, 'employee_service', 'employee_id', 'service_id')
+            ->withTimestamps();
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Cita::class, 'employee_id');
     }
 }

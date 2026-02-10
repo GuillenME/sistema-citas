@@ -9,14 +9,27 @@ use App\Http\Controllers\Admin\AdminEmpleadoController;
 use App\Http\Controllers\Admin\AdminPromocionController;
 use App\Http\Controllers\Admin\AdminRecepcionistaController;
 use App\Http\Controllers\Admin\AdminServicioController;
+use App\Http\Controllers\Admin\HomeSettingController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServicioPublicController;
 
 /* HOME PÚBLICO */
 
 Route::get('/', [PublicController::class, 'index'])->name('home');
+Route::get('/servicios', [ServicioPublicController::class, 'index'])
+    ->name('servicios');
+Route::get('/comentarios-publicos', [PublicController::class, 'comentarios'])
+    ->name('comentarios.publicos');
+Route::get('/noticias', [PublicController::class, 'noticias'])
+    ->name('noticias.publicas');
+
+/* POLÍTICA DE PRIVACIDAD */
+Route::get('/politica-privacidad', function () {
+    return view('legal.politica-privacidad');
+})->name('politica.privacidad');
 
 /* AUTH (INVITADOS) */
 Route::middleware('guest')->group(function () {
@@ -46,7 +59,7 @@ Route::middleware('auth')->get(
 /* REDIRECCIÓN POR ROL */
 Route::get('/redirect', function () {
 
-    $rol = auth()->user()->rol_id;
+    $rol = auth()->user()->role_id;
 
     if ($rol == 1) {
         return redirect()->route('admin.dashboard');
@@ -78,57 +91,81 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
 
+        // LIVEWIRE
+        Route::get('/promociones/create', function () {
+            return view('admin.promociones.create');
+        })->name('promociones.create');
+
+        Route::get('/promociones/{promocion}/edit', function (App\Models\Promocion $promocion) {
+            return view('admin.promociones.edit', compact('promocion'));
+        })->name('promociones.edit');
+
+        // CONTROLLER (RESTO)
         Route::resource('promociones', AdminPromocionController::class)
+            ->except(['create', 'edit'])
             ->parameters(['promociones' => 'promocion']);
+
+        Route::get('/servicios/plantilla', [AdminServicioController::class, 'downloadTemplate'])
+            ->name('servicios.template');
+
+        Route::get('/servicios/import', function () {
+            return view('admin.servicios.import');
+        })->name('servicios.import');
+
+        Route::post('/servicios/import', [AdminServicioController::class, 'importCsv'])
+            ->name('servicios.import.store');
+
         Route::resource('servicios', AdminServicioController::class);
 
-        Route::get('/empleados', [AdminEmpleadoController::class, 'index'])
-            ->name('empleados.index');
+        Route::get('/empleados', function () {
+            return view('admin.empleados.index');
+        })->name('empleados.index');
 
-        Route::get('/empleados/create', [AdminEmpleadoController::class, 'create'])
-            ->name('empleados.create');
+        Route::get('/empleados/create', function () {
+            return view('admin.empleados.create');
+        })->name('empleados.create');
 
-        Route::post('/empleados', [AdminEmpleadoController::class, 'store'])
-            ->name('empleados.store');
+        Route::get('/empleados/{empleado}/edit', function (App\Models\Empleado $empleado) {
+            return view('admin.empleados.edit', compact('empleado'));
+        })->name('empleados.edit');
 
-        Route::get('/empleados/{empleado}/edit', [AdminEmpleadoController::class, 'edit'])
-            ->name('empleados.edit');
+        Route::get('/noticias', function () {
+            return view('admin.noticias.index');
+        })->name('noticias.index');
 
-        Route::put('/empleados/{empleado}', [AdminEmpleadoController::class, 'update'])
-            ->name('empleados.update');
+        Route::get('/noticias/create', function () {
+            return view('admin.noticias.create');
+        })->name('noticias.create');
 
-        Route::delete('/empleados/{empleado}', [AdminEmpleadoController::class, 'destroy'])
-            ->name('empleados.destroy');
+        Route::get('/noticias/{noticia}/edit', function (App\Models\Noticia $noticia) {
+            return view('admin.noticias.edit', compact('noticia'));
+        })->name('noticias.edit');
 
         Route::post('citas/{cita}/asignar-empleado', [AdminCitaController::class, 'asignarEmpleado'])
             ->name('citas.asignarEmpleado');
 
-        Route::get('/clientes', [AdminClientesController::class, 'index'])
-            ->name('clientes.index');
+        Route::get('/clientes', function () {
+            return view('admin.clientes.index');
+        })->name('clientes.index');
 
-        Route::post('/clientes/{cliente}/desactivar', [AdminClientesController::class, 'desactivar'])
-            ->name('clientes.desactivar');
 
-        Route::post('/clientes/{cliente}/activar', [AdminClientesController::class, 'activar'])
-            ->name('clientes.activar');
+        Route::get('/recepcionistas', function () {
+            return view('admin.recepcionistas.index');
+        })->name('recepcionistas.index');
 
-        Route::get('/recepcionistas', [AdminRecepcionistaController::class, 'index'])
-            ->name('recepcionistas.index');
+        Route::get('/recepcionistas/create', function () {
+            return view('admin.recepcionistas.create');
+        })->name('recepcionistas.create');
 
-        Route::get('/recepcionistas/create', [AdminRecepcionistaController::class, 'create'])
-            ->name('recepcionistas.create');
+        Route::get('/recepcionistas/{usuario}/edit', function (App\Models\Usuario $usuario) {
+            return view('admin.recepcionistas.edit', compact('usuario'));
+        })->name('recepcionistas.edit');
 
-        Route::post('/recepcionistas', [AdminRecepcionistaController::class, 'store'])
-            ->name('recepcionistas.store');
+        Route::get('/home-settings', [HomeSettingController::class, 'edit'])
+            ->name('home_settings.edit');
 
-        Route::get('/recepcionistas/{usuario}/edit', [AdminRecepcionistaController::class, 'edit'])
-            ->name('recepcionistas.edit');
-
-        Route::put('/recepcionistas/{usuario}', [AdminRecepcionistaController::class, 'update'])
-            ->name('recepcionistas.update');
-
-        Route::post('/recepcionistas/{usuario}/toggle', [AdminRecepcionistaController::class, 'toggleActivo'])
-            ->name('recepcionistas.toggle');
+        Route::put('/home-settings', [HomeSettingController::class, 'update'])
+            ->name('home_settings.update');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */
@@ -137,9 +174,8 @@ Route::middleware(['auth', 'rol:3'])
     ->name('recepcionista.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('recepcionista.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [RecepcionistaCitaController::class, 'dashboard'])
+            ->name('dashboard');
 
         Route::get('/citas/create', [RecepcionistaCitaController::class, 'create'])
             ->name('citas.create');
@@ -175,6 +211,12 @@ Route::middleware(['auth', 'rol:2'])
 
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');
+
+        Route::get('/comentarios', [ReviewController::class, 'index'])
+            ->name('comentarios');
+
+        Route::post('/comentarios', [ReviewController::class, 'store'])
+            ->name('comentarios.store');
     });
 
 /* RECUPERAR CONTRASEÑA */
@@ -194,11 +236,23 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
     ->middleware('guest')
     ->name('password.update');
 
-Route::resource('promociones', AdminPromocionController::class);
 
-Route::get('/servicios', [ServicioPublicController::class, 'index'])
-    ->name('servicios');
+
 
 Route::get('/promociones', function () {
     return view('promociones.index');
 })->name('promociones');
+
+/* API PARA PROMOCIONES */
+Route::get('/api/promocion/{id}', function ($id) {
+    $promocion = \App\Models\Promocion::findOrFail($id);
+    return response()->json([
+        'id' => $promocion->id,
+        'title' => $promocion->title,
+        'description' => $promocion->description,
+        'discount' => $promocion->discount,
+        'start_date' => $promocion->start_date,
+        'end_date' => $promocion->end_date,
+        'image' => $promocion->image ?? null
+    ]);
+});

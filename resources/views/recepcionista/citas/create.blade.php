@@ -2,173 +2,91 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Agendar cita (Recepción)</title>
+    <title>Agendar cita (Recepcion)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            background-image: url('{{ asset("imagenes/recepFon.png") }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-        }
-
-        body::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,.55);
-            z-index: 0;
-        }
-
-        header {
-            background: rgba(100,100,100,.85);
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-btn {
-            font-size: 32px;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-        }
-
-        .logout-btn {
-            background: transparent;
-            border: 2px solid red;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .container {
-            min-height: calc(100vh - 80px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 520px;
-            background: rgba(17,24,39,.85);
-            backdrop-filter: blur(12px);
-            padding: 28px;
-            border-radius: 16px;
-            color: white;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        label {
-            margin-top: 15px;
-            display: block;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            border-radius: 8px;
-            border: none;
-        }
-
-        .submit-btn {
-            margin-top: 22px;
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            background: #7a7a7a;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-create.css') }}">
 </head>
 
-<body>
+<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
 
-<header>
-    <a href="{{ route('recepcionista.dashboard') }}" class="back-btn">←</a>
-
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button class="logout-btn">Cerrar sesión</button>
-    </form>
-</header>
+@include('recepcionista.partials.menu')
 
 <div class="container">
     <div class="card">
 
-        <h2>Agendar cita (Recepción)</h2>
+        <h2>Agendar cita (Recepcion)</h2>
 
-        <form method="POST" action="{{ route('recepcionista.citas.store') }}">
+        <form method="POST" action="{{ route('recepcionista.citas.store') }}" class="form-grid">
             @csrf
 
-            <label>Cliente</label>
-            <select name="usuario_id" required>
-                <option value="">Selecciona un cliente</option>
-                @foreach ($usuarios as $usuario)
-                    <option value="{{ $usuario->id }}">
-                        {{ $usuario->nombre }} {{ $usuario->apellido }} — {{ $usuario->email }}
-                    </option>
-                @endforeach
-            </select>
-
-            <label>Servicio</label>
-            <select name="servicio_id" id="servicio" required>
-                <option value="">Selecciona un servicio</option>
-                @foreach ($servicios as $servicio)
-                    <option value="{{ $servicio->id }}">{{ $servicio->nombre }}</option>
-                @endforeach
-            </select>
-
-            <label>Fecha</label>
-            <input type="date" name="fecha" id="fecha" min="{{ now()->toDateString() }}" required>
-
-            <label>Horario</label>
-            <select name="hora_inicio" id="horarios" required>
-                <option value="">Selecciona un horario</option>
-            </select>
-
-            <label style="margin-top:18px;">
-                <input type="checkbox" id="anticipo_check">
-                Anticipo recibido
-            </label>
-
-            <div id="anticipo_box" style="display:none;">
-                <label>Monto del anticipo</label>
-                <input type="number" name="anticipo_monto" min="0" step="0.01" placeholder="Ej. 100">
+            <div class="field">
+                <label>Cliente</label>
+                <select name="usuario_id" required>
+                    <option value="">Selecciona un cliente</option>
+                    @foreach ($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}">
+                            {{ $usuario->name }} {{ $usuario->last_name }} - {{ $usuario->email }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
-            <button class="submit-btn">AGENDAR CITA</button>
+            <div class="field">
+                <label>Servicio</label>
+                <select name="servicio_id" id="servicio" required>
+                    <option value="">Selecciona un servicio</option>
+                    @foreach ($servicios as $servicio)
+                        @php
+                            $promocion = $servicio->promocionActiva();
+                            $precioFinal = $servicio->precioConDescuento();
+                        @endphp
+                        <option value="{{ $servicio->id }}">
+                            @if ($promocion)
+                                {{ $servicio->name }} - Antes ${{ number_format($servicio->price, 2) }} / Ahora ${{ number_format($precioFinal, 2) }}
+                            @else
+                                {{ $servicio->name }} - ${{ number_format($servicio->price, 2) }}
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="field date-field">
+                <label>Fecha <small class="help-text">(Los domingos no estan disponibles)</small></label>
+                <input type="text" name="fecha" id="fecha" class="date-inline" placeholder="Selecciona una fecha" required onkeydown="return false;" readonly>
+            </div>
+
+            <div class="field">
+                <label>Horario</label>
+                <select name="hora_inicio" id="horarios" required>
+                    <option value="">Selecciona un horario</option>
+                </select>
+            </div>
+
+            <div class="field anticipo-field">
+                <label class="anticipo-label">
+                    <input type="checkbox" id="anticipo_check">
+                    Recibio anticipo?
+                </label>
+
+                <div id="anticipo_box" class="is-hidden">
+                    <label>Monto del anticipo</label>
+                    <input type="number" name="anticipo_monto" min="0" step="0.01" placeholder="Ej. 100">
+                </div>
+            </div>
+
+            <div class="field full center">
+                <button class="submit-btn">AGENDAR CITA</button>
+            </div>
         </form>
 
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
 const servicio = document.getElementById('servicio');
 const fecha = document.getElementById('fecha');
@@ -176,8 +94,44 @@ const horarios = document.getElementById('horarios');
 const anticipoCheck = document.getElementById('anticipo_check');
 const anticipoBox = document.getElementById('anticipo_box');
 
+function formatHora12(hora24) {
+    if (!hora24) return '';
+    const partes = hora24.split(':');
+    const h = parseInt(partes[0], 10);
+    const m = partes[1] || '00';
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = ((h + 11) % 12) + 1;
+    return `${h12}:${m} ${ampm}`;
+}
+
 anticipoCheck.addEventListener('change', () => {
-    anticipoBox.style.display = anticipoCheck.checked ? 'block' : 'none';
+    anticipoBox.classList.toggle('is-hidden', !anticipoCheck.checked);
+});
+
+function esDomingo(fechaString) {
+    if (!fechaString) return false;
+    const fecha = new Date(fechaString + 'T00:00:00');
+    return fecha.getDay() === 0;
+}
+
+fecha.addEventListener('input', () => {
+    if (!fecha.value) return;
+    if (esDomingo(fecha.value)) {
+        alert('Los domingos no se atiende. Por favor selecciona otro dia.');
+        fecha.value = '';
+        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+    }
+});
+
+fecha.addEventListener('change', () => {
+    if (!fecha.value) return;
+    if (esDomingo(fecha.value)) {
+        alert('Los domingos no se atiende. Por favor selecciona otro dia.');
+        fecha.value = '';
+        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+        return;
+    }
+    cargarBloques();
 });
 
 async function cargarBloques() {
@@ -198,14 +152,63 @@ async function cargarBloques() {
     bloques.forEach(b => {
         const opt = document.createElement('option');
         opt.value = b.inicio;
-        opt.textContent = `${b.inicio} - ${b.fin}`;
+        opt.textContent = `${formatHora12(b.inicio)} - ${formatHora12(b.fin)}`;
         horarios.appendChild(opt);
     });
 }
 
 servicio.addEventListener('change', cargarBloques);
-fecha.addEventListener('change', cargarBloques);
+
+if (window.flatpickr) {
+    flatpickr(fecha, {
+        inline: true,
+        dateFormat: 'Y-m-d',
+        minDate: 'today',
+        disableMobile: true,
+        onChange: function () {
+            if (!fecha.value) return;
+            if (esDomingo(fecha.value)) {
+                alert('Los domingos no se atiende. Por favor selecciona otro dia.');
+                fecha.value = '';
+                horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+                return;
+            }
+            cargarBloques();
+        }
+    });
+} else {
+    fecha.removeAttribute('readonly');
+    fecha.type = 'date';
+    fecha.min = new Date().toISOString().split('T')[0];
+    fecha.addEventListener('focus', function () {
+        if (fecha.showPicker) fecha.showPicker();
+    });
+}
+
+function mostrarModalLogout() {
+    document.getElementById('modalLogout').classList.add('active');
+}
+
+function cerrarModalLogout() {
+    document.getElementById('modalLogout').classList.remove('active');
+}
+
+function confirmarLogout() {
+    document.getElementById('logoutForm').submit();
+}
 </script>
+
+<!-- Modal de confirmacion de logout -->
+<div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
+    <div class="modal-content">
+        <h3>�Cerrar sesion?</h3>
+        <p>�Estas seguro de que deseas cerrar sesion?</p>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Si, cerrar sesion</button>
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

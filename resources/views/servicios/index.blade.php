@@ -1,167 +1,255 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.public')
 
-<head>
-<meta charset="UTF-8">
-<title>Barbería & Spa</title>
+@section('title', 'Servicios | Barbería & Spa')
 
+@section('styles')
 <style>
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
-html{
+html {
     scroll-behavior: smooth;
 }
 
-body{
+body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #0f172a;
     color: #e5e7eb;
+    background-image:
+        linear-gradient(rgba(2, 6, 23, 0.15), rgba(2, 6, 23, 0.45)),
+        url("{{ asset('imagenes/serviciosFon2.png') }}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
-/* ================= HEADER ================= */
-header{
+section {
+    max-width: 1200px;
+    margin: auto;
+    padding: 80px 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 50px;
+    text-shadow: 0 0 15px #fccc7c;
+}
+
+.services {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    background: #5f4636;
+    border-radius: 16px;
+    padding: 15px;
+    border: 1px solid #c0a799;
+    transition: .3s;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 25px #c0a799;
+}
+
+.card h3 {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    background: rgba(0, 0, 0, .25);
+}
+
+.price {
+    color: #e48815;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.duration {
+    font-size: 13px;
+    opacity: .85;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid #e48815;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    box-shadow: 0 0 12px #e48815
+}
+
+.btn:hover {
+    box-shadow: 0 0 20px #e48815
+}
+
+/* ================= MODAL ================= */
+.modal {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 70px;
-    background: rgba(2, 6, 23, 0.95);
+    height: 100%;
+    background: rgba(43, 24, 5, 0.85);
+    backdrop-filter: blur(6px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    position: relative;
+    background: #5f4636;
+    padding: 30px;
+    border-radius: 18px;
+    width: 90%;
+    max-width: 420px;
+    border: 1px solid #fccc7c;
+    box-shadow: 0 0 30px #c0a799;
+    animation: zoom .3s ease;
+}
+
+@keyframes zoom {
+    from {
+        transform: scale(.8);
+        opacity: 0
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1
+    }
+}
+
+.modal-content h2 {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.modal-content img {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    background: rgba(0, 0, 0, .25);
+}
+
+.modal-content .close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #e5e7eb;
+}
+
+.modal-content .close:hover {
+    color: #e48815;
+}
+
+.close {
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    z-index: 1000;
-    backdrop-filter: blur(6px);
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .3);
 }
 
-.logo{
-    font-weight: bold;
-    font-size: 25px;
-    letter-spacing: 2px;
-    color: #93c5fd;
+.close:hover {
+    background: rgba(0, 0, 0, .5);
 }
+</style>
+@endsection
 
-nav a{
-    margin: 0 14px;
-    color: #e5e7eb;
-    text-decoration: none;
-    font-weight: bold;
-    transition: .3s;
-}
-
-nav a:hover{
-    color: #93c5fd;
-}
-
-.login-icon{
-    font-size: 30px;
-    color: #22c55e;
-    text-decoration: none;
-}
-
-
-
-        section{
-            max-width:1200px;
-            margin:auto;
-            padding:80px 20px;
-        }
-
-        h1{
-            text-align:center;
-            margin-bottom:50px;
-            text-shadow:0 0 15px rgba(99,102,241,.8);
-        }
-
-        .services{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-            gap:30px;
-        }
-
-        .card{
-            background: rgba(17, 24, 39, 0.85);
-            border-radius:16px;
-            padding:30px;
-            border:1px solid rgba(255,255,255,.15);
-            transition:.3s;
-        }
-
-        .card:hover{
-            transform: translateY(-6px);
-            box-shadow:0 0 25px rgba(99,102,241,.5);
-        }
-
-        .card h3{
-            color:#93c5fd;
-            margin-bottom:10px;
-        }
-
-        .price{
-            color:#4ade80;
-            font-weight:bold;
-            margin-top:10px;
-        }
-
-        .duration{
-            font-size:13px;
-            opacity:.85;
-        }
-
-        .btn{
-            display:inline-block;
-            margin-top:15px;
-            padding:10px 16px;
-            border-radius:10px;
-            border:1px solid #22c55e;
-            color:#fff;
-            text-decoration:none;
-            font-size:13px;
-            box-shadow:0 0 12px rgba(34,197,94,.6);
-        }
-
-        .btn:hover{
-            box-shadow:0 0 20px rgba(34,197,94,1);
-        }
-    </style>
-    @livewireStyles
-</head>
-
-<body>
-
-<header>
-    <div class="logo">Barbería & Spa</div>
-
-    <nav>
-        <a href="#inicio">Inicio</a>
-        <a href="{{ route('servicios') }}">Servicios</a>
-        <a href="#promos">Promociones</a>
-        <a href="#contacto">Contacto</a>
-        <a href="#noticias">Noticias & Novedades</a>
-    </nav>
-
-    <a href="{{ route('login') }}" class="login-icon">👤</a>
-
-</header>
+@section('content')
 <section>
     <h1>Nuestros Servicios</h1>
 
     <div class="services">
         @forelse($servicios as $servicio)
             <div class="card">
-                <h3>{{ $servicio->nombre }}</h3>
-                <p>{{ $servicio->descripcion }}</p>
-                <p class="duration">Duración: {{ $servicio->duracion_minutos }} min</p>
-                <p class="price">${{ number_format($servicio->precio, 2) }}</p>
+                <img src="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
+                    alt="{{ $servicio->name }}">
+                <h3>{{ $servicio->name }}</h3>
 
-                <a href="#" class="btn">Agendar servicio</a>
+                <a href="#" class="btn abrir-modal" data-nombre="{{ $servicio->name }}"
+                    data-descripcion="{{ $servicio->description }}"
+                    data-duracion="{{ $servicio->duration_minutes }}"
+                    data-precio="{{ number_format($servicio->price, 2) }}"
+                    data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}">
+                    ver más...
+                </a>
             </div>
         @empty
             <p>No hay servicios disponibles.</p>
         @endforelse
     </div>
-</section>
 
-</body>
-</html>
+</section>
+<!-- ================= MODAL ================= -->
+<div id="modalServicio" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+        <img id="modalImagen" src="" alt="Servicio">
+        <h2 id="modalTitulo"></h2>
+        <p id="modalDescripcion"></p>
+
+        <p class="duration" id="modalDuracion"></p>
+        <p class="price" id="modalPrecio"></p>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    const modal = document.getElementById('modalServicio');
+    const cerrar = document.querySelector('.close');
+
+    document.querySelectorAll('.abrir-modal').forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.preventDefault();
+
+            document.getElementById('modalTitulo').innerText = btn.dataset.nombre;
+            document.getElementById('modalDescripcion').innerText = btn.dataset.descripcion;
+            document.getElementById('modalImagen').src = btn.dataset.imagen;
+            document.getElementById('modalDuracion').innerText =
+                'Duración: ' + btn.dataset.duracion + ' min';
+            document.getElementById('modalPrecio').innerText =
+                '$' + btn.dataset.precio;
+
+            modal.style.display = 'flex';
+        });
+    });
+
+    cerrar.onclick = () => modal.style.display = 'none';
+
+    window.onclick = e => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>
+@endsection
