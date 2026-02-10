@@ -393,6 +393,44 @@ select:focus {
     gap: 6px;
 }
 
+.input-icon{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon input{
+    padding-right: 42px;
+}
+
+.btn-eye{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #fccc7c;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.eye-icon{
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.btn-eye:hover{
+    color: #ffffff;
+}
+
+.input-disabled{
+    opacity: .65;
+    cursor: not-allowed;
+    background: rgba(255,255,255,0.05);
+}
+
 .form-group.full{
     grid-column: 1 / -1;
 }
@@ -589,6 +627,11 @@ select:focus {
 
 .modal-overlay.active {
     display: flex;
+}
+
+/* Flash modal (success) */
+.flash-modal.is-hidden {
+    display: none;
 }
 
 /* =========================

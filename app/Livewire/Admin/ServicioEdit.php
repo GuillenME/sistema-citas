@@ -59,6 +59,8 @@ class ServicioEdit extends Component
             'active' => $this->activo ? 1 : 0,
         ]);
 
+        session()->flash('success', 'Servicio actualizado correctamente');
+
         return redirect()->route('admin.servicios.index');
     }
 

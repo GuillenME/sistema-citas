@@ -97,6 +97,8 @@ class PromocionEdit extends Component
 
         $this->confirmar = false;
 
+        session()->flash('success', 'Promoción actualizada correctamente');
+
         return redirect()->route('admin.promociones.index');
     }
 

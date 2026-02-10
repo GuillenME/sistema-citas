@@ -53,6 +53,8 @@ class NoticiaCreate extends Component
             'user_id' => auth()->id(),
         ]);
 
+        session()->flash('success', 'Noticia creada correctamente');
+
         return redirect()->route('admin.noticias.index');
     }
 

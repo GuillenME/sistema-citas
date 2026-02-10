@@ -58,6 +58,8 @@ class NoticiaEdit extends Component
             'image' => $this->noticia->image,
         ]);
 
+        session()->flash('success', 'Noticia actualizada correctamente');
+
         return redirect()->route('admin.noticias.index');
     }
 

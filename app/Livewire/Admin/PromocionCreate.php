@@ -73,6 +73,8 @@ class PromocionCreate extends Component
             }
         }
 
+        session()->flash('success', 'Promoción creada correctamente');
+
         return redirect()->route('admin.promociones.index');
     }
 
