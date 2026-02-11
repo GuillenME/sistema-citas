@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-base.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-dashboard.css') }}">
 </head>
-<body style="--bg-url: url('{{ asset('imagenes/registro_fondo3.png') }}');">
+<body class="recepcionista-dashboard-page">
 
 @include('recepcionista.partials.menu')
 

@@ -3,7 +3,6 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Servicio;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -32,12 +31,7 @@ class ServiciosIndex extends Component
         }
 
         $servicio = Servicio::findOrFail($this->confirmDeleteId);
-
-        if ($servicio->image) {
-            Storage::disk('public')->delete($servicio->image);
-        }
-
-        $servicio->delete();
+        $servicio->update(['active' => 0]);
         $this->confirmDeleteId = null;
     }
 

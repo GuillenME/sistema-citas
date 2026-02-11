@@ -1,0 +1,71 @@
+.service-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.promotion-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.promotion-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: #fff;
+    padding: 20px;
+}
+
+.placeholder-image {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+}
+
+.ejemplo-img-cover-250 {
+    object-fit: cover;
+    height: 250px;
+}
+
+.ejemplo-h-250 {
+    height: 250px;
+}
+
+.ejemplo-icon-3 {
+    font-size: 3rem;
+}
+
+.ejemplo-img-fluid-cover {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.ejemplo-img-cover-200 {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.ejemplo-box-200 {
+    width: 100%;
+    height: 200px;
+}
+
+.ejemplo-icon-2 {
+    font-size: 2rem;
+}
+
+.ejemplo-img-max-500 {
+    width: 100%;
+    max-width: 500px;
+}
+
+.ejemplo-w-100 {
+    width: 100%;
+}

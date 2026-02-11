@@ -1,70 +1,6 @@
 <div class="promos-wrapper">
 
-    <style>
-        .promos-wrapper{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .promo-card{
-            background: #5b4233;
-            padding: 14px;
-            border-radius: 18px;
-            border: 1px solid rgba(255,255,255,.08);
-            transition: .3s;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            min-height: 300px;
-        }
-
-        .promo-card:hover{
-            transform: translateY(-6px);
-            box-shadow: 0 0 25px rgba(0,0,0,.2);
-        }
-
-        .promo-card h3{
-            color: #fccc7c;
-            margin: 6px 0 8px;
-            font-size: 18px;
-        }
-
-        .promo-card img{
-            width:100%;
-            height:140px;
-            object-fit:contain;
-            object-position:center;
-            border-radius:14px;
-            margin-bottom:10px;
-            border:1px solid rgba(255,255,255,.12);
-            background: rgba(0,0,0,.25);
-        }
-
-        .promo-card p{
-            font-size: 13px;
-            margin-bottom: 8px;
-            color: #e5e7eb;
-            opacity: .9;
-        }
-
-        .promo-price{
-        background:#e48815;
-        color:#000;
-        padding:6px 12px;
-        border-radius:999px;
-        font-size:16px;
-        display:inline-block;
-        }
-
-        .promo-dates{
-            font-size: 11px;
-            color: #c0a799;
-            margin-top: 6px;
-        }
-    </style>
+    
 
     @forelse($promociones as $promo)
         <div class="promo-card">
@@ -89,7 +25,7 @@
 
         </div>
     @empty
-        <p style="grid-column:1/-1; text-align:center;">
+        <p class="promo-empty">
             No hay promociones activas por el momento.
         </p>
     @endforelse

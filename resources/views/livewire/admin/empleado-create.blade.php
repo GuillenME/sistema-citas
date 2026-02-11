@@ -19,13 +19,13 @@
             </div>
 
             <div class="form-group full">
-                <label>Servicios / Especialidad (máx. 3)</label>
+                <label>Servicios / Especialidad (máx. 5)</label>
                 <select wire:model.defer="serviciosSeleccionados" multiple>
                     @foreach ($servicios as $servicio)
                         <option value="{{ $servicio->id }}">{{ $servicio->name }}</option>
                     @endforeach
                 </select>
-                <small>Selecciona hasta 3 servicios.</small>
+                <small>Selecciona hasta 5 servicios.</small>
                 @error('serviciosSeleccionados') <span class="error">{{ $message }}</span> @enderror
                 @error('serviciosSeleccionados.*') <span class="error">{{ $message }}</span> @enderror
             </div>
@@ -63,3 +63,4 @@
     @endif
 
 </div>
+

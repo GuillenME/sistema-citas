@@ -13,7 +13,7 @@
             </thead>
 
             <tbody>
-                @foreach ($clientes as $cliente)
+                @foreach ($items as $cliente)
                     <tr>
                         <td>{{ $cliente->user->name }} {{ $cliente->user->last_name }}</td>
                         <td>{{ $cliente->user->email }}</td>

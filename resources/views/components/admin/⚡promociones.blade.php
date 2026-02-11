@@ -5,23 +5,23 @@
 
     <form wire:submit.prevent="save">
         <input type="text" wire:model.defer="titulo" placeholder="Título">
-        @error('titulo') <span style="color:red">{{ $message }}</span> @enderror
+        @error('titulo') <span class="admin-promo-error">{{ $message }}</span> @enderror
         <br><br>
 
         <textarea wire:model.defer="descripcion" placeholder="Descripción"></textarea>
-        @error('descripcion') <span style="color:red">{{ $message }}</span> @enderror
+        @error('descripcion') <span class="admin-promo-error">{{ $message }}</span> @enderror
         <br><br>
 
         <input type="number" wire:model.defer="descuento" placeholder="Descuento (%)">
-        @error('descuento') <span style="color:red">{{ $message }}</span> @enderror
+        @error('descuento') <span class="admin-promo-error">{{ $message }}</span> @enderror
         <br><br>
 
         <input type="date" wire:model.defer="fecha_inicio">
-        @error('fecha_inicio') <span style="color:red">{{ $message }}</span> @enderror
+        @error('fecha_inicio') <span class="admin-promo-error">{{ $message }}</span> @enderror
         <br><br>
 
         <input type="date" wire:model.defer="fecha_fin">
-        @error('fecha_fin') <span style="color:red">{{ $message }}</span> @enderror
+        @error('fecha_fin') <span class="admin-promo-error">{{ $message }}</span> @enderror
         <br><br>
 
         <label>
@@ -39,7 +39,7 @@
     <h2>Promociones existentes</h2>
 
     @foreach ($promociones as $promo)
-        <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px">
+        <div class="admin-promo-item">
             <strong>{{ $promo->title }}</strong><br>
             {{ $promo->description }}<br>
             <small>

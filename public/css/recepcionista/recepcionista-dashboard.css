@@ -13,6 +13,10 @@ body {
     position: relative;
 }
 
+body.recepcionista-dashboard-page {
+    --bg-url: url('/imagenes/registro_fondo3.png');
+}
+
 body::before {
     content: "";
     position: absolute;
@@ -235,5 +239,4 @@ main {
         grid-template-columns: 1fr;
     }
 }
-
 

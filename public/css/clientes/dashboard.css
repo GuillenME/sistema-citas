@@ -26,6 +26,10 @@ body {
     min-height: 100vh;
 }
 
+body.cliente-dashboard-page {
+    --bg-url: url('/imagenes/registro_fondo3.png');
+}
+
 body::before {
     content: '';
     position: absolute;

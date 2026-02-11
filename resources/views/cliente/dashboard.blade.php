@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{ asset('css/clientes/cliente-menu.css') }}">
 <link rel="stylesheet" href="{{ asset('css/clientes/dashboard.css') }}">
 </head>
-<body style="--bg-url: url('{{ asset('imagenes/registro_fondo3.png') }}');">
+<body class="cliente-dashboard-page">
 
 @include('cliente.partials.menu')
 

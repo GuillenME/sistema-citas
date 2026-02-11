@@ -6,23 +6,7 @@
 
     @livewireStyles
 
-    <style>
-        body{
-            margin:0;
-            font-family: Arial, sans-serif;
-            background:#0f172a;
-            color:#e5e7eb;
-        }
-        main{
-            padding-top:70px;
-        }
-        footer{
-            background:#020617;
-            padding:25px;
-            text-align:center;
-            font-size:14px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/layouts/app.css') }}">
 </head>
 <body>
 

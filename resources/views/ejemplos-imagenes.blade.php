@@ -4,18 +4,20 @@
  * Copia y adapta estos ejemplos a tus vistas
  */
 ?>
-
+@once
+    <link rel="stylesheet" href="{{ asset('css/ejemplos-imagenes.css') }}">
+@endonce
 <!-- EJEMPLO 1: Mostrar imagen de un servicio en tarjeta -->
 <div class="card">
     @if($servicio->image)
         <img src="{{ asset('storage/' . $servicio->image) }}" 
-             class="card-img-top" 
+             class="card-img-top ejemplo-img-cover-250" 
              alt="{{ $servicio->name }}"
-             style="object-fit: cover; height: 250px;">
+             >
     @else
-        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-             style="height: 250px;">
-            <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
+        <div class="card-img-top bg-light d-flex align-items-center justify-content-center ejemplo-h-250" 
+             >
+            <i class="fas fa-image text-muted ejemplo-icon-3"></i>
         </div>
     @endif
     <div class="card-body">
@@ -29,9 +31,9 @@
 <div class="promotion-banner">
     @if($promocion->image)
         <img src="{{ asset('storage/' . $promocion->image) }}" 
-             class="img-fluid rounded" 
+             class="img-fluid rounded ejemplo-img-fluid-cover" 
              alt="{{ $promocion->title }}"
-             style="width: 100%; height: auto; object-fit: cover;">
+             >
     @endif
     <div class="promotion-overlay">
         <h3>{{ $promocion->title }}</h3>
@@ -48,12 +50,12 @@
                 @if($servicio->image)
                     <img src="{{ asset('storage/' . $servicio->image) }}" 
                          alt="{{ $servicio->name }}"
-                         class="img-fluid rounded mb-3"
-                         style="width: 100%; height: 200px; object-fit: cover;">
+                         class="img-fluid rounded mb-3 ejemplo-img-cover-200"
+                         >
                 @else
-                    <div class="placeholder-image bg-light rounded mb-3 d-flex align-items-center justify-content-center"
-                         style="width: 100%; height: 200px;">
-                        <i class="fas fa-spa text-muted" style="font-size: 2rem;"></i>
+                    <div class="placeholder-image bg-light rounded mb-3 d-flex align-items-center justify-content-center ejemplo-box-200"
+                         >
+                        <i class="fas fa-spa text-muted ejemplo-icon-2"></i>
                     </div>
                 @endif
                 <h5>{{ $servicio->name }}</h5>
@@ -69,21 +71,18 @@
 <img src="{{ asset('storage/' . $servicio->image) }}" 
      alt="{{ $servicio->name }}"
      loading="lazy"
-     class="img-fluid rounded"
-     style="width: 100%; max-width: 500px;">
+     class="img-fluid rounded ejemplo-img-max-500">
 
 <!-- EJEMPLO 5: Imagen responsiva con srcset -->
 <picture>
     @if($servicio->image)
         <img src="{{ asset('storage/' . $servicio->image) }}" 
              alt="{{ $servicio->name }}"
-             class="img-fluid rounded"
-             style="width: 100%;">
+             class="img-fluid rounded ejemplo-w-100">
     @else
         <img src="{{ asset('images/no-image-placeholder.jpg') }}" 
              alt="Sin imagen"
-             class="img-fluid rounded"
-             style="width: 100%;">
+             class="img-fluid rounded ejemplo-w-100">
     @endif
 </picture>
 
@@ -107,34 +106,6 @@
     </div>
 @endif
 
-<!-- ESTILOS CSS OPCIONALES -->
-<style>
-    .service-card {
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
 
-    .service-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
 
-    .promotion-banner {
-        position: relative;
-        overflow: hidden;
-        border-radius: 8px;
-    }
 
-    .promotion-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-        color: white;
-        padding: 20px;
-    }
-
-    .placeholder-image {
-        background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-    }
-</style>

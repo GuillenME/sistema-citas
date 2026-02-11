@@ -159,15 +159,15 @@ public function store(Request $request)
             function ($attribute, $value, $fail) {
                 $fecha = Carbon::parse($value);
                 if ($fecha->isSunday()) {
-                    $fail('Los domingos no se atiende. Por favor selecciona otro día.');
+                    $fail('Los domingos no se atiende. Por favor selecciona otro dia.');
                 }
             },
         ],
         'hora_inicio'       => 'required|date_format:H:i',
         'acepta_privacidad' => 'required|accepted',
     ], [
-        'acepta_privacidad.required' => 'Debes aceptar la política de privacidad.',
-        'acepta_privacidad.accepted' => 'Debes aceptar la política de privacidad.',
+        'acepta_privacidad.required' => 'Debes aceptar la politica de privacidad.',
+        'acepta_privacidad.accepted' => 'Debes aceptar la politica de privacidad.',
         'fecha.after_or_equal' => 'La fecha debe ser hoy o una fecha futura.',
     ]);
 
@@ -178,41 +178,55 @@ public function store(Request $request)
     }
 
     $servicio = Servicio::findOrFail($request->servicio_id);
-    
-    // Validar que el servicio esté activo
+
     if (!$servicio->active) {
-        return back()->withErrors(['servicio_id' => 'El servicio seleccionado no está disponible.'])->withInput();
+        return back()->withErrors(['servicio_id' => 'El servicio seleccionado no esta disponible.'])->withInput();
     }
 
     $horaInicio = Carbon::parse($request->hora_inicio);
     $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
 
-    // Validar que no haya solapamiento con otra cita
-    $citaSolapada = Cita::whereDate('date', $request->fecha)
-        ->whereIn('status', [CitaStatus::CONFIRMADA, CitaStatus::PENDIENTE_ANTICIPO])
-        ->where(function($query) use ($horaInicio, $horaFin) {
-            $query->where(function($q) use ($horaInicio, $horaFin) {
-                // La nueva cita empieza antes de que termine otra
-                $q->where('start_time', '<', $horaFin->format('H:i'))
-                  ->where('end_time', '>', $horaInicio->format('H:i'));
-            });
-        })
-        ->exists();
+    $driver = DB::getDriverName();
+    $lockName = 'citas:' . $request->fecha;
+    $lockAcquired = true;
 
-    if ($citaSolapada) {
-        return back()->withErrors(['hora_inicio' => 'El horario seleccionado no está disponible. Por favor elige otro horario.'])->withInput();
+    if ($driver === 'mysql') {
+        $lockResult = DB::selectOne('SELECT GET_LOCK(?, 10) AS l', [$lockName]);
+        $lockAcquired = ((int) ($lockResult->l ?? 0)) === 1;
+    }
+
+    if (!$lockAcquired) {
+        return back()->withErrors([
+            'hora_inicio' => 'No fue posible validar disponibilidad en este momento. Intenta de nuevo.',
+        ])->withInput();
     }
 
     try {
         DB::beginTransaction();
+
+        $citaSolapada = Cita::whereDate('date', $request->fecha)
+            ->whereIn('status', [CitaStatus::CONFIRMADA, CitaStatus::PENDIENTE_ANTICIPO])
+            ->where(function ($query) use ($horaInicio, $horaFin) {
+                $query->where('start_time', '<', $horaFin->format('H:i'))
+                    ->where('end_time', '>', $horaInicio->format('H:i'));
+            })
+            ->lockForUpdate()
+            ->exists();
+
+        if ($citaSolapada) {
+            DB::rollBack();
+            return back()->withErrors([
+                'hora_inicio' => 'El horario seleccionado no esta disponible. Por favor elige otro horario.',
+            ])->withInput();
+        }
 
         $cita = Cita::create([
             'client_id' => $cliente->id,
             'service_id' => $servicio->id,
             'date'       => $request->fecha,
             'start_time' => $horaInicio->format('H:i'),
-            'end_time'    => $horaFin->format('H:i'),
-            'status'      => CitaStatus::PENDIENTE_ANTICIPO,
+            'end_time'   => $horaFin->format('H:i'),
+            'status'     => CitaStatus::PENDIENTE_ANTICIPO,
         ]);
 
         DB::commit();
@@ -229,17 +243,22 @@ public function store(Request $request)
             ->with('success', 'Cita agendada correctamente. Pendiente de anticipo.');
     } catch (\Exception $e) {
         DB::rollBack();
+
         Log::error('Error al crear cita', [
             'error' => $e->getMessage(),
             'cliente_id' => $cliente->id,
             'servicio_id' => $servicio->id,
         ]);
 
-        return back()->withErrors(['error' => 'Ocurrió un error al agendar la cita. Por favor intenta nuevamente.'])->withInput();
+        return back()->withErrors([
+            'error' => 'Ocurrio un error al agendar la cita. Por favor intenta nuevamente.',
+        ])->withInput();
+    } finally {
+        if ($driver === 'mysql' && $lockAcquired) {
+            DB::selectOne('SELECT RELEASE_LOCK(?) AS l', [$lockName]);
+        }
     }
 }
-
-
 
     public function subirComprobante(Request $request, Cita $cita)
     {

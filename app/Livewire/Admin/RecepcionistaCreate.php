@@ -25,6 +25,8 @@ class RecepcionistaCreate extends Component
 
     public function guardar()
     {
+        $this->validate();
+
         Usuario::create([
             'name' => $this->nombre,
             'last_name' => $this->apellido,

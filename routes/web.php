@@ -6,7 +6,6 @@ use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminClientesController;
 use App\Http\Controllers\Admin\AdminEmpleadoController;
-use App\Http\Controllers\Admin\AdminPromocionController;
 use App\Http\Controllers\Admin\AdminRecepcionistaController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\Admin\HomeSettingController;
@@ -91,7 +90,11 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
 
-        // LIVEWIRE
+        // PROMOCIONES (LIVEWIRE)
+        Route::get('/promociones', function () {
+            return view('admin.promociones.index');
+        })->name('promociones.index');
+
         Route::get('/promociones/create', function () {
             return view('admin.promociones.create');
         })->name('promociones.create');
@@ -99,11 +102,6 @@ Route::middleware(['auth', 'rol:1'])
         Route::get('/promociones/{promocion}/edit', function (App\Models\Promocion $promocion) {
             return view('admin.promociones.edit', compact('promocion'));
         })->name('promociones.edit');
-
-        // CONTROLLER (RESTO)
-        Route::resource('promociones', AdminPromocionController::class)
-            ->except(['create', 'edit'])
-            ->parameters(['promociones' => 'promocion']);
 
         Route::get('/servicios/plantilla', [AdminServicioController::class, 'downloadTemplate'])
             ->name('servicios.template');

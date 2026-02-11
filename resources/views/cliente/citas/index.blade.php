@@ -13,7 +13,7 @@
 
 </head>
 
-<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
+<body class="cliente-citas-index-page">
 
 
     @include('cliente.partials.menu')
@@ -23,18 +23,7 @@
         <div class="table-card">
             <h2>Historial de citas</h2>
             @if (session('info'))
-                <div
-                    style="
-        margin-bottom:18px;
-        padding:14px;
-        border-radius:10px;
-        background:rgba(234,179,8,.15);
-        border:1px solid rgba(234,179,8,.5);
-        color:#fde68a;
-        font-size:14px;
-        text-align:center;
-        box-shadow:0 0 12px rgba(234,179,8,.35);
-    ">
+                <div class="citas-info-alert">
                     {{ session('info') }}
                 </div>
             @endif
