@@ -45,11 +45,13 @@
             @endforeach
         </div>
 
-        <div class="news-actions">
-            <a href="{{ route('noticias.publicas') }}">
-                Ver todas las noticias
-            </a>
-        </div>
+        @if (!empty($noticiasHasMore) && $noticiasHasMore)
+            <div class="news-actions">
+                <a href="{{ route('noticias.publicas') }}">
+                    Ver todas las noticias
+                </a>
+            </div>
+        @endif
     </section>
 
     <!-- MODAL -->

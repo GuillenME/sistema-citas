@@ -106,7 +106,7 @@
     <h2>Comentarios</h2>
 
     <div class="reviews-grid google-style">
-        @forelse($reviews->sortByDesc('created_at')->take(3) as $review)
+        @forelse($reviews as $review)
 
             @php
             $email = $review->user_email ?? '';
@@ -171,9 +171,11 @@
             <p>No hay comentarios aún.</p>
         @endforelse
     </div>
-    <div class="reviews-actions">
-        <a href="{{ route('comentarios.publicos') }}">Ver todos los comentarios</a>
-    </div>
+    @if (!empty($reviewsHasMore) && $reviewsHasMore)
+        <div class="reviews-actions">
+            <a href="{{ route('comentarios.publicos') }}">Ver todos los comentarios</a>
+        </div>
+    @endif
 </section>
 
 {{-- NOTICIAS --}}
@@ -247,4 +249,3 @@
     });
 </script>
 @endsection
-

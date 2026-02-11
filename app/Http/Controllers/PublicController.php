@@ -37,8 +37,9 @@ class PublicController extends Controller
             ->get();
 
         $reviews = Review::orderBy('created_at', 'desc')
-            ->take(6)
+            ->take(4)
             ->get();
+        $reviewsHasMore = Review::count() > 4;
 
         $homeSetting = HomeSetting::first();
 
@@ -49,6 +50,7 @@ class PublicController extends Controller
             'homePromociones',
             'noticias',
             'reviews',
+            'reviewsHasMore',
             'homeSetting'
         ));
     }
