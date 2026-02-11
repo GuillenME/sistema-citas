@@ -48,7 +48,7 @@
         <div class="form-group">
             <label>Servicios aplicables</label>
             {{-- 🔥 SIN defer para evitar bugs --}}
-            <select multiple wire:model="servicios">
+            <select multiple wire:model="servicios" class="promo-servicios-select">
                 @foreach($listaServicios as $servicio)
                     <option value="{{ $servicio->id }}">
                         {{ $servicio->name }}
