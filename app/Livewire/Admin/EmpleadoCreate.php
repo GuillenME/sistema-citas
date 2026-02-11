@@ -34,6 +34,8 @@ class EmpleadoCreate extends Component
 
     public function guardar()
     {
+        $this->validate();
+
         $empleado = Empleado::create([
             'name' => $this->nombre,
             'phone' => $this->telefono,
