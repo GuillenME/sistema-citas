@@ -47,19 +47,16 @@
                 
                 <small class="text-muted d-block mt-2">Formatos permitidos: JPEG, PNG, JPG, GIF, WebP. Tamaño máximo: 2MB</small>
 
-                @if ($imagen_actual && !$image)
-                    <div class="mt-3">
-                        <p class="mb-2"><strong>Imagen actual:</strong></p>
-                        <img src="{{ asset('storage/' . $imagen_actual) }}" alt="Imagen actual" class="img-thumbnail" style="max-width: 200px;">
-                    </div>
-                @endif
-
-                @if ($image)
-                    <div class="mt-3">
-                        <p class="mb-2"><strong>Vista previa:</strong></p>
-                        <img src="{{ $image->temporaryUrl() }}" alt="Preview" class="img-thumbnail" style="max-width: 200px;">
-                    </div>
-                @endif
+                <div class="mt-3">
+                    <p class="mb-2"><strong>Vista previa:</strong></p>
+                    @if ($image)
+                        <img src="{{ $image->temporaryUrl() }}" alt="Preview" class="preview preview-wide">
+                    @elseif ($imagen_actual)
+                        <img src="{{ asset('storage/' . $imagen_actual) }}" alt="Imagen actual" class="preview preview-wide">
+                    @else
+                        <div class="preview-empty">Sin imagen</div>
+                    @endif
+                </div>
             </div>
 
             <div class="mb-3 form-check">

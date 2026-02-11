@@ -263,6 +263,195 @@ select:focus {
     box-shadow: 0 0 12px #f1be65;
 }
 
+/* =========================
+   FORMULARIOS
+========================= */
+
+.card-header{
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255,255,255,.12);
+}
+
+.card-body{
+    padding: 18px;
+}
+
+.form-label{
+    display: block;
+    margin-bottom: 6px;
+    color: #fccc7c;
+    font-size: 13px;
+}
+
+.form-control{
+    width: 100%;
+    background: #5f4636;
+    border: 1px solid #c0a799;
+    border-radius: 10px;
+    padding: 12px;
+    color: #e5e7eb;
+    font-size: 14px;
+}
+
+.form-control:focus{
+    outline: none;
+    border-color: #fccc7c;
+    box-shadow: 0 0 12px #f1be65;
+}
+
+.mb-3{
+    margin-bottom: 16px;
+}
+
+.row{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.card .row,
+.card-body .row{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.form-row{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.form-col{
+    width: 100%;
+}
+
+.col-md-6,
+.col-md-4{
+    width: 100%;
+}
+
+.form-check{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.form-check-input{
+    width: 18px;
+    height: 18px;
+}
+
+.form-check-label{
+    font-size: 13px;
+    opacity: .9;
+}
+
+.d-grid{
+    display: grid;
+}
+
+.gap-2{
+    gap: 12px;
+}
+
+.d-sm-flex{
+    display: flex;
+}
+
+.justify-content-sm-end{
+    justify-content: flex-end;
+}
+
+.text-muted{
+    opacity: .75;
+}
+
+.invalid-feedback,
+.error{
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #f87171;
+}
+
+.form-container{
+    display: grid;
+    gap: 14px;
+}
+
+.form-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-icon{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon input{
+    padding-right: 42px;
+}
+
+.btn-eye{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #fccc7c;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.eye-icon{
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.btn-eye:hover{
+    color: #ffffff;
+}
+
+.input-disabled{
+    opacity: .65;
+    cursor: not-allowed;
+    background: rgba(255,255,255,0.05);
+}
+
+.form-group.full{
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 900px){
+    .row,
+    .form-grid{
+        grid-template-columns: 1fr;
+    }
+    .card .row,
+    .card-body .row{
+        grid-template-columns: 1fr;
+    }
+    .form-row{
+        grid-template-columns: 1fr;
+    }
+    .d-sm-flex{
+        display: grid;
+    }
+}
+
 
 /* =========================
    BOTONES
@@ -440,6 +629,11 @@ select:focus {
     display: flex;
 }
 
+/* Flash modal (success) */
+.flash-modal.is-hidden {
+    display: none;
+}
+
 /* =========================
    NOTAS (MODAL SIMPLE)
 ========================= */
@@ -501,6 +695,28 @@ select:focus {
     margin-top: 15px;
     display: flex;
     justify-content: flex-start;
+}
+
+.image-preview-wrapper.inline{
+    margin-top: 10px;
+    justify-content: flex-start;
+}
+
+.preview-wide{
+    width: 100%;
+    max-width: 100%;
+    height: 180px;
+}
+
+.preview-empty{
+    width: 100%;
+    height: 180px;
+    border: 1px dashed #c0a799;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    color: #e5e7eb;
+    opacity: .7;
 }
 
 
@@ -968,4 +1184,15 @@ select:focus {
     font-size: 14px !important;
     width: auto;
     height: auto;
+}
+/* Alertas visibles */
+.alert-error{
+    background: #ffebe9;
+    color: #8a1f1a;
+    border: 1px solid #ffb3ad;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin: 0 0 16px;
+    font-size: 14px;
+    font-weight: 600;
 }

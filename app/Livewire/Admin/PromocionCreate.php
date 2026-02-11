@@ -37,11 +37,19 @@ class PromocionCreate extends Component
     public function abrirConfirmacion()
     {
         $this->validate();
+        if (!$this->validarServiciosSinSolapamiento()) {
+            return;
+        }
         $this->confirmar = true;
     }
 
     public function guardar()
     {
+        $this->validate();
+        if (!$this->validarServiciosSinSolapamiento()) {
+            return;
+        }
+
         $path = $this->image
             ? $this->image->store('promociones', 'public')
             : null;
@@ -65,6 +73,8 @@ class PromocionCreate extends Component
             }
         }
 
+        session()->flash('success', 'Promoción creada correctamente');
+
         return redirect()->route('admin.promociones.index');
     }
 
@@ -73,5 +83,34 @@ class PromocionCreate extends Component
         return view('livewire.admin.promocion-create', [
             'listaServicios' => Servicio::where('active', true)->get(),
         ]);
+    }
+
+    private function validarServiciosSinSolapamiento(): bool
+    {
+        if (empty($this->servicios)) {
+            return true;
+        }
+
+        $start = $this->fecha_inicio;
+        $end = $this->fecha_fin;
+
+        $serviciosConConflicto = Servicio::whereIn('id', $this->servicios)
+            ->whereHas('promociones', function ($query) use ($start, $end) {
+                $query->where('start_date', '<=', $end)
+                    ->where('end_date', '>=', $start);
+            })
+            ->pluck('name')
+            ->toArray();
+
+        if (empty($serviciosConConflicto)) {
+            return true;
+        }
+
+        $this->addError(
+            'servicios',
+            'Estos servicios ya tienen otra promocion en esas fechas: ' . implode(', ', $serviciosConConflicto)
+        );
+
+        return false;
     }
 }

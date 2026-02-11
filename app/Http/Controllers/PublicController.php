@@ -52,4 +52,22 @@ class PublicController extends Controller
             'homeSetting'
         ));
     }
+
+    public function comentarios()
+    {
+        $reviews = Review::orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('public.comentarios', compact('reviews'));
+    }
+
+    public function noticias()
+    {
+        $noticias = Noticia::where('published', 1)
+            ->whereDate('publication_date', '<=', today())
+            ->orderBy('publication_date', 'desc')
+            ->paginate(9);
+
+        return view('public.noticias', compact('noticias'));
+    }
 }

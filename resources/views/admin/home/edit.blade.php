@@ -4,13 +4,52 @@
 
 @section('back-url', route('admin.dashboard'))
 @section('content')
+    <style>
+        .home-settings-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .form-section{
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid #c0a799;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .form-section h2{
+            margin: 0 0 12px;
+            font-size: 18px;
+            color: #fccc7c;
+        }
+
+        .form-section label{
+            display: block;
+            margin: 10px 0 6px;
+            font-size: 13px;
+            opacity: .9;
+        }
+
+        .form-section input[type="text"],
+        .form-section textarea,
+        .form-section input[type="file"]{
+            width: 100%;
+        }
+
+        .form-section small{
+            display: block;
+            margin-top: 6px;
+            opacity: .85;
+        }
+
+        .actions{
+            margin-top: 20px;
+        }
+
+    </style>
     <div class="card">
-        <h1>Editar Home público</h1>
-
-        @if (session('success'))
-            <div class="alert-success">{{ session('success') }}</div>
-        @endif
-
         @if ($errors->any())
             <div class="alert-error">
                 <ul>
@@ -25,6 +64,7 @@
             @csrf
             @method('PUT')
 
+            <div class="home-settings-grid">
             <section class="form-section">
                 <h2>Hero</h2>
 
@@ -58,6 +98,20 @@
                 <input type="file" name="navbar_logo" id="navbar_logo">
                 <small>Formatos: JPG, PNG, SVG o WEBP. Máximo 2MB.</small>
             </section>
+            <section class="form-section">
+                <h2>Footer</h2>
+                <label for="footer_address">Ubicacion</label>
+                <input type="text" id="footer_address" name="footer_address"
+                    value="{{ old('footer_address', $homeSetting->footer_address) }}">
+
+                <label for="footer_phone">Telefono</label>
+                <input type="text" id="footer_phone" name="footer_phone"
+                    value="{{ old('footer_phone', $homeSetting->footer_phone) }}">
+
+                <label for="footer_hours">Horarios</label>
+                <input type="text" id="footer_hours" name="footer_hours"
+                    value="{{ old('footer_hours', $homeSetting->footer_hours) }}">
+            </section>
 
 
             <section class="form-section">
@@ -86,6 +140,7 @@
                 <label for="feature_3_description">Descripción</label>
                 <textarea id="feature_3_description" name="feature_3_description" rows="2">{{ old('feature_3_description', $homeSetting->feature_3_description) }}</textarea>
             </section>
+            </div>
 
             <div class="actions">
                 <button type="submit" class="btn">
@@ -95,4 +150,5 @@
         </form>
     </div>
 @endsection
+
 

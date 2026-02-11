@@ -56,13 +56,19 @@ class PromocionEdit extends Component
 
     public function abrirConfirmacion()
     {
-        // 🚨 SIN VALIDAR AQUÍ
+        $this->validate();
+        if (!$this->validarServiciosSinSolapamiento($this->promocion->id)) {
+            return;
+        }
         $this->confirmar = true;
     }
 
     public function actualizar()
     {
         $this->validate();
+        if (!$this->validarServiciosSinSolapamiento($this->promocion->id)) {
+            return;
+        }
 
         $wasPublished = (bool) $this->promocion->published;
 
@@ -91,10 +97,45 @@ class PromocionEdit extends Component
 
         $this->confirmar = false;
 
+        session()->flash('success', 'Promoción actualizada correctamente');
+
         return redirect()->route('admin.promociones.index');
     }
 
 
+
+    private function validarServiciosSinSolapamiento(?int $ignorePromocionId = null): bool
+    {
+        if (empty($this->servicios)) {
+            return true;
+        }
+
+        $start = $this->fecha_inicio;
+        $end = $this->fecha_fin;
+
+        $serviciosConConflicto = Servicio::whereIn('id', $this->servicios)
+            ->whereHas('promociones', function ($query) use ($start, $end, $ignorePromocionId) {
+                $query->where('start_date', '<=', $end)
+                    ->where('end_date', '>=', $start);
+
+                if ($ignorePromocionId) {
+                    $query->where('promotions.id', '!=', $ignorePromocionId);
+                }
+            })
+            ->pluck('name')
+            ->toArray();
+
+        if (empty($serviciosConConflicto)) {
+            return true;
+        }
+
+        $this->addError(
+            'servicios',
+            'Estos servicios ya tienen otra promocion en esas fechas: ' . implode(', ', $serviciosConConflicto)
+        );
+
+        return false;
+    }
 
     public function render()
     {
@@ -103,3 +144,6 @@ class PromocionEdit extends Component
         ]);
     }
 }
+
+
+

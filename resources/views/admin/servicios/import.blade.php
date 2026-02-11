@@ -5,7 +5,6 @@
 @section('back-url', route('admin.servicios.index'))
 @section('content')
     <div class="card">
-        <h1>Importar servicios</h1>
         <p>Descarga la plantilla, completa los datos y sube tu archivo CSV.</p>
 
         <div class="actions" style="margin-bottom:20px;">

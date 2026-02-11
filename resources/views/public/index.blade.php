@@ -15,6 +15,7 @@ body{
     font-family: Arial, sans-serif;
     background: #b28562;
     color: #ffffff;
+    overflow-x: hidden;
 }
 
 /* ================= HERO ================= */
@@ -122,74 +123,187 @@ h2{
 
 }
 
-/* ================= FOOTER ================= */
-footer{
-    border-top: 4px solid #e48815;
-    background: #8c4030;
-    padding: 30px 20px;
+/* ================= NOTICIAS ================= */
+.news-header{
     text-align: center;
-    font-size: 14px;
-    margin-top: 0; 
+    margin-bottom: 30px;
 }
 
-footer span{
-    color: #fccc7c;
+.news-subtitle{
+    opacity: .9;
+    margin-top: 6px;
 }
-/* ================= NOTICIAS ================= */
-.news-editorial{
+
+.news-grid{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 50px;
+    gap: 28px;
 }
 
-.news-item{
+.news-card{
     background: transparent;
+    border-radius: 0;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: .3s;
 }
 
-.news-item.up{
+.news-card.up{
     margin-top: 0;
 }
 
-.news-item.down{
-    margin-top: 60px;
+.news-card.down{
+    margin-top: 50px;
 }
 
-.news-item img{
-    width: 100%;
-    height: 320px;
-    object-fit: cover;
+.news-card:hover{
+    transform: translateY(-6px);
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,.25));
 }
 
-.news-text{
-    margin-top: 16px;
-    text-align: center;
+.news-thumb img{
+    width: 90%;
+    height: 230px;
+    object-fit: contain;
+    background: rgba(0,0,0,.35);
+    padding: 8px;
+    display: block;
+}
+
+.news-body{
+    padding: 12px 10px 6px;
 }
 
 .news-date{
     font-size: 12px;
-    text-align: center;
-    color: #000;
-    display: block;
-    margin-bottom: 8px;
+    display: inline-block;
+    margin-bottom: 6px;
+    color: #ffffff;
+    opacity: .85;
 }
 
-.news-text h3{
-    font-size: 20px;
-    text-align: center;
+.news-body h3{
+    font-size: 18px;
+    margin: 0 0 6px;
     color: #fff;
-    margin-bottom: 8px;
 }
 
-.news-text p{
+.news-body p{
     font-size: 14px;
-    text-align: center;
     opacity: .9;
+}
+
+.news-more{
+    border: 1px solid rgba(255,255,255,.35);
+    background: rgba(0,0,0,.2);
+    color: #ffffff;
+    font-weight: bold;
+    padding: 8px 12px;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.news-more:hover{
+    filter: brightness(1.1);
+}
+
+.news-actions{
+    margin-top: 18px;
+    text-align: center;
+}
+
+.news-actions a{
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #8c4030;
+    color: #fccc7c;
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.news-actions a:hover{
+    filter: brightness(1.1);
+}
+
+.news-modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+.news-modal.active{
+    display: flex;
+    opacity: 1;
+}
+
+.news-modal-content{
+    background: #5f4636;
+    border: 1px solid #c0a799;
+    border-radius: 16px;
+    max-width: 560px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(0,0,0,.45);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(10px) scale(.98);
+    opacity: 0;
+    transition: transform .2s ease, opacity .2s ease;
+}
+
+.news-modal.active .news-modal-content{
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.news-modal-content img{
+    width: 100%;
+    height: 320px;
+    object-fit: contain;
+    background: rgba(0,0,0,.35);
+    padding: 8px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+}
+
+.news-modal-date{
+    color: #fccc7c;
+    font-size: 12px;
+}
+
+.news-modal-content h3{
+    margin: 8px 0 10px;
+}
+
+.news-modal-close{
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: transparent;
+    border: 0;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
 }
 /* ================= CONTACTO NUEVO ================= */
 .contact-section{
     max-width: 100%;
     padding: 80px 20px 0;
-    background: #e48815; 
+    background: #e48815;
 }
 
 .contact-section h2{
@@ -329,17 +443,22 @@ footer span{
 
 .home-actions .btn{
     display:inline-block;
-    padding:10px 16px;
-    border-radius:10px;
-    border:1px solid #e48815;
-    color:#fff;
+    padding:12px 22px;
+    border-radius:999px;
+    border:2px solid #fccc7c;
+    color:#ffffff;
     text-decoration:none;
     font-size:13px;
-    box-shadow:0 0 12px #e48815;
+    font-weight:bold;
+    letter-spacing:1px;
+    background:linear-gradient(135deg, #e48815, #8c4030);
+    box-shadow:0 10px 22px rgba(0,0,0,.45), 0 0 16px rgba(252,204,124,.85);
 }
 
 .home-actions .btn:hover{
-    box-shadow:0 0 20px #e48815;
+    transform:translateY(-2px);
+    filter:brightness(1.05);
+    box-shadow:0 14px 28px rgba(0,0,0,.5), 0 0 22px rgba(252,204,124,1);
 }
 
 /* ================= RESENAS ================= */
@@ -452,7 +571,7 @@ footer span{
 
 /* TARJETAS MÁS COMPACTAS */
 .home-card img{
-    height: 120px; 
+    height: 120px;
 }
 
 .home-card p{
@@ -513,7 +632,7 @@ footer span{
     width: 90%;
     max-width: 780px;
     height: 420px;
-    display: flex;               
+    display: flex;
     border-radius: 20px;
     overflow: hidden;
     position: relative;
@@ -648,6 +767,12 @@ body.modal-open{
     margin-bottom: 12px;
 }
 
+.promo-dates{
+    font-size: 14px;
+    opacity: .9;
+    margin-bottom: 10px;
+}
+
 .promo-code{
     font-size: 14px;
 }
@@ -706,7 +831,7 @@ body.modal-open{
     max-width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
-    padding: 80px 40px 80px; 
+    padding: 80px 40px 0;
     background: #e48815;
 }
 @media (max-width: 768px){
@@ -720,6 +845,26 @@ body.modal-open{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 28px;
+}
+
+.reviews-actions{
+    margin-top: 14px;
+    text-align: center;
+}
+
+.reviews-actions a{
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #8c4030;
+    color: #fccc7c;
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.reviews-actions a:hover{
+    filter: brightness(1.1);
 }
 
 .google-card{
@@ -737,9 +882,9 @@ body.modal-open{
 /* ESTRELLAS */
 .google-stars{
     color: #fbbc04;
-    font-size: 24px;      
+    font-size: 24px;
     margin-bottom: 14px;
-    text-align: center;  
+    text-align: center;
     letter-spacing: 3px;
 }
 
@@ -884,6 +1029,9 @@ body.modal-open{
 
         <button class="nav-btn right" onclick="scrollServices(1)">›</button>
     </div>
+    <div class="home-actions">
+        <a class="btn" href="{{ route('servicios') }}">Ver todos los servicios</a>
+    </div>
 </section>
 
 <section id="promociones" class="promo-section">
@@ -905,6 +1053,12 @@ body.modal-open{
                 <p class="promo-text">
                     {{ $promo->description }}
                 </p>
+                @if($promo->start_date && $promo->end_date)
+                    <div class="promo-dates">
+                        Vigente del {{ \Carbon\Carbon::parse($promo->start_date)->format('d/m/Y') }}
+                        al {{ \Carbon\Carbon::parse($promo->end_date)->format('d/m/Y') }}
+                    </div>
+                @endif
             </div>
 
             <!-- DERECHA: IMAGEN -->
@@ -925,7 +1079,7 @@ body.modal-open{
 
     <div class="reviews-grid google-style">
         @forelse($reviews->sortByDesc('created_at')->take(3) as $review)
-        
+
             @php
             $email = $review->user_email ?? '';
             $parts = explode('@', $email, 2);
@@ -989,6 +1143,9 @@ body.modal-open{
             <p>No hay comentarios aún.</p>
         @endforelse
     </div>
+    <div class="reviews-actions">
+        <a href="{{ route('comentarios.publicos') }}">Ver todos los comentarios</a>
+    </div>
 </section>
 
 {{-- NOTICIAS --}}
@@ -1012,11 +1169,6 @@ body.modal-open{
 
     </div>
 </div>
-<footer>
-    📍 Calle Principal #123 · Guadalajara <br>
-    📞 33 1234 5678 · ⏰ Lun–Sáb 9:00–20:00 <br>
-    © 2026 Barbería & Spa · <span>Cybac</span>
-</footer>
 @endsection
 
 @section('scripts')
@@ -1050,12 +1202,12 @@ body.modal-open{
         document.getElementById('modalImagen').src = card.dataset.imagen;
 
         modal.style.display = 'flex';
-        document.body.classList.add('modal-open'); 
+        document.body.classList.add('modal-open');
     }
 
     function cerrarModal(){
         modal.style.display = 'none';
-        document.body.classList.remove('modal-open'); 
+        document.body.classList.remove('modal-open');
     }
 
     cerrar.addEventListener('click', cerrarModal);
@@ -1067,3 +1219,4 @@ body.modal-open{
     });
 </script>
 @endsection
+
