@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/auth/reset-password.css') }}">
 </head>
 
-<body style="--bg-image: url('{{ asset('imagenes/SalaEsperaa.png') }}');">
+<body class="auth-reset-password-page">
 
     <div class="card">
         <h2>Nueva contraseña</h2>

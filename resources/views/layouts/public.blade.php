@@ -20,7 +20,7 @@
                 @if (optional($homeSetting)->navbar_logo)
                     <img src="{{ asset('storage/' . $homeSetting->navbar_logo) }}"
                         alt="Logo"
-                        style="height: 130px; object-fit: contain;">
+                        class="footer-logo-img">
                 @else
                     Barberia & Spa
                 @endif

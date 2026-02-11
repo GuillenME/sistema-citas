@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/auth/register.css') }}">
 </head>
 
-<body style="--bg-image: url('{{ asset('imagenes/registro_fondo3.png') }}');">
+<body class="auth-register-page">
 
 <a href="{{ route('login') }}" class="back-arrow">←</a>
 

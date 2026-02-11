@@ -137,6 +137,12 @@ body {
     margin-bottom: 35px;
 }
 
+.header-actions-inline {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
 .page-header h1 {
     font-size: 30px;
     letter-spacing: 1px;
@@ -222,6 +228,24 @@ body {
     padding: 30px;
     border: 1px solid#c0a799;
     box-shadow: 0 0 25px#b28562;
+}
+
+.import-actions-top {
+    margin-bottom: 20px;
+}
+
+.import-actions-bottom {
+    margin-top: 20px;
+}
+
+.admin-promo-error {
+    color: #ff0000;
+}
+
+.admin-promo-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/auth/login.css') }}">
 </head>
 
-<body style="--bg-image: url('{{ asset('imagenes/registro_fondo3.png') }}');">
+<body class="auth-login-page">
 
     <!-- Flecha -->
     <a href="{{ route('home') }}" class="back-arrow">←</a>

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-create.css') }}">
 </head>
 
-<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
+<body class="recepcionista-citas-create-page">
 
 @include('recepcionista.partials.menu')
 
@@ -212,3 +212,4 @@ function confirmarLogout() {
 
 </body>
 </html>
+

@@ -43,6 +43,11 @@ nav a:hover{
     object-fit: contain;
 }
 
+.navbar-logo-img {
+    height: 73px;
+    object-fit: contain;
+}
+
 footer{
     margin-top: 0;
     background: #8c4030;
@@ -85,4 +90,9 @@ footer{
     padding: 12px 16px 20px;
     font-size: 12px;
     opacity: .85;
+}
+
+.footer-logo-img {
+    height: 130px;
+    object-fit: contain;
 }

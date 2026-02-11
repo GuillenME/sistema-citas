@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-citas.css') }}">
 </head>
 
-<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
+<body class="recepcionista-citas-index-page">
 
     @include('recepcionista.partials.menu')
 
@@ -88,3 +88,4 @@
 </body>
 
 </html>
+

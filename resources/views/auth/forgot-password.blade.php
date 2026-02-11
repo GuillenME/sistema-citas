@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/auth/forgot-password.css') }}">
 </head>
 
-<body style="--bg-image: url('{{ asset('imagenes/SalaEsperaa.png') }}');">
+<body class="auth-forgot-password-page">
 
     <div class="card">
         <h2>Recuperar contraseña</h2>
