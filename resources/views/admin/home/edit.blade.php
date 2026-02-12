@@ -71,6 +71,32 @@
                     value="{{ old('footer_hours', $homeSetting->footer_hours) }}">
             </section>
 
+            <section class="form-section">
+                <h2>Servicios en Home (maximo 10)</h2>
+                @php
+                    $selectedHomeServices = old(
+                        'featured_services',
+                        $serviciosActivos->where('featured_on_home', true)->pluck('id')->toArray()
+                    );
+                @endphp
+
+                @error('featured_services')
+                    <p class="error">{{ $message }}</p>
+                @enderror
+                @error('featured_services.*')
+                    <p class="error">{{ $message }}</p>
+                @enderror
+
+                <select name="featured_services[]" multiple size="10">
+                    @foreach ($serviciosActivos as $servicio)
+                        <option value="{{ $servicio->id }}" {{ in_array($servicio->id, $selectedHomeServices) ? 'selected' : '' }}>
+                            {{ $servicio->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <small>Selecciona hasta 10 servicios. Usa Ctrl/Cmd para seleccionar varios.</small>
+            </section>
+
 
             <section class="form-section">
                 <h2>Tarjeta 1</h2>
@@ -108,4 +134,3 @@
         </form>
     </div>
 @endsection
-
