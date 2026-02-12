@@ -30,15 +30,22 @@
             <textarea id="comment" name="comment" required>{{ old('comment') }}</textarea>
             @error('comment') <small class="form-error">{{ $message }}</small> @enderror
 
-            <label for="rating">Calificacion (opcional)</label>
-            <select id="rating" name="rating">
-                <option value="">Sin calificacion</option>
-                <option value="5" @selected(old('rating') == 5)>5</option>
-                <option value="4" @selected(old('rating') == 4)>4</option>
-                <option value="3" @selected(old('rating') == 3)>3</option>
-                <option value="2" @selected(old('rating') == 2)>2</option>
-                <option value="1" @selected(old('rating') == 1)>1</option>
-            </select>
+            <label>Calificacion (opcional)</label>
+            <fieldset class="rating-input" aria-label="Calificacion">
+                <input
+                    type="radio"
+                    id="rating-none"
+                    name="rating"
+                    value=""
+                    @checked(old('rating') === null || old('rating') === '')
+                >
+                <label for="rating-none" class="rating-none">Sin calificacion</label>
+
+                @for ($i = 1; $i <= 5; $i++)
+                    <input type="radio" id="rating-{{ $i }}" name="rating" value="{{ $i }}" @checked((string) old('rating') === (string) $i)>
+                    <label for="rating-{{ $i }}" class="rating-star">{{ $i }}</label>
+                @endfor
+            </fieldset>
             @error('rating') <small class="form-error">{{ $message }}</small> @enderror
 
             <button type="submit" class="btn-save">Enviar comentario</button>
@@ -109,5 +116,3 @@
 
 </body>
 </html>
-
-
