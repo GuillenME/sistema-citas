@@ -59,16 +59,14 @@
             <section class="form-section">
                 <h2>Footer</h2>
                 <label for="footer_address">Ubicacion</label>
-                <input type="text" id="footer_address" name="footer_address"
-                    value="{{ old('footer_address', $homeSetting->footer_address) }}">
+                <textarea id="footer_address" name="footer_address" rows="2" class="auto-grow">{{ old('footer_address', $homeSetting->footer_address) }}</textarea>
 
                 <label for="footer_phone">Telefono</label>
                 <input type="text" id="footer_phone" name="footer_phone"
                     value="{{ old('footer_phone', $homeSetting->footer_phone) }}">
 
                 <label for="footer_hours">Horarios</label>
-                <input type="text" id="footer_hours" name="footer_hours"
-                    value="{{ old('footer_hours', $homeSetting->footer_hours) }}">
+                <textarea id="footer_hours" name="footer_hours" rows="2" class="auto-grow">{{ old('footer_hours', $homeSetting->footer_hours) }}</textarea>
             </section>
 
             <section class="form-section">
@@ -133,4 +131,20 @@
             </div>
         </form>
     </div>
+@endsection
+
+@section('scripts')
+<script>
+    (function () {
+        var fields = document.querySelectorAll('.auto-grow');
+        function adjust(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
+        fields.forEach(function (el) {
+            adjust(el);
+            el.addEventListener('input', function () { adjust(el); });
+        });
+    })();
+</script>
 @endsection
