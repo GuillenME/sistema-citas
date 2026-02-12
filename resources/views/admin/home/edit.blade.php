@@ -1,54 +1,12 @@
 @extends('layouts.admin')
 
 @section('title', 'Editar Home público')
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/home-edit.css') }}">
+@endsection
 
 @section('back-url', route('admin.dashboard'))
 @section('content')
-    <style>
-        .home-settings-grid{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .form-section{
-            background: rgba(0, 0, 0, 0.15);
-            border: 1px solid #c0a799;
-            border-radius: 12px;
-            padding: 16px;
-        }
-
-        .form-section h2{
-            margin: 0 0 12px;
-            font-size: 18px;
-            color: #fccc7c;
-        }
-
-        .form-section label{
-            display: block;
-            margin: 10px 0 6px;
-            font-size: 13px;
-            opacity: .9;
-        }
-
-        .form-section input[type="text"],
-        .form-section textarea,
-        .form-section input[type="file"]{
-            width: 100%;
-        }
-
-        .form-section small{
-            display: block;
-            margin-top: 6px;
-            opacity: .85;
-        }
-
-        .actions{
-            margin-top: 20px;
-        }
-
-    </style>
     <div class="card">
         @if ($errors->any())
             <div class="alert-error">
@@ -81,7 +39,7 @@
 
                 @if ($homeSetting->hero_image)
                     <img src="{{ asset('storage/' . $homeSetting->hero_image) }}" alt="Imagen actual"
-                        style="max-width: 260px; display:block; margin-bottom:10px;">
+                        class="home-image-preview home-image-preview-hero">
                 @endif
 
                 <input type="file" name="hero_image" id="hero_image">
@@ -92,7 +50,7 @@
 
                 @if ($homeSetting->navbar_logo)
                     <img src="{{ asset('storage/' . $homeSetting->navbar_logo) }}" alt="Logo actual"
-                        style="max-width: 200px; display:block; margin-bottom:10px;">
+                        class="home-image-preview home-image-preview-logo">
                 @endif
 
                 <input type="file" name="navbar_logo" id="navbar_logo">
@@ -150,5 +108,4 @@
         </form>
     </div>
 @endsection
-
 

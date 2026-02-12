@@ -1,3 +1,7 @@
+body.recepcionista-citas-create-page {
+    --bg-url: url('/imagenes/SalaEsperaa.png');
+}
+
 .container {
     min-height: calc(100vh - 80px);
     width: 100%;

@@ -2,16 +2,20 @@
             box-sizing: border-box;
         }
         
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
             min-height: 100vh;
             background-image: var(--bg-url);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            position: relative;
-        }
+    position: relative;
+}
+
+body.cliente-citas-index-page {
+    --bg-url: url('/imagenes/SalaEsperaa.png');
+}
         /* Overlay oscuro */
         
         body::before {
@@ -219,13 +223,25 @@
             text-align: center;
         }
 
-        .cita-when {
+.cita-when {
             font-size: 12px;
             color: #e5e7eb;
             display: flex;
             flex-direction: column;
             gap: 4px;
-        }
+}
+
+.citas-info-alert {
+    margin-bottom: 18px;
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(234, 179, 8, 0.15);
+    border: 1px solid rgba(234, 179, 8, 0.5);
+    color: #fde68a;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.35);
+}
 
         .cita-price {
             display: flex;

@@ -47,14 +47,14 @@ class HomeSettingController extends Controller
     public function edit()
     {
         $homeSetting = HomeSetting::firstOrCreate([], [
-            'hero_title' => 'BARBER?A & SPA',
+            'hero_title' => 'BARBERíA & SPA',
             'hero_subtitle' => 'Estilo, cuidado y bienestar en un solo lugar',
-            'feature_1_title' => '?? Cortes Modernos',
-            'feature_1_description' => 'T?cnicas actuales y tendencias',
-            'feature_2_title' => '????? Tratamientos Spa',
-            'feature_2_description' => 'Relajaci?n y cuidado personal',
+            'feature_1_title' => 'Cortes Modernos',
+            'feature_1_description' => 'Técnicas actuales y tendencias',
+            'feature_2_title' => 'Tratamientos Spa',
+            'feature_2_description' => 'Relajación y cuidado personal',
             'feature_3_title' => 'Atención Personalizada',
-            'feature_3_description' => 'Productos de primera l?nea',
+            'feature_3_description' => 'Productos de primera línea',
             'footer_address' => 'Calle Principal #123 - Guadalajara',
             'footer_phone' => '33 1234 5678',
             'footer_hours' => 'Lun-Sab 9:00-20:00',

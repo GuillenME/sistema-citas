@@ -15,7 +15,7 @@ class EmpleadoCreate extends Component
     protected $rules = [
         'nombre' => 'required|min:3',
         'telefono' => 'required',
-        'serviciosSeleccionados' => 'required|array|min:1|max:3',
+        'serviciosSeleccionados' => 'required|array|min:1|max:5',
         'serviciosSeleccionados.*' => 'exists:services,id',
     ];
 
@@ -27,13 +27,15 @@ class EmpleadoCreate extends Component
 
     public function updatedServiciosSeleccionados($value)
     {
-        if (count($this->serviciosSeleccionados) > 3) {
-            $this->serviciosSeleccionados = array_slice($this->serviciosSeleccionados, 0, 3);
+        if (count($this->serviciosSeleccionados) > 5) {
+            $this->serviciosSeleccionados = array_slice($this->serviciosSeleccionados, 0, 5);
         }
     }
 
     public function guardar()
     {
+        $this->validate();
+
         $empleado = Empleado::create([
             'name' => $this->nombre,
             'phone' => $this->telefono,

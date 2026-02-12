@@ -13,6 +13,10 @@ body {
     position: relative;
 }
 
+body.cliente-citas-create-page {
+    --bg-url: url('/imagenes/SalaEsperaa.png');
+}
+
 body::before {
     content: "";
     position: absolute;
@@ -767,5 +771,41 @@ input[type="date"] {
     }
 }
 
+.anticipo-time-note {
+    margin-top: 10px;
+    color: #fde68a;
+    font-weight: bold;
+}
+
+.modal-separator {
+    margin: 15px 0;
+    opacity: 0.3;
+}
+
+.modal-warning-title {
+    color: #fde68a;
+}
+
+.modal-warning-note {
+    margin-top: 10px;
+    color: #fca5a5;
+    font-weight: bold;
+}
+
+.modal-bank-box {
+    margin-top: 10px;
+    background: #111827;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.modal-bank-text {
+    margin: 0;
+    font-size: 14px;
+}
+
+.modal-confirm-buttons-spaced {
+    margin-top: 15px;
+}
 
 
