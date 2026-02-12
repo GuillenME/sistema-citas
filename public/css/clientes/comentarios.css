@@ -117,9 +117,16 @@ body.cliente-comentarios-page {
             color: #ffdca0;
         }
 
-        .comentarios-pagination {
-            margin-top: 16px;
-        }
+.comentarios-pagination {
+    margin-top: 16px;
+}
+
+.pagination-info {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #efe0cf;
+}
 
         .comentarios-pagination .pagination {
             display: flex;

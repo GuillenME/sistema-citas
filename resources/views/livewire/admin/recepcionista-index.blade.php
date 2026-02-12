@@ -44,6 +44,9 @@
     </div>
 
     <div class="pagination-wrapper">
+        <div class="pagination-info">
+            Pagina {{ $recepcionistas->currentPage() }} de {{ $recepcionistas->lastPage() }} ({{ $recepcionistas->total() }} registros)
+        </div>
         {{ $recepcionistas->links() }}
     </div>
 

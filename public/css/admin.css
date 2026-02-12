@@ -563,6 +563,13 @@ select:focus {
     margin-top: 25px;
 }
 
+.pagination-info {
+    text-align: center;
+    color: #efe0cf;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
 .page-link {
     padding: 8px 14px;
     border-radius: 10px;

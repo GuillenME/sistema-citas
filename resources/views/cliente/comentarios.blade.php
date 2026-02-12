@@ -81,6 +81,9 @@
 
         @if ($reviews->hasPages())
             <div class="comentarios-pagination">
+                <div class="pagination-info">
+                    Pagina {{ $reviews->currentPage() }} de {{ $reviews->lastPage() }} ({{ $reviews->total() }} comentarios)
+                </div>
                 {{ $reviews->links('pagination::simple-bootstrap-4') }}
             </div>
         @endif
