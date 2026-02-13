@@ -23,7 +23,7 @@ class AdminEmpleadoController extends Controller
     {
         $request->validate([
             'nombre'       => 'required|string|max:255',
-            'telefono'     => 'required|string|max:20',
+            'telefono'     => 'required|digits:10',
             'especialidad' => 'required|string|max:255',
         ]);
 
@@ -47,7 +47,7 @@ class AdminEmpleadoController extends Controller
     {
         $request->validate([
             'nombre'       => 'required|string|max:255',
-            'telefono'     => 'required|string|max:20',
+            'telefono'     => 'required|digits:10',
             'especialidad' => 'required|string|max:255',
             'activo'       => 'required|boolean',
         ]);
