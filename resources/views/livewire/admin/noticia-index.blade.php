@@ -7,7 +7,12 @@
             <div class="serv-actions">
                 <a href="{{ route('admin.noticias.create') }}" class="serv-btn primary">
                     <span class="serv-btn-icon" aria-hidden="true">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                            <path d="M8 12h8" />
+                            <path d="M12 8v8" />
+                        </svg>
                     </span>
                     Nueva noticia
                 </a>
@@ -34,29 +39,39 @@
                                     {{ $noticia->published ? 'Si' : 'No' }}
                                 </span>
                             </td>
-                            <td class="table-actions">
-
-    <!-- 👁 PREVISUALIZAR -->
-    <button
-        class="btn-preview"
-        wire:click="preview({{ $noticia->id }})"
-        title="Previsualizar"
-    >
-        👁
-    </button>
-
-    <!-- ✏ EDITAR -->
-    <a href="{{ route('admin.noticias.edit', $noticia) }}" class="btn-edit">
-        Editar
-    </a>
-
-    <!-- 🗑 ELIMINAR -->
-    <button class="btn-delete" wire:click="confirmDelete({{ $noticia->id }})">
-        Eliminar
-    </button>
-
-</td>
-
+                            <td class="serv-actions-col">
+                                <button class="serv-icon-btn edit btn-preview" wire:click="preview({{ $noticia->id }})"
+                                    title="Previsualizar" aria-label="Previsualizar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" aria-hidden="true">
+                                        <path
+                                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </button>
+                                <a href="{{ route('admin.noticias.edit', $noticia) }}" class="serv-icon-btn edit"
+                                    title="Editar" aria-label="Editar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path
+                                            d="m18.226 5.226-2.52-2.52A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-.351" />
+                                        <path
+                                            d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" />
+                                        <path d="M8 18h1" />
+                                    </svg>
+                                </a>
+                                <button class="serv-icon-btn delete" wire:click="confirmDelete({{ $noticia->id }})"
+                                    title="Eliminar" aria-label="Eliminar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                        <path d="M3 6h18" />
+                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                    </svg>
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -70,7 +85,8 @@
 
         <div class="pagination-wrapper serv-pagination">
             <div class="pagination-info">
-                Mostrando {{ $noticias->firstItem() ?? 0 }}-{{ $noticias->lastItem() ?? 0 }} de {{ $noticias->total() }} noticias
+                Mostrando {{ $noticias->firstItem() ?? 0 }}-{{ $noticias->lastItem() ?? 0 }} de
+                {{ $noticias->total() }} noticias
             </div>
             {{ $noticias->links() }}
         </div>
@@ -91,45 +107,26 @@
             </div>
         </div>
     @endif
+
     @if ($showPreviewModal && $previewNoticia)
-    <div class="modal-overlay" wire:click.self="closePreview">
-        <div class="modal-box">
-
-            <h2 style="margin-top:0;">
-                {{ $previewNoticia->title }}
-            </h2>
-
-            {{-- Imagen guardada --}}
-            @if ($previewNoticia->image)
-                <img src="{{ asset('storage/' . $previewNoticia->image) }}"
-                     style="width:100%; border-radius:12px; margin:15px 0;">
-            @endif
-
-            {{-- Contenido guardado --}}
-            <p style="white-space: pre-line;">
-                {{ $previewNoticia->content }}
-            </p>
-
-            {{-- Fecha guardada --}}
-            <p style="margin-top:15px;">
-                <strong>Fecha:</strong>
-                {{ \Carbon\Carbon::parse($previewNoticia->publication_date)->format('d/m/Y') }}
-            </p>
-
-            {{-- Estado guardado --}}
-            <p>
-                <strong>Publicada:</strong>
-                {{ $previewNoticia->published ? 'Sí' : 'No' }}
-            </p>
-
-            <div class="modal-actions" style="margin-top:20px;">
-                <button class="btn btn-cancel" wire:click="closePreview">
-                    Cerrar
+        <div class="modal-overlay admin-news-modal" wire:click.self="closePreview">
+            <div class="admin-news-modal-content" role="dialog" aria-modal="true">
+                <button type="button" class="admin-news-modal-close" wire:click="closePreview" aria-label="Cerrar">
+                    &times;
                 </button>
+
+
+                @if ($previewNoticia->image)
+                    <img src="{{ asset('storage/' . $previewNoticia->image) }}" alt="{{ $previewNoticia->title }}">
+                @endif
+                <span class="admin-news-modal-date">
+                    {{ \Carbon\Carbon::parse($previewNoticia->publication_date)->format('d/m/Y') }}
+                </span>
+                <h3>{{ $previewNoticia->title }}</h3>
+
+                <p class="admin-news-modal-text">{{ $previewNoticia->content }}</p>
+
             </div>
-
         </div>
-    </div>
-@endif
-
+    @endif
 </div>

@@ -56,7 +56,7 @@
                 </div>
                 <h3>Configurar Home</h3>
                 <p>Personaliza la experiencia de clientes en la app movil y el sitio publico.</p>
-                <span class="dh-btn dh-btn-ghost">Personalizar diseno</span>
+                <span class="dh-btn dh-btn-ghost">Personalizar diseño</span>
             </a>
         </section>
 

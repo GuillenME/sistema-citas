@@ -852,6 +852,79 @@ select:focus {
     max-width: 520px;
 }
 
+/* =========================
+   NEWS PREVIEW MODAL (ADMIN)
+========================= */
+
+.admin-news-modal {
+    background: rgba(0, 0, 0, .65);
+    backdrop-filter: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 2000;
+}
+
+.admin-news-modal-content {
+    background: #5f4636;
+    border: 1px solid #c0a799;
+    border-radius: 16px;
+    max-width: 560px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .45);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.admin-news-modal-content img {
+    width: 100%;
+    height: 320px;
+    object-fit: contain;
+    background: rgba(0, 0, 0, .35);
+    padding: 8px;
+    border-radius: 12px;
+    margin: 14px 0;
+}
+
+.admin-news-modal-content h3 {
+    margin: 8px 0 10px;
+    color: #fff8eb;
+}
+
+.admin-news-modal-content p {
+    margin: 0;
+    color: #ffffff;
+    line-height: 1.4;
+}
+
+.admin-news-modal-date {
+    color: #fccc7c;
+    font-size: 12px;
+}
+
+.admin-news-modal-text {
+    white-space: pre-line;
+}
+
+.admin-news-modal-status {
+    margin-top: 14px;
+}
+
+.admin-news-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: transparent;
+    border: 0;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+}
+
 
 /* =========================
    BOTÓN CERRAR SESIÓN (ADMIN)
