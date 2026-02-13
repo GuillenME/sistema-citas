@@ -1,7 +1,5 @@
 <div>
 
-    <h1>Nuevo empleado</h1>
-
     <div class="card">
 
         <div class="form-grid">

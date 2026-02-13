@@ -104,6 +104,9 @@
         </div>
 
         <div class="pagination-wrapper">
+            <div class="pagination-info">
+                Pagina {{ $citas->currentPage() }} de {{ $citas->lastPage() }} ({{ $citas->total() }} registros)
+            </div>
             {{ $citas->links('pagination::simple-bootstrap-4') }}
         </div>
     </div>

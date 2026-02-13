@@ -39,6 +39,9 @@
     </div>
 
     <div class="pagination-wrapper">
+        <div class="pagination-info">
+            Pagina {{ $items->currentPage() }} de {{ $items->lastPage() }} ({{ $items->total() }} registros)
+        </div>
         {{ $items->links() }}
     </div>
 </div>

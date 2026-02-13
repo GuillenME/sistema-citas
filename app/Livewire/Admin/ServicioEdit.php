@@ -47,8 +47,11 @@ class ServicioEdit extends Component
 
     public function actualizar()
     {
+        $this->validate();
+
+        $imagePath = $this->servicio->image;
         if ($this->image) {
-            $this->servicio->image = $this->image->store('servicios', 'public');
+            $imagePath = $this->image->store('servicios', 'public');
         }
 
         $this->servicio->update([
@@ -57,6 +60,7 @@ class ServicioEdit extends Component
             'duration_minutes' => $this->duracion_minutos,
             'price' => $this->precio,
             'active' => $this->activo ? 1 : 0,
+            'image' => $imagePath,
         ]);
 
         session()->flash('success', 'Servicio actualizado correctamente');
