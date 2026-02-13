@@ -14,79 +14,119 @@
 
 <div class="comentarios-wrap">
     <h1 class="comentarios-title">Comentarios</h1>
-    <p class="comentarios-subtitle">Tu opinion nos ayuda a mejorar.</p>
+    <p class="comentarios-subtitle">Tu opinión nos ayuda a mejorar.</p>
 
     <div class="comentarios-grid">
+
+        <!-- FORMULARIO -->
         <div class="comentarios-card">
-        <h2>Dejar comentario</h2>
+            <h2>Dejar comentario</h2>
 
-        @if (session('success'))
-            <div class="alert-success">{{ session('success') }}</div>
-        @endif
+            @if (session('success'))
+                <div class="alert-success">{{ session('success') }}</div>
+            @endif
 
-        <form method="POST" action="{{ route('cliente.comentarios.store') }}">
-            @csrf
-            <label for="comment">Comentario</label>
-            <textarea id="comment" name="comment" required>{{ old('comment') }}</textarea>
-            @error('comment') <small class="form-error">{{ $message }}</small> @enderror
+            <form method="POST" action="{{ route('cliente.comentarios.store') }}">
+                @csrf
 
-            <label>Calificacion (opcional)</label>
-            <fieldset class="rating-input" aria-label="Calificacion">
-                <input
-                    type="radio"
-                    id="rating-none"
-                    name="rating"
-                    value=""
-                    @checked(old('rating') === null || old('rating') === '')
-                >
-                <label for="rating-none" class="rating-none">Sin calificacion</label>
+                <!-- SELECT SERVICIO -->
+                <label for="service_id">Servicio</label>
+                <select id="service_id" name="service_id" required>
+                    <option value="">Selecciona un servicio</option>
+                    @foreach ($services as $service)
+                        <option value="{{ $service->id }}" 
+                            @selected(old('service_id') == $service->id)>
+                            {{ $service->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('service_id') 
+                    <small class="form-error">{{ $message }}</small> 
+                @enderror
 
-                @for ($i = 1; $i <= 5; $i++)
-                    <input type="radio" id="rating-{{ $i }}" name="rating" value="{{ $i }}" @checked((string) old('rating') === (string) $i)>
-                    <label for="rating-{{ $i }}" class="rating-star">{{ $i }}</label>
-                @endfor
-            </fieldset>
-            @error('rating') <small class="form-error">{{ $message }}</small> @enderror
+                <!-- COMENTARIO -->
+                <label for="comment">Comentario</label>
+                <textarea id="comment" name="comment" required>{{ old('comment') }}</textarea>
+                @error('comment') 
+                    <small class="form-error">{{ $message }}</small> 
+                @enderror
 
-            <button type="submit" class="btn-save">Enviar comentario</button>
-        </form>
-    </div>
+                <!-- CALIFICACIÓN -->
+                <label>Calificación (opcional)</label>
+                <fieldset class="rating-input" aria-label="Calificación">
+                    <input
+                        type="radio"
+                        id="rating-none"
+                        name="rating"
+                        value=""
+                        @checked(old('rating') === null || old('rating') === '')
+                    >
+                    <label for="rating-none" class="rating-none">Sin calificación</label>
 
-    <div class="comentarios-card">
-        <h2>Mis comentarios</h2>
-        @forelse ($reviews as $review)
-            <div class="comentario-item">
-                <div>{{ $review->comment }}</div>
-                <div class="comentario-meta">
-                    {{ $review->created_at->format('d/m/Y H:i') }}
-                    @if ($review->rating)
-                        <span class="comentario-rating">
-                            Calificacion: {{ $review->rating }}/5
-                            <span class="rating-stars" aria-hidden="true">
-                                @for ($i = 1; $i <= 5; $i++)
-                                    @if ($i <= $review->rating)
-                                        <span class="filled">★</span>
-                                    @else
-                                        <span class="empty">☆</span>
-                                    @endif
-                                @endfor
+                    @for ($i = 1; $i <= 5; $i++)
+                        <input type="radio" id="rating-{{ $i }}" name="rating" value="{{ $i }}" 
+                            @checked((string) old('rating') === (string) $i)>
+                        <label for="rating-{{ $i }}" class="rating-star">{{ $i }}</label>
+                    @endfor
+                </fieldset>
+                @error('rating') 
+                    <small class="form-error">{{ $message }}</small> 
+                @enderror
+
+                <button type="submit" class="btn-save">Enviar comentario</button>
+            </form>
+        </div>
+
+        <!-- LISTADO DE COMENTARIOS -->
+        <div class="comentarios-card">
+            <h2>Mis comentarios</h2>
+
+            @forelse ($reviews as $review)
+                <div class="comentario-item">
+
+                    <div class="comentario-servicio">
+                        <strong>Servicio:</strong> 
+                        {{ $review->service->name ?? 'Sin servicio' }}
+                    </div>
+
+                    <div class="comentario-texto">
+                        {{ $review->comment }}
+                    </div>
+
+                    <div class="comentario-meta">
+                        {{ $review->created_at->format('d/m/Y H:i') }}
+
+                        @if ($review->rating)
+                            <span class="comentario-rating">
+                                Calificación: {{ $review->rating }}/5
+                                <span class="rating-stars" aria-hidden="true">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $review->rating)
+                                            <span class="filled">★</span>
+                                        @else
+                                            <span class="empty">☆</span>
+                                        @endif
+                                    @endfor
+                                </span>
                             </span>
-                        </span>
-                    @endif
-                </div>
-            </div>
-        @empty
-            <p>Aun no has dejado comentarios.</p>
-        @endforelse
+                        @endif
+                    </div>
 
-        @if ($reviews->hasPages())
-            <div class="comentarios-pagination">
-                <div class="pagination-info">
-                    Pagina {{ $reviews->currentPage() }} de {{ $reviews->lastPage() }} ({{ $reviews->total() }} comentarios)
                 </div>
-                {{ $reviews->links('pagination::simple-bootstrap-4') }}
-            </div>
-        @endif
+            @empty
+                <p>Aún no has dejado comentarios.</p>
+            @endforelse
+
+            @if ($reviews->hasPages())
+                <div class="comentarios-pagination">
+                    <div class="pagination-info">
+                        Página {{ $reviews->currentPage() }} de {{ $reviews->lastPage() }} 
+                        ({{ $reviews->total() }} comentarios)
+                    </div>
+                    {{ $reviews->links('pagination::simple-bootstrap-4') }}
+                </div>
+            @endif
+
         </div>
     </div>
 </div>
