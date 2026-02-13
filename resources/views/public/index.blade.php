@@ -164,7 +164,17 @@
                     </div>
 
                     <div class="google-meta">
-                    <strong>{{ $maskedEmail }}</strong>
+                    @php
+            $apellidoInicial = $review->user && $review->user->last_name
+                ? strtoupper(substr($review->user->last_name, 0, 1)) . '.'
+                : '';
+        @endphp
+
+        <strong>
+            {{ $review->user->name ?? 'Cliente' }} {{ $apellidoInicial }}
+        </strong>
+
+
                     <span>
                     {{ $review->created_at->format('d/m/Y') }}
                     </span>

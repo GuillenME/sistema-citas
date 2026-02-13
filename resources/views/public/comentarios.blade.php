@@ -36,19 +36,42 @@
         @endif
 
         <div class="card">
+
+            <!-- ⭐ ESTRELLAS -->
             <div class="stars">
                 @for ($i = 0; $i < $rating; $i++)
                     &#9733;
                 @endfor
             </div>
+
+            <!-- 🔹 SERVICIO (NUEVO) -->
+            @if($review->service)
+                <div class="review-service">
+                    {{ $review->service->name }}
+                </div>
+            @endif
+
+            <!-- 💬 COMENTARIO -->
             <p class="comment">{{ $review->comment }}</p>
+
+            <!-- 👤 META -->
             <div class="meta">
                 <div class="avatar">{{ $initial }}</div>
                 <div>
-                    <div>{{ $maskedEmail }}</div>
+                    @php
+                    $nombre = $review->user->name ?? 'Cliente';
+                    $apellidoInicial = $review->user && $review->user->last_name
+                        ? strtoupper(substr($review->user->last_name, 0, 1)) . '.'
+                        : '';
+                @endphp
+
+                <strong>
+                    {{ $nombre }} {{ $apellidoInicial }}
+                </strong>
                     <div>{{ $review->created_at->format('d/m/Y') }}</div>
                 </div>
             </div>
+
         </div>
 
         @if ($loop->last)
