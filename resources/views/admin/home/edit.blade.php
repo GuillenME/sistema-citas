@@ -39,10 +39,13 @@
 
                 @if ($homeSetting->hero_image)
                     <img src="{{ asset('storage/' . $homeSetting->hero_image) }}" alt="Imagen actual"
-                        class="home-image-preview home-image-preview-hero">
+                        class="home-image-preview home-image-preview-hero" id="hero_image_preview">
+                @else
+                    <img src="" alt="Vista previa imagen hero"
+                        class="home-image-preview home-image-preview-hero hidden" id="hero_image_preview">
                 @endif
 
-                <input type="file" name="hero_image" id="hero_image">
+                <input type="file" name="hero_image" id="hero_image" accept="image/*">
                 <small>Formatos: JPG, PNG o WEBP. Máximo 2MB.</small>
             </section>
             <section class="form-section">
@@ -50,25 +53,52 @@
 
                 @if ($homeSetting->navbar_logo)
                     <img src="{{ asset('storage/' . $homeSetting->navbar_logo) }}" alt="Logo actual"
-                        class="home-image-preview home-image-preview-logo">
+                        class="home-image-preview home-image-preview-logo" id="navbar_logo_preview">
+                @else
+                    <img src="" alt="Vista previa logo"
+                        class="home-image-preview home-image-preview-logo hidden" id="navbar_logo_preview">
                 @endif
 
-                <input type="file" name="navbar_logo" id="navbar_logo">
+                <input type="file" name="navbar_logo" id="navbar_logo" accept="image/*">
                 <small>Formatos: JPG, PNG, SVG o WEBP. Máximo 2MB.</small>
             </section>
             <section class="form-section">
                 <h2>Footer</h2>
                 <label for="footer_address">Ubicacion</label>
-                <input type="text" id="footer_address" name="footer_address"
-                    value="{{ old('footer_address', $homeSetting->footer_address) }}">
+                <textarea id="footer_address" name="footer_address" rows="2" class="auto-grow">{{ old('footer_address', $homeSetting->footer_address) }}</textarea>
 
                 <label for="footer_phone">Telefono</label>
                 <input type="text" id="footer_phone" name="footer_phone"
                     value="{{ old('footer_phone', $homeSetting->footer_phone) }}">
 
                 <label for="footer_hours">Horarios</label>
-                <input type="text" id="footer_hours" name="footer_hours"
-                    value="{{ old('footer_hours', $homeSetting->footer_hours) }}">
+                <textarea id="footer_hours" name="footer_hours" rows="2" class="auto-grow">{{ old('footer_hours', $homeSetting->footer_hours) }}</textarea>
+            </section>
+
+            <section class="form-section">
+                <h2>Servicios en Home (maximo 10)</h2>
+                @php
+                    $selectedHomeServices = old(
+                        'featured_services',
+                        $serviciosActivos->where('featured_on_home', true)->pluck('id')->toArray()
+                    );
+                @endphp
+
+                @error('featured_services')
+                    <p class="error">{{ $message }}</p>
+                @enderror
+                @error('featured_services.*')
+                    <p class="error">{{ $message }}</p>
+                @enderror
+
+                <select name="featured_services[]" multiple size="10">
+                    @foreach ($serviciosActivos as $servicio)
+                        <option value="{{ $servicio->id }}" {{ in_array($servicio->id, $selectedHomeServices) ? 'selected' : '' }}>
+                            {{ $servicio->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <small>Selecciona hasta 10 servicios. Usa Ctrl/Cmd para seleccionar varios.</small>
             </section>
 
 
@@ -109,3 +139,50 @@
     </div>
 @endsection
 
+@section('scripts')
+<script>
+    (function () {
+        function initHomeImagePreviews() {
+        var fields = document.querySelectorAll('.auto-grow');
+        function adjust(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
+        fields.forEach(function (el) {
+            adjust(el);
+            el.addEventListener('input', function () { adjust(el); });
+        });
+
+        function bindImagePreview(inputId, previewId) {
+            var input = document.getElementById(inputId);
+            var preview = document.getElementById(previewId);
+
+            if (!input || !preview) return;
+            if (input.dataset.previewBound === '1') return;
+            input.dataset.previewBound = '1';
+
+            input.addEventListener('change', function (event) {
+                var file = event.target.files && event.target.files[0];
+
+                if (!file) {
+                    return;
+                }
+                var objectUrl = URL.createObjectURL(file);
+                preview.src = objectUrl;
+                preview.classList.remove('hidden');
+                preview.onload = function () {
+                    URL.revokeObjectURL(objectUrl);
+                };
+            });
+        }
+
+        bindImagePreview('hero_image', 'hero_image_preview');
+        bindImagePreview('navbar_logo', 'navbar_logo_preview');
+
+        }
+
+        document.addEventListener('DOMContentLoaded', initHomeImagePreviews, { once: true });
+        document.addEventListener('livewire:navigated', initHomeImagePreviews);
+    })();
+</script>
+@endsection

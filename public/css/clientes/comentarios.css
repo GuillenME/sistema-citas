@@ -52,8 +52,7 @@ body.cliente-comentarios-page {
             font-size: 13px;
         }
 
-        .comentarios-card textarea,
-        .comentarios-card select {
+.comentarios-card textarea {
             width: 100%;
             padding: 10px 12px;
             border-radius: 10px;
@@ -68,8 +67,7 @@ body.cliente-comentarios-page {
             resize: vertical;
         }
 
-        .comentarios-card textarea:focus,
-        .comentarios-card select:focus {
+.comentarios-card textarea:focus {
             border-color: rgba(252, 204, 124, 0.55);
             box-shadow: 0 0 0 2px rgba(252, 204, 124, 0.15);
         }
@@ -119,9 +117,16 @@ body.cliente-comentarios-page {
             color: #ffdca0;
         }
 
-        .comentarios-pagination {
-            margin-top: 16px;
-        }
+.comentarios-pagination {
+    margin-top: 16px;
+}
+
+.pagination-info {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #efe0cf;
+}
 
         .comentarios-pagination .pagination {
             display: flex;
@@ -177,4 +182,48 @@ body.cliente-comentarios-page {
 
 .form-error {
     color: #f87171;
+}
+
+.rating-input {
+    margin: 8px 0 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(252, 204, 124, 0.25);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rating-input input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.rating-none,
+.rating-star {
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    border-radius: 999px;
+    padding: 6px 10px;
+    color: #f0e2d2;
+    cursor: pointer;
+    transition: all .15s ease;
+    user-select: none;
+}
+
+.rating-star {
+    min-width: 34px;
+    text-align: center;
+}
+
+.rating-input input[type="radio"]:checked + label {
+    background: rgba(252, 204, 124, 0.35);
+    border-color: rgba(252, 204, 124, 0.6);
+    color: #fffaf4;
+}
+
+.rating-input input[type="radio"]:focus-visible + label {
+    box-shadow: 0 0 0 2px rgba(252, 204, 124, 0.2);
 }

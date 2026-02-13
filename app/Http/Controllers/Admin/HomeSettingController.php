@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HomeSetting;
+use App\Models\Servicio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class HomeSettingController extends Controller
@@ -60,7 +62,13 @@ class HomeSettingController extends Controller
             'footer_hours' => 'Lun-Sab 9:00-20:00',
         ]);
 
-        return view('admin.home.edit', compact('homeSetting'));
+        $serviciosActivos = Servicio::where('active', 1)
+            ->orderByRaw('featured_on_home DESC')
+            ->orderBy('home_position')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.home.edit', compact('homeSetting', 'serviciosActivos'));
     }
 
     public function update(Request $request)
@@ -81,6 +89,8 @@ class HomeSettingController extends Controller
             'footer_address' => 'nullable|string|max:255',
             'footer_phone' => 'nullable|string|max:100',
             'footer_hours' => 'nullable|string|max:100',
+            'featured_services' => 'nullable|array|max:10',
+            'featured_services.*' => 'integer|exists:services,id',
         ]);
 
         if ($request->hasFile('hero_image')) {
@@ -100,7 +110,38 @@ class HomeSettingController extends Controller
             $data['navbar_logo'] = $request->file('navbar_logo')
                 ->store('home_settings', 'public');
         }
-        $homeSetting->update($data);
+        $selectedServiceIds = collect($request->input('featured_services', []))
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        if ($selectedServiceIds->isNotEmpty()) {
+            $activeCount = Servicio::whereIn('id', $selectedServiceIds)
+                ->where('active', 1)
+                ->count();
+
+            if ($activeCount !== $selectedServiceIds->count()) {
+                return back()->withErrors([
+                    'featured_services' => 'Solo puedes seleccionar servicios activos.',
+                ])->withInput();
+            }
+        }
+
+        DB::transaction(function () use ($homeSetting, $data, $selectedServiceIds) {
+            $homeSetting->update($data);
+
+            Servicio::query()->update([
+                'featured_on_home' => 0,
+                'home_position' => null,
+            ]);
+
+            foreach ($selectedServiceIds->values() as $index => $serviceId) {
+                Servicio::where('id', $serviceId)->update([
+                    'featured_on_home' => 1,
+                    'home_position' => $index + 1,
+                ]);
+            }
+        });
 
         return redirect()->route('admin.home_settings.edit')
             ->with('success', 'Configuración de inicio actualizada correctamente');
@@ -115,5 +156,3 @@ class HomeSettingController extends Controller
         //
     }
 }
-
-

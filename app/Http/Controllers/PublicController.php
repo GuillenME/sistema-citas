@@ -14,7 +14,8 @@ class PublicController extends Controller
     {
         $servicios = Servicio::where('active', 1)->get();
         $homeServicios = Servicio::where('active', 1)
-            ->orderBy('id', 'desc')
+            ->where('featured_on_home', 1)
+            ->orderBy('home_position')
             ->take(10)
             ->get();
 

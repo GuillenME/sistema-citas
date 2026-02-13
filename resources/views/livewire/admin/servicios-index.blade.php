@@ -45,6 +45,9 @@
     </div>
 
     <div class="pagination-wrapper">
+        <div class="pagination-info">
+            Pagina {{ $servicios->currentPage() }} de {{ $servicios->lastPage() }} ({{ $servicios->total() }} registros)
+        </div>
         {{ $servicios->links() }}
     </div>
 

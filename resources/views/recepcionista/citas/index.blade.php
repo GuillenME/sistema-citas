@@ -76,8 +76,8 @@
     <!-- Modal de confirmacion de logout -->
     <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
         <div class="modal-content">
-            <h3>¿Cerrar sesion?</h3>
-            <p>¿Estas seguro de que deseas cerrar sesion?</p>
+            <h3>Â¿Cerrar sesion?</h3>
+            <p>Â¿Estas seguro de que deseas cerrar sesion?</p>
             <div class="modal-buttons">
                 <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Si, cerrar sesion</button>
                 <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>

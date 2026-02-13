@@ -16,6 +16,7 @@
     margin: 0 0 12px;
     font-size: 18px;
     color: #fccc7c;
+    text-align: center;
 }
 
 .form-section label {
@@ -31,6 +32,15 @@
     width: 100%;
 }
 
+.form-section .auto-grow {
+    min-height: 50px;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
 .form-section small {
     display: block;
     margin-top: 6px;
@@ -44,6 +54,7 @@
 .home-image-preview {
     display: block;
     margin-bottom: 10px;
+    border-radius: 8px;
 }
 
 .home-image-preview-hero {
@@ -52,4 +63,8 @@
 
 .home-image-preview-logo {
     max-width: 200px;
+}
+
+.hidden {
+    display: none;
 }

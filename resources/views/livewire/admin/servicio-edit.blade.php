@@ -46,6 +46,7 @@
             <input type="checkbox" wire:model.defer="activo">
             @error('activo') <small class="error">{{ $message }}</small> @enderror
         </div>
+
     </div>
 
     <div class="actions">
