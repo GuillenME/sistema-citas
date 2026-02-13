@@ -14,10 +14,20 @@ class EmpleadoCreate extends Component
 
     protected $rules = [
         'nombre' => 'required|min:3',
-        'telefono' => 'required',
+        'telefono' => 'required|digits:10',
         'serviciosSeleccionados' => 'required|array|min:1|max:5',
         'serviciosSeleccionados.*' => 'exists:services,id',
     ];
+
+    protected $messages = [
+        'telefono.required' => 'El telefono es obligatorio.',
+        'telefono.digits' => 'El telefono debe tener exactamente 10 digitos numericos.',
+    ];
+
+    public function updatedTelefono($value): void
+    {
+        $this->telefono = substr(preg_replace('/\D/', '', (string) $value), 0, 10);
+    }
 
     public function abrirConfirmacion()
     {
