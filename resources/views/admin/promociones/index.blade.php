@@ -1,13 +1,8 @@
 @extends('layouts.admin')
 
 @section('title', 'Promociones')
-
-@section('page-title', 'Promociones')
-
-@section('header-actions')
-    <a href="{{ route('admin.promociones.create') }}" class="btn btn-save">
-        + Nueva promoción
-    </a>
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/servicios-index.css') }}">
 @endsection
 
 @section('content')

@@ -1,0 +1,249 @@
+.serv-shell {
+    width: 100%;
+}
+
+.serv-panel {
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(165deg, rgba(18, 16, 9, 0.96), rgba(24, 20, 10, 0.9));
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.28);
+}
+
+.serv-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    border-bottom: 1px solid rgba(252, 204, 124, 0.16);
+}
+
+.serv-head h2 {
+    margin: 0;
+    color: #fff7e4;
+    font-size: 33px;
+}
+
+.serv-head h3 {
+    margin: 0;
+    color: #fff7e4;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.serv-head p {
+    margin: 6px 0 0;
+    color: #bfb08f;
+    font-size: 13px;
+}
+
+.serv-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.serv-btn {
+    border-radius: 999px;
+    padding: 9px 14px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.serv-btn-icon {
+    width: 14px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.serv-btn-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.serv-btn.ghost {
+    color: #f4d38a;
+    background: rgba(252, 204, 124, 0.08);
+    border-color: rgba(252, 204, 124, 0.3);
+}
+
+td.serv-actions-col .serv-btn.ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+td.serv-actions-col .serv-btn.ghost::before {
+    content: "";
+    width: 13px;
+    height: 13px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 13px 13px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f4d38a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 3 4 7l4 4'/%3E%3Cpath d='M4 7h16'/%3E%3Cpath d='m16 21 4-4-4-4'/%3E%3Cpath d='M20 17H4'/%3E%3C/svg%3E");
+}
+
+.serv-btn.primary {
+    color: #221605;
+    background: linear-gradient(135deg, #f7d347, #e5bd2f);
+    border-color: rgba(252, 204, 124, 0.74);
+}
+
+.serv-table-wrap {
+    background: transparent;
+}
+
+.serv-table {
+    min-width: 900px;
+}
+
+.serv-table thead th {
+    color: #f3cc73;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    background: rgba(255, 255, 255, 0.02);
+    text-align: center;
+}
+
+.serv-table tbody td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px 12px;
+    color: #f6efdd;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.serv-name-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.serv-name-cell > div {
+    text-align: center;
+}
+
+.serv-name-cell strong {
+    display: block;
+    color: #fff8eb;
+    font-size: 24px;
+}
+
+.serv-name-cell small {
+    display: block;
+    margin-top: 2px;
+    color: #a79c84;
+    font-size: 11px;
+    max-width: 340px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.serv-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: inline-grid;
+    place-items: center;
+    background: rgba(252, 204, 124, 0.14);
+    border: 1px solid rgba(252, 204, 124, 0.26);
+    color: #f2cc70;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.serv-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.serv-status.on {
+    color: #f7d96f;
+    background: rgba(252, 204, 124, 0.15);
+    border-color: rgba(252, 204, 124, 0.36);
+}
+
+.serv-status.off {
+    color: #c3b797;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+td.serv-actions-col {
+    text-align: center;
+    white-space: nowrap;
+}
+
+td.serv-actions-col > * {
+    margin: 0 4px;
+    vertical-align: middle;
+}
+
+.serv-icon-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    display: inline-grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.serv-icon-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.serv-icon-btn.edit {
+    color: #f2d280;
+    background: rgba(252, 204, 124, 0.08);
+    border-color: rgba(252, 204, 124, 0.24);
+}
+
+.serv-icon-btn.delete {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.26);
+}
+
+.serv-pagination {
+    padding: 0 12px 12px;
+}
+
+@media (max-width: 980px) {
+    .serv-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .serv-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
