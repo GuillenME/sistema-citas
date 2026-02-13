@@ -6,6 +6,14 @@
 <link rel="stylesheet" href="{{ asset('css/public/index.css') }}">
 @endsection
 
+    @include('partials.navbar')
+
+    <main>
+        @yield('content')
+    </main>
+
+
+</body>
 
 
 @section('content')

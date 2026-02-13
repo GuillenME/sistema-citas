@@ -1,4 +1,4 @@
-<div class="card">
+<div class="form-container">
     @if ($errors->has('servicios'))
         <div id="promoErrorModalEdit" class="modal-overlay" onclick="document.getElementById('promoErrorModalEdit').style.display='none'">
             <div class="modal-box" onclick="event.stopPropagation()">

@@ -20,6 +20,11 @@
 <body>
 
     <livewire:admin.navbar />
+    <button type="button" class="mobile-sidebar-toggle" data-sidebar-toggle aria-label="Abrir o cerrar menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 
     <main class="dashboard {{ request()->routeIs('admin.dashboard') ? 'dashboard-home' : 'dashboard-inner' }}">
 
@@ -81,6 +86,49 @@
             });
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') closeModal();
+            });
+        })();
+    </script>
+    <script>
+        (function () {
+            const mobileMq = window.matchMedia('(max-width: 980px)');
+            const body = document.body;
+            body.classList.remove('sidebar-collapsed');
+
+            function closeMobileSidebar() {
+                body.classList.remove('sidebar-open');
+            }
+
+            document.addEventListener('click', function (event) {
+                const toggle = event.target.closest('[data-sidebar-toggle]');
+                const overlay = event.target.closest('[data-sidebar-overlay]');
+                const menuLink = event.target.closest('.admin-sidebar .navbar-links a');
+
+                if (toggle) {
+                    body.classList.toggle('sidebar-open');
+                    return;
+                }
+
+                if (overlay || (menuLink && mobileMq.matches)) {
+                    closeMobileSidebar();
+                }
+            });
+
+            window.addEventListener('resize', function () {
+                if (!mobileMq.matches) {
+                    closeMobileSidebar();
+                    return;
+                }
+            });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeMobileSidebar();
+                }
+            });
+
+            document.addEventListener('livewire:navigated', function () {
+                closeMobileSidebar();
             });
         })();
     </script>

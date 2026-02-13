@@ -1,81 +1,116 @@
 @extends('layouts.admin')
 
-@section('title', 'Gestion de citas')
+@section('title', 'Gestion de Citas')
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/citas-index.css') }}">
+@endsection
 
 @section('content')
+    <div class="citas-shell">
+        <header class="citas-topbar">
+            <div class="citas-topbar-left">
 
+                <input type="text" id="citasSearch" class="citas-search" placeholder="Buscar cliente o servicio...">
+            </div>
+            <div class="citas-topbar-right">
+                <a href="{{ route('admin.citas.index') }}" class="citas-btn primary">Actualizar página</a>
+            </div>
+        </header>
 
+        <section class="citas-stats">
+            <article class="stat-card">
+                <p>Citas de Hoy</p>
+                <strong>{{ $stats['hoy'] ?? 0 }}</strong>
+            </article>
+            <article class="stat-card">
+                <p>Pendientes</p>
+                <strong>{{ $stats['pendientes'] ?? 0 }}</strong>
+            </article>
+            <article class="stat-card">
+                <p>Canceladas</p>
+                <strong>{{ $stats['canceladas'] ?? 0 }}</strong>
+            </article>
+        </section>
 
-    <div class="card table-card">
-        <div class="table-toolbar">
-            <input type="text" id="citasSearch" class="table-search" placeholder="Buscar cliente o servicio">
-        </div>
-        <div class="table-container">
+        <section class="citas-panel">
+            <div class="citas-panel-head">
+                <div>
+                    <h3>Listado de Proximas Citas</h3>
+                    <p>Actualizado al momento</p>
+                </div>
+            </div>
 
-            <table class="admin-table admin-table-fixed">
-                <colgroup>
-                    <col class="col-cliente">
-                    <col class="col-servicio">
-                    <col class="col-fecha">
-                    <col class="col-estado">
-                    <col class="col-acciones">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th class="col-cliente">Cliente</th>
-                        <th class="col-servicio">Servicio</th>
-                        <th class="col-fecha">Fecha/Hora</th>
-                        <th class="col-estado">Estado</th>
-                        <th class="col-acciones">Acciones</th>
-                    </tr>
-                </thead>
+            <div class="table-container citas-table-wrap">
+                <table class="admin-table admin-table-fixed citas-table">
+                    <colgroup>
+                        <col class="col-cliente">
+                        <col class="col-servicio">
+                        <col class="col-fecha">
+                        <col class="col-estado">
+                        <col class="col-acciones">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="col-cliente">Cliente</th>
+                            <th class="col-servicio">Servicio</th>
+                            <th class="col-fecha">Fecha y Hora</th>
+                            <th class="col-estado">Estado</th>
+                            <th class="col-acciones">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($citas as $cita)
+                            @php
+                                $isToday = \Carbon\Carbon::parse($cita->date)->isToday();
+                                $isTomorrow = \Carbon\Carbon::parse($cita->date)->isTomorrow();
+                                $searchText = strtolower(trim(
+                                    ($cita->client->user->name ?? '') . ' ' .
+                                    ($cita->service->name ?? '') . ' ' .
+                                    ($cita->status ?? '')
+                                ));
 
-                <tbody>
-                    @forelse ($citas as $cita)
-                        @php
-                            $isToday = \Carbon\Carbon::parse($cita->date)->isToday();
-                            $isTomorrow = \Carbon\Carbon::parse($cita->date)->isTomorrow();
-                            $rowClass = $isToday ? 'row-today' : ($isTomorrow ? 'row-soon' : '');
-                            $searchText = strtolower(trim(
-                                ($cita->client->user->name ?? '') . ' ' .
-                                ($cita->service->name ?? '') . ' ' .
-                                ($cita->status ?? '')
-                            ));
-                        @endphp
-                        <tr class="{{ $rowClass }}" data-search="{{ $searchText }}">
-                            <td class="col-cliente">{{ $cita->client->user->name }}</td>
+                                $statusClass = match ($cita->status) {
+                                    'confirmada' => 'status-confirmada',
+                                    'cancelada' => 'status-cancelada',
+                                    'pendiente_anticipo' => 'status-pendiente',
+                                    'pendiente' => 'status-pendiente',
+                                    default => 'status-cancelada',
+                                };
+                            @endphp
+                            <tr data-search="{{ $searchText }}">
+                                <td class="col-cliente">
+                                    <div class="cell-main">{{ $cita->client->user->name }}</div>
+                                    <small class="cell-sub">{{ $cita->client->user->email ?? '-' }}</small>
+                                </td>
 
-                            <td class="col-servicio">{{ $cita->service->name }}</td>
+                                <td class="col-servicio">
+                                    <div class="cell-main">{{ $cita->service->name }}</div>
+                                    <small class="cell-sub">Duracion estimada</small>
+                                </td>
 
-                            <td class="col-fecha">
-                                {{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}
-                                {{ \Carbon\Carbon::parse($cita->start_time)->format('h:i A') }}-{{ \Carbon\Carbon::parse($cita->end_time)->format('h:i A') }}
-                                @if ($isToday)
-                                    <span class="badge badge-today">Hoy</span>
-                                @elseif ($isTomorrow)
-                                    <span class="badge badge-soon">Ma&ntilde;ana</span>
-                                @endif
-                            </td>
+                                <td class="col-fecha">
+                                    <div class="cell-main">
+                                        {{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}
+                                        {{ \Carbon\Carbon::parse($cita->start_time)->format('h:i A') }}
+                                    </div>
+                                    <small class="cell-sub">
+                                        @if ($isToday)
+                                            Hoy
+                                        @elseif ($isTomorrow)
+                                            Manana
+                                        @else
+                                            Programada
+                                        @endif
+                                    </small>
+                                </td>
 
-                            <td class="col-estado">
-                                @php
-                                    $statusClass = match ($cita->status) {
-                                        'confirmada' => 'badge-on',
-                                        'cancelada' => 'badge-off',
-                                        'pendiente_anticipo' => 'badge-pending',
-                                        default => 'badge-off',
-                                    };
-                                @endphp
+                                <td class="col-estado">
+                                    <span class="status-pill {{ $statusClass }}">{{ ucfirst(str_replace('_', ' ', $cita->status)) }}</span>
+                                </td>
 
-                                <span class="badge {{ $statusClass }}">
-                                    {{ ucfirst($cita->status) }}
-                                </span>
-                            </td>
-
-                            <td class="table-actions col-acciones">
-                                <div class="actions-wrap">
+                                <td class="table-actions col-acciones">
                                     <button type="button"
-                                        class="btn btn-edit btn-compact notes-btn"
+                                        class="btn notes-btn citas-detail-btn"
                                         data-notes="{{ e($cita->notes ?? '') }}"
                                         data-employee="{{ e($cita->employee?->name ?? '- Sin asignar -') }}"
                                         data-receipt="{{ $cita->receipt ? asset('storage/' . $cita->receipt) : '' }}"
@@ -86,29 +121,24 @@
                                         data-cancel-action="{{ route('admin.citas.cancelar', $cita) }}">
                                         Detalles
                                     </button>
-
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="table-empty">
-                                No hay citas registradas
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <div class="pagination-wrapper">
-            <div class="pagination-info">
-                Pagina {{ $citas->currentPage() }} de {{ $citas->lastPage() }} ({{ $citas->total() }} registros)
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="table-empty">No hay citas registradas</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-            {{ $citas->links('pagination::simple-bootstrap-4') }}
-        </div>
+
+            <div class="pagination-wrapper">
+                <div class="pagination-info">
+                    Mostrando {{ $citas->count() }} de {{ $citas->total() }} citas
+                </div>
+                {{ $citas->links('pagination::simple-bootstrap-4') }}
+            </div>
+        </section>
     </div>
 
     <div id="notesModal" class="notes-modal" aria-hidden="true">
@@ -133,9 +163,7 @@
                 <button type="button" class="btn btn-cancel btn-compact" id="openCancelFromModal">Cancelar</button>
             </form>
             <div class="modal-actions">
-                <button type="button" class="btn btn-cancel" id="notesModalClose">
-                    Cerrar
-                </button>
+                <button type="button" class="btn btn-cancel" id="notesModalClose">Cerrar</button>
             </div>
         </div>
     </div>
@@ -154,7 +182,6 @@
             </form>
         </div>
     </div>
-
 @endsection
 
 @section('scripts')

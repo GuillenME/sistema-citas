@@ -78,7 +78,11 @@ Route::middleware(['auth', 'rol:1'])
     ->group(function () {
 
         Route::get('/dashboard', function () {
-            return view('admin.dashboard');
+            $citasHoy = \App\Models\Cita::query()
+                ->whereDate('date', today())
+                ->count();
+
+            return view('admin.dashboard', compact('citasHoy'));
         })->name('dashboard');
 
         Route::get('/citas', [AdminCitaController::class, 'index'])

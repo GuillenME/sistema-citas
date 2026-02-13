@@ -12,13 +12,29 @@ class AdminCitaController extends Controller
 {
     public function index()
     {
+        $hoy = today();
+
         $citas = Cita::with(['client', 'service', 'employee'])
             ->orderBy('date', 'desc')
             ->paginate(5);
 
         $empleados = Empleado::where('active', 1)->get();
 
-        return view('admin.citas.index', compact('citas', 'empleados'));
+        $stats = [
+            'hoy' => Cita::query()
+                ->whereDate('date', $hoy)
+                ->count(),
+            'pendientes' => Cita::query()
+                ->whereDate('date', $hoy)
+                ->whereIn('status', ['pendiente', 'pendiente_anticipo'])
+                ->count(),
+            'canceladas' => Cita::query()
+                ->whereDate('date', $hoy)
+                ->where('status', 'cancelada')
+                ->count(),
+        ];
+
+        return view('admin.citas.index', compact('citas', 'empleados', 'stats'));
     }
 
 
