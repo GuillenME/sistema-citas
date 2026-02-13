@@ -145,6 +145,13 @@
 
                 </div>
 
+                <!-- SERVICIO -->
+                @if($review->service)
+                    <div class="google-service">
+                        {{ $review->service->name }}
+                    </div>
+                @endif
+
                 <!-- TEXTO -->
                 <p class="google-comment">
                     {{ $review->comment }}
