@@ -914,6 +914,19 @@ body.modal-open{
     flex-shrink: 0;
 }
 
+/* SERVICIO EN REVIEW */
+.google-service{
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fccc7c;
+    margin-bottom: 10px;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    opacity: .9;
+}
+
+
 /* META */
 .google-meta{
     display: flex;

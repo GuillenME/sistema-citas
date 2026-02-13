@@ -34,7 +34,7 @@ class Cita extends Model
 
     public function service()
     {
-        return $this->belongsTo(Servicio::class);
+        return $this->belongsTo(\App\Models\Service::class, 'service_id');
     }
 
     public function employee()
