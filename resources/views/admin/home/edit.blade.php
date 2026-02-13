@@ -39,10 +39,13 @@
 
                 @if ($homeSetting->hero_image)
                     <img src="{{ asset('storage/' . $homeSetting->hero_image) }}" alt="Imagen actual"
-                        class="home-image-preview home-image-preview-hero">
+                        class="home-image-preview home-image-preview-hero" id="hero_image_preview">
+                @else
+                    <img src="" alt="Vista previa imagen hero"
+                        class="home-image-preview home-image-preview-hero hidden" id="hero_image_preview">
                 @endif
 
-                <input type="file" name="hero_image" id="hero_image">
+                <input type="file" name="hero_image" id="hero_image" accept="image/*">
                 <small>Formatos: JPG, PNG o WEBP. Máximo 2MB.</small>
             </section>
             <section class="form-section">
@@ -50,10 +53,13 @@
 
                 @if ($homeSetting->navbar_logo)
                     <img src="{{ asset('storage/' . $homeSetting->navbar_logo) }}" alt="Logo actual"
-                        class="home-image-preview home-image-preview-logo">
+                        class="home-image-preview home-image-preview-logo" id="navbar_logo_preview">
+                @else
+                    <img src="" alt="Vista previa logo"
+                        class="home-image-preview home-image-preview-logo hidden" id="navbar_logo_preview">
                 @endif
 
-                <input type="file" name="navbar_logo" id="navbar_logo">
+                <input type="file" name="navbar_logo" id="navbar_logo" accept="image/*">
                 <small>Formatos: JPG, PNG, SVG o WEBP. Máximo 2MB.</small>
             </section>
             <section class="form-section">
@@ -136,6 +142,7 @@
 @section('scripts')
 <script>
     (function () {
+        function initHomeImagePreviews() {
         var fields = document.querySelectorAll('.auto-grow');
         function adjust(el) {
             el.style.height = 'auto';
@@ -145,6 +152,37 @@
             adjust(el);
             el.addEventListener('input', function () { adjust(el); });
         });
+
+        function bindImagePreview(inputId, previewId) {
+            var input = document.getElementById(inputId);
+            var preview = document.getElementById(previewId);
+
+            if (!input || !preview) return;
+            if (input.dataset.previewBound === '1') return;
+            input.dataset.previewBound = '1';
+
+            input.addEventListener('change', function (event) {
+                var file = event.target.files && event.target.files[0];
+
+                if (!file) {
+                    return;
+                }
+                var objectUrl = URL.createObjectURL(file);
+                preview.src = objectUrl;
+                preview.classList.remove('hidden');
+                preview.onload = function () {
+                    URL.revokeObjectURL(objectUrl);
+                };
+            });
+        }
+
+        bindImagePreview('hero_image', 'hero_image_preview');
+        bindImagePreview('navbar_logo', 'navbar_logo_preview');
+
+        }
+
+        document.addEventListener('DOMContentLoaded', initHomeImagePreviews, { once: true });
+        document.addEventListener('livewire:navigated', initHomeImagePreviews);
     })();
 </script>
 @endsection

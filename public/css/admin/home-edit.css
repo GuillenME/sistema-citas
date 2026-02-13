@@ -54,6 +54,7 @@
 .home-image-preview {
     display: block;
     margin-bottom: 10px;
+    border-radius: 8px;
 }
 
 .home-image-preview-hero {
@@ -62,4 +63,8 @@
 
 .home-image-preview-logo {
     max-width: 200px;
+}
+
+.hidden {
+    display: none;
 }
