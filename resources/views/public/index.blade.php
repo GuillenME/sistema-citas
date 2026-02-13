@@ -6,7 +6,6 @@
 <link rel="stylesheet" href="{{ asset('css/public/index.css') }}">
 @endsection
 
-<<<<<<< HEAD
     @include('partials.navbar')
 
     <main>
@@ -15,8 +14,6 @@
 
 
 </body>
-=======
->>>>>>> bde84590603cca0720a1dd0cae80e297bb1ad78c
 
 
 @section('content')

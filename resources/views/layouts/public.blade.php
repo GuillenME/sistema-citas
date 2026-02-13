@@ -30,7 +30,7 @@
                 {{ $homeSetting->footer_address ?? 'Calle Principal #123 - Guadalajara' }}
             </div>
             <div class="footer-item">
-                <span>📱 Telefono</span>
+                <span>📱 Teléfono</span>
                 {{ $homeSetting->footer_phone ?? '33 1234 5678' }}
             </div>
             <div class="footer-item">

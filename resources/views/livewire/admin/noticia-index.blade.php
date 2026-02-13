@@ -23,12 +23,28 @@
                                 </span>
                             </td>
                             <td class="table-actions">
-                                <a href="{{ route('admin.noticias.edit', $noticia) }}" class="btn-edit">
-                                    Editar
-                                </a>
-                                <button class="btn-delete" wire:click="confirmDelete({{ $noticia->id }})">
-                                    Eliminar
-                                </button>
+
+    <!-- 👁 PREVISUALIZAR -->
+    <button 
+        class="btn-preview"
+        wire:click="preview({{ $noticia->id }})"
+        title="Previsualizar"
+    >
+        👁
+    </button>
+
+    <!-- ✏ EDITAR -->
+    <a href="{{ route('admin.noticias.edit', $noticia) }}" class="btn-edit">
+        Editar
+    </a>
+
+    <!-- 🗑 ELIMINAR -->
+    <button class="btn-delete" wire:click="confirmDelete({{ $noticia->id }})">
+        Eliminar
+    </button>
+
+</td>
+
                             </td>
                         </tr>
                     @empty
@@ -69,4 +85,45 @@
             </div>
         </div>
     @endif
+    @if ($showPreviewModal && $previewNoticia)
+    <div class="modal-overlay" wire:click.self="closePreview">
+        <div class="modal-box">
+
+            <h2 style="margin-top:0;">
+                {{ $previewNoticia->title }}
+            </h2>
+
+            {{-- Imagen guardada --}}
+            @if ($previewNoticia->image)
+                <img src="{{ asset('storage/' . $previewNoticia->image) }}"
+                     style="width:100%; border-radius:12px; margin:15px 0;">
+            @endif
+
+            {{-- Contenido guardado --}}
+            <p style="white-space: pre-line;">
+                {{ $previewNoticia->content }}
+            </p>
+
+            {{-- Fecha guardada --}}
+            <p style="margin-top:15px;">
+                <strong>Fecha:</strong>
+                {{ \Carbon\Carbon::parse($previewNoticia->publication_date)->format('d/m/Y') }}
+            </p>
+
+            {{-- Estado guardado --}}
+            <p>
+                <strong>Publicada:</strong>
+                {{ $previewNoticia->published ? 'Sí' : 'No' }}
+            </p>
+
+            <div class="modal-actions" style="margin-top:20px;">
+                <button class="btn btn-cancel" wire:click="closePreview">
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+@endif
+
 </div>

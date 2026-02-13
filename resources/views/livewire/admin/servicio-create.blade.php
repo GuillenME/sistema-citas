@@ -9,14 +9,15 @@
         </div>
 
         <div class="form-group">
-            <label>Duración (min)</label>
+            <label>Duracion (min)</label>
             <input type="number" wire:model.defer="duracion_minutos">
             @error('duracion_minutos') <span class="error">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group full">
-            <label>Descripción</label>
+            <label>Descripcion</label>
             <textarea wire:model.defer="descripcion"></textarea>
+            @error('descripcion') <span class="error">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
@@ -25,13 +26,12 @@
             @error('image') <span class="error">{{ $message }}</span> @enderror
         </div>
 
-
-
         <div class="form-group">
             <label>Precio</label>
             <input type="number" step="0.01" wire:model.defer="precio">
             @error('precio') <span class="error">{{ $message }}</span> @enderror
         </div>
+
         <div class="form-group">
             <label>Vista previa</label>
             @if ($image)
@@ -57,15 +57,15 @@
     @if ($confirmar)
         <div class="modal-overlay">
             <div class="modal-box">
-                <h3>¿Guardar servicio?</h3>
-                <p>¿Deseas guardar este nuevo servicio?</p>
+                <h3>Guardar servicio?</h3>
+                <p>Deseas guardar este nuevo servicio?</p>
 
                 <div class="modal-actions">
                     <button class="btn btn-cancel" wire:click="$set('confirmar', false)">
                         Cancelar
                     </button>
                     <button class="btn btn-save" wire:click="guardar">
-                        Sí, guardar
+                        Si, guardar
                     </button>
                 </div>
             </div>
