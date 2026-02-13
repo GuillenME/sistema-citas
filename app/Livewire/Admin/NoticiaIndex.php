@@ -14,6 +14,9 @@ class NoticiaIndex extends Component
     protected $paginationTheme = 'simple-bootstrap';
 
     public $confirmDeleteId = null;
+    public $previewNoticia = null;
+    public $showPreviewModal = false;
+
 
     public function confirmDelete($id)
     {
@@ -24,6 +27,17 @@ class NoticiaIndex extends Component
     {
         $this->confirmDeleteId = null;
     }
+    public function preview($id)
+{
+    $this->previewNoticia = Noticia::findOrFail($id);
+    $this->showPreviewModal = true;
+}
+
+public function closePreview()
+{
+    $this->previewNoticia = null;
+    $this->showPreviewModal = false;
+}
 
     public function deleteConfirmed()
     {
