@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Admin;
 
-use App\Constants\CitaStatus;
 use App\Models\Cita;
 use App\Models\Servicio;
 use Livewire\Component;
@@ -32,10 +31,10 @@ class ServiciosIndex extends Component
             $hasPendingAppointments = Cita::where('service_id', $servicio->id)
                 ->whereIn('status', [
                     'pendiente',
-                    CitaStatus::PENDIENTE_ANTICIPO,
-                    CitaStatus::CONFIRMADA,
+                    'pendiente_anticipo',
+                    'confirmada',
                 ])
-                ->whereDate('date', '>=', now()->toDateString())
+                ->whereDate('date', '>=', date('Y-m-d'))
                 ->exists();
 
             if ($hasPendingAppointments) {

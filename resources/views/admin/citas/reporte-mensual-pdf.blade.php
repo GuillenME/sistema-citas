@@ -4,51 +4,96 @@
     <meta charset="utf-8">
     <title>Reporte mensual de citas</title>
     <style>
-        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #222; }
-        h1 { margin: 0 0 8px 0; font-size: 20px; }
-        .meta { margin-bottom: 12px; }
-        .stats { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
-        .stats th, .stats td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
-        .chart { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        .chart th, .chart td { border: 1px solid #ddd; padding: 5px 6px; text-align: center; }
+        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #2b241c; margin: 24px; }
+        .top {
+            border: 1px solid #d9c7a2;
+            background: #f8f1e6;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+        .brand { font-size: 11px; color: #8a6a3f; text-transform: uppercase; letter-spacing: .12em; }
+        h1 { margin: 4px 0 0 0; font-size: 24px; color: #4a3317; }
+        .meta { margin-top: 6px; color: #725433; }
+        .kpis { width: 100%; border-collapse: separate; border-spacing: 8px; margin-bottom: 10px; }
+        .kpis td {
+            border: 1px solid #e0ceb2;
+            background: #fffaf2;
+            padding: 10px;
+            width: 25%;
+            vertical-align: top;
+        }
+        .k-label { font-size: 10px; color: #9b7751; text-transform: uppercase; letter-spacing: .08em; }
+        .k-value { font-size: 20px; color: #3b2a16; font-weight: 700; margin-top: 4px; }
+        .section-title {
+            margin: 14px 0 6px 0;
+            font-size: 14px;
+            color: #4a3317;
+            border-left: 4px solid #c89b5f;
+            padding-left: 8px;
+        }
+        .chart { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+        .chart th, .chart td { border: 1px solid #e3d3b9; padding: 6px; text-align: center; }
+        .chart th { background: #f8f1e6; color: #6f4f2a; }
         .bars { width: 100%; border-collapse: collapse; margin-top: 8px; }
-        .bars th, .bars td { border: 1px solid #ddd; padding: 5px 6px; }
-        .bars th { background: #f4f4f4; }
+        .bars th, .bars td { border: 1px solid #e3d3b9; padding: 6px; }
+        .bars th { background: #f8f1e6; color: #6f4f2a; }
         .bar-track {
             width: 100%;
-            height: 10px;
-            border: 1px solid #d2d2d2;
-            background: #fafafa;
+            height: 12px;
+            border: 1px solid #dfccb0;
+            background: #fff;
         }
         .bar-fill {
-            height: 10px;
-            background: #a9742a;
+            height: 12px;
+            background: #c99a5d;
         }
-        .status { margin-top: 14px; }
+        .status {
+            margin-top: 12px;
+            border: 1px solid #e3d3b9;
+            background: #fffaf2;
+            padding: 10px 12px;
+        }
+        .status strong { color: #5a4021; }
         .status li { margin-bottom: 4px; }
+        .footer {
+            margin-top: 14px;
+            font-size: 10px;
+            color: #8b6e4a;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
-    <h1>Reporte mensual de citas</h1>
-    <div class="meta">
-        <strong>Mes:</strong> {{ $inicio->translatedFormat('F Y') }}
+    <div class="top">
+        <div class="brand">Barberia & Spa</div>
+        <h1>Reporte mensual de citas</h1>
+        <div class="meta">
+            <strong>Mes:</strong> {{ $inicio->translatedFormat('F Y') }}
+        </div>
     </div>
 
-    <table class="stats">
+    <table class="kpis">
         <tr>
-            <th>Total de citas</th>
-            <th>Promedio diario</th>
-            <th>Día pico</th>
-            <th>Máximo en un día</th>
-        </tr>
-        <tr>
-            <td>{{ $totalCitas }}</td>
-            <td>{{ number_format($promedioDiario, 2) }}</td>
-            <td>{{ $diaPico ?: '-' }}</td>
-            <td>{{ $maxCitas }}</td>
+            <td>
+                <div class="k-label">Total de citas</div>
+                <div class="k-value">{{ $totalCitas }}</div>
+            </td>
+            <td>
+                <div class="k-label">Promedio diario</div>
+                <div class="k-value">{{ number_format($promedioDiario, 2) }}</div>
+            </td>
+            <td>
+                <div class="k-label">Día pico</div>
+                <div class="k-value">{{ $diaPico ?: '-' }}</div>
+            </td>
+            <td>
+                <div class="k-label">Máximo en un día</div>
+                <div class="k-value">{{ $maxCitas }}</div>
+            </td>
         </tr>
     </table>
 
+    <div class="section-title">Detalle numérico por día</div>
     <table class="chart">
         <thead>
             <tr>
@@ -66,6 +111,7 @@
         </tbody>
     </table>
 
+    <div class="section-title">Gráfica de actividad diaria</div>
     <table class="bars">
         <thead>
             <tr>
@@ -102,6 +148,10 @@
                 <li>Sin citas en este mes.</li>
             @endforelse
         </ul>
+    </div>
+
+    <div class="footer">
+        Generado el {{ now()->format('d/m/Y H:i') }}
     </div>
 </body>
 </html>

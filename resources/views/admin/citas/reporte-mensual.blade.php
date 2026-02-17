@@ -20,16 +20,21 @@
             border: 1px solid rgba(244, 211, 138, .25);
             color: #f5e7cf;
             border-radius: 10px;
-            padding: 8px 10px;
+            padding: 6px 10px;
+            font-size: 14px;
         }
         .rm-btn {
             border: 1px solid rgba(244, 211, 138, .35);
             background: rgba(244, 211, 138, .12);
             color: #f4d38a;
             border-radius: 999px;
-            padding: 8px 12px;
+            padding: 5px 10px;
+            font-size: 12px;
+            line-height: 1.1;
             text-decoration: none;
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
         }
         .rm-stats { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 12px; }
         .rm-stat { background: rgba(0,0,0,.25); border: 1px solid rgba(244, 211, 138, .16); border-radius: 12px; padding: 12px; }
