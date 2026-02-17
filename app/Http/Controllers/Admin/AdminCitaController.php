@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cita;
 use App\Models\CitaEstado;
 use App\Models\Empleado;
+use App\Notifications\CitaClienteNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class AdminCitaController extends Controller
                     $query->where('status', 'reagendada');
                 },
             ])
-            ->orderBy('date', 'desc')
+            ->orderByDesc('created_at')
             ->paginate(5);
 
         $empleados = Empleado::where('active', 1)->get();
@@ -201,10 +202,12 @@ class AdminCitaController extends Controller
             'observaciones' => 'nullable|string|max:500',
         ]);
 
+        $motivoCancelacion = $request->observaciones
+            ?? 'Cancelada por el administrador';
+
         $cita->update([
             'status' => 'cancelada',
-            'notes' => $request->observaciones
-                ?? 'Cancelada por el administrador',
+            'notes' => $motivoCancelacion,
         ]);
 
         CitaEstado::create([
@@ -213,6 +216,18 @@ class AdminCitaController extends Controller
             'user_id' => auth()->id(),
             'change_date' => now()
         ]);
+
+        $cita->loadMissing(['client.user', 'service', 'employee']);
+        $clienteUsuario = $cita->client?->user;
+        if ($clienteUsuario) {
+            $clienteUsuario->notify(
+                new CitaClienteNotification(
+                    $cita,
+                    CitaClienteNotification::CANCELADA_POR_ADMIN,
+                    $motivoCancelacion
+                )
+            );
+        }
 
         return back()->with('success', 'Cita cancelada correctamente');
     }
@@ -299,7 +314,7 @@ class AdminCitaController extends Controller
 
         $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
         $finCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('end_time'));
-        if (now()->lt($finCita)) {
+        if (Carbon::now()->lessThan($finCita)) {
             return back()->with('error', 'La cita solo puede marcarse como completada después de la hora de fin.');
         }
 
@@ -331,7 +346,7 @@ class AdminCitaController extends Controller
 
         $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
         $inicioCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
-        if (now()->lt($inicioCita)) {
+        if (Carbon::now()->lessThan($inicioCita)) {
             return back()->with('error', 'Solo se puede marcar no asistió a partir de la hora de inicio.');
         }
 
@@ -373,6 +388,14 @@ class AdminCitaController extends Controller
         $cita->update([
             'employee_id' => $request->empleado_id,
         ]);
+
+        $cita->loadMissing(['client.user', 'service', 'employee']);
+        $clienteUsuario = $cita->client?->user;
+        if ($clienteUsuario) {
+            $clienteUsuario->notify(
+                new CitaClienteNotification($cita, CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
+            );
+        }
 
         return back()->with('success', 'Empleado asignado correctamente');
     }
