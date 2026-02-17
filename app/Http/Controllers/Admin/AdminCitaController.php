@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Cita;
 use App\Models\CitaEstado;
 use App\Models\Empleado;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminCitaController extends Controller
 {
@@ -35,6 +38,137 @@ class AdminCitaController extends Controller
         ];
 
         return view('admin.citas.index', compact('citas', 'empleados', 'stats'));
+    }
+
+    public function reporteDiario(Request $request)
+    {
+        $request->validate([
+            'fecha' => 'nullable|date',
+        ]);
+
+        $fecha = $request->input('fecha', today()->toDateString());
+
+        $citas = Cita::with(['client.user', 'service', 'employee'])
+            ->whereDate('date', $fecha)
+            ->orderBy('start_time')
+            ->get();
+
+        $filename = 'reporte_citas_' . $fecha . '.csv';
+        $handle = fopen('php://temp', 'r+');
+
+        // BOM para que Excel abra UTF-8 correctamente
+        fwrite($handle, "\xEF\xBB\xBF");
+
+        fputcsv($handle, ['Reporte diario de citas']);
+        fputcsv($handle, ['Fecha', $fecha]);
+        fputcsv($handle, ['Total de citas', $citas->count()]);
+        fputcsv($handle, []);
+        fputcsv($handle, [
+            'Hora',
+            'Cliente',
+            'Email',
+            'Servicio',
+            'Estado',
+            'Empleado',
+            'Notas',
+        ]);
+
+        foreach ($citas as $cita) {
+            fputcsv($handle, [
+                optional($cita->start_time)->format('H:i'),
+                trim((string) optional(optional($cita->client)->user)->name),
+                trim((string) optional(optional($cita->client)->user)->email),
+                trim((string) optional($cita->service)->name),
+                (string) $cita->status,
+                trim((string) optional($cita->employee)->name),
+                trim((string) ($cita->notes ?? '')),
+            ]);
+        }
+
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
+    public function reporteMensual(Request $request)
+    {
+        $request->validate([
+            'mes' => 'nullable|date_format:Y-m',
+        ]);
+
+        $data = $this->buildMonthlyReportData($request->input('mes', now()->format('Y-m')));
+
+        return view('admin.citas.reporte-mensual', $data);
+    }
+
+    public function reporteMensualPdf(Request $request)
+    {
+        $request->validate([
+            'mes' => 'nullable|date_format:Y-m',
+        ]);
+
+        $data = $this->buildMonthlyReportData($request->input('mes', now()->format('Y-m')));
+        $nombreMes = $data['inicio']->format('Y-m');
+
+        $pdf = Pdf::loadView('admin.citas.reporte-mensual-pdf', $data)
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download("reporte_mensual_citas_{$nombreMes}.pdf");
+    }
+
+    private function buildMonthlyReportData(string $mesSeleccionado): array
+    {
+        [$year, $month] = array_map('intval', explode('-', $mesSeleccionado));
+
+        $inicio = Carbon::create($year, $month, 1)->startOfMonth();
+        $fin = $inicio->copy()->endOfMonth();
+
+        $conteoPorDia = Cita::query()
+            ->selectRaw('DATE(date) as fecha, COUNT(*) as total')
+            ->whereBetween('date', [$inicio->toDateString(), $fin->toDateString()])
+            ->groupBy(DB::raw('DATE(date)'))
+            ->orderBy('fecha')
+            ->pluck('total', 'fecha');
+
+        $labels = [];
+        $valores = [];
+        for ($dia = 1; $dia <= $inicio->daysInMonth; $dia++) {
+            $fecha = $inicio->copy()->day($dia)->toDateString();
+            $labels[] = str_pad((string) $dia, 2, '0', STR_PAD_LEFT);
+            $valores[] = (int) ($conteoPorDia[$fecha] ?? 0);
+        }
+
+        $statusResumen = Cita::query()
+            ->selectRaw('status, COUNT(*) as total')
+            ->whereBetween('date', [$inicio->toDateString(), $fin->toDateString()])
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $totalCitas = array_sum($valores);
+        $promedioDiario = $inicio->daysInMonth > 0
+            ? round($totalCitas / $inicio->daysInMonth, 2)
+            : 0;
+
+        $maxCitas = max($valores ?: [0]);
+        $indicePico = array_search($maxCitas, $valores, true);
+        $diaPico = $maxCitas > 0 && $indicePico !== false ? $labels[$indicePico] : null;
+
+        return [
+            'mesSeleccionado' => $mesSeleccionado,
+            'inicio' => $inicio,
+            'labels' => $labels,
+            'valores' => $valores,
+            'maxCitas' => $maxCitas,
+            'totalCitas' => $totalCitas,
+            'promedioDiario' => $promedioDiario,
+            'diaPico' => $diaPico,
+            'statusResumen' => $statusResumen,
+        ];
     }
 
 

@@ -88,6 +88,15 @@ Route::middleware(['auth', 'rol:1'])
         Route::get('/citas', [AdminCitaController::class, 'index'])
             ->name('citas.index');
 
+        Route::get('/citas/reporte-diario', [AdminCitaController::class, 'reporteDiario'])
+            ->name('citas.reporte-diario');
+
+        Route::get('/citas/reporte-mensual', [AdminCitaController::class, 'reporteMensual'])
+            ->name('citas.reporte-mensual');
+
+        Route::get('/citas/reporte-mensual/pdf', [AdminCitaController::class, 'reporteMensualPdf'])
+            ->name('citas.reporte-mensual.pdf');
+
         Route::post('/citas/{cita}/confirmar', [AdminCitaController::class, 'confirmar'])
             ->name('citas.confirmar');
 
