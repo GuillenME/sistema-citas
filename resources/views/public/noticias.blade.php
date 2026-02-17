@@ -54,8 +54,8 @@
         <button class="news-modal-close" type="button">&times;</button>
         <img id="newsModalImage" src="" alt="Noticia">
         <span id="newsModalDate" class="news-modal-date"></span>
-        <h3 id="newsModalTitle"></h3>
-        <p id="newsModalContent"></p>
+        <h3 id="newsModalTitle" class="news-modal-title"></h3>
+        <p id="newsModalContent" class="news-modal-text"></p>
     </div>
 </div>
 @endsection

@@ -13,8 +13,8 @@
                 <article class="news-card {{ $index % 2 === 0 ? 'down' : 'up' }}">
                     <div class="news-thumb">
                         <img
-                            src="{{ $noticia->image 
-                                ? asset('storage/' . $noticia->image) 
+                            src="{{ $noticia->image
+                                ? asset('storage/' . $noticia->image)
                                 : asset('imagenes/servicio_default.png') }}"
                             alt="{{ $noticia->title }}"
                         >
@@ -61,8 +61,8 @@
 
             <img id="newsModalImage" src="" alt="Noticia">
             <span id="newsModalDate" class="news-modal-date"></span>
-            <h3 id="newsModalTitle"></h3>
-            <p id="newsModalContent"></p>
+            <h3 id="newsModalTitle" class="news-modal-title"></h3>
+            <p id="newsModalContent" class="news-modal-text"></p>
         </div>
     </div>
 
