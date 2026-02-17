@@ -141,12 +141,38 @@ class AdminCitaController extends Controller
             ->orderBy('fecha')
             ->pluck('total', 'fecha');
 
+        $conteoPorDiaEstatus = Cita::query()
+            ->selectRaw('DATE(date) as fecha, status, COUNT(*) as total')
+            ->whereBetween('date', [$inicio->toDateString(), $fin->toDateString()])
+            ->groupBy(DB::raw('DATE(date)'), 'status')
+            ->get()
+            ->groupBy('fecha');
+
         $labels = [];
         $valores = [];
+        $detalleDiario = [];
+        $acumulado = 0;
         for ($dia = 1; $dia <= $inicio->daysInMonth; $dia++) {
             $fecha = $inicio->copy()->day($dia)->toDateString();
+            $totalDia = (int) ($conteoPorDia[$fecha] ?? 0);
+            $registrosDia = $conteoPorDiaEstatus->get($fecha, collect());
+            $canceladasDia = (int) ($registrosDia->firstWhere('status', 'cancelada')?->total ?? 0);
+            $confirmadasDia = (int) ($registrosDia->firstWhere('status', 'confirmada')?->total ?? 0);
+            $completadasDia = (int) ($registrosDia->firstWhere('status', 'completada')?->total ?? 0);
+            $noAsistioDia = (int) ($registrosDia->firstWhere('status', 'no_asistio')?->total ?? 0);
+            $acumulado += $totalDia;
+
             $labels[] = str_pad((string) $dia, 2, '0', STR_PAD_LEFT);
-            $valores[] = (int) ($conteoPorDia[$fecha] ?? 0);
+            $valores[] = $totalDia;
+            $detalleDiario[] = [
+                'dia' => str_pad((string) $dia, 2, '0', STR_PAD_LEFT),
+                'citas' => $totalDia,
+                'canceladas' => $canceladasDia,
+                'confirmadas' => $confirmadasDia,
+                'completadas' => $completadasDia,
+                'no_asistio' => $noAsistioDia,
+                'totales' => $acumulado,
+            ];
         }
 
         $statusResumen = Cita::query()
@@ -171,9 +197,14 @@ class AdminCitaController extends Controller
             'valores' => $valores,
             'maxCitas' => $maxCitas,
             'totalCitas' => $totalCitas,
+            'totalCanceladas' => (int) ($statusResumen['cancelada'] ?? 0),
+            'totalConfirmadas' => (int) ($statusResumen['confirmada'] ?? 0),
+            'totalCompletadas' => (int) ($statusResumen['completada'] ?? 0),
+            'totalNoAsistio' => (int) ($statusResumen['no_asistio'] ?? 0),
             'promedioDiario' => $promedioDiario,
             'diaPico' => $diaPico,
             'statusResumen' => $statusResumen,
+            'detalleDiario' => $detalleDiario,
         ];
     }
 

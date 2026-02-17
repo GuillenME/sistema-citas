@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
@@ -34,6 +34,7 @@
         .chart { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
         .chart th, .chart td { border: 1px solid #e3d3b9; padding: 6px; text-align: center; }
         .chart th { background: #f8f1e6; color: #6f4f2a; }
+        .chart tfoot th { background: #f1e1c7; color: #4a3317; }
         .bars { width: 100%; border-collapse: collapse; margin-top: 8px; }
         .bars th, .bars td { border: 1px solid #e3d3b9; padding: 6px; }
         .bars th { background: #f8f1e6; color: #6f4f2a; }
@@ -83,40 +84,58 @@
                 <div class="k-value">{{ number_format($promedioDiario, 2) }}</div>
             </td>
             <td>
-                <div class="k-label">Día pico</div>
+                <div class="k-label">Dia pico</div>
                 <div class="k-value">{{ $diaPico ?: '-' }}</div>
             </td>
             <td>
-                <div class="k-label">Máximo en un día</div>
+                <div class="k-label">Maximo en un dia</div>
                 <div class="k-value">{{ $maxCitas }}</div>
             </td>
         </tr>
     </table>
 
-    <div class="section-title">Detalle numérico por día</div>
+    <div class="section-title">Detalle por dia</div>
     <table class="chart">
         <thead>
             <tr>
-                <th>Día</th>
-                <th>Citas</th>
+                <th>Dia</th>
+                <th>Citas canceladas</th>
+                <th>Citas confirmadas</th>
+                <th>Citas completadas</th>
+                <th>No asistio</th>
+                <th>Totales</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($labels as $idx => $label)
+            @foreach ($detalleDiario as $fila)
                 <tr>
-                    <td>{{ $label }}</td>
-                    <td>{{ $valores[$idx] ?? 0 }}</td>
+                    <td>{{ $fila['dia'] }}</td>
+                    <td>{{ $fila['canceladas'] }}</td>
+                    <td>{{ $fila['confirmadas'] }}</td>
+                    <td>{{ $fila['completadas'] }}</td>
+                    <td>{{ $fila['no_asistio'] }}</td>
+                    <td>{{ $fila['totales'] }}</td>
                 </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <th>Total mes</th>
+                <th>{{ $totalCanceladas ?? 0 }}</th>
+                <th>{{ $totalConfirmadas ?? 0 }}</th>
+                <th>{{ $totalCompletadas ?? 0 }}</th>
+                <th>{{ $totalNoAsistio ?? 0 }}</th>
+                <th>{{ $totalCitas }}</th>
+            </tr>
+        </tfoot>
     </table>
 
-    <div class="section-title">Gráfica de actividad diaria</div>
+    <div class="section-title">Grafica de actividad diaria</div>
     <table class="bars">
         <thead>
             <tr>
-                <th style="width: 10%;">Día</th>
-                <th style="width: 75%;">Gráfica</th>
+                <th style="width: 10%;">Dia</th>
+                <th style="width: 75%;">Grafica</th>
                 <th style="width: 15%;">Total</th>
             </tr>
         </thead>
