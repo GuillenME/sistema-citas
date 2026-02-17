@@ -18,6 +18,11 @@ class AdminCitaController extends Controller
         $hoy = today();
 
         $citas = Cita::with(['client', 'service', 'employee'])
+            ->withCount([
+                'estados as reagendas_count' => function ($query) {
+                    $query->where('status', 'reagendada');
+                },
+            ])
             ->orderBy('date', 'desc')
             ->paginate(5);
 
@@ -29,7 +34,7 @@ class AdminCitaController extends Controller
                 ->count(),
             'pendientes' => Cita::query()
                 ->whereDate('date', $hoy)
-                ->whereIn('status', ['pendiente', 'pendiente_anticipo'])
+                ->where('status', 'pendiente_anticipo')
                 ->count(),
             'canceladas' => Cita::query()
                 ->whereDate('date', $hoy)
@@ -210,6 +215,144 @@ class AdminCitaController extends Controller
         ]);
 
         return back()->with('success', 'Cita cancelada correctamente');
+    }
+
+    public function reagendar(Request $request, Cita $cita)
+    {
+        if ($cita->status !== 'confirmada') {
+            return back()->with('error', 'Solo se pueden reagendar citas confirmadas.');
+        }
+
+        $reagendas = $cita->estados()->where('status', 'reagendada')->count();
+        if ($reagendas >= 2) {
+            return back()->with('error', 'Esta cita ya alcanzó el máximo de 2 reagendas.');
+        }
+
+        $request->validate([
+            'fecha' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                function ($attribute, $value, $fail) {
+                    if (Carbon::parse($value)->isSunday()) {
+                        $fail('No se puede reagendar en domingo.');
+                    }
+                },
+            ],
+            'hora_inicio' => 'required|date_format:H:i',
+            'observaciones' => 'nullable|string|max:500',
+        ]);
+
+        if (!$cita->service) {
+            return back()->with('error', 'La cita no tiene servicio asociado.');
+        }
+
+        $horaInicio = Carbon::parse($request->hora_inicio);
+        $horaFin = $horaInicio->copy()->addMinutes($cita->service->duration_minutes);
+
+        $citaSolapada = Cita::query()
+            ->whereDate('date', $request->fecha)
+            ->whereIn('status', ['confirmada', 'pendiente_anticipo'])
+            ->where('id', '!=', $cita->id)
+            ->where(function ($query) use ($horaInicio, $horaFin) {
+                $query->where('start_time', '<', $horaFin->format('H:i'))
+                    ->where('end_time', '>', $horaInicio->format('H:i'));
+            })
+            ->exists();
+
+        if ($citaSolapada) {
+            return back()->with('error', 'El horario nuevo se cruza con otra cita.');
+        }
+
+        $notaReagendada = trim((string) $request->observaciones);
+        $notaAnterior = trim((string) ($cita->notes ?? ''));
+        $notaFinal = 'Reagendada por administrador.';
+        if ($notaReagendada !== '') {
+            $notaFinal .= ' ' . $notaReagendada;
+        }
+        if ($notaAnterior !== '') {
+            $notaFinal .= ' | Nota anterior: ' . $notaAnterior;
+        }
+
+        $cita->update([
+            'date' => $request->fecha,
+            'start_time' => $horaInicio->format('H:i'),
+            'end_time' => $horaFin->format('H:i'),
+            'notes' => $notaFinal,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'reagendada',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        return back()->with('success', 'Cita reagendada correctamente.');
+    }
+
+    public function completar(Cita $cita)
+    {
+        if ($cita->status !== 'confirmada') {
+            return back()->with('error', 'Solo se pueden completar citas confirmadas.');
+        }
+
+        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
+        $finCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('end_time'));
+        if (now()->lt($finCita)) {
+            return back()->with('error', 'La cita solo puede marcarse como completada después de la hora de fin.');
+        }
+
+        $notaBase = trim((string) ($cita->notes ?? ''));
+        $notaFinal = $notaBase === ''
+            ? 'Marcada como completada por administrador.'
+            : $notaBase . ' | Marcada como completada por administrador.';
+
+        $cita->update([
+            'status' => 'completada',
+            'notes' => $notaFinal,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'completada',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        return back()->with('success', 'Cita marcada como completada.');
+    }
+
+    public function marcarNoAsistio(Cita $cita)
+    {
+        if ($cita->status !== 'confirmada') {
+            return back()->with('error', 'Solo se puede marcar no asistió en citas confirmadas.');
+        }
+
+        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
+        $inicioCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
+        if (now()->lt($inicioCita)) {
+            return back()->with('error', 'Solo se puede marcar no asistió a partir de la hora de inicio.');
+        }
+
+        $notaBase = trim((string) ($cita->notes ?? ''));
+        $notaFinal = $notaBase === ''
+            ? 'Marcada como no asistió por administrador.'
+            : $notaBase . ' | Marcada como no asistió por administrador.';
+
+        $cita->update([
+            'status' => 'no_asistio',
+            'notes' => $notaFinal,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'no_asistio',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        return back()->with('success', 'Cita marcada como no asistió.');
     }
 
 

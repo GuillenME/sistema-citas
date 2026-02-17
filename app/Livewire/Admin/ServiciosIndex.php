@@ -30,7 +30,6 @@ class ServiciosIndex extends Component
 
             $hasPendingAppointments = Cita::where('service_id', $servicio->id)
                 ->whereIn('status', [
-                    'pendiente',
                     'pendiente_anticipo',
                     'confirmada',
                 ])

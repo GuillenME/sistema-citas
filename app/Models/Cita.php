@@ -42,6 +42,11 @@ class Cita extends Model
         return $this->belongsTo(Empleado::class, 'employee_id');
     }
 
+    public function estados()
+    {
+        return $this->hasMany(CitaEstado::class, 'appointment_id');
+    }
+
     // public function staff()
     // {
     //     return $this->belongsTo(Staff::class, 'staff_id');

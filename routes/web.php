@@ -103,6 +103,15 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
 
+        Route::post('/citas/{cita}/reagendar', [AdminCitaController::class, 'reagendar'])
+            ->name('citas.reagendar');
+
+        Route::post('/citas/{cita}/completar', [AdminCitaController::class, 'completar'])
+            ->name('citas.completar');
+
+        Route::post('/citas/{cita}/no-asistio', [AdminCitaController::class, 'marcarNoAsistio'])
+            ->name('citas.noAsistio');
+
         // PROMOCIONES (LIVEWIRE)
         Route::get('/promociones', function () {
             return view('admin.promociones.index');
@@ -193,6 +202,9 @@ Route::middleware(['auth', 'rol:3'])
 
         Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
             ->name('citas.store');
+
+        Route::post('/citas/{cita}/reagendar', [RecepcionistaCitaController::class, 'reagendar'])
+            ->name('citas.reagendar');
 
         Route::get('/citas', [RecepcionistaCitaController::class, 'index'])
             ->name('citas.index');
