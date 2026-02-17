@@ -1,8 +1,21 @@
-<div>
-    <div class="card table-card">
-        <div class="table-container">
+<div class="serv-shell">
+    <div class="serv-panel">
+        <header class="serv-head">
+            <div>
+                <h3>Listado de noticias y estado de publicacion.</h3>
+            </div>
+            <div class="serv-actions">
+                <a href="{{ route('admin.noticias.create') }}" class="serv-btn primary">
+                    <span class="serv-btn-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                    </span>
+                    Nueva noticia
+                </a>
+            </div>
+        </header>
 
-            <table class="admin-table">
+        <div class="table-container serv-table-wrap">
+            <table class="admin-table serv-table">
                 <thead>
                     <tr>
                         <th>Titulo</th>
@@ -11,14 +24,13 @@
                         <th>Acciones</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @forelse ($noticias as $noticia)
                         <tr>
                             <td>{{ $noticia->title }}</td>
                             <td>{{ \Carbon\Carbon::parse($noticia->publication_date)->format('d/m/Y') }}</td>
                             <td>
-                                <span class="badge {{ $noticia->published ? 'badge-on' : 'badge-off' }}">
+                                <span class="serv-status {{ $noticia->published ? 'on' : 'off' }}">
                                     {{ $noticia->published ? 'Si' : 'No' }}
                                 </span>
                             </td>
@@ -49,20 +61,16 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="table-empty">
-                                No hay noticias registradas
-                            </td>
+                            <td colspan="4" class="table-empty">No hay noticias registradas</td>
                         </tr>
                     @endforelse
                 </tbody>
-
             </table>
-
         </div>
 
-        <div class="pagination-wrapper">
+        <div class="pagination-wrapper serv-pagination">
             <div class="pagination-info">
-                Pagina {{ $noticias->currentPage() }} de {{ $noticias->lastPage() }} ({{ $noticias->total() }} registros)
+                Mostrando {{ $noticias->firstItem() ?? 0 }}-{{ $noticias->lastItem() ?? 0 }} de {{ $noticias->total() }} noticias
             </div>
             {{ $noticias->links() }}
         </div>
@@ -71,15 +79,10 @@
     @if ($confirmDeleteId)
         <div class="modal-overlay" wire:click.self="cancelDelete">
             <div class="modal-box">
-                <h3>¿Eliminar noticia?</h3>
-
-                <p>Esta acción no se puede deshacer.</p>
-
+                <h3>Eliminar noticia?</h3>
+                <p>Esta accion no se puede deshacer.</p>
                 <div class="modal-actions">
-                    <button class="btn btn-cancel" wire:click="cancelDelete">
-                        Cancelar
-                    </button>
-
+                    <button class="btn btn-cancel" wire:click="cancelDelete">Cancelar</button>
                     <button class="btn btn-save" wire:click="deleteConfirmed" wire:loading.attr="disabled">
                         <span wire:loading.remove>Eliminar</span>
                         <span wire:loading>Eliminando...</span>
