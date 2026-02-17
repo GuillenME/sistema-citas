@@ -7,16 +7,7 @@
             <div class="serv-actions">
                 <a href="{{ route('admin.noticias.create') }}" class="serv-btn primary">
                     <span class="serv-btn-icon" aria-hidden="true">
-<<<<<<< HEAD
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
-=======
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect width="18" height="18" x="3" y="3" rx="2" />
-                            <path d="M8 12h8" />
-                            <path d="M12 8v8" />
-                        </svg>
->>>>>>> da515d7dfd667360ce7218f028344762209acb71
                     </span>
                     Nueva noticia
                 </a>
@@ -89,12 +80,7 @@
 
         <div class="pagination-wrapper serv-pagination">
             <div class="pagination-info">
-<<<<<<< HEAD
                 Mostrando {{ $noticias->firstItem() ?? 0 }}-{{ $noticias->lastItem() ?? 0 }} de {{ $noticias->total() }} noticias
-=======
-                Mostrando {{ $noticias->firstItem() ?? 0 }}-{{ $noticias->lastItem() ?? 0 }} de
-                {{ $noticias->total() }} noticias
->>>>>>> da515d7dfd667360ce7218f028344762209acb71
             </div>
             {{ $noticias->links() }}
         </div>
