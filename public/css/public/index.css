@@ -1406,8 +1406,8 @@ body.modal-open{
 }
 
 #servicios .service-card:hover{
-    transform: translateY(-6px) scale(1.04);
-    box-shadow: 0 26px 54px rgba(0,0,0,.48);
+    transform: translateY(-8px) scale(1.08);
+    box-shadow: 0 30px 62px rgba(0,0,0,.52);
     z-index: 3;
 }
 
@@ -1774,16 +1774,25 @@ body.modal-open{
 
 /* ================= MOTION ================= */
 [data-reveal]{
-    opacity: 1;
-    transform: none;
-    filter: none;
-    transition: none;
+    opacity: 0;
+    transform: translateY(86px) scale(.9) rotateX(8deg);
+    filter: blur(16px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(.17,.84,.34,1), filter 1s ease;
 }
 
 [data-reveal].is-inview{
     opacity: 1;
-    transform: none;
+    transform: translateY(0) scale(1);
     filter: blur(0);
+}
+
+/* Solo servicios sin efecto de aparicion */
+#servicios [data-reveal],
+#servicios [data-reveal].is-inview{
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
 }
 
 .hero-enter{
