@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Cita;
+use App\Models\CitaEstado;
 use App\Models\Servicio;
 use App\Models\Cliente;
 use App\Constants\CitaStatus;
@@ -259,6 +260,55 @@ public function store(Request $request)
         }
     }
 }
+
+    public function cancelar(Cita $cita)
+    {
+        $cliente = Cliente::where('user_id', auth()->id())->first();
+
+        if (!$cliente || $cita->client_id !== $cliente->id) {
+            abort(403);
+        }
+
+        if (!in_array($cita->status, [CitaStatus::PENDIENTE_ANTICIPO, CitaStatus::CONFIRMADA], true)) {
+            return back()->with('error', 'Solo puedes cancelar citas pendientes o confirmadas.');
+        }
+
+        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
+        $inicioCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
+        $ahora = now();
+        $minutosRestantes = $ahora->diffInMinutes($inicioCita, false);
+
+        if ($minutosRestantes <= 0) {
+            return back()->with('error', 'No puedes cancelar una cita que ya inicio.');
+        }
+
+        $anticipacionRequerida = $minutosRestantes <= 60 ? 10 : 20;
+        if ($minutosRestantes < $anticipacionRequerida) {
+            return back()->with(
+                'error',
+                "Debes cancelar con al menos {$anticipacionRequerida} minutos de anticipacion."
+            );
+        }
+
+        $notaBase = trim((string) ($cita->notes ?? ''));
+        $notaFinal = $notaBase === ''
+            ? 'Cancelada por el cliente.'
+            : $notaBase . ' | Cancelada por el cliente.';
+
+        $cita->update([
+            'status' => CitaStatus::CANCELADA,
+            'notes' => $notaFinal,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => CitaStatus::CANCELADA,
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        return back()->with('success', 'Cita cancelada correctamente.');
+    }
 
     public function subirComprobante(Request $request, Cita $cita)
     {

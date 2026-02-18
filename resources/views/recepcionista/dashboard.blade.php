@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-ui.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-dashboard.css') }}">
 </head>
 <body class="recepcionista-dashboard-page">
@@ -66,7 +67,42 @@
                 <li>Revisar agenda del día</li>
                 <li>Registrar nuevas citas</li>
                 <li>Atender cambios de horario</li>
+                <li>Confirmar citas de mañana</li>
             </ul>
+        </div>
+        <div class="secondary-card recent-card">
+            <h3>Citas mas recientes</h3>
+            <div class="recent-list">
+                @forelse ($citasRecientes as $cita)
+                    @php
+                        $estadoTexto = match ($cita->status) {
+                            'pendiente_anticipo' => 'Pendiente',
+                            'confirmada' => 'Confirmado',
+                            'cancelada' => 'Cancelada',
+                            'completada' => 'Completada',
+                            'no_asistio' => 'No asistio',
+                            default => ucfirst($cita->status),
+                        };
+                        $estadoClase = match ($cita->status) {
+                            'confirmada', 'completada' => 'confirmada',
+                            'cancelada', 'no_asistio' => 'cancelada',
+                            default => 'pendiente',
+                        };
+                    @endphp
+                    <article class="recent-item">
+                        <div>
+                            <p class="recent-name">{{ $cita->client->user->name ?? 'Cliente' }} {{ $cita->client->user->last_name ?? '' }}</p>
+                            <p class="recent-service">{{ $cita->service->name ?? 'Servicio' }}</p>
+                        </div>
+                        <div class="recent-meta">
+                            <p class="recent-time">{{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }}</p>
+                            <p class="recent-status recent-status--{{ $estadoClase }}">{{ $estadoTexto }}</p>
+                        </div>
+                    </article>
+                @empty
+                    <p class="recent-empty">Aun no hay citas registradas.</p>
+                @endforelse
+            </div>
         </div>
         <div class="secondary-card">
             <h3>📌 Recordatorio</h3>

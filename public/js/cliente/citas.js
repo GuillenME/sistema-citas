@@ -133,16 +133,3 @@ function cerrarModalConfirmar() {
 function confirmarAgendar() {
     document.getElementById('formAgendarCita').submit();
 }
-
-/* ===== LOGOUT ===== */
-function mostrarModalLogout() {
-    document.getElementById('modalLogout').classList.add('active');
-}
-
-function cerrarModalLogout() {
-    document.getElementById('modalLogout').classList.remove('active');
-}
-
-function confirmarLogout() {
-    document.getElementById('logoutForm').submit();
-}

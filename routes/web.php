@@ -91,6 +91,9 @@ Route::middleware(['auth', 'rol:1'])
         Route::get('/citas/reporte-diario', [AdminCitaController::class, 'reporteDiario'])
             ->name('citas.reporte-diario');
 
+        Route::get('/citas/reporte-diario/pdf', [AdminCitaController::class, 'reporteDiarioPdf'])
+            ->name('citas.reporte-diario.pdf');
+
         Route::get('/citas/reporte-mensual', [AdminCitaController::class, 'reporteMensual'])
             ->name('citas.reporte-mensual');
 
@@ -231,6 +234,9 @@ Route::middleware(['auth', 'rol:2'])
             ->name('citas.bloques');
         Route::post('/citas/{cita}/comprobante', [CitaController::class, 'subirComprobante'])
             ->name('citas.comprobante');
+
+        Route::post('/citas/{cita}/cancelar', [CitaController::class, 'cancelar'])
+            ->name('citas.cancelar');
 
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-ui.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-create.css') }}">
 </head>
 
@@ -214,4 +215,3 @@ function confirmarLogout() {
 
 </body>
 </html>
-
