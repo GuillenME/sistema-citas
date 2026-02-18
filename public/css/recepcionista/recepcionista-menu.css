@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Manrope:wght@300;400;600;700&display=swap");
+
 .cliente-menu {
     position: relative;
     z-index: 2;
@@ -12,9 +14,23 @@
 }
 
 .cliente-menu .title {
-    font-size: 18px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
+    font-family: "Cinzel", serif;
+    color: #ffdca0;
+    font-size: 20px;
+    letter-spacing: 1.2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 19px;
+    min-width: 0;
+}
+
+.cliente-menu .title-logo-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
 }
 
 .cliente-menu nav {

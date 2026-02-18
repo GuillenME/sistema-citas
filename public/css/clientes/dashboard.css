@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Manrope:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Manrope:wght@300;400;600;700&display=swap');
 
 * {
     box-sizing: border-box;
@@ -53,7 +53,7 @@ header {
 }
 
 .title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cinzel', serif;
     color: var(--accent);
     font-size: 22px;
     letter-spacing: 1px;
@@ -170,9 +170,10 @@ header .logout-btn:active {
 }
 
 .hero-copy h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cinzel', serif;
     font-size: 34px;
     margin: 0 0 12px;
+    line-height: 1.2;
 }
 
 .hero-text {
@@ -202,14 +203,35 @@ header .logout-btn:active {
     transition: transform .2s ease, box-shadow .2s ease;
 }
 
+.action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+    color: #f2a93b;
+    background: rgba(242, 169, 59, 0.1);
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.action-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
 .action-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
 .action-title {
+    font-family: 'Cinzel', serif;
     font-weight: 700;
     color: #fffaf4;
+    letter-spacing: .4px;
 }
 
 .action-desc {
@@ -230,6 +252,7 @@ header .logout-btn:active {
     gap: 12px;
     height: 100%;
     min-height: 420px;
+    perspective: 1000px;
 }
 
 .collage-tile {
@@ -242,12 +265,34 @@ header .logout-btn:active {
     background-position: center;
     border: 1px solid rgba(252, 204, 124, 0.2);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    transform: translate3d(0, 0, 0);
+    transition: transform .45s cubic-bezier(.22,.61,.36,1), box-shadow .35s ease;
+    animation: tileFloat 6s ease-in-out infinite;
+    will-change: transform;
 }
 
 .tile-1 { background-image: url('/imagenes/collage1.jpg'); }
 .tile-2 { background-image: url('/imagenes/collage2.jpg'); }
 .tile-3 { background-image: url('/imagenes/collage3.jpg'); }
 .tile-4 { background-image: url('/imagenes/collage4.jpg'); }
+
+.tile-2 { animation-delay: .9s; }
+.tile-3 { animation-delay: 1.8s; }
+.tile-4 { animation-delay: 2.7s; }
+
+.collage:hover .tile-1 { transform: translate3d(-6px, -10px, 24px) rotateX(2deg) rotateY(-2deg); }
+.collage:hover .tile-2 { transform: translate3d(6px, -10px, 24px) rotateX(2deg) rotateY(2deg); }
+.collage:hover .tile-3 { transform: translate3d(-6px, -8px, 20px) rotateX(2deg) rotateY(-2deg); }
+.collage:hover .tile-4 { transform: translate3d(6px, -8px, 20px) rotateX(2deg) rotateY(2deg); }
+
+.collage-tile:hover {
+    animation-play-state: paused;
+    transform: translate3d(0, -14px, 38px) scale(1.03) rotateX(4deg) rotateY(-4deg);
+    box-shadow:
+        0 16px 28px rgba(0, 0, 0, 0.38),
+        0 0 16px rgba(252, 204, 124, 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
 
 .visual-note {
     padding: 14px 16px;
@@ -355,4 +400,24 @@ header .logout-btn:active {
 @keyframes scaleIn {
     from { transform: scale(.92); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes tileFloat {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, -8px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .collage-tile {
+        animation: none;
+        transition: none;
+    }
+
+    .collage:hover .tile-1,
+    .collage:hover .tile-2,
+    .collage:hover .tile-3,
+    .collage:hover .tile-4,
+    .collage-tile:hover {
+        transform: none;
+    }
 }
