@@ -47,12 +47,12 @@
         <div class="contact-lux-side">
             <div class="contact-lux-cards">
                 <article class="contact-info-card">
-                    <h4>UBICACION</h4>
+                    <h4>UBICACIÓN</h4>
                     <p>{!! nl2br(e($footerAddress)) !!}</p>
                 </article>
 
                 <article class="contact-info-card">
-                    <h4>TELEFONO</h4>
+                    <h4>TELÉFONO</h4>
                     <p>{!! nl2br(e($footerPhone)) !!}</p>
                 </article>
 
