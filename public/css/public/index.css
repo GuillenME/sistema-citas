@@ -1764,3 +1764,238 @@ body.modal-open{
         width: 100%;
     }
 }
+
+/* ================= MOTION ================= */
+[data-reveal]{
+    opacity: 0;
+    transform: translateY(86px) scale(.9) rotateX(8deg);
+    filter: blur(16px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(.17,.84,.34,1), filter 1s ease;
+    will-change: opacity, transform;
+}
+
+[data-reveal].is-inview{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+
+.hero-enter{
+    opacity: 0;
+    transform: translateY(26px);
+    animation: heroEnter 1.05s cubic-bezier(.16,.84,.24,1) forwards;
+}
+
+.hero-enter-delay{
+    animation-delay: .18s;
+}
+
+.hero-enter-1{
+    animation-delay: .26s;
+}
+
+.hero-enter-2{
+    animation-delay: .34s;
+}
+
+.hero-enter-3{
+    animation-delay: .42s;
+}
+
+.hero h1.hero-enter{
+    animation:
+        heroEnter 1.05s cubic-bezier(.16,.84,.24,1) forwards,
+        heroGlow 5.4s ease-in-out 1.2s infinite alternate;
+}
+
+@keyframes heroEnter{
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes heroGlow{
+    0%{
+        text-shadow: 0 8px 28px rgba(0,0,0,.5), 0 0 0 rgba(220,148,62,0);
+    }
+    100%{
+        text-shadow: 0 10px 34px rgba(0,0,0,.58), 0 0 20px rgba(220,148,62,.18);
+    }
+}
+
+.service-card,
+.review-premium-card,
+.contact-lux .contact-lux-form,
+.contact-lux .contact-info-card,
+.promo-box{
+    transition: transform .28s ease, box-shadow .28s ease, filter .28s ease;
+}
+
+.service-card:hover,
+.review-premium-card:hover,
+.contact-lux .contact-lux-form:hover,
+.contact-lux .contact-info-card:hover,
+.promo-box:hover{
+    transform: translateY(-7px) scale(1.012);
+    box-shadow: 0 24px 48px rgba(0,0,0,.45);
+}
+
+/* Borde animado en promociones */
+.promo-box::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1.5px;
+    border-radius: 24px;
+    background: conic-gradient(
+        from 0deg,
+        rgba(208,132,42,.08) 0deg,
+        rgba(208,132,42,.85) 52deg,
+        rgba(208,132,42,.08) 95deg,
+        rgba(208,132,42,.06) 360deg
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: promoBorderSpin 4.8s linear infinite;
+    z-index: 2;
+}
+
+.promo-info{
+    z-index: 3;
+}
+
+@keyframes promoBorderSpin{
+    to{
+        transform: rotate(1turn);
+    }
+}
+
+.services-actions .btn,
+.promo-actions .btn,
+.reviews-actions a,
+.contact-lux .contact-lux-submit{
+    transition: transform .22s ease, filter .22s ease, box-shadow .22s ease;
+}
+
+.services-actions .btn:hover,
+.promo-actions .btn:hover,
+.reviews-actions a:hover,
+.contact-lux .contact-lux-submit:hover{
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 16px 30px rgba(208,132,42,.3);
+}
+
+@media (prefers-reduced-motion: reduce){
+    [data-reveal],
+    .hero-enter,
+    .service-card,
+    .review-premium-card,
+    .contact-lux .contact-lux-form,
+    .contact-lux .contact-info-card,
+    .promo-box,
+    .services-actions .btn,
+    .promo-actions .btn,
+    .reviews-actions a,
+    .contact-lux .contact-lux-submit{
+        animation: none !important;
+        transition: none !important;
+        filter: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+
+    .promo-box::before{
+        animation: none !important;
+    }
+}
+/* ===== SHINE EFECTO SERVICIOS ===== */
+#servicios .service-card{
+    position: relative;
+    overflow: hidden;
+}
+
+#servicios .service-card::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255,255,255,.15) 50%,
+        transparent 100%
+    );
+    transform: skewX(-20deg);
+    transition: .6s;
+    z-index: 3;
+}
+
+#servicios .service-card:hover::before{
+    left: 140%;
+}
+/* ===== MODAL ANIMADO ===== */
+.modal{
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+
+.modal.active{
+    opacity: 1;
+}
+
+.modal-box{
+    transform: translateY(40px) scale(.96);
+    opacity: 0;
+    transition: transform .35s cubic-bezier(.17,.84,.34,1), opacity .35s ease;
+}
+
+.modal.active .modal-box{
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.promo-title-discount{
+    animation: promoPulse 2.6s ease-in-out infinite;
+}
+
+@keyframes promoPulse{
+    0%{
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(208,132,42,0);
+    }
+    50%{
+        transform: scale(1.05);
+        text-shadow: 0 0 18px rgba(208,132,42,.45);
+    }
+    100%{
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(208,132,42,0);
+    }
+}
+
+/* ===== SCROLL DINÁMICO PROMOCIONES ===== */
+
+.promo-box{
+    transition: transform .25s ease-out;
+    will-change: transform;
+}
+
+.promo-image img{
+    transition: transform .3s ease-out;
+    will-change: transform;
+}
+
+.promo-info{
+    transition: transform .3s ease-out, opacity .3s ease-out;
+    will-change: transform, opacity;
+}
+
+.promo-title-discount{
+    transition: transform .2s ease-out;
+    will-change: transform;
+}
