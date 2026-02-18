@@ -1347,14 +1347,14 @@ body.modal-open{
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 8px;
 }
 
 #servicios .services-slider{
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: calc((100% - 34px) / 3);
-    gap: 14px;
+    grid-auto-columns: calc((100% - 20px) / 3);
+    gap: 10px;
     overflow-x: auto;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
@@ -1382,6 +1382,7 @@ body.modal-open{
     scroll-snap-align: start;
     background: #1a120d;
     box-shadow: 0 20px 44px rgba(0,0,0,.4);
+    transition: transform .22s ease, box-shadow .22s ease;
 }
 
 #servicios .service-card::after{
@@ -1402,6 +1403,12 @@ body.modal-open{
 
 #servicios .service-card:hover img{
     transform: scale(1);
+}
+
+#servicios .service-card:hover{
+    transform: translateY(-6px) scale(1.04);
+    box-shadow: 0 26px 54px rgba(0,0,0,.48);
+    z-index: 3;
 }
 
 #servicios .service-overlay{
@@ -1495,8 +1502,8 @@ body.modal-open{
     }
 
     #servicios .services-slider{
-        grid-auto-columns: calc((100% - 16px) / 2);
-        gap: 16px;
+        grid-auto-columns: calc((100% - 10px) / 2);
+        gap: 10px;
     }
 
     #servicios .service-card,
@@ -1767,15 +1774,15 @@ body.modal-open{
 
 /* ================= MOTION ================= */
 [data-reveal]{
-    opacity: 0;
-    transform: translateY(86px) scale(.9) rotateX(8deg);
-    filter: blur(16px);
-    transition: opacity 1s ease, transform 1s cubic-bezier(.17,.84,.34,1), filter 1s ease;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
 }
 
 [data-reveal].is-inview{
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: none;
     filter: blur(0);
 }
 
