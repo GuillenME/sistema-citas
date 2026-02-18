@@ -235,6 +235,9 @@ Route::middleware(['auth', 'rol:2'])
         Route::post('/citas/{cita}/comprobante', [CitaController::class, 'subirComprobante'])
             ->name('citas.comprobante');
 
+        Route::post('/citas/{cita}/cancelar', [CitaController::class, 'cancelar'])
+            ->name('citas.cancelar');
+
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');
 
