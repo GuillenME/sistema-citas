@@ -7,9 +7,12 @@
 @endsection
 
 @section('content')
-<section>
-    <h1>Comentarios</h1>
-    <p class="subtitle">Gracias por compartir tu opinion con nosotros.</p>
+<section class="reviews-page">
+    <div class="reviews-head">
+        <span class="reviews-eyebrow">EXPERIENCIAS REALES</span>
+        <h1 class="reviews-title">Comentarios</h1>
+        <p class="subtitle">Gracias por compartir tu opinion con nosotros.</p>
+    </div>
 
     @forelse ($reviews as $review)
         @php
@@ -32,59 +35,45 @@
         @endphp
 
         @if ($loop->first)
-            <div class="services">
+            <div class="reviews-grid reviews-premium-grid">
         @endif
 
-        <div class="card">
+        <article class="review-card review-premium-card">
+            <div class="premium-review-top">
+                <div class="premium-review-stars" aria-label="Calificacion del cliente">
+                    @for ($i = 0; $i < $rating; $i++)
+                        &#9733;
+                    @endfor
+                </div>
 
-            <!-- ⭐ ESTRELLAS -->
-            <div class="stars">
-                @for ($i = 0; $i < $rating; $i++)
-                    &#9733;
-                @endfor
+                @if($review->service)
+                    <span class="premium-review-tag">{{ $review->service->name }}</span>
+                @endif
             </div>
 
-            <!-- 🔹 SERVICIO (NUEVO) -->
-            @if($review->service)
-                <div class="review-service">
-                    {{ $review->service->name }}
-                </div>
-            @endif
+            <p class="premium-review-quote">"{{ $review->comment }}"</p>
 
-            <!-- 💬 COMENTARIO -->
-            <p class="comment">{{ $review->comment }}</p>
-
-            <!-- 👤 META -->
-            <div class="meta">
-                <div class="avatar">{{ $initial }}</div>
-                <div>
+            <div class="premium-review-meta">
+                <div class="premium-review-avatar">{{ $initial }}</div>
+                <div class="premium-review-author">
                     @php
-                    $nombre = $review->user->name ?? 'Cliente';
-                    $apellidoInicial = $review->user && $review->user->last_name
-                        ? strtoupper(substr($review->user->last_name, 0, 1)) . '.'
-                        : '';
-                @endphp
-
-                <strong>
-                    {{ $nombre }} {{ $apellidoInicial }}
-                </strong>
-                    <div>{{ $review->created_at->format('d/m/Y') }}</div>
+                        $nombre = $review->user->name ?? 'Cliente';
+                        $apellidoInicial = $review->user && $review->user->last_name
+                            ? strtoupper(substr($review->user->last_name, 0, 1)) . '.'
+                            : '';
+                    @endphp
+                    <strong>{{ $nombre }} {{ $apellidoInicial }}</strong>
+                    <span>{{ $review->created_at->format('d/m/Y') }}</span>
                 </div>
             </div>
-
-        </div>
+        </article>
 
         @if ($loop->last)
             </div>
         @endif
     @empty
-        <div class="empty-state">No hay comentarios aun.</div>
+        <div class="reviews-empty">No hay comentarios aun.</div>
     @endforelse
 
-    @if ($reviews->hasPages())
-        <div class="reviews-pagination">
-            {{ $reviews->links('pagination::simple-bootstrap-4') }}
-        </div>
-    @endif
 </section>
 @endsection
