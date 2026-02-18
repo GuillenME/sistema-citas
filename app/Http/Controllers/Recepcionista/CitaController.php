@@ -28,11 +28,18 @@ class CitaController extends Controller
             ->where('status', 'cancelada')
             ->count();
 
+        $citasRecientes = Cita::with(['client.user', 'service'])
+            ->orderByDesc('date')
+            ->orderByDesc('start_time')
+            ->limit(3)
+            ->get();
+
         return view('recepcionista.dashboard', compact(
             'citasHoy',
             'pendientes',
             'confirmadas',
-            'canceladas'
+            'canceladas',
+            'citasRecientes'
         ));
     }
 
