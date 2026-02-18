@@ -39,9 +39,9 @@ class PublicController extends Controller
 
         $reviews = Review::with(['service','user'])
         ->orderBy('created_at', 'desc')
-        ->take(4)
+        ->take(3)
         ->get();
-        $reviewsHasMore = Review::count() > 4;
+        $reviewsHasMore = Review::count() > 3;
 
         $homeSetting = HomeSetting::first();
 
@@ -61,7 +61,7 @@ class PublicController extends Controller
     {
         $reviews = Review::with(['service','user'])
         ->orderBy('created_at', 'desc')
-        ->paginate(12);
+        ->get();
 
         return view('public.comentarios', compact('reviews'));
     }

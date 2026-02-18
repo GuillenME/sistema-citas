@@ -1,230 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+
 *{
-    box-sizing:border-box;
+    box-sizing: border-box;
 }
 
 html{
-    scroll-behavior:smooth;
+    scroll-behavior: smooth;
 }
 
 body{
-    margin:0;
-    font-family:'Segoe UI', Arial, sans-serif;
-    color:#e5e7eb;
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    color: #f4eee7;
     background-image:
-        linear-gradient(rgba(2,6,23,.45), rgba(2,6,23,.75)),
+        linear-gradient(180deg, rgba(16,10,8,.74) 0%, rgba(16,10,8,.92) 100%),
         url("/imagenes/serviciosFon2.png");
-    background-size:cover;
-    background-position:center;
-    background-repeat:no-repeat;
-    background-attachment:fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
-/* ================= SECTION ================= */
-
-section{
-    max-width:1200px;
-    margin:auto;
-    padding:90px 20px;
+.reviews-page{
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 88px 22px;
 }
 
-h1{
-    text-align:center;
-    margin-bottom:12px;
-    font-size:36px;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    color:#fff;
-    text-shadow:0 0 18px rgba(252,204,124,.6);
+.reviews-head{
+    text-align: center;
+    margin-bottom: 34px;
+}
+
+.reviews-eyebrow{
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: #d0842a;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.reviews-title{
+    margin: 0;
+    color: #f4eee7;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 5.8vw, 88px);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: .01em;
+}
+
+.reviews-title::after{
+    content: "";
+    display: block;
+    width: 64px;
+    height: 3px;
+    border-radius: 2px;
+    margin: 12px auto 0;
+    background: #d0842a;
 }
 
 .subtitle{
-    text-align:center;
-    margin-bottom:50px;
-    color:#f3e7d7;
-    font-size:15px;
-    opacity:.9;
+    margin: 14px 0 0;
+    color: rgba(244,238,231,.82);
+    font-size: 16px;
 }
 
-/* ================= GRID ================= */
-
-.services{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(300px,1fr));
-    gap:32px;
+.reviews-grid.reviews-premium-grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
 }
 
-/* ================= CARD PREMIUM ================= */
-
-.card{
-    background:rgba(95,70,54,.82);
-    backdrop-filter:blur(14px);
-    border-radius:24px;
-    padding:26px;
-    border:1px solid rgba(255,255,255,.06);
-    box-shadow:0 20px 50px rgba(0,0,0,.45);
-    transition:all .35s ease;
-    position:relative;
-    overflow:hidden;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-
-    min-height:300px; /* 🔥 Altura uniforme */
+.review-premium-card{
+    background: linear-gradient(145deg, rgba(34,22,16,.95) 0%, rgba(24,16,12,.98) 100%);
+    border-radius: 18px;
+    border: 1px solid rgba(208,132,42,.22);
+    padding: 20px;
+    box-shadow: 0 16px 38px rgba(0,0,0,.42);
+    min-height: 258px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-.card::before{
-    content:"";
-    position:absolute;
-    top:-40%;
-    right:-40%;
-    width:240px;
-    height:240px;
-    background:radial-gradient(circle, rgba(252,204,124,.25), transparent 70%);
-    transform:rotate(25deg);
+.premium-review-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 }
 
-.card::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:24px;
-    border:1px solid rgba(252,204,124,.15);
-    pointer-events:none;
+.premium-review-stars{
+    color: #f3a322;
+    font-size: 16px;
+    letter-spacing: 3px;
+    line-height: 1;
 }
 
-.card:hover{
-    transform:translateY(-10px);
-    box-shadow:0 25px 65px rgba(0,0,0,.6);
+.premium-review-tag{
+    display: inline-block;
+    border: 1px solid rgba(208,132,42,.45);
+    color: #d0842a;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
-/* ================= STARS ================= */
-
-.stars{
-    color:#fccc7c;
-    font-size:20px;
-    letter-spacing:4px;
-    margin-bottom:14px;
+.premium-review-quote{
+    margin: 0;
+    color: rgba(243,231,215,.9);
+    font-size: 18px;
+    line-height: 1.5;
+    font-style: italic;
+    min-height: 100px;
 }
 
-/* ================= SERVICE BADGE ================= */
-
-.review-service{
-    display:inline-block;
-    padding:7px 16px;
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:1.2px;
-    text-transform:uppercase;
-    border-radius:999px;
-    background:linear-gradient(135deg,#fccc7c,#e48815);
-    color:#1f140d;
-    margin-bottom:14px;
-    box-shadow:0 6px 18px rgba(0,0,0,.35);
+.premium-review-meta{
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-/* ================= COMMENT ================= */
-
-.comment{
-    font-size:15px;
-    line-height:1.7;
-    color:#f3e7d7;
-    opacity:.95;
-
-    display:-webkit-box;
-    display:box;
-
-    -webkit-box-orient:vertical;
-    box-orient:vertical;
-
-    -webkit-line-clamp:3;
-    line-clamp:3;
-
-    overflow:hidden;
+.premium-review-avatar{
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f1a12a, #b56a1a);
+    color: #1a110c;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* ================= META ================= */
-
-.meta{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-top:18px;
+.premium-review-author strong{
+    display: block;
+    color: #f4eee7;
+    font-size: 18px;
+    font-weight: 600;
 }
 
-.avatar{
-    width:44px;
-    height:44px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#8c4030,#e48815);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    font-size:16px;
-    color:#fff;
-    box-shadow:0 5px 15px rgba(0,0,0,.4);
+.premium-review-author span{
+    display: block;
+    color: rgba(244,238,231,.62);
+    font-size: 12px;
 }
 
-.meta div div:first-child{
-    font-weight:600;
-    font-size:14px;
+.reviews-empty{
+    text-align: center;
+    color: rgba(244,238,231,.84);
 }
-
-.meta div div:last-child{
-    font-size:12px;
-    opacity:.7;
-}
-
-/* ================= EMPTY STATE ================= */
-
-.empty-state{
-    text-align:center;
-    font-size:16px;
-    opacity:.8;
-}
-
-/* ================= PAGINATION ================= */
 
 .reviews-pagination{
-    margin-top:40px;
-    display:flex;
-    justify-content:center;
+    margin-top: 34px;
+    display: flex;
+    justify-content: center;
 }
 
 .pagination{
-    display:flex;
-    gap:10px;
+    display: flex;
+    gap: 10px;
 }
 
 .page-link{
-    padding:8px 14px;
-    border-radius:10px;
-    background:rgba(0,0,0,.3);
-    color:#fff;
-    border:1px solid rgba(255,255,255,.15);
-    text-decoration:none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: rgba(0,0,0,.3);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.15);
+    text-decoration: none;
 }
 
 .page-item.active .page-link{
-    background:#8c4030;
-    border-color:#8c4030;
-    color:#fccc7c;
+    background: #8c4030;
+    border-color: #8c4030;
+    color: #fccc7c;
 }
 
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:768px){
-    section{
-        padding:70px 18px;
+@media (max-width: 1024px){
+    .reviews-grid.reviews-premium-grid{
+        grid-template-columns: 1fr;
     }
 
-    h1{
-        font-size:28px;
-    }
-
-    .card{
-        padding:20px;
-        min-height:260px;
+    .premium-review-quote{
+        min-height: auto;
     }
 }
