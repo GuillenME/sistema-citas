@@ -236,41 +236,6 @@
 
 @section('scripts')
     <script>
-        // ===== SCROLL DINÁMICO PROMO =====
-        const promoSection = document.querySelector('#promociones');
-        const promoBox = document.querySelector('.promo-box');
-        const promoImage = document.querySelector('.promo-image img');
-        const promoInfo = document.querySelector('.promo-info');
-        const promoDiscount = document.querySelector('.promo-title-discount');
-
-        if (promoSection && promoBox) {
-            window.addEventListener('scroll', () => {
-
-                const rect = promoSection.getBoundingClientRect();
-                const windowHeight = window.innerHeight;
-
-                if (rect.top < windowHeight && rect.bottom > 0) {
-
-                    const progress = 1 - (rect.top / windowHeight);
-                    const limited = Math.max(0, Math.min(progress, 1));
-
-                    // 🎥 Parallax imagen
-                    promoImage.style.transform = `translateY(${limited * 40}px) scale(1.05)`;
-
-                    // 📦 Movimiento suave del contenedor
-                    promoBox.style.transform = `translateY(${limited * -20}px)`;
-
-                    // ✨ Texto con profundidad
-                    promoInfo.style.transform = `translateY(${limited * -30}px)`;
-                    promoInfo.style.opacity = 0.6 + (limited * 0.4);
-
-                    // 🎯 Descuento dinámico
-                    promoDiscount.style.transform = `scale(${1 + (limited * 0.08)})`;
-
-                }
-            });
-        }
-
         // ===== CARRUSEL =====
         function scrollServices(direction) {
             const slider = document.getElementById('servicesSlider');
