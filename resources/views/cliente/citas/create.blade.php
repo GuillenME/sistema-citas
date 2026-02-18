@@ -185,17 +185,29 @@
 
 
     <!-- ================= MODAL LOGOUT ================= -->
-    <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
-        <div class="modal-content">
-            <h3>¿Cerrar sesión?</h3>
-            <div class="modal-buttons">
-                <button onclick="confirmarLogout()">Sí</button>
-                <button onclick="cerrarModalLogout()">No</button>
-            </div>
+    <div id="modalLogout" class="modal-overlay">
+     
+    <div class="modal-content">
+        <h3>¿Cerrar sesión?</h3>
+        <p>¿Estás seguro de que deseas cerrar sesión?</p>
+
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm"
+                    onclick="confirmarLogout()">
+                Sí, cerrar sesión
+            </button>
+
+            <button class="modal-btn modal-btn-cancel"
+                    onclick="cerrarModalLogout()">
+                Cancelar
+            </button>
         </div>
     </div>
+</div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
     <script src="{{ asset('js/cliente/citas.js') }}"></script>
 
 </body>
