@@ -52,48 +52,6 @@
     text-underline-offset: 6px;
 }
 
-.cliente-menu .logout-btn {
-    background: linear-gradient(145deg, #5b3b2c, #4b3226);
-    border: 1px solid rgba(252, 204, 124, 0.35);
-    color: #fccc7c;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: all .25s ease;
-    box-shadow:
-        0 6px 18px rgba(0, 0, 0, 0.35),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-}
-
-.cliente-menu .logout-btn svg {
-    width: 28px;
-    height: 28px;
-    stroke: #fccc7c;
-    transition: transform .2s ease, stroke .2s ease;
-}
-
-.cliente-menu .logout-btn:hover {
-    background: linear-gradient(145deg, #6a4633, #553728);
-    transform: translateY(-2px);
-    box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.45),
-        0 0 15px rgba(252, 204, 124, 0.35);
-}
-
-.cliente-menu .logout-btn:hover svg {
-    transform: translateX(2px);
-    stroke: #ffdca0;
-}
-
-.cliente-menu .logout-btn:active {
-    transform: scale(.95);
-}
-
 @media (max-width: 800px) {
     .cliente-menu {
         display: flex;

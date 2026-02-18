@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-ui.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-dashboard.css') }}">
 </head>
 <body class="recepcionista-dashboard-page">
