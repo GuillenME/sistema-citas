@@ -87,6 +87,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 <script>
 const servicio = document.getElementById('servicio');
 const fecha = document.getElementById('fecha');
@@ -162,6 +163,7 @@ servicio.addEventListener('change', cargarBloques);
 if (window.flatpickr) {
     flatpickr(fecha, {
         inline: true,
+        locale: "es",
         dateFormat: 'Y-m-d',
         minDate: 'today',
         disableMobile: true,

@@ -89,7 +89,9 @@ async function cargarHorarios() {
 if (window.flatpickr && fechaInput) {
     flatpickr(fechaInput, {
         inline: true,
+        locale: "es",
         dateFormat: 'Y-m-d',
+        firstDayOfWeek: 1,
         minDate: 'today',
         disableMobile: true,
         onChange: function () {

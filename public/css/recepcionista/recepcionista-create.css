@@ -2,6 +2,8 @@ body.recepcionista-citas-create-page {
     --bg-url: url('/imagenes/SalaEsperaa.png');
 }
 
+/* ================= Layout ================= */
+
 .container {
     min-height: calc(100vh - 80px);
     width: 100%;
@@ -21,70 +23,51 @@ body.recepcionista-citas-create-page {
 
 h2 {
     text-align: center;
-    margin: 0 0 18px;
+    margin: 0 0 24px;
 }
+
+/* ================= Grid principal ================= */
 
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(260px, 1fr));
-    gap: 16px 64px;
-    align-items: start;
+    grid-template-columns: 520px 360px;
+    gap: 24px 60px;
+    justify-content: center;
 }
+
+
+/* ================= Campos ================= */
 
 .field {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    justify-self: start;
     width: 100%;
-    max-width: 460px;
 }
 
 .field.full {
     grid-column: 1 / -1;
 }
 
-.date-field {
-    grid-column: 1 / 2;
-    grid-row: 2 / span 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.horario-field {
-    grid-column: 2 / 3;
-    grid-row: 2;
-}
-
-.date-field .flatpickr-calendar {
-    position: static;
-    margin-top: 8px;
-    width: 280px;
-    max-width: 280px;
-    align-self: center;
-}
-
-.anticipo-field {
-    grid-column: 2 / 3;
-    grid-row: 3;
-    align-self: start;
-    margin-top: -8px;
-}
-
 .field.center {
     align-items: center;
-    justify-self: center;
 }
 
 .field.center > * {
     width: 100%;
-    max-width: 420px;
 }
 
+/* ================= Calendario a la derecha ================= */
+
+.date-field {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    align-items: center;
+}
+
+/* ================= Inputs uniformes ================= */
+
 label {
-    display: block;
-    margin-top: 0;
     font-size: 15px;
     font-weight: 700;
     letter-spacing: 0.2px;
@@ -92,14 +75,12 @@ label {
 
 .form-grid select,
 .form-grid input:not([type="checkbox"]) {
-    width: 100%;
-    max-width: 460px;
-    height: 26px;
-    padding: 4px 8px;
-    border-radius: 2px;
+    width: 90%;
+    height: 32px;
+    padding: 4px 10px;
+    border-radius: 4px;
     border: none;
     background: #ffffff;
-    box-shadow: none;
     font-size: 14px;
 }
 
@@ -108,43 +89,27 @@ label {
     color: #111;
 }
 
-/* ===== Flatpickr ===== */
+/* ================= Flatpickr ================= */
+
+.date-field .flatpickr-calendar {
+    margin-top: 14px;
+    width: 100%;
+    max-width: 340px;
+}
+
 .flatpickr-calendar {
-    position: relative;
     background: linear-gradient(180deg, #5b3b2c 0%, #4b3226 100%);
-    border: 1px solid rgba(252, 204, 124, 0.25);
+    border: 1px solid rgba(238, 161, 29, 0.25);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
     border-radius: 12px;
     padding: 8px 6px 10px;
     color: #ffffff;
 }
 
-.flatpickr-months {
-    position: relative;
-    padding: 4px 8px 0;
-}
-
 .flatpickr-prev-month,
 .flatpickr-next-month {
-    position: absolute;
-    top: 10px;
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
+    color: #ffffff !important;
     opacity: 1 !important;
-    z-index: 2;
-}
-
-.flatpickr-prev-month { left: 8px; }
-.flatpickr-next-month { right: 8px; }
-
-.flatpickr-prev-month svg,
-.flatpickr-next-month svg {
-    fill: #ffffff !important;
-    stroke: #ffffff !important;
 }
 
 .flatpickr-current-month {
@@ -153,17 +118,14 @@ label {
     color: #ffffff;
 }
 
-.flatpickr-current-month .flatpickr-monthDropdown-months {
-    color: #ffffff;
-    background: transparent;
+.flatpickr-weekdays {
+    color: #f3e8d9; /* color general */
 }
 
-.flatpickr-weekdays,
 .flatpickr-weekday {
-    color: #ffffff;
-    text-transform: uppercase;
-    font-size: 9px;
-    opacity: 0.85;
+    color: #fccc7c !important; /* dorado visible */
+    font-weight: 600;
+    opacity: 1;
 }
 
 .flatpickr-day {
@@ -190,45 +152,54 @@ label {
     transform: translateY(-1px);
 }
 
-/* Ocultar a?o */
+/* Ocultar año */
 .flatpickr-current-month .numInputWrapper,
 .flatpickr-current-month input.cur-year {
     display: none !important;
 }
 
-/* ===== Boton ===== */
+/* ================= Anticipo ================= */
+
+.anticipo-label {
+    margin-top: 18px;
+}
+
+.is-hidden {
+    display: none;
+}
+
+/* ================= Botón ================= */
+
 .submit-btn {
-    margin-top: 26px;
+    margin-top: 28px;
     width: 100%;
-    max-width: 420px;
-    padding: 10px 12px;
-    border-radius: 2px;
+    padding: 12px;
+    border-radius: 4px;
     background: #fccc7c;
     color: #000;
     font-weight: bold;
     cursor: pointer;
     border: none;
-    box-shadow: none;
+    transition: transform .15s;
 }
 
-.help-text { display: none; }
-.anticipo-label { margin-top: 18px; }
-.is-hidden { display: none; }
+.submit-btn:hover {
+    transform: scale(1.02);
+}
+
+/* ================= Responsive ================= */
 
 @media (max-width: 900px) {
     .form-grid {
         grid-template-columns: 1fr;
     }
 
-    .date-field,
-    .horario-field,
-    .anticipo-field {
+    .date-field {
         grid-column: 1 / -1;
         grid-row: auto;
     }
 
     .date-field .flatpickr-calendar {
-        width: 100%;
         max-width: 320px;
     }
 
@@ -240,9 +211,5 @@ label {
 @media (max-width: 600px) {
     .container {
         padding: 28px 16px;
-    }
-
-    .field.center > * {
-        max-width: 100%;
     }
 }
