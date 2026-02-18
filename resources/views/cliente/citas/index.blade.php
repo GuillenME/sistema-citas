@@ -49,6 +49,8 @@
                         $estadoClase = match ($cita->status) {
                             'pendiente_anticipo' => 'pendiente',
                             'confirmada' => 'confirmada',
+                            'completada' => 'confirmada',
+                            'no_asistio' => 'cancelada',
                             'cancelada' => 'cancelada',
                             default => 'pendiente',
                         };
@@ -56,6 +58,8 @@
                         $estadoTexto = match ($cita->status) {
                             'pendiente_anticipo' => 'Pendiente de anticipo',
                             'confirmada' => 'Confirmada',
+                            'completada' => 'Completada',
+                            'no_asistio' => 'No asistio',
                             'cancelada' => 'Cancelada',
                             default => ucfirst($cita->status),
                         };

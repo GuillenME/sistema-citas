@@ -4,10 +4,10 @@
     background: #5f4636;
     color: #fff;
     padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 20px;
+    column-gap: 20px;
     box-shadow: 0 0 25px #5f4636;
 }
 
@@ -22,6 +22,14 @@
     align-items: center;
     gap: 18px;
     flex-wrap: wrap;
+    justify-content: center;
+    min-width: 0;
+}
+
+.cliente-menu form {
+    display: flex;
+    align-items: center;
+    justify-self: end;
 }
 
 .cliente-menu nav a {
@@ -45,18 +53,50 @@
 }
 
 .cliente-menu .logout-btn {
-    background: transparent;
-    border: 2px solid #ff2d2d;
-    padding: 8px 18px;
-    color: #fff;
-    border-radius: 8px;
+    background: linear-gradient(145deg, #5b3b2c, #4b3226);
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    color: #fccc7c;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 0 12px rgba(255, 45, 45, 0.9), inset 0 0 6px rgba(255, 45, 45, 0.4);
+    transition: all .25s ease;
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.cliente-menu .logout-btn svg {
+    width: 28px;
+    height: 28px;
+    stroke: #fccc7c;
+    transition: transform .2s ease, stroke .2s ease;
+}
+
+.cliente-menu .logout-btn:hover {
+    background: linear-gradient(145deg, #6a4633, #553728);
+    transform: translateY(-2px);
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.45),
+        0 0 15px rgba(252, 204, 124, 0.35);
+}
+
+.cliente-menu .logout-btn:hover svg {
+    transform: translateX(2px);
+    stroke: #ffdca0;
+}
+
+.cliente-menu .logout-btn:active {
+    transform: scale(.95);
 }
 
 @media (max-width: 800px) {
     .cliente-menu {
+        display: flex;
         flex-direction: column;
         align-items: flex-start;
     }
@@ -64,5 +104,9 @@
     .cliente-menu nav {
         width: 100%;
         justify-content: flex-start;
+    }
+
+    .cliente-menu form {
+        justify-self: auto;
     }
 }

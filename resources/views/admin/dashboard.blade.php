@@ -10,7 +10,8 @@
                 <span class="dh-badge">Modo Administrador</span>
             </div>
             <div class="dh-topbar-actions">
-                <a href="{{ route('admin.citas.index') }}" class="dh-btn dh-btn-ghost">Reporte diario</a>
+                <a href="{{ route('admin.citas.reporte-diario') }}" class="dh-btn dh-btn-ghost">Reporte diario</a>
+                <a href="{{ route('admin.citas.reporte-mensual') }}" class="dh-btn dh-btn-ghost">Reporte mensual</a>
                 {{-- <a href="{{ route('admin.citas.create') }}" class="dh-btn dh-btn-primary">Nueva cita</a> --}}
             </div>
         </header>
@@ -56,11 +57,7 @@
                 </div>
                 <h3>Configurar Home</h3>
                 <p>Personaliza la experiencia de clientes en la app movil y el sitio publico.</p>
-<<<<<<< HEAD
-                <span class="dh-btn dh-btn-ghost">Personalizar diseno</span>
-=======
                 <span class="dh-btn dh-btn-ghost">Personalizar diseño</span>
->>>>>>> da515d7dfd667360ce7218f028344762209acb71
             </a>
         </section>
 
