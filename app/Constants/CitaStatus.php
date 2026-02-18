@@ -13,6 +13,7 @@ class CitaStatus
     public const CONFIRMADA = 'confirmada';
     public const CANCELADA = 'cancelada';
     public const COMPLETADA = 'completada';
+    public const NO_ASISTIO = 'no_asistio';
 
     /**
      * Obtener todos los estados disponibles
@@ -24,6 +25,7 @@ class CitaStatus
             self::CONFIRMADA,
             self::CANCELADA,
             self::COMPLETADA,
+            self::NO_ASISTIO,
         ];
     }
 

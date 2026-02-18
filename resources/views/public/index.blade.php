@@ -70,45 +70,54 @@
     </div>
 </section>
 
+{{-- PROMOCIONES --}}
+@if($homePromociones->count())
 <section id="promociones" class="promo-section">
 
-    {{-- PROMOCIÓN (por ahora usa la primera, luego será la más reciente) --}}
-    @if($homePromociones->count())
-        @php $promo = $homePromociones->first(); @endphp
+    @php $promo = $homePromociones->first(); @endphp
 
-        <div class="promo-box">
+    <div class="promo-box">
 
-            <!-- IZQUIERDA: INFO -->
-            <div class="promo-info">
-                <span class="promo-badge">¡DESCUENTO EN PROMOCIÓN!</span>
+        <!-- IZQUIERDA: INFO -->
+        <div class="promo-info">
+            <span class="promo-badge">¡DESCUENTO EN PROMOCIÓN!</span>
 
-                <h2>
-                    DEL {{ $promo->discount }}%
-                </h2>
+            <h2>
+                DEL {{ $promo->discount }}%
+            </h2>
 
-                <p class="promo-text">
-                    {{ $promo->description }}
-                </p>
-                @if($promo->start_date && $promo->end_date)
-                    <div class="promo-dates">
-                        Vigente del {{ \Carbon\Carbon::parse($promo->start_date)->format('d/m/Y') }}
-                        al {{ \Carbon\Carbon::parse($promo->end_date)->format('d/m/Y') }}
-                    </div>
-                @endif
+            <p class="promo-text">
+                {{ $promo->description }}
+            </p>
+
+            @if($promo->start_date && $promo->end_date)
+                <div class="promo-dates">
+                    Vigente del {{ \Carbon\Carbon::parse($promo->start_date)->format('d/m/Y') }}
+                    al {{ \Carbon\Carbon::parse($promo->end_date)->format('d/m/Y') }}
+                </div>
+            @endif
+
+            {{-- 🔥 BOTÓN NUEVO --}}
+            <div class="home-actions">
+                <a class="btn" href="{{ route('promociones') }}">
+                    Ver todas las promociones
+                </a>
             </div>
-
-            <!-- DERECHA: IMAGEN -->
-            <div class="promo-image">
-                <img
-                    src="{{ $promo->image ? asset('storage/' . $promo->image) : asset('imagenes/servicio_default.png') }}"
-                    alt="{{ $promo->title }}"
-                >
-            </div>
-
         </div>
-    @endif
+
+        <!-- DERECHA: IMAGEN -->
+        <div class="promo-image">
+            <img
+                src="{{ $promo->image ? asset('storage/' . $promo->image) : asset('imagenes/servicio_default.png') }}"
+                alt="{{ $promo->title }}"
+            >
+        </div>
+
+    </div>
 
 </section>
+@endif
+
 
 <section id="reviews" class="home-section">
     <h2>Comentarios</h2>

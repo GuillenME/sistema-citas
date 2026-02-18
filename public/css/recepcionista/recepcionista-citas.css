@@ -34,7 +34,8 @@ body.recepcionista-citas-index-page {
 
 .citas-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 380px));
+    justify-content: center;
     gap: 18px 24px;
 }
 
@@ -102,15 +103,70 @@ body.recepcionista-citas-index-page {
     color: #fde68a;
 }
 
+.cita-actions {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.reagendar-btn {
+    border: 1px solid rgba(252, 204, 124, 0.28);
+    background: rgba(252, 204, 124, 0.12);
+    color: #f4d284;
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.reagendar-btn:hover {
+    background: rgba(252, 204, 124, 0.2);
+}
+
+#reagendarForm {
+    display: grid;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+#reagendarForm input,
+#reagendarForm select,
+#reagendarForm textarea {
+    width: 100%;
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #f4e7cc;
+    padding: 8px 10px;
+}
+
+/* Mejor contraste para el desplegable nativo en Windows */
+#reagendarForm select {
+    color: #1f1508;
+    background: #fff6e6;
+    border-color: #d8b97d;
+}
+
+#reagendarForm select option {
+    color: #2a1d0b;
+    background: #fff6e6;
+}
+
+#reagendarForm select option:checked {
+    color: #1f1508;
+    background: #f4d38a;
+}
+
 @media (max-width: 1100px) {
     .citas-grid {
-        grid-template-columns: repeat(3, minmax(180px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
     }
 }
 
 @media (max-width: 900px) {
     .citas-grid {
-        grid-template-columns: repeat(2, minmax(180px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 300px));
     }
 }
 

@@ -10,7 +10,8 @@
                 <span class="dh-badge">Modo Administrador</span>
             </div>
             <div class="dh-topbar-actions">
-                <a href="{{ route('admin.citas.index') }}" class="dh-btn dh-btn-ghost">Reporte diario</a>
+                <a href="{{ route('admin.citas.reporte-diario') }}" class="dh-btn dh-btn-ghost">Reporte diario</a>
+                <a href="{{ route('admin.citas.reporte-mensual') }}" class="dh-btn dh-btn-ghost">Reporte mensual</a>
                 {{-- <a href="{{ route('admin.citas.create') }}" class="dh-btn dh-btn-primary">Nueva cita</a> --}}
             </div>
         </header>

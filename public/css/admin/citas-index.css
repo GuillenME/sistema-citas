@@ -183,6 +183,18 @@
     border-color: rgba(239, 68, 68, 0.28);
 }
 
+.status-completada {
+    color: #60a5fa;
+    background: rgba(96, 165, 250, 0.12);
+    border-color: rgba(96, 165, 250, 0.28);
+}
+
+.status-no-asistio {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.28);
+}
+
 .citas-detail-btn {
     background: rgba(252, 204, 124, 0.08);
     border: 1px solid rgba(252, 204, 124, 0.24);
@@ -195,6 +207,36 @@
 
 .citas-detail-btn:hover {
     background: rgba(252, 204, 124, 0.15);
+}
+
+#rescheduleForm input,
+#rescheduleForm select,
+#rescheduleForm textarea {
+    width: 100%;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    color: #f4e7cc;
+    padding: 8px 10px;
+}
+
+/* Mejor contraste en el dropdown nativo del modal de reagenda */
+#rescheduleForm select {
+    color: #1f1508;
+    background: #fff6e6;
+    border-color: #d8b97d;
+}
+
+#rescheduleForm select option {
+    color: #2a1d0b;
+    background: #fff6e6;
+}
+
+#rescheduleForm select option:checked {
+    color: #1f1508;
+    background: #f4d38a;
 }
 
 @media (max-width: 980px) {
