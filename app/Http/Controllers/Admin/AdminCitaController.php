@@ -101,6 +101,34 @@ class AdminCitaController extends Controller
         ]);
     }
 
+    public function reporteDiarioPdf(Request $request)
+    {
+        $request->validate([
+            'fecha' => 'nullable|date',
+        ]);
+
+        $fecha = $request->input('fecha', today()->toDateString());
+
+        $citas = Cita::with(['client.user', 'service', 'employee'])
+            ->whereDate('date', $fecha)
+            ->orderBy('start_time')
+            ->get();
+
+        $statusResumen = $citas
+            ->groupBy('status')
+            ->map(fn ($grupo) => $grupo->count())
+            ->sortKeys();
+
+        $pdf = Pdf::loadView('admin.citas.reporte-diario-pdf', [
+            'fecha' => Carbon::parse($fecha),
+            'citas' => $citas,
+            'totalCitas' => $citas->count(),
+            'statusResumen' => $statusResumen,
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->download('reporte_diario_citas_' . Carbon::parse($fecha)->format('Y-m-d') . '.pdf');
+    }
+
     public function reporteMensual(Request $request)
     {
         $request->validate([

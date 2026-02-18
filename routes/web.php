@@ -91,6 +91,9 @@ Route::middleware(['auth', 'rol:1'])
         Route::get('/citas/reporte-diario', [AdminCitaController::class, 'reporteDiario'])
             ->name('citas.reporte-diario');
 
+        Route::get('/citas/reporte-diario/pdf', [AdminCitaController::class, 'reporteDiarioPdf'])
+            ->name('citas.reporte-diario.pdf');
+
         Route::get('/citas/reporte-mensual', [AdminCitaController::class, 'reporteMensual'])
             ->name('citas.reporte-mensual');
 
