@@ -1,18 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Manrope:wght@300;400;600;700&display=swap");
 
+/* ===== HEADER CLIENTE ======== */
+
 header.cliente-menu {
     position: sticky;
     top: 0;
     z-index: 1000;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+
     padding: 18px 40px;
+
     background: rgba(52, 30, 20, 0.96);
     backdrop-filter: blur(10px);
+
     border-bottom: 1px solid rgba(252, 204, 124, 0.2);
 }
+
+/* ===== TÍTULO ===== */
 
 header.cliente-menu .title {
     font-family: "Playfair Display", serif;
@@ -20,6 +28,8 @@ header.cliente-menu .title {
     font-size: 22px;
     letter-spacing: 1px;
 }
+
+/* ===== NAV ===== */
 
 header.cliente-menu nav {
     display: flex;
@@ -32,6 +42,7 @@ header.cliente-menu nav a {
     font-size: 15px;
     font-weight: 600;
     position: relative;
+    transition: color .2s ease;
 }
 
 header.cliente-menu nav a::after {
@@ -45,6 +56,10 @@ header.cliente-menu nav a::after {
     transition: width .2s ease;
 }
 
+header.cliente-menu nav a:hover {
+    color: #ffdca0;
+}
+
 header.cliente-menu nav a:hover::after {
     width: 100%;
 }
@@ -56,27 +71,66 @@ header.cliente-menu nav a.active {
 header.cliente-menu nav a.active::after {
     width: 100%;
 }
+/* ===== BOTÓN LOGOUT ========= */
 
 header.cliente-menu .logout-btn {
-    background: transparent;
-    border: 1px solid rgba(239, 68, 68, 0.8);
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 999px;
+    background: linear-gradient(145deg, #5b3b2c, #4b3226);
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    color: #fccc7c;
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     cursor: pointer;
-    font-weight: 600;
-    transition: transform .2s;
-    box-shadow: none;
+    transition: all .25s ease;
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-header.cliente-menu .logout-btn:hover {
-    transform: translateY(-1px);
+/* Icono */
+header.cliente-menu .logout-btn svg {
+    width: 28px;
+    height: 28px;
+    stroke: #fccc7c;
+    transition: transform .2s ease, stroke .2s ease;
 }
+
+/* Hover */
+header.cliente-menu .logout-btn:hover {
+    background: linear-gradient(145deg, #6a4633, #553728);
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.45),
+        0 0 15px rgba(252, 204, 124, 0.35);
+}
+
+header.cliente-menu .logout-btn:hover svg {
+    transform: translateX(2px);
+    stroke: #ffdca0;
+}
+
+/* Click */
+header.cliente-menu .logout-btn:active {
+    transform: scale(.95);
+}
+
+
+/* ===== RESPONSIVE =========== */
 
 @media (max-width: 700px) {
+
     header.cliente-menu {
         flex-direction: column;
         align-items: flex-start;
+        gap: 14px;
     }
 
     header.cliente-menu nav {
