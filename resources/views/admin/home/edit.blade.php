@@ -131,15 +131,42 @@
                     <p class="error">{{ $message }}</p>
                 @enderror
 
-                <label for="featured_services">Servicios destacados (maximo 10)</label>
-                <select id="featured_services" name="featured_services[]" multiple size="10">
-                    @foreach ($serviciosActivos as $servicio)
-                        <option value="{{ $servicio->id }}" {{ in_array($servicio->id, $selectedHomeServices) ? 'selected' : '' }}>
-                            {{ $servicio->name }}
-                        </option>
+                <div class="services-picker-head">
+                    <label>Servicios destacados</label>
+                    <span class="services-picker-counter" id="featured_services_counter">0/10 seleccionados</span>
+                </div>
+
+                <div class="services-picker-scroll-card">
+                    <div class="services-picker-scroll-body">
+                        <div class="services-picker-grid" id="featured_services_grid" data-max="10">
+                            @foreach ($serviciosActivos as $servicio)
+                                @php
+                                    $isSelected = in_array($servicio->id, $selectedHomeServices);
+                                @endphp
+                                <button
+                                    type="button"
+                                    class="service-pick-card {{ $isSelected ? 'is-selected' : '' }}"
+                                    data-service-id="{{ $servicio->id }}"
+                                    aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
+                                >
+                                    <span class="service-pick-check" aria-hidden="true">&#10003;</span>
+                                    <span class="service-pick-name">{{ $servicio->name }}</span>
+                                    <span class="service-pick-meta">
+                                        {{ $servicio->duration_minutes }} min - ${{ number_format((float) $servicio->price, 2) }}
+                                    </span>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div id="featured_services_inputs">
+                    @foreach ($selectedHomeServices as $serviceId)
+                        <input type="hidden" name="featured_services[]" value="{{ $serviceId }}">
                     @endforeach
-                </select>
-                <small>Usa Ctrl/Cmd para seleccionar varios.</small>
+                </div>
+
+                <small>Selecciona hasta 10. Al llegar al limite, los demas servicios se desactivan.</small>
             </section>
 
 
@@ -172,7 +199,7 @@
 @section('scripts')
 <script>
     (function () {
-        function initHomeImagePreviews() {
+        function initHomeEditor() {
             var fields = document.querySelectorAll('.auto-grow');
             function adjust(el) {
                 el.style.height = 'auto';
@@ -206,10 +233,75 @@
 
             bindImagePreview('hero_image', 'hero_image_preview');
             bindImagePreview('navbar_logo', 'navbar_logo_preview');
+
+            var grid = document.getElementById('featured_services_grid');
+            var counter = document.getElementById('featured_services_counter');
+            var hiddenInputs = document.getElementById('featured_services_inputs');
+
+            if (!grid || !counter || !hiddenInputs) return;
+            if (grid.dataset.bound === '1') return;
+            grid.dataset.bound = '1';
+
+            var max = Number(grid.dataset.max || '10');
+            var cards = Array.prototype.slice.call(grid.querySelectorAll('.service-pick-card'));
+
+            function selectedCards() {
+                return cards.filter(function (card) {
+                    return card.classList.contains('is-selected');
+                });
+            }
+
+            function syncHiddenInputs() {
+                var selected = selectedCards();
+                hiddenInputs.innerHTML = '';
+
+                selected.forEach(function (card) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'featured_services[]';
+                    input.value = card.dataset.serviceId;
+                    hiddenInputs.appendChild(input);
+                });
+            }
+
+            function updateCounterAndState() {
+                var selected = selectedCards();
+                var selectedCount = selected.length;
+                var reachedLimit = selectedCount >= max;
+
+                counter.textContent = selectedCount + '/' + max + ' seleccionados';
+                counter.classList.toggle('is-limit', reachedLimit);
+
+                cards.forEach(function (card) {
+                    var isSelected = card.classList.contains('is-selected');
+                    card.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+                    card.disabled = !isSelected && reachedLimit;
+                    card.classList.toggle('is-disabled', !isSelected && reachedLimit);
+                });
+            }
+
+            cards.forEach(function (card) {
+                card.addEventListener('click', function () {
+                    var currentlySelected = card.classList.contains('is-selected');
+                    var selectedCount = selectedCards().length;
+
+                    if (!currentlySelected && selectedCount >= max) {
+                        return;
+                    }
+
+                    card.classList.toggle('is-selected');
+                    syncHiddenInputs();
+                    updateCounterAndState();
+                });
+            });
+
+            syncHiddenInputs();
+            updateCounterAndState();
         }
 
-        document.addEventListener('DOMContentLoaded', initHomeImagePreviews, { once: true });
-        document.addEventListener('livewire:navigated', initHomeImagePreviews);
+        document.addEventListener('DOMContentLoaded', initHomeEditor, { once: true });
+        document.addEventListener('livewire:navigated', initHomeEditor);
     })();
 </script>
 @endsection
+
