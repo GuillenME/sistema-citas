@@ -377,11 +377,4 @@
             }
         });
     </script>
-<<<<<<< HEAD
 @endsection
-=======
-
-
-
-@endsection
->>>>>>> efe95e5d4b5aafcd06f274fc2c197d723da80012
