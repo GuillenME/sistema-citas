@@ -1,196 +1,336 @@
+﻿:root {
+    --bg-dark: #0c0806;
+    --bg-darker: #080604;
+    --text-main: #f8f8f8;
+    --text-muted: #98a2b3;
+    --accent: #f39a2b;
+    --accent-soft: #8a6348;
+    --line: rgba(243, 154, 43, 0.35);
+}
+
 * {
-            box-sizing: border-box;
-        }
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            height: 100vh;
-            background-image: url('/imagenes/registro_fondo3.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-        }
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #000;
+    color: var(--text-main);
+}
 
-        /* Oscurecer fondo general */
-        body::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.25);
-            z-index: 0;
-        }
+.auth-login-page {
+    position: relative;
+}
 
-        /* ================= PANEL BORROSO DERECHO ================= */
-        .blur-panel {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 50%;
-            height: 100%;
+.back-arrow {
+    position: fixed;
+    top: 22px;
+    left: 22px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    color: #fff;
+    font-size: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(6px);
+    z-index: 20;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+.back-arrow:hover {
+    transform: translateX(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 0 18px rgba(243, 154, 43, 0.5);
+}
 
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            background: rgba(0,0,0,0.25);
+.login-layout {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+}
 
-            z-index: 1;
-        }
+.hero-panel {
+    position: relative;
+    background-image: url('/imagenes/registro_fondo3.png');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
 
-        /* ================= FLECHA REGRESO ================= */
-        .back-arrow {
-            position: fixed;
-            top: 25px;
-            left: 25px;
-            z-index: 5;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: rgba(17, 24, 39, 0.10);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fccc7c;
-            text-decoration: none;
-            font-size: 22px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0 15px #e48815;
-            transition: .25s ease;
-        }
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.52) 56%, rgba(0, 0, 0, 0.7)),
+        radial-gradient(circle at 24% 38%, rgba(243, 154, 43, 0.18), transparent 42%);
+}
 
-        .back-arrow:hover {
-            transform: translateX(-4px);
-            background: #f88b07;
-            box-shadow: 0 0 25px #e48815;
-            color: #ffffff;
-        }
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    padding: 120px 70px 80px;
+}
 
-        /* ================= CONTENEDOR LOGIN ================= */
-        .login-wrapper {
-            width: 420px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+.brand-led {
+    font-size: 2.05rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow:
+        0 0 7px rgba(255, 255, 255, 0.85),
+        0 0 16px rgba(243, 154, 43, 0.65),
+        0 0 34px rgba(243, 154, 43, 0.42);
+    animation: led-flicker 3.7s infinite;
+}
 
-        .neon-text {
-            margin-top: -20px;
-            font-size: 45px;
-            font-weight: bold;
-            letter-spacing: 6px;
-            color: #ffffff;
-            text-shadow:
-                0 0 6px #fccc7c,
-                0 0 16px rgba(218, 117, 22, 0.8),
-                0 0 32px rgba(218, 117, 22, 0.8);
-            animation: neon-flicker 4s infinite;
-        }
+.hero-content h1 {
+    margin: 30px 0 18px;
+    font-size: clamp(2.2rem, 4.3vw, 4.1rem);
+    line-height: 1.02;
+    font-weight: 750;
+    max-width: 560px;
+}
 
-        @keyframes neon-flicker {
-            0%, 100% { opacity: 1; }
-            48% { opacity: .95; }
-            50% { opacity: .85; }
-            52% { opacity: 1; }
-        }
+.hero-content h1 span {
+    color: var(--accent);
+}
 
-        /* ================= TARJETA LOGIN ================= */
-        .login-container {
-            margin-top: 90px;
-            width: 360px;
-            padding: 28px;
-            background: rgba(17, 24, 39, .25);
-            border: 1px solid rgba(255, 255, 255, .15);
-            border-radius: 14px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
-            color: #fff;
-            position: relative;
-        }
+.hero-content p {
+    margin: 0;
+    max-width: 560px;
+    color: rgba(245, 245, 245, 0.92);
+    font-size: 1.18rem;
+    line-height: 1.55;
+}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.form-panel {
+    background: linear-gradient(180deg, var(--bg-dark), var(--bg-darker));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 34px;
+}
 
-        /* ================= ERRORES ================= */
-        .error-box {
-            background: #fee2e2;
-            border: 1px solid #f87171;
-            color: #991b1b;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
+.login-container {
+    width: min(100%, 520px);
+}
 
-        .error-box ul {
-            margin: 0;
-            padding-left: 18px;
-        }
+.login-container h2 {
+    margin: 0;
+    font-size: clamp(2.1rem, 3.8vw, 3.25rem);
+    font-weight: 700;
+}
 
-        .input-error {
-            outline: 2px solid #ef4444 !important;
-            background: #fee2e2;
-        }
+.subtitle {
+    margin: 8px 0 34px;
+    color: var(--text-muted);
+    font-size: 1.08rem;
+}
 
-        /* ================= INPUTS ================= */
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 6px;
-            border-radius: 8px;
-            border: none;
-            font-size: 14px;
-            background: rgba(255,255,255,.9);
-            color: #111827;
-        }
+.error-box {
+    background: #fee2e2;
+    border: 1px solid #f87171;
+    color: #991b1b;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
 
-        input:focus {
-            outline: 2px solid #1F4E79;
-        }
+.error-box ul {
+    margin: 0;
+    padding-left: 18px;
+}
 
-        /* ================= BOTÓN ================= */
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 12px;
-            background: #8c4030;
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 15px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            cursor: pointer;
-            box-shadow: 0 6px 20px #c0a799;
-        }
-        
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 28px #cf997a;
-        }
+label {
+    display: block;
+    margin-bottom: 9px;
+    color: #f1f1f1;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0.01em;
+}
 
+.password-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 20px;
+}
 
-        /* ================= LINKS ================= */
-        .register {
-            text-align: center;
-            margin-top: 14px;
-        }
+.password-label-row a {
+    color: var(--accent);
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: 600;
+}
 
-        .register a {
-            color: #e48815;
-            text-decoration: none;
-            font-size: 14px;
-        }
+input {
+    width: 100%;
+    height: 58px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgba(0, 0, 0, 0.35);
+    color: #fbfbfb;
+    padding: 0 16px;
+    font-size: 1.01rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
 
-        /* ================= RESPONSIVE ================= */
-        @media (max-width: 900px) {
-            .blur-panel {
-                width: 100%;
-            }
-        }
+input::placeholder {
+    color: #9ca3af;
+}
+
+input:focus {
+    border-color: rgba(243, 154, 43, 0.8);
+    box-shadow: 0 0 0 3px rgba(243, 154, 43, 0.18);
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 64px;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid rgba(243, 154, 43, 0.4);
+    border-radius: 9px;
+    background: rgba(24, 24, 24, 0.9);
+    color: #ffcf8d;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.toggle-password:hover {
+    border-color: rgba(243, 154, 43, 0.9);
+    color: #ffe3bf;
+    box-shadow: 0 0 0 2px rgba(243, 154, 43, 0.2);
+}
+
+.eye-icon {
+    width: 19px;
+    height: 19px;
+    line-height: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+.input-error {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
+.submit-btn {
+    margin-top: 28px;
+    width: 100%;
+    height: 58px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #6f503d, #8c654a);
+    color: #fff;
+    font-size: 1.02rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 22px rgba(138, 99, 72, 0.36);
+}
+
+.register {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(75, 85, 99, 0.55);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.register a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+@keyframes led-flicker {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    47% {
+        opacity: 0.95;
+    }
+    50% {
+        opacity: 0.82;
+    }
+    53% {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 1080px) {
+    .login-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-panel {
+        min-height: 52vh;
+    }
+
+    .hero-content {
+        padding: 92px 28px 48px;
+    }
+
+    .form-panel {
+        padding: 34px 20px 48px;
+    }
+}
+
+@media (max-width: 640px) {
+    .back-arrow {
+        top: 14px;
+        left: 14px;
+    }
+
+    .hero-content h1 {
+        margin-top: 22px;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .register {
+        font-size: 1rem;
+    }
+}
