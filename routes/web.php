@@ -6,7 +6,6 @@ use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminClientesController;
 use App\Http\Controllers\Admin\AdminEmpleadoController;
-use App\Http\Controllers\Admin\AdminPromocionController;
 use App\Http\Controllers\Admin\AdminRecepcionistaController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\Admin\HomeSettingController;
@@ -79,11 +78,27 @@ Route::middleware(['auth', 'rol:1'])
     ->group(function () {
 
         Route::get('/dashboard', function () {
-            return view('admin.dashboard');
+            $citasHoy = \App\Models\Cita::query()
+                ->whereDate('date', today())
+                ->count();
+
+            return view('admin.dashboard', compact('citasHoy'));
         })->name('dashboard');
 
         Route::get('/citas', [AdminCitaController::class, 'index'])
             ->name('citas.index');
+
+        Route::get('/citas/reporte-diario', [AdminCitaController::class, 'reporteDiario'])
+            ->name('citas.reporte-diario');
+
+        Route::get('/citas/reporte-diario/pdf', [AdminCitaController::class, 'reporteDiarioPdf'])
+            ->name('citas.reporte-diario.pdf');
+
+        Route::get('/citas/reporte-mensual', [AdminCitaController::class, 'reporteMensual'])
+            ->name('citas.reporte-mensual');
+
+        Route::get('/citas/reporte-mensual/pdf', [AdminCitaController::class, 'reporteMensualPdf'])
+            ->name('citas.reporte-mensual.pdf');
 
         Route::post('/citas/{cita}/confirmar', [AdminCitaController::class, 'confirmar'])
             ->name('citas.confirmar');
@@ -91,7 +106,20 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
 
-        // LIVEWIRE
+        Route::post('/citas/{cita}/reagendar', [AdminCitaController::class, 'reagendar'])
+            ->name('citas.reagendar');
+
+        Route::post('/citas/{cita}/completar', [AdminCitaController::class, 'completar'])
+            ->name('citas.completar');
+
+        Route::post('/citas/{cita}/no-asistio', [AdminCitaController::class, 'marcarNoAsistio'])
+            ->name('citas.noAsistio');
+
+        // PROMOCIONES (LIVEWIRE)
+        Route::get('/promociones', function () {
+            return view('admin.promociones.index');
+        })->name('promociones.index');
+
         Route::get('/promociones/create', function () {
             return view('admin.promociones.create');
         })->name('promociones.create');
@@ -99,11 +127,6 @@ Route::middleware(['auth', 'rol:1'])
         Route::get('/promociones/{promocion}/edit', function (App\Models\Promocion $promocion) {
             return view('admin.promociones.edit', compact('promocion'));
         })->name('promociones.edit');
-
-        // CONTROLLER (RESTO)
-        Route::resource('promociones', AdminPromocionController::class)
-            ->except(['create', 'edit'])
-            ->parameters(['promociones' => 'promocion']);
 
         Route::get('/servicios/plantilla', [AdminServicioController::class, 'downloadTemplate'])
             ->name('servicios.template');
@@ -183,6 +206,9 @@ Route::middleware(['auth', 'rol:3'])
         Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
             ->name('citas.store');
 
+        Route::post('/citas/{cita}/reagendar', [RecepcionistaCitaController::class, 'reagendar'])
+            ->name('citas.reagendar');
+
         Route::get('/citas', [RecepcionistaCitaController::class, 'index'])
             ->name('citas.index');
     });
@@ -208,6 +234,9 @@ Route::middleware(['auth', 'rol:2'])
             ->name('citas.bloques');
         Route::post('/citas/{cita}/comprobante', [CitaController::class, 'subirComprobante'])
             ->name('citas.comprobante');
+
+        Route::post('/citas/{cita}/cancelar', [CitaController::class, 'cancelar'])
+            ->name('citas.cancelar');
 
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');

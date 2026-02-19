@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Recepcionista;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cita;
+use App\Models\CitaEstado;
 use App\Models\Cliente;
 use App\Models\Servicio;
 use App\Models\Usuario;
@@ -18,7 +19,7 @@ class CitaController extends Controller
 
         $citasHoy = Cita::whereDate('date', $today)->count();
         $pendientes = Cita::whereDate('date', $today)
-            ->whereIn('status', ['pendiente', 'pendiente_anticipo'])
+            ->where('status', 'pendiente_anticipo')
             ->count();
         $confirmadas = Cita::whereDate('date', $today)
             ->where('status', 'confirmada')
@@ -27,11 +28,18 @@ class CitaController extends Controller
             ->where('status', 'cancelada')
             ->count();
 
+        $citasRecientes = Cita::with(['client.user', 'service'])
+            ->orderByDesc('date')
+            ->orderByDesc('start_time')
+            ->limit(3)
+            ->get();
+
         return view('recepcionista.dashboard', compact(
             'citasHoy',
             'pendientes',
             'confirmadas',
-            'canceladas'
+            'canceladas',
+            'citasRecientes'
         ));
     }
 
@@ -106,10 +114,90 @@ class CitaController extends Controller
     public function index()
     {
         $citas = Cita::with(['client.user', 'service'])
+            ->withCount([
+                'estados as reagendas_count' => function ($query) {
+                    $query->where('status', 'reagendada');
+                },
+            ])
             ->whereDate('date', now())
             ->orderBy('start_time')
             ->get();
 
         return view('recepcionista.citas.index', compact('citas'));
+    }
+
+    public function reagendar(Request $request, Cita $cita)
+    {
+        if (!in_array($cita->status, ['confirmada', 'pendiente_anticipo'], true)) {
+            return back()->with('error', 'Solo se pueden reagendar citas confirmadas o pendientes de anticipo.');
+        }
+
+        $reagendas = $cita->estados()->where('status', 'reagendada')->count();
+        if ($reagendas >= 2) {
+            return back()->with('error', 'Esta cita ya alcanzó el máximo de 2 reagendas.');
+        }
+
+        $request->validate([
+            'fecha' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                function ($attribute, $value, $fail) {
+                    $fecha = Carbon::parse($value);
+                    if ($fecha->isSunday()) {
+                        $fail('Los domingos no se atiende. Por favor selecciona otro día.');
+                    }
+                },
+            ],
+            'hora_inicio' => 'required|date_format:H:i',
+            'observaciones' => 'nullable|string|max:500',
+        ]);
+
+        if (!$cita->service) {
+            return back()->with('error', 'La cita no tiene servicio asociado.');
+        }
+
+        $horaInicio = Carbon::parse($request->hora_inicio);
+        $horaFin = $horaInicio->copy()->addMinutes($cita->service->duration_minutes);
+
+        $citaSolapada = Cita::query()
+            ->whereDate('date', $request->fecha)
+            ->whereIn('status', ['confirmada', 'pendiente_anticipo'])
+            ->where('id', '!=', $cita->id)
+            ->where(function ($query) use ($horaInicio, $horaFin) {
+                $query->where('start_time', '<', $horaFin->format('H:i'))
+                    ->where('end_time', '>', $horaInicio->format('H:i'));
+            })
+            ->exists();
+
+        if ($citaSolapada) {
+            return back()->with('error', 'El horario nuevo se cruza con otra cita.');
+        }
+
+        $notaReagendada = trim((string) $request->observaciones);
+        $notaAnterior = trim((string) ($cita->notes ?? ''));
+        $notaFinal = 'Reagendada por recepcionista.';
+        if ($notaReagendada !== '') {
+            $notaFinal .= ' ' . $notaReagendada;
+        }
+        if ($notaAnterior !== '') {
+            $notaFinal .= ' | Nota anterior: ' . $notaAnterior;
+        }
+
+        $cita->update([
+            'date' => $request->fecha,
+            'start_time' => $horaInicio->format('H:i'),
+            'end_time' => $horaFin->format('H:i'),
+            'notes' => $notaFinal,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'reagendada',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        return back()->with('success', 'Cita reagendada correctamente.');
     }
 }

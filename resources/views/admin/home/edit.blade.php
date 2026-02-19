@@ -1,55 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', 'Editar Home público')
+@section('title', 'Editar Home Publico')
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/home-edit.css') }}">
+@endsection
 
 @section('back-url', route('admin.dashboard'))
 @section('content')
-    <style>
-        .home-settings-grid{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .form-section{
-            background: rgba(0, 0, 0, 0.15);
-            border: 1px solid #c0a799;
-            border-radius: 12px;
-            padding: 16px;
-        }
-
-        .form-section h2{
-            margin: 0 0 12px;
-            font-size: 18px;
-            color: #fccc7c;
-        }
-
-        .form-section label{
-            display: block;
-            margin: 10px 0 6px;
-            font-size: 13px;
-            opacity: .9;
-        }
-
-        .form-section input[type="text"],
-        .form-section textarea,
-        .form-section input[type="file"]{
-            width: 100%;
-        }
-
-        .form-section small{
-            display: block;
-            margin-top: 6px;
-            opacity: .85;
-        }
-
-        .actions{
-            margin-top: 20px;
-        }
-
-    </style>
-    <div class="card">
+    <div class="home-editor-shell">
         @if ($errors->any())
             <div class="alert-error">
                 <ul>
@@ -60,95 +18,198 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('admin.home_settings.update') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.home_settings.update') }}" enctype="multipart/form-data" class="home-editor-form">
             @csrf
             @method('PUT')
 
-            <div class="home-settings-grid">
-            <section class="form-section">
-                <h2>Hero</h2>
+            <header class="editor-topbar">
+                <div>
+                    <p class="editor-kicker">Panel de configuracion</p>
+                    <p class="editor-meta"><span class="dot"></span> Ajusta contenido, imagenes y servicios destacados</p>
+                </div>
+                <div class="editor-actions">
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </header>
 
-                <label for="hero_title">Título</label>
-                <input type="text" id="hero_title" name="hero_title"
-                    value="{{ old('hero_title', $homeSetting->hero_title) }}">
-
-                <label for="hero_subtitle">Subtítulo</label>
-                <textarea id="hero_subtitle" name="hero_subtitle" rows="2">{{ old('hero_subtitle', $homeSetting->hero_subtitle) }}</textarea>
+            <section class="editor-block">
+                <h3>Configuracion del Hero</h3>
+                <p class="block-lead">Personaliza el titulo principal y el mensaje de bienvenida.</p>
+                <div class="form-grid two">
+                    <div>
+                        <label for="hero_title">Titulo principal</label>
+                        <input type="text" id="hero_title" name="hero_title" value="{{ old('hero_title', $homeSetting->hero_title) }}">
+                    </div>
+                    <div>
+                        <label for="hero_subtitle">Subtitulo / Tagline</label>
+                        <textarea id="hero_subtitle" name="hero_subtitle" rows="2" class="auto-grow">{{ old('hero_subtitle', $homeSetting->hero_subtitle) }}</textarea>
+                    </div>
+                </div>
             </section>
 
-            <section class="form-section">
-                <h2>Imagen de fondo</h2>
+            <section class="editor-block">
+                <h3>Gestion de Multimedia</h3>
+                <div class="media-grid">
+                    <article class="upload-card">
+                        <div class="upload-card-head">
+                            <label for="hero_image">Imagen de fondo Hero</label>
+                            <span class="badge">JPG/PNG/WEBP - 2MB</span>
+                        </div>
 
-                @if ($homeSetting->hero_image)
-                    <img src="{{ asset('storage/' . $homeSetting->hero_image) }}" alt="Imagen actual"
-                        style="max-width: 260px; display:block; margin-bottom:10px;">
-                @endif
+                        @if ($homeSetting->hero_image)
+                            <img src="{{ asset('storage/' . $homeSetting->hero_image) }}" alt="Imagen actual"
+                                class="home-image-preview home-image-preview-hero" id="hero_image_preview">
+                        @else
+                            <img src="" alt="Vista previa imagen hero"
+                                class="home-image-preview home-image-preview-hero hidden" id="hero_image_preview">
+                        @endif
 
-                <input type="file" name="hero_image" id="hero_image">
-                <small>Formatos: JPG, PNG o WEBP. Máximo 2MB.</small>
+                        <input type="file" name="hero_image" id="hero_image" accept="image/*">
+                        <small>Cambia la imagen o arrastra un archivo.</small>
+                    </article>
+
+                    <article class="upload-card">
+                        <div class="upload-card-head">
+                            <label for="navbar_logo">Logo de la marca</label>
+                            <span class="badge">PNG/SVG/WEBP - 2MB</span>
+                        </div>
+
+                        @if ($homeSetting->navbar_logo)
+                            <img src="{{ asset('storage/' . $homeSetting->navbar_logo) }}" alt="Logo actual"
+                                class="home-image-preview home-image-preview-logo" id="navbar_logo_preview">
+                        @else
+                            <img src="" alt="Vista previa logo"
+                                class="home-image-preview home-image-preview-logo hidden" id="navbar_logo_preview">
+                        @endif
+
+                        <input type="file" name="navbar_logo" id="navbar_logo" accept="image/*">
+                        <small>Sube logo con fondo transparente para mejor resultado.</small>
+                    </article>
+                </div>
             </section>
-            <section class="form-section">
-                <h2>Logo del navbar</h2>
+             <section class="editor-block">
+                <h3>Tarjetas destacadas</h3>
+                <div class="form-grid three">
+                    <div class="mini-card">
+                        <h4>Tarjeta 1</h4>
+                        <label for="feature_1_title">Titulo</label>
+                        <input type="text" id="feature_1_title" name="feature_1_title" value="{{ old('feature_1_title', $homeSetting->feature_1_title) }}">
+                        <label for="feature_1_description">Descripcion</label>
+                        <textarea id="feature_1_description" name="feature_1_description" rows="2" class="auto-grow">{{ old('feature_1_description', $homeSetting->feature_1_description) }}</textarea>
+                    </div>
 
-                @if ($homeSetting->navbar_logo)
-                    <img src="{{ asset('storage/' . $homeSetting->navbar_logo) }}" alt="Logo actual"
-                        style="max-width: 200px; display:block; margin-bottom:10px;">
-                @endif
+                    <div class="mini-card">
+                        <h4>Tarjeta 2</h4>
+                        <label for="feature_2_title">Titulo</label>
+                        <input type="text" id="feature_2_title" name="feature_2_title" value="{{ old('feature_2_title', $homeSetting->feature_2_title) }}">
+                        <label for="feature_2_description">Descripcion</label>
+                        <textarea id="feature_2_description" name="feature_2_description" rows="2" class="auto-grow">{{ old('feature_2_description', $homeSetting->feature_2_description) }}</textarea>
+                    </div>
 
-                <input type="file" name="navbar_logo" id="navbar_logo">
-                <small>Formatos: JPG, PNG, SVG o WEBP. Máximo 2MB.</small>
+                    <div class="mini-card">
+                        <h4>Tarjeta 3</h4>
+                        <label for="feature_3_title">Titulo</label>
+                        <input type="text" id="feature_3_title" name="feature_3_title" value="{{ old('feature_3_title', $homeSetting->feature_3_title) }}">
+                        <label for="feature_3_description">Descripcion</label>
+                        <textarea id="feature_3_description" name="feature_3_description" rows="2" class="auto-grow">{{ old('feature_3_description', $homeSetting->feature_3_description) }}</textarea>
+                    </div>
+                </div>
             </section>
-            <section class="form-section">
-                <h2>Footer</h2>
-                <label for="footer_address">Ubicacion</label>
-                <input type="text" id="footer_address" name="footer_address"
-                    value="{{ old('footer_address', $homeSetting->footer_address) }}">
+            <section class="editor-block">
+                <h3>Listado de Servicios</h3>
+                @php
+                    $selectedHomeServices = old(
+                        'featured_services',
+                        $serviciosActivos->where('featured_on_home', true)->pluck('id')->toArray()
+                    );
+                @endphp
 
-                <label for="footer_phone">Telefono</label>
-                <input type="text" id="footer_phone" name="footer_phone"
-                    value="{{ old('footer_phone', $homeSetting->footer_phone) }}">
+                @error('featured_services')
+                    <p class="error">{{ $message }}</p>
+                @enderror
+                @error('featured_services.*')
+                    <p class="error">{{ $message }}</p>
+                @enderror
 
-                <label for="footer_hours">Horarios</label>
-                <input type="text" id="footer_hours" name="footer_hours"
-                    value="{{ old('footer_hours', $homeSetting->footer_hours) }}">
+                <label for="featured_services">Servicios destacados (maximo 10)</label>
+                <select id="featured_services" name="featured_services[]" multiple size="10">
+                    @foreach ($serviciosActivos as $servicio)
+                        <option value="{{ $servicio->id }}" {{ in_array($servicio->id, $selectedHomeServices) ? 'selected' : '' }}>
+                            {{ $servicio->name }}
+                        </option>
+                    @endforeach
+                </select>
+                <small>Usa Ctrl/Cmd para seleccionar varios.</small>
             </section>
 
 
-            <section class="form-section">
-                <h2>Tarjeta 1</h2>
-                <label for="feature_1_title">Título</label>
-                <input type="text" id="feature_1_title" name="feature_1_title"
-                    value="{{ old('feature_1_title', $homeSetting->feature_1_title) }}">
-                <label for="feature_1_description">Descripción</label>
-                <textarea id="feature_1_description" name="feature_1_description" rows="2">{{ old('feature_1_description', $homeSetting->feature_1_description) }}</textarea>
+            <section class="editor-block">
+                <h3>Informacion de Contacto</h3>
+                <div class="form-grid three">
+                    <div>
+                        <label for="footer_address">Direccion</label>
+                        <textarea id="footer_address" name="footer_address" rows="2" class="auto-grow">{{ old('footer_address', $homeSetting->footer_address) }}</textarea>
+                    </div>
+                    <div>
+                        <label for="footer_phone">Telefono</label>
+                        <input type="text" id="footer_phone" name="footer_phone" value="{{ old('footer_phone', $homeSetting->footer_phone) }}">
+                    </div>
+                    <div>
+                        <label for="footer_hours">Horario de atencion</label>
+                        <textarea id="footer_hours" name="footer_hours" rows="2" class="auto-grow">{{ old('footer_hours', $homeSetting->footer_hours) }}</textarea>
+                    </div>
+                </div>
             </section>
 
-            <section class="form-section">
-                <h2>Tarjeta 2</h2>
-                <label for="feature_2_title">Título</label>
-                <input type="text" id="feature_2_title" name="feature_2_title"
-                    value="{{ old('feature_2_title', $homeSetting->feature_2_title) }}">
-                <label for="feature_2_description">Descripción</label>
-                <textarea id="feature_2_description" name="feature_2_description" rows="2">{{ old('feature_2_description', $homeSetting->feature_2_description) }}</textarea>
-            </section>
-
-            <section class="form-section">
-                <h2>Tarjeta 3</h2>
-                <label for="feature_3_title">Título</label>
-                <input type="text" id="feature_3_title" name="feature_3_title"
-                    value="{{ old('feature_3_title', $homeSetting->feature_3_title) }}">
-                <label for="feature_3_description">Descripción</label>
-                <textarea id="feature_3_description" name="feature_3_description" rows="2">{{ old('feature_3_description', $homeSetting->feature_3_description) }}</textarea>
-            </section>
-            </div>
 
             <div class="actions">
-                <button type="submit" class="btn">
-                    Guardar cambios
-                </button>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
             </div>
         </form>
     </div>
 @endsection
 
+@section('scripts')
+<script>
+    (function () {
+        function initHomeImagePreviews() {
+            var fields = document.querySelectorAll('.auto-grow');
+            function adjust(el) {
+                el.style.height = 'auto';
+                el.style.height = el.scrollHeight + 'px';
+            }
+            fields.forEach(function (el) {
+                adjust(el);
+                el.addEventListener('input', function () { adjust(el); });
+            });
 
+            function bindImagePreview(inputId, previewId) {
+                var input = document.getElementById(inputId);
+                var preview = document.getElementById(previewId);
+
+                if (!input || !preview) return;
+                if (input.dataset.previewBound === '1') return;
+                input.dataset.previewBound = '1';
+
+                input.addEventListener('change', function (event) {
+                    var file = event.target.files && event.target.files[0];
+                    if (!file) return;
+
+                    var objectUrl = URL.createObjectURL(file);
+                    preview.src = objectUrl;
+                    preview.classList.remove('hidden');
+                    preview.onload = function () {
+                        URL.revokeObjectURL(objectUrl);
+                    };
+                });
+            }
+
+            bindImagePreview('hero_image', 'hero_image_preview');
+            bindImagePreview('navbar_logo', 'navbar_logo_preview');
+        }
+
+        document.addEventListener('DOMContentLoaded', initHomeImagePreviews, { once: true });
+        document.addEventListener('livewire:navigated', initHomeImagePreviews);
+    })();
+</script>
+@endsection

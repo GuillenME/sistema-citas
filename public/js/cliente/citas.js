@@ -89,7 +89,9 @@ async function cargarHorarios() {
 if (window.flatpickr && fechaInput) {
     flatpickr(fechaInput, {
         inline: true,
+        locale: "es",
         dateFormat: 'Y-m-d',
+        firstDayOfWeek: 1,
         minDate: 'today',
         disableMobile: true,
         onChange: function () {
@@ -130,17 +132,4 @@ function cerrarModalConfirmar() {
 
 function confirmarAgendar() {
     document.getElementById('formAgendarCita').submit();
-}
-
-/* ===== LOGOUT ===== */
-function mostrarModalLogout() {
-    document.getElementById('modalLogout').classList.add('active');
-}
-
-function cerrarModalLogout() {
-    document.getElementById('modalLogout').classList.remove('active');
-}
-
-function confirmarLogout() {
-    document.getElementById('logoutForm').submit();
 }

@@ -1,20 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Manrope:wght@300;400;600;700&display=swap");
+
 .cliente-menu {
     position: relative;
     z-index: 2;
     background: #5f4636;
     color: #fff;
     padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 20px;
+    column-gap: 20px;
     box-shadow: 0 0 25px #5f4636;
 }
 
 .cliente-menu .title {
-    font-size: 18px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
+    font-family: "Cinzel", serif;
+    color: #ffdca0;
+    font-size: 20px;
+    letter-spacing: 1.2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 19px;
+    min-width: 0;
+}
+
+.cliente-menu .title-logo-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
 }
 
 .cliente-menu nav {
@@ -22,6 +38,14 @@
     align-items: center;
     gap: 18px;
     flex-wrap: wrap;
+    justify-content: center;
+    min-width: 0;
+}
+
+.cliente-menu form {
+    display: flex;
+    align-items: center;
+    justify-self: end;
 }
 
 .cliente-menu nav a {
@@ -44,19 +68,9 @@
     text-underline-offset: 6px;
 }
 
-.cliente-menu .logout-btn {
-    background: transparent;
-    border: 2px solid #ff2d2d;
-    padding: 8px 18px;
-    color: #fff;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 0 12px rgba(255, 45, 45, 0.9), inset 0 0 6px rgba(255, 45, 45, 0.4);
-}
-
 @media (max-width: 800px) {
     .cliente-menu {
+        display: flex;
         flex-direction: column;
         align-items: flex-start;
     }
@@ -64,5 +78,9 @@
     .cliente-menu nav {
         width: 100%;
         justify-content: flex-start;
+    }
+
+    .cliente-menu form {
+        justify-self: auto;
     }
 }

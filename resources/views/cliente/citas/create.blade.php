@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/clientes/cliente.css') }}">
 </head>
 
-<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
+<body class="cliente-citas-create-page">
 
     @include('cliente.partials.menu')
 
@@ -75,7 +75,7 @@
                         <p>Se solicita un <strong>{{ $porcentajeAnticipo }}%</strong> para confirmar la cita</p>
                         <p>El <strong>{{ $porcentajeRestante }}%</strong> restante se pagara despues de la cita</p>
 
-                        <p style="margin-top:10px;color:#fde68a;font-weight:bold;">
+                        <p class="anticipo-time-note">
                             Tienes <strong>15 minutos</strong> para realizar la transferencia y subir el comprobante.
                             De lo contrario, la cita se cancelara automaticamente.
                         </p>
@@ -149,29 +149,29 @@
             <p><strong>Fecha:</strong> <span id="mcFecha"></span></p>
             <p><strong>Horario:</strong> <span id="mcHorario"></span></p>
 
-            <hr style="margin:15px 0; opacity:.3">
+            <hr class="modal-separator">
 
-            <h4 style="color:#fde68a;">⚠ Anticipo requerido</h4>
+            <h4 class="modal-warning-title">⚠ Anticipo requerido</h4>
 
             <p>
                 Se solicita un <strong>{{ $porcentajeAnticipo }}%</strong> para confirmar la cita.<br>
                 El <strong>{{ $porcentajeRestante }}%</strong> restante se paga después del servicio.
             </p>
 
-            <p style="margin-top:10px; color:#fca5a5; font-weight:bold;">
+            <p class="modal-warning-note">
                 ⏳ Tienes <strong>15 minutos</strong> para realizar el depósito y subir el comprobante.<br>
                 Si no se recibe en ese tiempo, la cita será cancelada automáticamente.
             </p>
 
-            <div style="margin-top:10px; background:#111827; padding:10px; border-radius:8px;">
-                <p style="margin:0; font-size:14px;">
+            <div class="modal-bank-box">
+                <p class="modal-bank-text">
                     <strong>Banco:</strong> {{ config('citas.banco.nombre') }}<br>
                     <strong>Cuenta:</strong> {{ config('citas.banco.cuenta') }}<br>
                     <strong>CLABE:</strong> {{ config('citas.banco.clabe') }}
                 </p>
             </div>
 
-            <div class="modal-confirm-buttons" style="margin-top:15px;">
+            <div class="modal-confirm-buttons modal-confirm-buttons-spaced">
                 <button class="modal-confirm-btn modal-confirm-btn-submit" onclick="confirmarAgendar()">
                     Confirmar y agendar
                 </button>
@@ -185,17 +185,29 @@
 
 
     <!-- ================= MODAL LOGOUT ================= -->
-    <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
-        <div class="modal-content">
-            <h3>¿Cerrar sesión?</h3>
-            <div class="modal-buttons">
-                <button onclick="confirmarLogout()">Sí</button>
-                <button onclick="cerrarModalLogout()">No</button>
-            </div>
+    <div id="modalLogout" class="modal-overlay">
+     
+    <div class="modal-content">
+        <h3>¿Cerrar sesión?</h3>
+        <p>¿Estás seguro de que deseas cerrar sesión?</p>
+
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm"
+                    onclick="confirmarLogout()">
+                Sí, cerrar sesión
+            </button>
+
+            <button class="modal-btn modal-btn-cancel"
+                    onclick="cerrarModalLogout()">
+                Cancelar
+            </button>
         </div>
     </div>
+</div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
     <script src="{{ asset('js/cliente/citas.js') }}"></script>
 
 </body>

@@ -10,10 +10,11 @@ use App\Models\Cliente;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword as ResetPasswordTrait;
+use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Authenticatable
 {
-    use HasFactory, Notifiable, ResetPasswordTrait;
+    use HasApiTokens, HasFactory, Notifiable, ResetPasswordTrait;
 
     protected $table = 'users';
 
@@ -30,6 +31,11 @@ class Usuario extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     public function appointments()

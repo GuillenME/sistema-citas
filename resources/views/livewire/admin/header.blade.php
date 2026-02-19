@@ -4,7 +4,7 @@
         <h1>{{ $title }}</h1>
     </div>
 
-    <div style="display:flex; gap:15px; align-items:center;">
+    <div class="header-actions-inline">
         {{ $slot }}
 
         <button class="btn-logout" wire:click="abrirLogout">

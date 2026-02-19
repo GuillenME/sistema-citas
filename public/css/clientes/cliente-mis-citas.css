@@ -2,16 +2,20 @@
             box-sizing: border-box;
         }
         
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
             min-height: 100vh;
             background-image: var(--bg-url);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            position: relative;
-        }
+    position: relative;
+}
+
+body.cliente-citas-index-page {
+    --bg-url: url('/imagenes/SalaEsperaa.png');
+}
         /* Overlay oscuro */
         
         body::before {
@@ -63,95 +67,160 @@
         .back-btn:hover {
             transform: scale(1.2);
         }
-        /* Logout */
-        
-        .logout-btn {
-            background: transparent;
-            border: 2px solid #ff2d2d;
-            padding: 8px 18px;
-            color: #fff;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 0 12px rgba(255, 45, 45, 0.9), inset 0 0 6px rgba(255, 45, 45, 0.4);
-            transition: transform .2s;
-        }
-        
-        .logout-btn:hover {
-            transform: scale(1.05);
-        }
-        /* Modal de confirmación */
-        
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal-overlay.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: #8c4030;
-            padding: 30px;
-            border-radius: 16px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(255, 45, 45, 0.6);
-            border: 2px solid rgba(255, 45, 45, 0.5);
-        }
-        
-        .modal-content h3 {
-            margin-bottom: 20px;
-            font-size: 20px;
-            color: #fff;
-        }
-        
-        .modal-content p {
-            margin-bottom: 25px;
-            color: #e5e7eb;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-        
-        .modal-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: transform .2s;
-        }
-        
-        .modal-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        .modal-btn-confirm {
-            background: #ef4444;
-            color: #fff;
-            box-shadow: 0 0 14px rgba(239, 68, 68, 0.7);
-        }
-        
-        .modal-btn-cancel {
-            background: #c0a799;
-            color: #fff;
-        }
+        /* ===== BOTÓN LOGOUT PREMIUM ===== */
+
+.logout-btn {
+    background: linear-gradient(145deg, #5b3b2c, #4b3226);
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    color: #fccc7c;
+
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: all .25s ease;
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Icono */
+.logout-btn svg {
+    width: 28px;
+    height: 28px;
+    stroke: #fccc7c;
+    transition: transform .2s ease, stroke .2s ease;
+}
+
+/* Hover */
+.logout-btn:hover {
+    background: linear-gradient(145deg, #6a4633, #553728);
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.45),
+        0 0 15px rgba(252, 204, 124, 0.35);
+}
+
+.logout-btn:hover svg {
+    transform: translateX(2px);
+    stroke: #ffdca0;
+}
+
+/* Click */
+.logout-btn:active {
+    transform: scale(.95);
+}
+
+        /* ===== MODAL LOGOUT PREMIUM UNIFICADO ===== */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 8, 5, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 4000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+    animation: fadeIn .25s ease;
+}
+
+.modal-content {
+    background: linear-gradient(145deg, #5b3b2c, #4b3226);
+    padding: 38px 32px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    color: #fffaf4;
+    animation: scaleIn .25s ease;
+}
+
+.modal-content h3 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fccc7c;
+    letter-spacing: .5px;
+}
+
+.modal-content p {
+    font-size: 14px;
+    color: #f0e2d2;
+    margin-bottom: 28px;
+    line-height: 1.5;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    align-items: center;
+}
+
+#cancelarCitaForm {
+    margin: 0;
+}
+
+.modal-btn {
+    padding: 11px 26px;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+    transition: all .25s ease;
+}
+
+/* Botón Confirmar */
+.modal-btn-confirm {
+    background: linear-gradient(135deg, #f2a93b, #ffdca0);
+    color: #3a2417;
+    box-shadow: 0 8px 18px rgba(242, 169, 59, 0.35);
+}
+
+.modal-btn-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(242, 169, 59, 0.5);
+}
+
+/* Botón Cancelar */
+.modal-btn-cancel {
+    background: rgba(255,255,255,0.08);
+    color: #fffaf4;
+    border: 1px solid rgba(252, 204, 124, 0.35);
+}
+
+.modal-btn-cancel:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { transform: scale(.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
         /* ===== CONTENEDOR ===== */
         
         .container {
@@ -219,13 +288,49 @@
             text-align: center;
         }
 
-        .cita-when {
+.cita-when {
             font-size: 12px;
             color: #e5e7eb;
             display: flex;
             flex-direction: column;
             gap: 4px;
-        }
+}
+
+.citas-info-alert {
+    margin-bottom: 18px;
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(234, 179, 8, 0.15);
+    border: 1px solid rgba(234, 179, 8, 0.5);
+    color: #fde68a;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.35);
+}
+
+.citas-success-alert {
+    margin-bottom: 18px;
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(34, 197, 94, 0.18);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+    color: #bbf7d0;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+}
+
+.citas-error-alert {
+    margin-bottom: 18px;
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #fecaca;
+    font-size: 14px;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.35);
+}
 
         .cita-price {
             display: flex;
@@ -317,12 +422,34 @@
             font-size: 11px;
         }
 
-        .upload-form {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+.upload-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cita-actions {
+    margin-top: 10px;
+}
+
+.btn-cancel-cita {
+    width: 100%;
+    border: 1px solid rgba(239, 68, 68, 0.55);
+    background: rgba(239, 68, 68, 0.2);
+    color: #fecaca;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.btn-cancel-cita:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: translateY(-1px);
+}
 
         .btn-upload {
             background: #eab308;

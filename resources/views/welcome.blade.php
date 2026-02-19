@@ -11,39 +11,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
     <!-- Styles -->
-    <style>
-        /* ! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com */
-        *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}
-        html{line-height:1.5;-webkit-text-size-adjust:100%;font-family:Figtree,sans-serif}
-        body{margin:0}
-        a{text-decoration:inherit;color:inherit}
-        button,input,select,textarea{font:inherit}
-        button{cursor:pointer}
-
-        [type=button],[type=reset],[type=submit],button{
-            -webkit-appearance:button;
-            appearance:button; /* FIX warning */
-            background-color:transparent;
-        }
-
-        img,video{
-            max-width:100%;
-            height:auto;
-            display:block; /* FIX warning */
-        }
-
-        .min-h-screen{min-height:100vh}
-        .flex{display:flex}
-        .grid{display:grid}
-        .justify-center{justify-content:center}
-        .items-center{align-items:center}
-        .text-center{text-align:center}
-        .bg-gray-100{background:#f3f4f6}
-        .bg-white{background:#fff}
-        .rounded-lg{border-radius:.5rem}
-        .shadow-2xl{box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
-        .transition-all{transition:.2s ease}
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
 </head>
 
 <body class="antialiased">

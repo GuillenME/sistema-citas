@@ -55,7 +55,7 @@
         </div>
         <div class="form-group">
             <label>Servicios</label>
-            <select wire:model="servicios" multiple>
+            <select wire:model="servicios" multiple class="promo-servicios-select">
                 @foreach ($listaServicios as $servicio)
                     <option value="{{ $servicio->id }}">
                         {{ $servicio->name }}

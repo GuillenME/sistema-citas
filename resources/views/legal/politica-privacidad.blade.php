@@ -5,29 +5,7 @@
     <title>Política de Privacidad</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 30px;
-            line-height: 1.6;
-            background: #f9fafb;
-            color: #111827;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .box {
-            max-width: 800px;
-            margin: auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,.1);
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/legal/politica-privacidad.css') }}">
 </head>
 <body>
 

@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+
+*{
+    box-sizing: border-box;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+body{
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    color: #f4eee7;
+    background-image:
+        linear-gradient(180deg, rgba(16,10,8,.74) 0%, rgba(16,10,8,.92) 100%),
+        url("/imagenes/serviciosFon2.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.reviews-page{
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 88px 22px;
+}
+
+.reviews-head{
+    text-align: center;
+    margin-bottom: 34px;
+}
+
+.reviews-eyebrow{
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: #d0842a;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.reviews-title{
+    margin: 0;
+    color: #f4eee7;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 5.8vw, 88px);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: .01em;
+}
+
+.reviews-title::after{
+    content: "";
+    display: block;
+    width: 64px;
+    height: 3px;
+    border-radius: 2px;
+    margin: 12px auto 0;
+    background: #d0842a;
+}
+
+.subtitle{
+    margin: 14px 0 0;
+    color: rgba(244,238,231,.82);
+    font-size: 16px;
+}
+
+.reviews-grid.reviews-premium-grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.review-premium-card{
+    background: linear-gradient(145deg, rgba(34,22,16,.95) 0%, rgba(24,16,12,.98) 100%);
+    border-radius: 18px;
+    border: 1px solid rgba(208,132,42,.22);
+    padding: 20px;
+    box-shadow: 0 16px 38px rgba(0,0,0,.42);
+    min-height: 258px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.premium-review-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.premium-review-stars{
+    color: #f3a322;
+    font-size: 16px;
+    letter-spacing: 3px;
+    line-height: 1;
+}
+
+.premium-review-tag{
+    display: inline-block;
+    border: 1px solid rgba(208,132,42,.45);
+    color: #d0842a;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.premium-review-quote{
+    margin: 0;
+    color: rgba(243,231,215,.9);
+    font-size: 18px;
+    line-height: 1.5;
+    font-style: italic;
+    min-height: 100px;
+}
+
+.premium-review-meta{
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.premium-review-avatar{
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f1a12a, #b56a1a);
+    color: #1a110c;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.premium-review-author strong{
+    display: block;
+    color: #f4eee7;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.premium-review-author span{
+    display: block;
+    color: rgba(244,238,231,.62);
+    font-size: 12px;
+}
+
+.reviews-empty{
+    text-align: center;
+    color: rgba(244,238,231,.84);
+}
+
+.reviews-pagination{
+    margin-top: 34px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination{
+    display: flex;
+    gap: 10px;
+}
+
+.page-link{
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: rgba(0,0,0,.3);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.15);
+    text-decoration: none;
+}
+
+.page-item.active .page-link{
+    background: #8c4030;
+    border-color: #8c4030;
+    color: #fccc7c;
+}
+
+@media (max-width: 1024px){
+    .reviews-grid.reviews-premium-grid{
+        grid-template-columns: 1fr;
+    }
+
+    .premium-review-quote{
+        min-height: auto;
+    }
+}

@@ -20,6 +20,7 @@ class ServicioCreate extends Component
 
     protected $rules = [
         'nombre' => 'required|min:3',
+        'descripcion' => 'required|min:10',
         'duracion_minutos' => 'required|integer|min:5',
         'precio' => 'required|numeric|min:0',
         'image' => 'nullable|image|max:2048',
@@ -34,6 +35,8 @@ class ServicioCreate extends Component
 
     public function guardar()
     {
+        $this->validate();
+
         $path = $this->image
             ? $this->image->store('servicios', 'public')
             : null;

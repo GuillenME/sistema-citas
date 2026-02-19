@@ -1,11 +1,8 @@
 @extends('layouts.admin')
 
 @section('title', 'Empleados')
-@section('page-title', 'Empleados')
-@section('header-actions')
-   <a href="{{ route('admin.empleados.create') }}" class="btn btn-save">
-        + Nuevo empleado
-    </a> 
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/servicios-index.css') }}">
 @endsection
 
 @section('content')

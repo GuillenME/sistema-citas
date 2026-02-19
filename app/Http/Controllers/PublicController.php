@@ -14,7 +14,8 @@ class PublicController extends Controller
     {
         $servicios = Servicio::where('active', 1)->get();
         $homeServicios = Servicio::where('active', 1)
-            ->orderBy('id', 'desc')
+            ->where('featured_on_home', 1)
+            ->orderBy('home_position')
             ->take(10)
             ->get();
 
@@ -36,9 +37,11 @@ class PublicController extends Controller
             ->take(4)
             ->get();
 
-        $reviews = Review::orderBy('created_at', 'desc')
-            ->take(6)
-            ->get();
+        $reviews = Review::with(['service','user'])
+        ->orderBy('created_at', 'desc')
+        ->take(3)
+        ->get();
+        $reviewsHasMore = Review::count() > 3;
 
         $homeSetting = HomeSetting::first();
 
@@ -49,14 +52,16 @@ class PublicController extends Controller
             'homePromociones',
             'noticias',
             'reviews',
+            'reviewsHasMore',
             'homeSetting'
         ));
     }
 
     public function comentarios()
     {
-        $reviews = Review::orderBy('created_at', 'desc')
-            ->paginate(12);
+        $reviews = Review::with(['service','user'])
+        ->orderBy('created_at', 'desc')
+        ->get();
 
         return view('public.comentarios', compact('reviews'));
     }

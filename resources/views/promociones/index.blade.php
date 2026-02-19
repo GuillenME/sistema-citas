@@ -3,32 +3,7 @@
 @section('title', 'Promociones | Barbería & Spa')
 
 @section('styles')
-<style>
-* { box-sizing: border-box; }
-
-html{
-    scroll-behavior: smooth;
-}
-
-body{
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #b28562;
-    color: #e5e7eb;
-}
-
-section{
-    max-width: 1200px;
-    margin: auto;
-    padding: 90px 20px 60px;
-}
-
-h1{
-    text-align: center;
-    margin-bottom: 40px;
-    text-shadow: 0 0 15px #fccc7c;
-}
-</style>
+<link rel="stylesheet" href="{{ asset('css/promociones/index.css') }}">
 @endsection
 
 @section('content')

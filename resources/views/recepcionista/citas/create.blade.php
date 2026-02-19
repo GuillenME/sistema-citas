@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-ui.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-create.css') }}">
 </head>
 
-<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
+<body class="recepcionista-citas-create-page">
 
 @include('recepcionista.partials.menu')
 
@@ -87,6 +88,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 <script>
 const servicio = document.getElementById('servicio');
 const fecha = document.getElementById('fecha');
@@ -162,6 +164,7 @@ servicio.addEventListener('change', cargarBloques);
 if (window.flatpickr) {
     flatpickr(fecha, {
         inline: true,
+        locale: "es",
         dateFormat: 'Y-m-d',
         minDate: 'today',
         disableMobile: true,
@@ -201,8 +204,8 @@ function confirmarLogout() {
 <!-- Modal de confirmacion de logout -->
 <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
     <div class="modal-content">
-        <h3>¿Cerrar sesion?</h3>
-        <p>¿Estas seguro de que deseas cerrar sesion?</p>
+        <h3>Â¿Cerrar sesion?</h3>
+        <p>Â¿Estas seguro de que deseas cerrar sesion?</p>
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Si, cerrar sesion</button>
             <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>

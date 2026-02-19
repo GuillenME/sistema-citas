@@ -15,11 +15,15 @@ class Servicio extends Model
         'duration_minutes',
         'price',
         'image',
-        'active'
+        'active',
+        'featured_on_home',
+        'home_position',
     ];
 
     protected $casts = [
         'active' => 'boolean',
+        'featured_on_home' => 'boolean',
+        'home_position' => 'integer',
         'price' => 'decimal:2'
     ];
 

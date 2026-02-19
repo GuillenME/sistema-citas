@@ -13,7 +13,7 @@
 
 </head>
 
-<body style="--bg-url: url('{{ asset('imagenes/SalaEsperaa.png') }}')">
+<body class="cliente-citas-index-page">
 
 
     @include('cliente.partials.menu')
@@ -22,19 +22,18 @@
 
         <div class="table-card">
             <h2>Historial de citas</h2>
+            @if (session('success'))
+                <div class="citas-success-alert">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="citas-error-alert">
+                    {{ session('error') }}
+                </div>
+            @endif
             @if (session('info'))
-                <div
-                    style="
-        margin-bottom:18px;
-        padding:14px;
-        border-radius:10px;
-        background:rgba(234,179,8,.15);
-        border:1px solid rgba(234,179,8,.5);
-        color:#fde68a;
-        font-size:14px;
-        text-align:center;
-        box-shadow:0 0 12px rgba(234,179,8,.35);
-    ">
+                <div class="citas-info-alert">
                     {{ session('info') }}
                 </div>
             @endif
@@ -60,6 +59,8 @@
                         $estadoClase = match ($cita->status) {
                             'pendiente_anticipo' => 'pendiente',
                             'confirmada' => 'confirmada',
+                            'completada' => 'confirmada',
+                            'no_asistio' => 'cancelada',
                             'cancelada' => 'cancelada',
                             default => 'pendiente',
                         };
@@ -67,6 +68,8 @@
                         $estadoTexto = match ($cita->status) {
                             'pendiente_anticipo' => 'Pendiente de anticipo',
                             'confirmada' => 'Confirmada',
+                            'completada' => 'Completada',
+                            'no_asistio' => 'No asistio',
                             'cancelada' => 'Cancelada',
                             default => ucfirst($cita->status),
                         };
@@ -135,6 +138,16 @@
                                         Ver comprobante
                                     </a>
                                 @endif
+                                @if (in_array($cita->status, ['pendiente_anticipo', 'confirmada'], true))
+                                    <div class="cita-actions">
+                                        <button type="button"
+                                            class="btn-cancel-cita"
+                                            data-cancel-action="{{ route('cliente.citas.cancelar', $cita) }}"
+                                            onclick="abrirModalCancelarCita(this)">
+                                            Cancelar cita
+                                        </button>
+                                    </div>
+                                @endif
                             </div>
                         </details>
                     </div>
@@ -158,6 +171,17 @@
         function confirmarLogout() {
             document.getElementById('logoutForm').submit();
         }
+
+        function abrirModalCancelarCita(button) {
+            const action = button.getAttribute('data-cancel-action');
+            const form = document.getElementById('cancelarCitaForm');
+            form.setAttribute('action', action);
+            document.getElementById('modalCancelarCita').classList.add('active');
+        }
+
+        function cerrarModalCancelarCita() {
+            document.getElementById('modalCancelarCita').classList.remove('active');
+        }
     </script>
 
     <!-- Modal de confirmación de logout -->
@@ -168,6 +192,22 @@
             <div class="modal-buttons">
                 <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
                 <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalCancelarCita" class="modal-overlay" onclick="if(event.target === this) cerrarModalCancelarCita()">
+        <div class="modal-content">
+            <h3>Cancelar cita</h3>
+            <p>Esta accion no se puede deshacer. Si faltan 60 minutos o menos: minimo 10 minutos de anticipacion. Si faltan mas de 60 minutos: minimo 20 minutos.</p>
+            <div class="modal-buttons">
+                <form method="POST" id="cancelarCitaForm">
+                    @csrf
+                    <button type="submit" class="modal-btn modal-btn-confirm">Si, cancelar cita</button>
+                </form>
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="cerrarModalCancelarCita()">
+                    Volver
+                </button>
             </div>
         </div>
     </div>

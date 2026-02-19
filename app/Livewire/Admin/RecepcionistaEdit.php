@@ -41,6 +41,8 @@ class RecepcionistaEdit extends Component
 
     public function actualizar()
     {
+        $this->validate();
+
         $this->usuario->update([
             'name' => $this->nombre,
             'last_name' => $this->apellido,

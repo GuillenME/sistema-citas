@@ -1,0 +1,186 @@
+.admin-form-shell {
+    width: 100%;
+}
+
+.admin-form-shell > div {
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    border-radius: 16px;
+    background: linear-gradient(165deg, rgba(18, 16, 9, 0.96), rgba(24, 20, 10, 0.9));
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.28);
+    padding: 20px;
+}
+
+.admin-form-shell .card {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+.admin-form-shell .form-container {
+    display: grid;
+    gap: 16px;
+}
+
+.admin-form-shell .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.admin-form-shell .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.admin-form-shell .form-group.full {
+    grid-column: 1 / -1;
+}
+
+.admin-form-shell label {
+    margin: 0;
+    color: #f3cc73;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.admin-form-shell input,
+.admin-form-shell textarea,
+.admin-form-shell select {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(252, 204, 124, 0.26);
+    background: rgba(0, 0, 0, 0.38);
+    color: #f6efdd;
+    padding: 11px 12px;
+    font-size: 14px;
+}
+
+.admin-form-shell input:focus,
+.admin-form-shell textarea:focus,
+.admin-form-shell select:focus {
+    outline: 0;
+    border-color: rgba(252, 204, 124, 0.58);
+    box-shadow: 0 0 0 3px rgba(252, 204, 124, 0.12);
+}
+
+.admin-form-shell textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.admin-form-shell .promo-servicios-select {
+    min-height: 180px;
+}
+
+.admin-form-shell .preview,
+.admin-form-shell .preview-wide {
+    width: 100%;
+    max-width: 360px;
+    border-radius: 12px;
+    border: 1px solid rgba(252, 204, 124, 0.24);
+    object-fit: cover;
+}
+
+.admin-form-shell .preview-empty {
+    border-radius: 12px;
+    border: 1px dashed rgba(252, 204, 124, 0.34);
+    color: #b7ab8f;
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.admin-form-shell .form-group.checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-form-shell .form-group.checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.admin-form-shell .form-group.checkbox label {
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #efe6d1;
+    font-weight: 600;
+}
+
+.admin-form-shell .error {
+    color: #f87171;
+    font-size: 12px;
+}
+
+.admin-form-shell .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.admin-form-shell .btn.btn-cancel {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #f6efdd;
+    padding: 9px 16px;
+}
+
+.admin-form-shell .btn.btn-save {
+    border-radius: 999px;
+    background: linear-gradient(135deg, #f7d347, #e5bd2f);
+    border: 1px solid rgba(252, 204, 124, 0.74);
+    color: #231707;
+    padding: 9px 16px;
+}
+
+.admin-form-shell .btn.btn-save,
+.admin-form-shell .btn.btn-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.admin-form-shell .btn.btn-save::before,
+.admin-form-shell .btn.btn-cancel::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 14px 14px;
+    flex-shrink: 0;
+}
+
+.admin-form-shell .btn.btn-save::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23231707' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z'/%3E%3Cpath d='M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7'/%3E%3Cpath d='M7 3v4a1 1 0 0 0 1 1h7'/%3E%3C/svg%3E");
+}
+
+.admin-form-shell .btn.btn-cancel::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f6efdd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m15 9-6 6'/%3E%3Cpath d='m9 9 6 6'/%3E%3C/svg%3E");
+}
+
+.admin-form-shell .modal-box {
+    background: linear-gradient(165deg, rgba(16, 14, 8, 0.98), rgba(24, 20, 10, 0.94));
+    border: 1px solid rgba(252, 204, 124, 0.26);
+}
+
+@media (max-width: 900px) {
+    .admin-form-shell > div {
+        padding: 14px;
+    }
+
+    .admin-form-shell .form-grid {
+        grid-template-columns: 1fr;
+    }
+}

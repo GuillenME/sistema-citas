@@ -13,8 +13,28 @@ class RecepcionistaCreate extends Component
 
     protected $rules = [
         'nombre' => 'required|string|min:3',
+        'apellido' => 'required|string|min:2',
         'email' => 'required|email|unique:users,email',
+        'telefono' => 'required|string|min:7|max:10',
         'password' => 'required|min:6|confirmed',
+    ];
+
+    protected $messages = [
+        'required' => 'El campo :attribute es obligatorio.',
+        'email' => 'El campo :attribute debe ser un correo electrónico válido.',
+        'unique' => 'Este :attribute ya está registrado.',
+        'min' => 'El campo :attribute debe tener al menos :min caracteres.',
+        'max' => 'El campo :attribute no debe superar :max caracteres.',
+        'confirmed' => 'La confirmación de :attribute no coincide.',
+    ];
+
+    protected $validationAttributes = [
+        'nombre' => 'nombre',
+        'apellido' => 'apellido',
+        'email' => 'correo electrónico',
+        'telefono' => 'teléfono',
+        'password' => 'contraseña',
+        'password_confirmation' => 'confirmación de contraseña',
     ];
 
     public function abrirConfirmacion()
@@ -25,6 +45,8 @@ class RecepcionistaCreate extends Component
 
     public function guardar()
     {
+        $this->validate();
+
         Usuario::create([
             'name' => $this->nombre,
             'last_name' => $this->apellido,

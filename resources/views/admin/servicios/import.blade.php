@@ -7,7 +7,7 @@
     <div class="card">
         <p>Descarga la plantilla, completa los datos y sube tu archivo CSV.</p>
 
-        <div class="actions" style="margin-bottom:20px;">
+        <div class="actions import-actions-top">
             <a href="{{ route('admin.servicios.template') }}" class="btn btn-cancel">
                 Descargar plantilla CSV
             </a>
@@ -22,7 +22,7 @@
                 <small class="error">{{ $message }}</small>
             @enderror
 
-            <div class="actions" style="margin-top:20px;">
+            <div class="actions import-actions-bottom">
                 <a href="{{ route('admin.servicios.index') }}" class="btn btn-cancel">
                     Cancelar
                 </a>
@@ -33,4 +33,3 @@
         </form>
     </div>
 @endsection
-
