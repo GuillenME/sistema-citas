@@ -14,7 +14,7 @@
         <section class="register-hero" aria-hidden="true">
             <div class="hero-overlay"></div>
             <div class="hero-content">
-                <span class="hero-brand">Barberia &amp; Spa</span>
+                <span class="hero-brand">{{ optional($homeSetting)->hero_title ?? 'Barberia & Spa' }}</span>
                 <h1>Eleva tu estilo a un nuevo nivel de <em>distincion.</em></h1>
                 <p>Descubre el equilibrio perfecto entre la tradicion de la barberia clasica y el relax de un spa
                     moderno.</p>
