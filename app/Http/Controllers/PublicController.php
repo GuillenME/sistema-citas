@@ -28,7 +28,8 @@ class PublicController extends Controller
         $homePromociones = Promocion::where('published', 1)
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
-            ->orderBy('start_date', 'desc')
+            ->orderByDesc('discount')
+            ->orderByDesc('start_date')
             ->take(1)
             ->get();
 
