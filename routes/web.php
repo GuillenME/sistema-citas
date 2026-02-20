@@ -238,6 +238,9 @@ Route::middleware(['auth', 'rol:2'])
         Route::post('/citas/{cita}/cancelar', [CitaController::class, 'cancelar'])
             ->name('citas.cancelar');
 
+        Route::post('/citas/{cita}/reagendar', [CitaController::class, 'reagendar'])
+            ->name('citas.reagendar');
+
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');
 

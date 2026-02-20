@@ -2,6 +2,7 @@ const servicio = document.getElementById('servicio');
 const fecha = document.getElementById('fecha');
 const horarios = document.getElementById('horarios');
 const fechaInput = document.getElementById('fecha');
+const dateField = document.querySelector('.date-field');
 
 let servicioConfirmado = false;
 
@@ -89,6 +90,7 @@ async function cargarHorarios() {
 if (window.flatpickr && fechaInput) {
     flatpickr(fechaInput, {
         inline: true,
+        appendTo: dateField || undefined,
         locale: "es",
         dateFormat: 'Y-m-d',
         firstDayOfWeek: 1,
