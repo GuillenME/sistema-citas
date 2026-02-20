@@ -889,14 +889,14 @@ body.modal-open{
 
 .promo-title-top,
 .promo-title-bottom{
-    font-size: clamp(54px, 9vw, 104px);
+    font-size: clamp(40px, 6vw, 80px);
     font-weight: 800;
     color: #f3eee8;
     letter-spacing: .01em;
 }
 
 .promo-title-discount{
-    font-size: clamp(58px, 10vw, 112px);
+    font-size: clamp(55px, 9vw, 100px);
     font-weight: 700;
     color: #d58426;
     font-style: italic;
@@ -906,7 +906,7 @@ body.modal-open{
     margin: 10px 0 0;
     max-width: 48ch;
     color: rgba(247,241,233,.88);
-    font-size: 18px;
+    font-size: 15px;
     line-height: 1.45;
 }
 
@@ -965,11 +965,11 @@ body.modal-open{
     .promo-title-top,
     .promo-title-bottom,
     .promo-title-discount{
-        font-size: clamp(46px, 15vw, 70px);
+        font-size: clamp(40px, 14vw, 60px);
     }
 
     .promo-text{
-        font-size: 15px;
+        font-size: 13px;
     }
 
     .promo-meta{
