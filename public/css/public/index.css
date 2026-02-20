@@ -31,9 +31,9 @@ body{
 .hero::before{
     content: "EXPERIENCIA PREMIUM";
     display: inline-block;
-    font-size: 12px;
+    font-size: 15px;
     letter-spacing: .32em;
-    color: #cc7b1f;
+    color: #281300;
     margin-bottom: 16px;
     font-weight: 700;
 }
