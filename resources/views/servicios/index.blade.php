@@ -10,7 +10,6 @@
 <section class="services-page">
     <header class="services-hero">
         <div class="services-hero-overlay">
-            <span class="services-kicker">EXPERIENCIA</span>
             <h1 class="services-title">
                 <span class="title-solid">NUESTROS</span>
                 <span class="title-outline">SERVICIOS</span>
