@@ -7,10 +7,12 @@
 @endsection
 
 @section('content')
-<section>
-    <h1>Promociones</h1>
+<section class="promotions-page">
+    <div class="promotions-hero">
+        <h1>Nuestras Promociones</h1>
+        <p>Descuentos exclusivos para que luzcas tu mejor version sin comprometer tu bolsillo.</p>
+    </div>
 
-    {{-- MISMAS PROMOS DEL INDEX --}}
     <livewire:public.promociones />
 </section>
 @endsection

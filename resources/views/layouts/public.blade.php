@@ -10,7 +10,9 @@
     @livewireStyles
 </head>
 <body>
-    @include('partials.navbar')
+    @if (!trim($__env->yieldContent('hide_navbar')))
+        @include('partials.navbar')
+    @endif
 
     @yield('content')
 
