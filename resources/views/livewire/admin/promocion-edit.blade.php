@@ -61,7 +61,7 @@
         {{-- ✅ CHECKBOX ARREGLADO --}}
         <div class="form-group">
             <label>Imagen</label>
-            <input type="file" wire:model="image">
+            <input type="file" wire:model="image" accept="image/*">
             @error('image') <span class="error">{{ $message }}</span> @enderror
             @if ($image)
                 <div class="image-preview-wrapper inline">

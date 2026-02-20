@@ -22,7 +22,7 @@
 
         <div class="form-group">
             <label>Imagen del servicio</label>
-            <input type="file" wire:model="image">
+            <input type="file" wire:model="image" accept="image/*">
             @error('image') <span class="error">{{ $message }}</span> @enderror
         </div>
 
