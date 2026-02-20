@@ -209,6 +209,39 @@
     background: rgba(252, 204, 124, 0.15);
 }
 
+/* Selector de empleado dentro del modal de detalle */
+#assignForm.assign-inline {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#assignEmployeeSelect.select-compact {
+    flex: 1 1 230px;
+    min-width: 230px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(252, 204, 124, 0.58);
+    background: rgba(95, 70, 54, 0.92);
+    color: #fff4de;
+    font-size: 15px;
+    line-height: 1.2;
+}
+
+#assignEmployeeSelect.select-compact option {
+    color: #23180b;
+    background: #fff3dd;
+}
+
+#assignForm .btn-compact {
+    height: 44px;
+    padding: 0 16px;
+    line-height: 1.1;
+}
+
 #rescheduleForm input,
 #rescheduleForm select,
 #rescheduleForm textarea {

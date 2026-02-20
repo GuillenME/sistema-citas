@@ -35,8 +35,8 @@ class CitaController extends Controller
                         ->where('end_date', '>=', now()->toDateString());
                 }]);
             }])
-            ->orderBy('date')
-            ->orderBy('start_time')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->get();
 
         $porcentajeAnticipo = config('citas.porcentaje_anticipo', 50);
@@ -270,7 +270,7 @@ public function store(Request $request)
         }
 
         if (!in_array($cita->status, [CitaStatus::PENDIENTE_ANTICIPO, CitaStatus::CONFIRMADA], true)) {
-            return back()->with('error', 'Solo puedes cancelar citas pendientes o confirmadas.');
+            return back()->with('error', 'Solo puedes gestionar citas pendientes o confirmadas.');
         }
 
         $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
@@ -291,9 +291,13 @@ public function store(Request $request)
         }
 
         $notaBase = trim((string) ($cita->notes ?? ''));
+        $tieneAnticipo = !empty($cita->receipt) || $cita->status === CitaStatus::CONFIRMADA;
+        $motivo = $tieneAnticipo
+            ? 'Cancelada por el cliente. Anticipo no reembolsable.'
+            : 'Cancelada por el cliente.';
         $notaFinal = $notaBase === ''
-            ? 'Cancelada por el cliente.'
-            : $notaBase . ' | Cancelada por el cliente.';
+            ? $motivo
+            : $notaBase . ' | ' . $motivo;
 
         $cita->update([
             'status' => CitaStatus::CANCELADA,
@@ -308,6 +312,97 @@ public function store(Request $request)
         ]);
 
         return back()->with('success', 'Cita cancelada correctamente.');
+    }
+
+    public function reagendar(Request $request, Cita $cita)
+    {
+        $cliente = Cliente::where('user_id', auth()->id())->first();
+
+        if (!$cliente || $cita->client_id !== $cliente->id) {
+            abort(403);
+        }
+
+        if (!in_array($cita->status, [CitaStatus::PENDIENTE_ANTICIPO, CitaStatus::CONFIRMADA], true)) {
+            return back()->with('error', 'Solo puedes reagendar citas pendientes o confirmadas.');
+        }
+
+        $reagendas = $cita->estados()->where('status', 'reagendada')->count();
+        if ($reagendas >= 1) {
+            return back()->with('error', 'Solo puedes reagendar esta cita una vez.');
+        }
+
+        $fechaOriginal = Carbon::parse($cita->date)->format('Y-m-d');
+        $inicioOriginal = Carbon::parse($fechaOriginal . ' ' . $cita->getRawOriginal('start_time'));
+        if (now()->diffInMinutes($inicioOriginal, false) < 24 * 60) {
+            return back()->with('error', 'Solo puedes reagendar con al menos 24 horas de anticipacion.');
+        }
+
+        $request->validate([
+            'fecha' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                function ($attribute, $value, $fail) {
+                    if (Carbon::parse($value)->isSunday()) {
+                        $fail('Los domingos no se atiende. Por favor selecciona otro dia.');
+                    }
+                },
+            ],
+            'hora_inicio' => 'required|date_format:H:i',
+            'observaciones' => 'nullable|string|max:500',
+        ]);
+
+        if (!$cita->service) {
+            return back()->with('error', 'La cita no tiene servicio asociado.');
+        }
+
+        $horaInicio = Carbon::parse($request->hora_inicio);
+        $horaFin = $horaInicio->copy()->addMinutes($cita->service->duration_minutes);
+
+        $nuevaFechaHora = Carbon::parse($request->fecha . ' ' . $horaInicio->format('H:i'));
+        if (now()->diffInMinutes($nuevaFechaHora, false) < 24 * 60) {
+            return back()->with('error', 'La nueva fecha y hora debe ser al menos 24 horas despues de este momento.');
+        }
+
+        $citaSolapada = Cita::query()
+            ->whereDate('date', $request->fecha)
+            ->whereIn('status', [CitaStatus::CONFIRMADA, CitaStatus::PENDIENTE_ANTICIPO])
+            ->where('id', '!=', $cita->id)
+            ->where(function ($query) use ($horaInicio, $horaFin) {
+                $query->where('start_time', '<', $horaFin->format('H:i'))
+                    ->where('end_time', '>', $horaInicio->format('H:i'));
+            })
+            ->exists();
+
+        if ($citaSolapada) {
+            return back()->with('error', 'El horario nuevo se cruza con otra cita.');
+        }
+
+        $notaReagendada = trim((string) $request->observaciones);
+        $notaAnterior = trim((string) ($cita->notes ?? ''));
+        $notaFinal = 'Reagendada por cliente.';
+        if ($notaReagendada !== '') {
+            $notaFinal .= ' ' . $notaReagendada;
+        }
+        if ($notaAnterior !== '') {
+            $notaFinal .= ' | Nota anterior: ' . $notaAnterior;
+        }
+
+        $cita->update([
+            'date' => $request->fecha,
+            'start_time' => $horaInicio->format('H:i'),
+            'end_time' => $horaFin->format('H:i'),
+            'notes' => $notaFinal,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'reagendada',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        return back()->with('success', 'Cita reagendada correctamente. Tu anticipo se mantiene para la nueva fecha.');
     }
 
     public function subirComprobante(Request $request, Cita $cita)
