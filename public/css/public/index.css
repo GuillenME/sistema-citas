@@ -1235,10 +1235,10 @@ body.modal-open {
 
 .reviews-eyebrow {
     display: inline-block;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: .26em;
     text-transform: uppercase;
-    color: #d0842a;
+    color: #6f3300;
     font-weight: 700;
     margin-bottom: 12px;
 }
@@ -1260,7 +1260,7 @@ body.modal-open {
     height: 3px;
     border-radius: 2px;
     margin: 12px auto 0;
-    background: #d0842a;
+    background: #6f3300;
 }
 
 .reviews-premium-grid {
