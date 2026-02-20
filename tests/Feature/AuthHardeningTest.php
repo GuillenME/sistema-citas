@@ -91,6 +91,42 @@ class AuthHardeningTest extends TestCase
             ->assertSessionHas('success', $expected);
     }
 
+    public function test_login_throttle_allows_new_attempt_after_decay_window(): void
+    {
+        $this->seedRole(2);
+
+        $user = Usuario::create([
+            'name' => 'Cliente',
+            'last_name' => 'Decay',
+            'phone' => '5555555552',
+            'email' => 'decay@test.local',
+            'password' => bcrypt('correct-password'),
+            'role_id' => 2,
+            'active' => 1,
+        ]);
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->post('/login', [
+                'email' => 'decay@test.local',
+                'password' => 'bad-password',
+            ])->assertSessionHasErrors('email');
+        }
+
+        $this->post('/login', [
+            'email' => 'decay@test.local',
+            'password' => 'bad-password',
+        ])->assertSessionHasErrors('email');
+
+        $this->travel(61)->seconds();
+
+        $this->post('/login', [
+            'email' => 'decay@test.local',
+            'password' => 'correct-password',
+        ])->assertRedirect('/redirect');
+
+        $this->assertAuthenticatedAs($user);
+    }
+
     private function seedRole(int $roleId): void
     {
         DB::table('roles')->insertOrIgnore([

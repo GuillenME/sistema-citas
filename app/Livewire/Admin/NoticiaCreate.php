@@ -46,7 +46,7 @@ class NoticiaCreate extends Component
         Noticia::create([
             'title' => $this->titulo,
             'slug' => $this->uniqueSlug($this->titulo),
-            'content' => $this->contenido,
+            'content' => html_entity_decode((string) $this->contenido, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
             'image' => $path,
             'publication_date' => $this->fecha_publicacion,
             'published' => $this->publicada ? 1 : 0,

@@ -27,7 +27,7 @@
 
         <div class="form-group">
             <label>Imagen</label>
-            <input type="file" wire:model="image">
+            <input type="file" wire:model="image" accept="image/*">
             @error('image')
                 <small class="error">{{ $message }}</small>
             @enderror

@@ -10,6 +10,9 @@
 
         <div class="news-grid">
             @foreach ($noticias as $index => $noticia)
+                @php
+                    $contentPlain = html_entity_decode((string) $noticia->content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                @endphp
                 <article class="news-card {{ $index % 2 === 0 ? 'down' : 'up' }}">
                     <div class="news-thumb">
                         <img
@@ -28,7 +31,7 @@
                         <h3>{{ $noticia->title }}</h3>
 
                         <p>
-                            {{ \Illuminate\Support\Str::limit($noticia->content, 140) }}
+                            {{ \Illuminate\Support\Str::limit($contentPlain, 140) }}
                         </p>
                     </div>
 
@@ -37,7 +40,7 @@
                         data-title="{{ e($noticia->title) }}"
                         data-date="{{ \Carbon\Carbon::parse($noticia->publication_date)->format('d M Y') }}"
                         data-image="{{ $noticia->image ? asset('storage/' . $noticia->image) : asset('imagenes/servicio_default.png') }}"
-                        data-content="{{ e($noticia->content) }}"
+                        data-content="{{ e($contentPlain) }}"
                     >
                         Leer más
                     </button>
@@ -75,13 +78,27 @@
             const modalDate = document.getElementById('newsModalDate');
             const modalTitle = document.getElementById('newsModalTitle');
             const modalContent = document.getElementById('newsModalContent');
+            const decoder = document.createElement('textarea');
+
+            function decodeHtmlEntities(value) {
+                let decoded = String(value ?? '');
+                for (let i = 0; i < 3; i++) {
+                    decoder.innerHTML = decoded;
+                    const next = decoder.value;
+                    if (next === decoded) {
+                        break;
+                    }
+                    decoded = next;
+                }
+                return decoded;
+            }
 
             document.querySelectorAll('.news-more').forEach(btn => {
                 btn.addEventListener('click', () => {
                     modalImage.src = btn.dataset.image;
                     modalDate.textContent = btn.dataset.date;
-                    modalTitle.textContent = btn.dataset.title;
-                    modalContent.textContent = btn.dataset.content;
+                    modalTitle.textContent = decodeHtmlEntities(btn.dataset.title);
+                    modalContent.textContent = decodeHtmlEntities(btn.dataset.content);
 
                     modal.classList.add('active');
                     modal.setAttribute('aria-hidden', 'false');

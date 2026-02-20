@@ -52,7 +52,7 @@ class NoticiaEdit extends Component
         $this->noticia->update([
             'title' => $this->titulo,
             'slug' => $this->uniqueSlug($this->titulo, $this->noticia->id),
-            'content' => $this->contenido,
+            'content' => html_entity_decode((string) $this->contenido, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
             'publication_date' => $this->fecha_publicacion,
             'published' => $this->publicada ? 1 : 0,
             'image' => $this->noticia->image,
