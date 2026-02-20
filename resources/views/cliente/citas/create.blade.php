@@ -15,9 +15,12 @@
     @include('cliente.partials.menu')
 
     <div class="container">
-        <div class="card">
+        <div class="card booking-shell">
 
-            <h2>Agendar cita</h2>
+            <div class="booking-head">
+                <h2>Agendar Cita</h2>
+                <p>Reserva tu experiencia premium. Selecciona el servicio, la fecha y la hora que mejor se adapte a tu estilo.</p>
+            </div>
 
             {{-- ERRORES --}}
             @if ($errors->any())
@@ -30,12 +33,13 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('cliente.citas.store') }}" id="formAgendarCita" class="form-grid">
+            <form method="POST" action="{{ route('cliente.citas.store') }}" id="formAgendarCita" class="form-grid booking-grid">
     @csrf
 
+    <div class="booking-left">
     {{-- SERVICIO --}}
     <div class="field">
-        <label>Servicio</label>
+        <label><span class="step-dot">1</span>Seleccionar Servicio</label>
         <select name="servicio_id" id="servicio" required>
             <option value="">Selecciona un servicio</option>
             @foreach ($servicios as $servicio)
@@ -56,53 +60,61 @@
 
     {{-- FECHA --}}
                 <div class="field date-field">
-                    <label>Fecha</label>
+                    <label><span class="step-dot">2</span>Seleccionar Fecha</label>
                     <input type="text" id="fecha" name="fecha" class="date-inline" placeholder="Selecciona una fecha"
                         onkeydown="return false;" readonly>
                 </div>
 
                 {{-- HORARIO --}}
                 <div class="field horario-field">
-                    <label>Horario</label>
-                    <select id="horarios" name="hora_inicio">
+                    <label><span class="step-dot">3</span>Seleccionar Hora</label>
+                    <div id="horarioChips" class="horario-chips"></div>
+                    <select id="horarios" name="hora_inicio" class="sr-only-select">
                         <option value="">Selecciona un horario</option>
                     </select>
                 </div>
+    </div>
 
-                <div class="field anticipo-field">
-                    <div class="anticipo">
-                        <h4>Anticipo requerido</h4>
-                        <p>Se solicita un <strong>{{ $porcentajeAnticipo }}%</strong> para confirmar la cita</p>
-                        <p>El <strong>{{ $porcentajeRestante }}%</strong> restante se pagara despues de la cita</p>
+                <div class="field anticipo-field booking-summary">
+                    <h4>Resumen de Cita <span class="summary-pill">Pendiente</span></h4>
+                    <div class="summary-item">
+                        <span>Servicio</span>
+                        <strong id="summaryService">-</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Fecha y Hora</span>
+                        <strong id="summaryDateTime">-</strong>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-amount">
+                        <span>Anticipo Requerido</span>
+                        <strong id="summaryAnticipo">$0.00</strong>
+                    </div>
+                    <div class="summary-bank">
+                        <p>Banco: <strong>{{ config('citas.banco.nombre') }}</strong></p>
+                        <p>Cuenta: <strong>{{ config('citas.banco.cuenta') }}</strong></p>
+                        <p>CLABE: <strong>{{ config('citas.banco.clabe') }}</strong></p>
+                    </div>
+                    <p class="anticipo-time-note">
+                        La sesion expira en 15 minutos.
+                    </p>
+                    {{-- PRIVACIDAD --}}
+                    <div class="field privacy-field summary-privacy">
+                        <label class="privacy-label">
+                            <input type="checkbox" name="acepta_privacidad" class="privacy-checkbox">
+                            <span class="privacy-text">
+                                Acepto la <a href="#" class="privacy-link">política de privacidad</a>
+                            </span>
+                        </label>
+                    </div>
 
-                        <p class="anticipo-time-note">
-                            Tienes <strong>15 minutos</strong> para realizar la transferencia y subir el comprobante.
-                            De lo contrario, la cita se cancelara automaticamente.
-                        </p>
-
-                        <p>
-                            Banco: {{ config('citas.banco.nombre') }}<br>
-                            Cuenta: {{ config('citas.banco.cuenta') }}<br>
-                            CLABE: {{ config('citas.banco.clabe') }}
-                        </p>
+                    <div class="field summary-submit">
+                        <button type="button" class="submit-btn" onclick="mostrarModalConfirmar()">
+                            AGENDAR CITA
+                        </button>
                     </div>
                 </div>
 
-{{-- PRIVACIDAD --}}
-    <div class="field full privacy-field">
-        <label class="privacy-label">
-            <input type="checkbox" name="acepta_privacidad" class="privacy-checkbox">
-            <span class="privacy-text">
-                Acepto la <a href="#" class="privacy-link">política de privacidad</a>
-            </span>
-        </label>
-    </div>
-
-    <div class="field full center">
-        <button type="button" class="submit-btn" onclick="mostrarModalConfirmar()">
-            AGENDAR CITA
-        </button>
-    </div>
 </form>
 
 
@@ -209,8 +221,103 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
     <script src="{{ asset('js/cliente/citas.js') }}"></script>
+    <script>
+        (function () {
+            const servicio = document.getElementById('servicio');
+            const fecha = document.getElementById('fecha');
+            const horarios = document.getElementById('horarios');
+            const chipsWrap = document.getElementById('horarioChips');
+            const summaryService = document.getElementById('summaryService');
+            const summaryDateTime = document.getElementById('summaryDateTime');
+            const summaryAnticipo = document.getElementById('summaryAnticipo');
+            const anticipoPct = {{ (float) $porcentajeAnticipo }};
+
+            if (!servicio || !fecha || !horarios || !chipsWrap) return;
+
+            function formatMoney(value) {
+                const num = Number(value || 0);
+                return '$' + num.toFixed(2);
+            }
+
+            function formatFecha(fechaIso) {
+                if (!fechaIso) return '-';
+                const d = new Date(fechaIso + 'T00:00:00');
+                return d.toLocaleDateString('es-MX', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+
+            function formatHora(hora24) {
+                if (!hora24) return '';
+                const [h, m] = hora24.split(':');
+                const date = new Date();
+                date.setHours(Number(h), Number(m || 0), 0, 0);
+                return date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: true });
+            }
+
+            function syncSummary() {
+                const opt = servicio.options[servicio.selectedIndex];
+                const serviceName = opt && opt.value ? opt.textContent.trim() : '-';
+                const precioBase = opt && opt.value ? Number(opt.dataset.precioDescuento || opt.dataset.precio || 0) : 0;
+                const anticipo = precioBase * (anticipoPct / 100);
+                const hora = horarios.value ? formatHora(horarios.value) : '';
+
+                summaryService.textContent = serviceName;
+                summaryDateTime.textContent = fecha.value ? `${formatFecha(fecha.value)}${hora ? ' - ' + hora : ''}` : '-';
+                summaryAnticipo.textContent = formatMoney(anticipo);
+            }
+
+            function renderHoraChips() {
+                chipsWrap.innerHTML = '';
+                const opts = Array.from(horarios.options).filter(o => o.value);
+
+                if (!opts.length) {
+                    const empty = document.createElement('div');
+                    empty.className = 'horario-empty';
+                    empty.textContent = 'Selecciona servicio y fecha para ver horarios.';
+                    chipsWrap.appendChild(empty);
+                    return;
+                }
+
+                opts.forEach((opt) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'hora-chip';
+                    btn.textContent = opt.textContent;
+                    btn.dataset.value = opt.value;
+                    if (horarios.value === opt.value) {
+                        btn.classList.add('active');
+                    }
+                    btn.addEventListener('click', () => {
+                        horarios.value = opt.value;
+                        syncSummary();
+                        renderHoraChips();
+                    });
+                    chipsWrap.appendChild(btn);
+                });
+            }
+
+            const mo = new MutationObserver(() => {
+                renderHoraChips();
+                syncSummary();
+            });
+            mo.observe(horarios, { childList: true, subtree: true, attributes: true });
+
+            servicio.addEventListener('change', syncSummary);
+            fecha.addEventListener('change', syncSummary);
+            horarios.addEventListener('change', () => {
+                renderHoraChips();
+                syncSummary();
+            });
+
+            renderHoraChips();
+            syncSummary();
+        })();
+    </script>
 
 </body>
 
 </html>
-
