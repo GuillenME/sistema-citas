@@ -1,4 +1,4 @@
-<header>
+<header class="public-navbar">
     <div class="logo">
         @if (optional($homeSetting)->navbar_logo)
             <img src="{{ asset('storage/' . $homeSetting->navbar_logo) }}"

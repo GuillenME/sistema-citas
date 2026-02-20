@@ -1,4 +1,4 @@
-header{
+.public-navbar{
     position: fixed;
     top: 0;
     left: 0;
@@ -8,9 +8,13 @@ header{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 40px;
-    z-index: 1000;
+    z-index: 1200;
     backdrop-filter: blur(6px);
+    padding: 0 40px;
+}
+
+body{
+    padding-top: 70px;
 }
 
 .logo{
@@ -20,7 +24,7 @@ header{
     color: #e48815;
 }
 
-nav a{
+.public-navbar nav a{
     margin: 0 14px;
     color: #e5e7eb;
     text-decoration: none;
@@ -28,7 +32,7 @@ nav a{
     transition: .3s;
 }
 
-nav a:hover{
+.public-navbar nav a:hover{
     color: #e48815;
 }
 
