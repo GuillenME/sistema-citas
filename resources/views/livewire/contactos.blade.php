@@ -1,8 +1,10 @@
 <section id="contacto" class="home-section contact-section contact-lux">
     @php
         $footerAddress = $homeSetting->footer_address ?? 'Calle Principal #123 - Guadalajara';
+        $footerReferences = $homeSetting->footer_references ?? '';
         $footerPhone = $homeSetting->footer_phone ?? '33 1234 5678';
         $footerHours = $homeSetting->footer_hours ?? 'Lun-Sab 9:00-20:00';
+        $mapQuery = rawurlencode(trim($footerAddress) !== '' ? $footerAddress : 'Guadalajara Centro');
     @endphp
 
     <div class="contact-lux-head">
@@ -51,6 +53,13 @@
                     <p>{!! nl2br(e($footerAddress)) !!}</p>
                 </article>
 
+                @if (trim($footerReferences) !== '')
+                    <article class="contact-info-card">
+                        <h4>REFERENCIAS</h4>
+                        <p>{!! nl2br(e($footerReferences)) !!}</p>
+                    </article>
+                @endif
+
                 <article class="contact-info-card">
                     <h4>TELÉFONO</h4>
                     <p>{!! nl2br(e($footerPhone)) !!}</p>
@@ -66,7 +75,7 @@
 
             <div class="contact-lux-map">
                 <iframe
-                    src="https://www.google.com/maps?q=Guadalajara%20Centro&output=embed"
+                    src="https://www.google.com/maps?q={{ $mapQuery }}&output=embed"
                     loading="lazy">
                 </iframe>
             </div>

@@ -31,6 +31,12 @@
                 <span>📍Ubicacion</span>
                 {{ $homeSetting->footer_address ?? 'Calle Principal #123 - Guadalajara' }}
             </div>
+            @if (!empty($homeSetting->footer_references))
+                <div class="footer-item">
+                    <span>Referencias</span>
+                    {{ $homeSetting->footer_references }}
+                </div>
+            @endif
             <div class="footer-item">
                 <span>📱 Teléfono</span>
                 {{ $homeSetting->footer_phone ?? '33 1234 5678' }}
