@@ -1701,6 +1701,11 @@ body.modal-open{
     line-height: 1.4;
 }
 
+.contact-lux .contact-info-card p.is-muted{
+    color: rgba(244,238,231,.46);
+    font-style: italic;
+}
+
 .contact-lux .contact-lux-map{
     border-radius: 16px;
     overflow: hidden;

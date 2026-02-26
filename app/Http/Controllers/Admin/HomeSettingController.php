@@ -60,6 +60,7 @@ class HomeSettingController extends Controller
             'footer_address' => 'Calle Principal #123 - Guadalajara',
             'footer_references' => null,
             'footer_phone' => '33 1234 5678',
+            'footer_whatsapp' => '33 1234 5678',
             'footer_hours' => 'Lun-Sab 9:00-20:00',
         ]);
 
@@ -90,6 +91,7 @@ class HomeSettingController extends Controller
             'footer_address' => 'nullable|string|max:255',
             'footer_references' => 'nullable|string|max:500',
             'footer_phone' => 'nullable|string|max:100',
+            'footer_whatsapp' => 'nullable|string|max:100',
             'footer_hours' => 'nullable|string|max:100',
             'featured_services' => 'nullable|array|max:10',
             'featured_services.*' => 'integer|exists:services,id',
