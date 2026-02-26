@@ -176,6 +176,11 @@
                     <div>
                         <label for="footer_address">Direccion</label>
                         <textarea id="footer_address" name="footer_address" rows="2" class="auto-grow">{{ old('footer_address', $homeSetting->footer_address) }}</textarea>
+                        <small class="field-note">Usa la direccion exacta de Google Maps (sin referencias) para que el mapa se ubique correctamente.</small>
+                    </div>
+                    <div>
+                        <label for="footer_references">Referencias</label>
+                        <textarea id="footer_references" name="footer_references" rows="2" class="auto-grow">{{ old('footer_references', $homeSetting->footer_references) }}</textarea>
                     </div>
                     <div>
                         <label for="footer_phone">Telefono</label>

@@ -58,6 +58,7 @@ class HomeSettingController extends Controller
             'feature_3_title' => 'Atención Personalizada',
             'feature_3_description' => 'Productos de primera línea',
             'footer_address' => 'Calle Principal #123 - Guadalajara',
+            'footer_references' => null,
             'footer_phone' => '33 1234 5678',
             'footer_hours' => 'Lun-Sab 9:00-20:00',
         ]);
@@ -87,6 +88,7 @@ class HomeSettingController extends Controller
             'hero_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'navbar_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'footer_address' => 'nullable|string|max:255',
+            'footer_references' => 'nullable|string|max:500',
             'footer_phone' => 'nullable|string|max:100',
             'footer_hours' => 'nullable|string|max:100',
             'featured_services' => 'nullable|array|max:10',

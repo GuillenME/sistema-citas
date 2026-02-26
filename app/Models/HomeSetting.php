@@ -22,6 +22,7 @@ class HomeSetting extends Model
         'hero_image',
         'navbar_logo',
         'footer_address',
+        'footer_references',
         'footer_phone',
         'footer_hours',
     ];
