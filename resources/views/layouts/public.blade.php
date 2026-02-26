@@ -41,6 +41,12 @@
                 <span>📱 Teléfono</span>
                 {{ $homeSetting->footer_phone ?? '33 1234 5678' }}
             </div>
+            @if (!empty($homeSetting->footer_whatsapp))
+                <div class="footer-item">
+                    <span>WhatsApp</span>
+                    {{ $homeSetting->footer_whatsapp }}
+                </div>
+            @endif
             <div class="footer-item">
                 <span>🕜 Horarios</span>
                 {{ $homeSetting->footer_hours ?? 'Lun-Sab 9:00-20:00' }}
@@ -55,3 +61,5 @@
     @livewireScripts
 </body>
 </html>
+
+

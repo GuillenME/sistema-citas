@@ -3,6 +3,7 @@
         $footerAddress = $homeSetting->footer_address ?? 'Calle Principal #123 - Guadalajara';
         $footerReferences = $homeSetting->footer_references ?? '';
         $footerPhone = $homeSetting->footer_phone ?? '33 1234 5678';
+        $footerWhatsapp = $homeSetting->footer_whatsapp ?? '';
         $footerHours = $homeSetting->footer_hours ?? 'Lun-Sab 9:00-20:00';
         $mapQuery = rawurlencode(trim($footerAddress) !== '' ? $footerAddress : 'Guadalajara Centro');
     @endphp
@@ -53,16 +54,28 @@
                     <p>{!! nl2br(e($footerAddress)) !!}</p>
                 </article>
 
-                @if (trim($footerReferences) !== '')
-                    <article class="contact-info-card">
-                        <h4>REFERENCIAS</h4>
+                <article class="contact-info-card">
+                    <h4>REFERENCIAS</h4>
+                    @if (trim($footerReferences) !== '')
                         <p>{!! nl2br(e($footerReferences)) !!}</p>
-                    </article>
-                @endif
+                    @else
+                        <p class="is-muted">Sin referencias adicionales</p>
+                    @endif
+                </article>
 
                 <article class="contact-info-card">
                     <h4>TELÉFONO</h4>
-                    <p>{!! nl2br(e($footerPhone)) !!}</p>
+                    <p>
+                        @if (trim($footerPhone) !== '')
+                            Telefono de contacto: {{ $footerPhone }}
+                        @endif
+                        @if (trim($footerWhatsapp) !== '')
+                            @if (trim($footerPhone) !== '')
+                                <br>
+                            @endif
+                            WhatsApp: {{ $footerWhatsapp }}
+                        @endif
+                    </p>
                 </article>
 
                 <article class="contact-info-card contact-hours-card">

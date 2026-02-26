@@ -172,21 +172,41 @@
 
             <section class="editor-block">
                 <h3>Informacion de Contacto</h3>
-                <div class="form-grid three">
-                    <div>
+                @php
+                    $footerAddressValue = old('footer_address', $homeSetting->footer_address);
+                    $footerAddressQuery = rawurlencode(trim((string) $footerAddressValue) !== '' ? $footerAddressValue : 'Guadalajara Centro');
+                @endphp
+
+                <div class="contact-info-row contact-info-row-top">
+                    <div class="contact-info-item">
                         <label for="footer_address">Direccion</label>
-                        <textarea id="footer_address" name="footer_address" rows="2" class="auto-grow">{{ old('footer_address', $homeSetting->footer_address) }}</textarea>
+                        <textarea id="footer_address" name="footer_address" rows="2" class="auto-grow fixed-height-control">{{ old('footer_address', $homeSetting->footer_address) }}</textarea>
                         <small class="field-note">Usa la direccion exacta de Google Maps (sin referencias) para que el mapa se ubique correctamente.</small>
                     </div>
-                    <div>
+                    <div class="contact-info-item">
                         <label for="footer_references">Referencias</label>
-                        <textarea id="footer_references" name="footer_references" rows="2" class="auto-grow">{{ old('footer_references', $homeSetting->footer_references) }}</textarea>
+                        <textarea id="footer_references" name="footer_references" rows="2" class="auto-grow fixed-height-control">{{ old('footer_references', $homeSetting->footer_references) }}</textarea>
                     </div>
-                    <div>
-                        <label for="footer_phone">Telefono</label>
-                        <input type="text" id="footer_phone" name="footer_phone" value="{{ old('footer_phone', $homeSetting->footer_phone) }}">
+                    <div class="contact-info-item">
+                        <label for="footer_phone">Telefono de contacto</label>
+                        <textarea id="footer_phone" name="footer_phone" rows="2" class="auto-grow fixed-height-control">{{ old('footer_phone', $homeSetting->footer_phone) }}</textarea>
                     </div>
-                    <div>
+                    <div class="contact-info-item">
+                        <label for="footer_whatsapp">WhatsApp</label>
+                        <textarea id="footer_whatsapp" name="footer_whatsapp" rows="2" class="auto-grow fixed-height-control">{{ old('footer_whatsapp', $homeSetting->footer_whatsapp) }}</textarea>
+                    </div>
+                </div>
+
+                <div class="contact-info-row contact-info-row-bottom">
+                    <div class="contact-info-item map-preview-card">
+                        <span>Vista previa del mapa</span>
+                        <iframe
+                            id="footer_address_map_preview"
+                            src="https://www.google.com/maps?q={{ $footerAddressQuery }}&output=embed"
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="contact-info-item">
                         <label for="footer_hours">Horario de atencion</label>
                         <textarea id="footer_hours" name="footer_hours" rows="2" class="auto-grow">{{ old('footer_hours', $homeSetting->footer_hours) }}</textarea>
                     </div>
@@ -205,7 +225,7 @@
 <script>
     (function () {
         function initHomeEditor() {
-            var fields = document.querySelectorAll('.auto-grow');
+            var fields = document.querySelectorAll('.auto-grow:not(.fixed-height-control)');
             function adjust(el) {
                 el.style.height = 'auto';
                 el.style.height = el.scrollHeight + 'px';
@@ -238,6 +258,22 @@
 
             bindImagePreview('hero_image', 'hero_image_preview');
             bindImagePreview('navbar_logo', 'navbar_logo_preview');
+
+            var addressInput = document.getElementById('footer_address');
+            var addressMapPreview = document.getElementById('footer_address_map_preview');
+
+            function updateAddressMapPreview() {
+                if (!addressInput || !addressMapPreview) return;
+                var value = (addressInput.value || '').trim();
+                var query = encodeURIComponent(value !== '' ? value : 'Guadalajara Centro');
+                addressMapPreview.src = 'https://www.google.com/maps?q=' + query + '&output=embed';
+            }
+
+            if (addressInput && addressMapPreview && addressInput.dataset.mapPreviewBound !== '1') {
+                addressInput.dataset.mapPreviewBound = '1';
+                addressInput.addEventListener('input', updateAddressMapPreview);
+                addressInput.addEventListener('change', updateAddressMapPreview);
+            }
 
             var grid = document.getElementById('featured_services_grid');
             var counter = document.getElementById('featured_services_counter');
