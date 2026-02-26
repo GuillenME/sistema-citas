@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cita;
 use App\Models\CitaEstado;
 use App\Models\Cliente;
+use App\Models\RecepcionistaReminder;
 use App\Models\Servicio;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
@@ -34,12 +35,19 @@ class CitaController extends Controller
             ->limit(3)
             ->get();
 
+        $recordatorios = RecepcionistaReminder::query()
+            ->where('is_active', true)
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get();
+
         return view('recepcionista.dashboard', compact(
             'citasHoy',
             'pendientes',
             'confirmadas',
             'canceladas',
-            'citasRecientes'
+            'citasRecientes',
+            'recordatorios'
         ));
     }
 

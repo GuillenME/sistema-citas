@@ -9,7 +9,7 @@ use App\Models\Servicio;
 class EmpleadoEdit extends Component
 {
     public Empleado $empleado;
-    public $nombre, $telefono, $activo;
+    public $nombre, $telefono;
     public $serviciosSeleccionados = [];
 
     protected $rules = [
@@ -17,7 +17,6 @@ class EmpleadoEdit extends Component
         'telefono' => 'required|digits:10',
         'serviciosSeleccionados' => 'required|array|min:1|max:5',
         'serviciosSeleccionados.*' => 'exists:services,id',
-        'activo' => 'required|boolean'
     ];
 
     protected $messages = [
@@ -31,7 +30,6 @@ class EmpleadoEdit extends Component
         $this->nombre = $empleado->name;
         $this->telefono = $empleado->phone;
         $this->serviciosSeleccionados = $empleado->servicios()->pluck('services.id')->toArray();
-        $this->activo = $empleado->active;
     }
 
     public function updatedServiciosSeleccionados($value)
@@ -39,6 +37,29 @@ class EmpleadoEdit extends Component
         if (count($this->serviciosSeleccionados) > 5) {
             $this->serviciosSeleccionados = array_slice($this->serviciosSeleccionados, 0, 5);
         }
+    }
+
+    public function toggleServicio(int $serviceId): void
+    {
+        $selected = collect($this->serviciosSeleccionados)->map(fn ($id) => (int) $id)->values();
+
+        if ($selected->contains($serviceId)) {
+            $this->serviciosSeleccionados = $selected
+                ->reject(fn ($id) => $id === $serviceId)
+                ->values()
+                ->all();
+            return;
+        }
+
+        if ($selected->count() >= 5) {
+            return;
+        }
+
+        $this->serviciosSeleccionados = $selected
+            ->push($serviceId)
+            ->unique()
+            ->values()
+            ->all();
     }
 
     public function updatedTelefono($value): void
@@ -53,7 +74,6 @@ class EmpleadoEdit extends Component
         $this->empleado->update([
             'name' => $this->nombre,
             'phone' => $this->telefono,
-            'active' => $this->activo,
         ]);
 
         $this->empleado->servicios()->sync($this->serviciosSeleccionados);
