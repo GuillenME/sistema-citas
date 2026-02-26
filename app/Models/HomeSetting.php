@@ -24,6 +24,7 @@ class HomeSetting extends Model
         'footer_address',
         'footer_references',
         'footer_phone',
+        'footer_whatsapp',
         'footer_hours',
     ];
 
