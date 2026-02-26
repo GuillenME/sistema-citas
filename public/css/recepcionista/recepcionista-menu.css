@@ -3,14 +3,16 @@
 .cliente-menu {
     position: relative;
     z-index: 2;
-    background: #5f4636;
+    background: rgba(52, 30, 20, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(252, 204, 124, 0.25);
     color: #fff;
-    padding: 15px 30px;
+    padding: 18px 40px;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     column-gap: 20px;
-    box-shadow: 0 0 25px #5f4636;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .cliente-menu .title {
@@ -49,23 +51,39 @@
 }
 
 .cliente-menu nav a {
-    color: #fff;
+    color: #fffaf4;
     text-decoration: none;
+    font-size: 15px;
     font-weight: 600;
-    font-size: 14px;
-    opacity: 0.85;
-    transition: opacity .2s, transform .2s;
+    position: relative;
+    transition: color .2s ease;
+}
+
+.cliente-menu nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 2px;
+    background: #ffdca0;
+    transition: width .2s ease;
 }
 
 .cliente-menu nav a:hover {
-    opacity: 1;
-    transform: translateY(-1px);
+    color: #ffdca0;
+}
+
+.cliente-menu nav a:hover::after {
+    width: 100%;
 }
 
 .cliente-menu nav a.active {
-    opacity: 1;
-    text-decoration: underline;
-    text-underline-offset: 6px;
+    color: #ffdca0;
+}
+
+.cliente-menu nav a.active::after {
+    width: 100%;
 }
 
 @media (max-width: 800px) {

@@ -73,12 +73,18 @@ class CitaController extends Controller
                 function ($attribute, $value, $fail) {
                     $fecha = Carbon::parse($value);
                     if ($fecha->isSunday()) {
-                        $fail('Los domingos no se atiende. Por favor selecciona otro día.');
+                        $fail('Los domingos no se atiende. Por favor selecciona otro dÃ­a.');
                     }
                 },
             ],
             'hora_inicio' => 'required|date_format:H:i',
-            'anticipo_monto' => 'nullable|numeric|min:0',
+            'anticipo_recibido' => 'required|accepted',
+            'anticipo_monto' => 'required|numeric|min:0.01',
+        ], [
+            'anticipo_recibido.required' => 'Debes confirmar que se recibio anticipo en recepcion.',
+            'anticipo_recibido.accepted' => 'Debes confirmar que se recibio anticipo en recepcion.',
+            'anticipo_monto.required' => 'Debes capturar el monto del anticipo.',
+            'anticipo_monto.min' => 'El monto del anticipo debe ser mayor a 0.',
         ]);
 
         $cliente = Cliente::where('user_id', $request->usuario_id)->first();
@@ -92,18 +98,14 @@ class CitaController extends Controller
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
 
-        $anticipo = $request->filled('anticipo_monto');
-
         Cita::create([
             'client_id' => $cliente->id,
             'service_id' => $servicio->id,
             'date' => $request->fecha,
             'start_time' => $horaInicio->format('H:i'),
             'end_time' => $horaFin->format('H:i'),
-            'status' => $anticipo ? 'confirmada' : 'pendiente_anticipo',
-            'notes' => $anticipo
-                ? 'Anticipo recibido en recepción: $' . number_format($request->anticipo_monto, 2)
-                : 'Cita creada por recepción, pendiente de anticipo',
+            'status' => 'confirmada',
+            'notes' => 'Anticipo recibido en recepcion: $' . number_format($request->anticipo_monto, 2),
         ]);
 
         return redirect()
@@ -119,8 +121,8 @@ class CitaController extends Controller
                     $query->where('status', 'reagendada');
                 },
             ])
-            ->whereDate('date', now())
-            ->orderBy('start_time')
+            ->orderByDesc('date')
+            ->orderByDesc('start_time')
             ->get();
 
         return view('recepcionista.citas.index', compact('citas'));
@@ -134,7 +136,7 @@ class CitaController extends Controller
 
         $reagendas = $cita->estados()->where('status', 'reagendada')->count();
         if ($reagendas >= 2) {
-            return back()->with('error', 'Esta cita ya alcanzó el máximo de 2 reagendas.');
+            return back()->with('error', 'Esta cita ya alcanzÃ³ el mÃ¡ximo de 2 reagendas.');
         }
 
         $request->validate([
@@ -145,7 +147,7 @@ class CitaController extends Controller
                 function ($attribute, $value, $fail) {
                     $fecha = Carbon::parse($value);
                     if ($fecha->isSunday()) {
-                        $fail('Los domingos no se atiende. Por favor selecciona otro día.');
+                        $fail('Los domingos no se atiende. Por favor selecciona otro dÃ­a.');
                     }
                 },
             ],
@@ -201,3 +203,4 @@ class CitaController extends Controller
         return back()->with('success', 'Cita reagendada correctamente.');
     }
 }
+
