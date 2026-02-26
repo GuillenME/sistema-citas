@@ -194,6 +194,7 @@
                     <div class="contact-info-item">
                         <label for="footer_whatsapp">WhatsApp</label>
                         <textarea id="footer_whatsapp" name="footer_whatsapp" rows="2" class="auto-grow fixed-height-control">{{ old('footer_whatsapp', $homeSetting->footer_whatsapp) }}</textarea>
+                        <small class="field-note">Se guardara con lada de Mexico (52) automaticamente.</small>
                     </div>
                 </div>
 
@@ -261,6 +262,7 @@
 
             var addressInput = document.getElementById('footer_address');
             var addressMapPreview = document.getElementById('footer_address_map_preview');
+            var whatsappInput = document.getElementById('footer_whatsapp');
 
             function updateAddressMapPreview() {
                 if (!addressInput || !addressMapPreview) return;
@@ -273,6 +275,25 @@
                 addressInput.dataset.mapPreviewBound = '1';
                 addressInput.addEventListener('input', updateAddressMapPreview);
                 addressInput.addEventListener('change', updateAddressMapPreview);
+            }
+
+            function normalizeWhatsappValue(rawValue) {
+                var digits = String(rawValue || '').replace(/\D+/g, '');
+                if (!digits) return '';
+                if (digits.indexOf('52') !== 0) {
+                    digits = '52' + digits;
+                }
+                return digits;
+            }
+
+            if (whatsappInput && whatsappInput.dataset.normalizeBound !== '1') {
+                whatsappInput.dataset.normalizeBound = '1';
+                whatsappInput.addEventListener('blur', function () {
+                    whatsappInput.value = normalizeWhatsappValue(whatsappInput.value);
+                });
+                whatsappInput.addEventListener('change', function () {
+                    whatsappInput.value = normalizeWhatsappValue(whatsappInput.value);
+                });
             }
 
             var grid = document.getElementById('featured_services_grid');

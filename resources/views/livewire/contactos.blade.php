@@ -6,6 +6,10 @@
         $footerWhatsapp = $homeSetting->footer_whatsapp ?? '';
         $footerHours = $homeSetting->footer_hours ?? 'Lun-Sab 9:00-20:00';
         $mapQuery = rawurlencode(trim($footerAddress) !== '' ? $footerAddress : 'Guadalajara Centro');
+        $footerWhatsappDigits = preg_replace('/\D+/', '', $footerWhatsapp ?? '');
+        if ($footerWhatsappDigits !== '' && !str_starts_with($footerWhatsappDigits, '52')) {
+            $footerWhatsappDigits = '52' . $footerWhatsappDigits;
+        }
     @endphp
 
     <div class="contact-lux-head">
@@ -73,7 +77,12 @@
                             @if (trim($footerPhone) !== '')
                                 <br>
                             @endif
-                            WhatsApp: {{ $footerWhatsapp }}
+                            WhatsApp:
+                            @if (trim($footerWhatsappDigits) !== '')
+                                <a href="https://wa.me/{{ $footerWhatsappDigits }}" target="_blank" rel="noopener noreferrer">{{ $footerWhatsapp }}</a>
+                            @else
+                                {{ $footerWhatsapp }}
+                            @endif
                         @endif
                     </p>
                 </article>

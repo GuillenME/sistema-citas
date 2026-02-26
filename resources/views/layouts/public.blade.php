@@ -44,7 +44,17 @@
             @if (!empty($homeSetting->footer_whatsapp))
                 <div class="footer-item">
                     <span>WhatsApp</span>
-                    {{ $homeSetting->footer_whatsapp }}
+                    @php
+                        $footerWhatsappDigits = preg_replace('/\D+/', '', (string) $homeSetting->footer_whatsapp);
+                        if ($footerWhatsappDigits !== '' && !str_starts_with($footerWhatsappDigits, '52')) {
+                            $footerWhatsappDigits = '52' . $footerWhatsappDigits;
+                        }
+                    @endphp
+                    @if (!empty($footerWhatsappDigits))
+                        <a href="https://wa.me/{{ $footerWhatsappDigits }}" target="_blank" rel="noopener noreferrer">{{ $homeSetting->footer_whatsapp }}</a>
+                    @else
+                        {{ $homeSetting->footer_whatsapp }}
+                    @endif
                 </div>
             @endif
             <div class="footer-item">
