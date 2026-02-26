@@ -93,13 +93,7 @@
                 </iframe>
             </div>
 
-            <div class="contact-lux-social">
-                <span>SIGUENOS EN REDES</span>
-                <div class="contact-social-links">
-                    <a href="#" aria-label="Instagram">IG</a>
-                    <a href="#" aria-label="Facebook">FB</a>
-                    <a href="#" aria-label="Twitter">X</a>
-                </div>
+
             </div>
         </div>
     </div>
