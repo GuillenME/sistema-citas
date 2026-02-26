@@ -42,6 +42,29 @@ class EmpleadoCreate extends Component
         }
     }
 
+    public function toggleServicio(int $serviceId): void
+    {
+        $selected = collect($this->serviciosSeleccionados)->map(fn ($id) => (int) $id)->values();
+
+        if ($selected->contains($serviceId)) {
+            $this->serviciosSeleccionados = $selected
+                ->reject(fn ($id) => $id === $serviceId)
+                ->values()
+                ->all();
+            return;
+        }
+
+        if ($selected->count() >= 5) {
+            return;
+        }
+
+        $this->serviciosSeleccionados = $selected
+            ->push($serviceId)
+            ->unique()
+            ->values()
+            ->all();
+    }
+
     public function guardar()
     {
         $this->validate();

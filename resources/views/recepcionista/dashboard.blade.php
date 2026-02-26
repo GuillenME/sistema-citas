@@ -33,7 +33,6 @@
                 </a>
             </div>
         </div>
-
         <div class="hero-visual">
             <div class="summary-card">
                 <h3>Resumen rápido</h3>
@@ -59,7 +58,6 @@
             </div>
         </div>
     </section>
-
     <section class="secondary">
         <div class="secondary-card">
             <h3>📌 Recomendaciones diarias</h3>
@@ -106,11 +104,14 @@
         </div>
         <div class="secondary-card">
             <h3>📌 Recordatorio</h3>
-            <p>Mantén actualizada la agenda y avisa a clientes ante cambios.</p>
+            @forelse ($recordatorios as $recordatorio)
+                <p style="margin-bottom: 8px;">• {{ $recordatorio->message }}</p>
+            @empty
+                <p>Mantén actualizada la agenda y avisa a clientes ante cambios.</p>
+            @endforelse
         </div>
     </section>
 </main>
-
 <!-- MODAL LOGOUT -->
 <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
     <div class="modal-content">
@@ -122,7 +123,6 @@
         </div>
     </div>
 </div>
-
 <script>
     function mostrarModalLogout() {
         document.getElementById('modalLogout').classList.add('active');
@@ -136,6 +136,5 @@
         document.getElementById('logoutForm').submit();
     }
 </script>
-
 </body>
 </html>

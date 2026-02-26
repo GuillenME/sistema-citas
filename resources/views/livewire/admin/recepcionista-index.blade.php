@@ -5,6 +5,12 @@
                 <h3>Gestion de recepcionistas y estado de acceso.</h3>
             </div>
             <div class="serv-actions">
+                <button type="button" class="serv-btn ghost" wire:click="openReminderListModal">
+                    Ver recordatorios
+                </button>
+                <button type="button" class="serv-btn ghost" wire:click="openReminderCreateModal">
+                    Nuevo recordatorio
+                </button>
                 <a href="{{ route('admin.recepcionistas.create') }}" class="serv-btn primary">
                     <span class="serv-btn-icon" aria-hidden="true">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
@@ -13,6 +19,12 @@
                 </a>
             </div>
         </header>
+
+        @if (session()->has('success'))
+            <div class="serv-card" style="margin-bottom: 14px; padding: 12px 14px;">
+                {{ session('success') }}
+            </div>
+        @endif
 
         <div class="table-container serv-table-wrap">
             <table class="admin-table serv-table">
@@ -60,6 +72,50 @@
             {{ $recepcionistas->links() }}
         </div>
     </div>
+
+    @if ($showReminderCreateModal)
+        <div class="modal-overlay" wire:click.self="closeReminderCreateModal">
+            <div class="modal-box">
+                <h3>Nuevo recordatorio</h3>
+                <textarea wire:model.defer="newReminder" rows="4" style="width: 100%; resize: vertical; margin-top: 10px;" placeholder="Escribe el recordatorio para el panel de recepcionista..."></textarea>
+                @error('newReminder') <small class="error">{{ $message }}</small> @enderror
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" wire:click="closeReminderCreateModal">Cancelar</button>
+                    <button class="btn btn-save" wire:click="saveReminder" wire:loading.attr="disabled">
+                        <span wire:loading.remove>Guardar</span>
+                        <span wire:loading>Guardando...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if ($showReminderListModal)
+        <div class="modal-overlay" wire:click.self="closeReminderListModal">
+            <div class="modal-box" style="max-width: 720px; width: 100%;">
+                <h3>Recordatorios</h3>
+                <div style="margin-top: 10px; max-height: 380px; overflow: auto;">
+                    @forelse ($recordatorios as $recordatorio)
+                        <div style="padding: 10px; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center;">
+                                <small>{{ $recordatorio->created_at?->format('d/m/Y H:i') }}</small>
+                                <button class="serv-btn ghost" wire:click="toggleReminderStatus({{ $recordatorio->id }})">
+                                    {{ $recordatorio->is_active ? 'Desactivar' : 'Activar' }}
+                                </button>
+                            </div>
+                            <p style="margin: 8px 0 0;">{{ $recordatorio->message }}</p>
+                            <small style="opacity: .85;">Estado: {{ $recordatorio->is_active ? 'Activo' : 'Inactivo' }}</small>
+                        </div>
+                    @empty
+                        <p style="margin-top: 10px;">Aun no hay recordatorios.</p>
+                    @endforelse
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" wire:click="closeReminderListModal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    @endif
 
     @if ($confirmDeleteId)
         <div class="modal-overlay" wire:click.self="cancelDelete">
