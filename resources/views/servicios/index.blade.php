@@ -29,12 +29,7 @@
                         alt="{{ $servicio->name }}">
 
                     <div class="service-card-overlay">
-                        <p class="service-price">Desde ${{ number_format($servicio->price, 0) }}</p>
                         <h3>{{ $servicio->name }}</h3>
-                        <p class="service-description">
-                            {{ \Illuminate\Support\Str::limit($servicio->description ?: 'Servicio premium para el cuidado y estilo personal.', 95) }}
-                        </p>
-
                         <a href="#" class="service-card-btn abrir-modal" data-nombre="{{ $servicio->name }}"
                             data-descripcion="{{ $servicio->description }}"
                             data-duracion="{{ $servicio->duration_minutes }}"
