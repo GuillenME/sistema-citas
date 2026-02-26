@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
 
 *{
     box-sizing: border-box;
@@ -44,22 +44,32 @@ body{
 
 .reviews-title{
     margin: 0;
-    color: #f4eee7;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(52px, 5.8vw, 88px);
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: .01em;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: .08em;
+    line-height: .88;
+    text-transform: uppercase;
+    white-space: normal;
 }
 
-.reviews-title::after{
-    content: "";
-    display: block;
-    width: 64px;
-    height: 3px;
-    border-radius: 2px;
-    margin: 12px auto 0;
-    background: #d0842a;
+.reviews-title .title-solid,
+.reviews-title .title-outline{
+    display: inline-block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(34px, 5.2vw, 72px);
+    letter-spacing: .02em;
+}
+
+.reviews-title .title-solid{
+    color: #f4eee7;
+}
+
+.reviews-title .title-outline{
+    margin-top: -4px;
+    color: transparent;
+    -webkit-text-stroke: 1.4px rgba(255,255,255,.85);
 }
 
 .subtitle{
