@@ -17,7 +17,7 @@
     <section class="hero">
         <div class="hero-copy">
             <p class="hero-tag">Recepcionista</p>
-            <h2>Bienvenida a tu panel de control</h2>
+            <h2>Bienvenido a tu panel de control</h2>
             <p class="hero-text">
                 Organiza tus citas y mantén el flujo del día bajo control.
             </p>

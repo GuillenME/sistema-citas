@@ -20,7 +20,8 @@
 
         <div class="form-group">
             <label>Teléfono</label>
-            <input wire:model.defer="telefono">
+            <input type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" wire:model.defer="telefono" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
+            @error('telefono') <span class="error">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
