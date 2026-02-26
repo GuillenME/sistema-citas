@@ -1670,7 +1670,7 @@ body.modal-open{
 .contact-lux .contact-lux-cards{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 12px;
 }
 
 .contact-lux .contact-info-card{
@@ -1678,12 +1678,13 @@ body.modal-open{
     border-radius: 12px;
     padding: 14px;
     background: linear-gradient(145deg, rgba(35,24,17,.95), rgba(24,16,12,.98));
+    height: 100%;
 }
 
 .contact-lux .contact-hours-card{
-    grid-column: 1 / -1;
-    width: calc((100% - 10px) / 2);
-    justify-self: center;
+    grid-column: auto;
+    width: auto;
+    justify-self: stretch;
 }
 
 .contact-lux .contact-info-card h4{
