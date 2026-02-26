@@ -97,6 +97,16 @@ class HomeSettingController extends Controller
             'featured_services.*' => 'integer|exists:services,id',
         ]);
 
+        $whatsappDigits = preg_replace('/\D+/', '', (string) ($data['footer_whatsapp'] ?? ''));
+        if ($whatsappDigits !== '') {
+            if (!str_starts_with($whatsappDigits, '52')) {
+                $whatsappDigits = '52' . $whatsappDigits;
+            }
+            $data['footer_whatsapp'] = $whatsappDigits;
+        } else {
+            $data['footer_whatsapp'] = null;
+        }
+
         if ($request->hasFile('hero_image')) {
             if ($homeSetting && $homeSetting->hero_image) {
                 Storage::disk('public')->delete($homeSetting->hero_image);
