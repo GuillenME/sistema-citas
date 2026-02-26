@@ -17,7 +17,7 @@
     <section class="hero">
         <div class="hero-copy">
             <p class="hero-tag">Recepcionista</p>
-            <h2>Bienvenida a tu panel de control</h2>
+            <h2>Bienvenido a tu panel de control</h2>
             <p class="hero-text">
                 Organiza tus citas y mantén el flujo del día bajo control.
             </p>
@@ -95,7 +95,7 @@
                             <p class="recent-service">{{ $cita->service->name ?? 'Servicio' }}</p>
                         </div>
                         <div class="recent-meta">
-                            <p class="recent-time">{{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }}</p>
+                            <p class="recent-time">{{ optional($cita->date)->format('d/m/Y') }} {{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }}</p>
                             <p class="recent-status recent-status--{{ $estadoClase }}">{{ $estadoTexto }}</p>
                         </div>
                     </article>
