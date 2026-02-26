@@ -115,12 +115,16 @@ class CitaController extends Controller
 
     public function index()
     {
+        $inicioSemana = now()->startOfWeek(Carbon::MONDAY)->toDateString();
+        $finSemana = now()->endOfWeek(Carbon::SUNDAY)->toDateString();
+
         $citas = Cita::with(['client.user', 'service'])
             ->withCount([
                 'estados as reagendas_count' => function ($query) {
                     $query->where('status', 'reagendada');
                 },
             ])
+            ->whereBetween('date', [$inicioSemana, $finSemana])
             ->orderByDesc('date')
             ->orderByDesc('start_time')
             ->get();
@@ -203,4 +207,3 @@ class CitaController extends Controller
         return back()->with('success', 'Cita reagendada correctamente.');
     }
 }
-

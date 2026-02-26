@@ -20,7 +20,7 @@
     <div class="container">
 
         <div class="table-card">
-            <h2>Historial de citas</h2>
+            <h2>Citas de la semana</h2>
 
             <div class="citas-grid">
                 @foreach ($citas as $cita)

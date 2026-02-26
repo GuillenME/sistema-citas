@@ -20,6 +20,8 @@ class RecepcionistaEdit extends Component
 
     protected $rules = [
         'nombre' => 'required|string|min:3',
+        'apellido' => 'required|string|min:2',
+        'telefono' => 'required|digits:10',
         'password' => 'nullable|min:6|confirmed',
     ];
 
@@ -30,13 +32,18 @@ class RecepcionistaEdit extends Component
         $this->usuario = $usuario;
         $this->nombre = $usuario->name;
         $this->apellido = $usuario->last_name;
-        $this->telefono = $usuario->phone;
+        $this->telefono = substr(preg_replace('/\D/', '', (string) $usuario->phone), 0, 10);
     }
 
     public function abrirConfirmacion()
     {
         $this->validate();
         $this->confirmar = true;
+    }
+
+    public function updatedTelefono($value): void
+    {
+        $this->telefono = substr(preg_replace('/\D/', '', (string) $value), 0, 10);
     }
 
     public function actualizar()
