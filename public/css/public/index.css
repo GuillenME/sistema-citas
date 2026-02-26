@@ -1706,6 +1706,17 @@ body.modal-open{
     font-style: italic;
 }
 
+.contact-lux .contact-info-card a{
+    color: #fccc7c;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(252, 204, 124, 0.45);
+}
+
+.contact-lux .contact-info-card a:hover{
+    color: #ffe4a6;
+    border-bottom-color: rgba(252, 204, 124, 0.9);
+}
+
 .contact-lux .contact-lux-map{
     border-radius: 16px;
     overflow: hidden;
