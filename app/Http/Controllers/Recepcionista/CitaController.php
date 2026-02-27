@@ -17,6 +17,7 @@ class CitaController extends Controller
     public function dashboard()
     {
         $today = now()->toDateString();
+        $horaActual = now()->format('H:i');
 
         $citasHoy = Cita::whereDate('date', $today)->count();
         $pendientes = Cita::whereDate('date', $today)
@@ -30,8 +31,9 @@ class CitaController extends Controller
             ->count();
 
         $citasRecientes = Cita::with(['client.user', 'service'])
-            ->orderByDesc('date')
-            ->orderByDesc('start_time')
+            ->whereDate('date', $today)
+            ->where('start_time', '>=', $horaActual)
+            ->orderBy('start_time')
             ->limit(3)
             ->get();
 
