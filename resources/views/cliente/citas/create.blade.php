@@ -51,6 +51,7 @@
                     data-precio-descuento="{{ $precioFinal }}" data-tiene-promocion="{{ $promo ? '1' : '0' }}"
                     data-descripcion="{{ $servicio->description }}"
                     data-duracion="{{ $servicio->duration_minutes }}"
+                    {{ (string) old('servicio_id') === (string) $servicio->id ? 'selected' : '' }}
                     data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}">
                     {{ $servicio->name }}
                 </option>
@@ -62,17 +63,18 @@
                 <div class="field date-field">
                     <label><span class="step-dot">2</span>Seleccionar Fecha</label>
                     <input type="text" id="fecha" name="fecha" class="date-inline" placeholder="Selecciona una fecha"
-                        onkeydown="return false;" readonly>
+                        value="{{ old('fecha') }}" onkeydown="return false;" readonly>
                 </div>
 
                 {{-- HORARIO --}}
                 <div class="field horario-field">
                     <label><span class="step-dot">3</span>Seleccionar Hora</label>
                     <div id="horarioChips" class="horario-chips"></div>
-                    <select id="horarios" name="hora_inicio" class="sr-only-select">
-                        <option value="">Selecciona un horario</option>
-                    </select>
-                </div>
+	                    <select id="horarios" name="hora_inicio" class="sr-only-select">
+	                        <option value="">Selecciona un horario</option>
+	                    </select>
+                        <input type="hidden" id="horaInicioOld" value="{{ old('hora_inicio') }}">
+	                </div>
     </div>
 
                 <div class="field anticipo-field booking-summary">
@@ -81,10 +83,14 @@
                         <span>Servicio</span>
                         <strong id="summaryService">-</strong>
                     </div>
-                    <div class="summary-item">
-                        <span>Fecha y Hora</span>
-                        <strong id="summaryDateTime">-</strong>
-                    </div>
+	                    <div class="summary-item">
+	                        <span>Fecha y Hora</span>
+	                        <strong id="summaryDateTime">-</strong>
+	                    </div>
+                        <div class="summary-item">
+                            <span>Duración del servicio</span>
+                            <strong id="summaryDuration">-</strong>
+                        </div>
                     <div class="summary-divider"></div>
                     <div class="summary-amount">
                         <span>Anticipo Requerido</span>
@@ -96,12 +102,12 @@
                         <p>CLABE: <strong>{{ config('citas.banco.clabe') }}</strong></p>
                     </div>
                     <p class="anticipo-time-note">
-                        La sesion expira en 15 minutos.
+                            Tiene 15 minutos para realizar el depósito y subir el comprobante. De lo contrario, la cita será cancelada automáticamente.
                     </p>
                     {{-- PRIVACIDAD --}}
                     <div class="field privacy-field summary-privacy">
                         <label class="privacy-label">
-                            <input type="checkbox" name="acepta_privacidad" class="privacy-checkbox">
+	                            <input type="checkbox" name="acepta_privacidad" class="privacy-checkbox" {{ old('acepta_privacidad') ? 'checked' : '' }}>
                             <span class="privacy-text">
                                 Acepto la <a href="#" class="privacy-link">política de privacidad</a>
                             </span>
@@ -157,9 +163,10 @@
 
             <h3>📅 Confirmar cita</h3>
 
-            <p><strong>Servicio:</strong> <span id="mcServicio"></span></p>
-            <p><strong>Fecha:</strong> <span id="mcFecha"></span></p>
-            <p><strong>Horario:</strong> <span id="mcHorario"></span></p>
+	            <p><strong>Servicio:</strong> <span id="mcServicio"></span></p>
+	            <p><strong>Fecha:</strong> <span id="mcFecha"></span></p>
+	            <p><strong>Horario:</strong> <span id="mcHorario"></span></p>
+                <p><strong>Duracion:</strong> <span id="mcDuracion"></span></p>
 
             <hr class="modal-separator">
 
@@ -198,7 +205,7 @@
 
     <!-- ================= MODAL LOGOUT ================= -->
     <div id="modalLogout" class="modal-overlay">
-     
+
     <div class="modal-content">
         <h3>¿Cerrar sesión?</h3>
         <p>¿Estás seguro de que deseas cerrar sesión?</p>
@@ -227,10 +234,11 @@
             const fecha = document.getElementById('fecha');
             const horarios = document.getElementById('horarios');
             const chipsWrap = document.getElementById('horarioChips');
-            const summaryService = document.getElementById('summaryService');
-            const summaryDateTime = document.getElementById('summaryDateTime');
-            const summaryAnticipo = document.getElementById('summaryAnticipo');
-            const anticipoPct = {{ (float) $porcentajeAnticipo }};
+	            const summaryService = document.getElementById('summaryService');
+	            const summaryDateTime = document.getElementById('summaryDateTime');
+                const summaryDuration = document.getElementById('summaryDuration');
+	            const summaryAnticipo = document.getElementById('summaryAnticipo');
+	            const anticipoPct = {{ (float) $porcentajeAnticipo }};
 
             if (!servicio || !fecha || !horarios || !chipsWrap) return;
 
@@ -260,15 +268,17 @@
 
             function syncSummary() {
                 const opt = servicio.options[servicio.selectedIndex];
-                const serviceName = opt && opt.value ? opt.textContent.trim() : '-';
-                const precioBase = opt && opt.value ? Number(opt.dataset.precioDescuento || opt.dataset.precio || 0) : 0;
-                const anticipo = precioBase * (anticipoPct / 100);
-                const hora = horarios.value ? formatHora(horarios.value) : '';
+	                const serviceName = opt && opt.value ? opt.textContent.trim() : '-';
+                    const serviceDuration = opt && opt.value ? Number(opt.dataset.duracion || 0) : 0;
+	                const precioBase = opt && opt.value ? Number(opt.dataset.precioDescuento || opt.dataset.precio || 0) : 0;
+	                const anticipo = precioBase * (anticipoPct / 100);
+	                const hora = horarios.value ? formatHora(horarios.value) : '';
 
-                summaryService.textContent = serviceName;
-                summaryDateTime.textContent = fecha.value ? `${formatFecha(fecha.value)}${hora ? ' - ' + hora : ''}` : '-';
-                summaryAnticipo.textContent = formatMoney(anticipo);
-            }
+	                summaryService.textContent = serviceName;
+	                summaryDateTime.textContent = fecha.value ? `${formatFecha(fecha.value)}${hora ? ' - ' + hora : ''}` : '-';
+                    summaryDuration.textContent = serviceDuration > 0 ? `${serviceDuration} minutos` : '-';
+	                summaryAnticipo.textContent = formatMoney(anticipo);
+	            }
 
             function renderHoraChips() {
                 chipsWrap.innerHTML = '';
@@ -321,3 +331,4 @@
 </body>
 
 </html>
+

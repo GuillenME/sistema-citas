@@ -1252,6 +1252,13 @@ body.cliente-citas-create-page .booking-summary .summary-privacy .privacy-text {
     font-size: 16px;
 }
 
+body.cliente-citas-create-page .booking-summary .summary-privacy .error-text {
+    margin-top: 8px;
+    color: #ffb4b4;
+    font-size: 14px;
+    font-weight: 700;
+}
+
 body.cliente-citas-create-page .booking-summary .summary-submit {
     margin-top: 8px;
     max-width: none;

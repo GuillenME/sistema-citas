@@ -28,16 +28,6 @@ body{
     padding-top: 70px;
 }
 
-.hero::before{
-    content: "EXPERIENCIA PREMIUM";
-    display: inline-block;
-    font-size: 15px;
-    letter-spacing: .32em;
-    color: #281300;
-    margin-bottom: 16px;
-    font-weight: 700;
-}
-
 .hero h1{
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(58px, 9vw, 120px);
