@@ -147,7 +147,26 @@
                                         <form method="POST" action="{{ route('cliente.citas.comprobante', $cita) }}"
                                             enctype="multipart/form-data" class="upload-form">
                                             @csrf
-                                            <input type="file" name="comprobante" accept="image/*" required>
+                                            <div class="upload-row">
+                                                <input
+                                                    type="file"
+                                                    name="comprobante"
+                                                    accept="image/*"
+                                                    required
+                                                    class="comprobante-input"
+                                                    data-preview-input>
+                                                <button
+                                                    type="button"
+                                                    class="btn-preview-eye"
+                                                    title="Ver imagen seleccionada"
+                                                    aria-label="Ver imagen seleccionada"
+                                                    data-preview-trigger>
+                                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                </button>
+                                            </div>
                                             <button type="submit" class="btn-upload">Subir comprobante</button>
                                         </form>
                                     @endif
@@ -350,11 +369,18 @@
             document.getElementById('modalReagendarCita').classList.remove('active');
         }
 
+        function cerrarModalPreviewComprobante() {
+            document.getElementById('modalPreviewComprobante').classList.remove('active');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const fechaInput = document.getElementById('reagendarFecha');
             const horaSelect = document.getElementById('reagendarHora');
             const btnSubmit = document.getElementById('btnSubmitReagenda');
             const btnToReagendar = document.getElementById('cancelarToReagendarBtn');
+            const previewModal = document.getElementById('modalPreviewComprobante');
+            const previewImage = document.getElementById('previewComprobanteImage');
+            const uploadForms = document.querySelectorAll('.upload-form');
 
             if (fechaInput) {
                 fechaInput.addEventListener('change', cargarHorasReagenda);
@@ -383,6 +409,31 @@
                             if (key === 'data-current-date') return currentDate;
                             return '';
                         }
+                    });
+                });
+            }
+
+            if (uploadForms.length && previewModal && previewImage) {
+                uploadForms.forEach((form) => {
+                    const fileInput = form.querySelector('[data-preview-input]');
+                    const previewButton = form.querySelector('[data-preview-trigger]');
+
+                    if (!fileInput || !previewButton) {
+                        return;
+                    }
+
+                    previewButton.addEventListener('click', () => {
+                        const [file] = fileInput.files || [];
+                        if (!file) {
+                            alert('Selecciona una imagen antes de previsualizar.');
+                            fileInput.focus();
+                            return;
+                        }
+
+                        const fileUrl = URL.createObjectURL(file);
+                        previewImage.src = fileUrl;
+                        previewModal.classList.add('active');
+                        previewImage.onload = () => URL.revokeObjectURL(fileUrl);
                     });
                 });
             }
@@ -440,6 +491,18 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div id="modalPreviewComprobante" class="modal-overlay" onclick="if(event.target === this) cerrarModalPreviewComprobante()">
+        <div class="modal-content modal-content-preview">
+            <h3>Vista previa del comprobante</h3>
+            <img id="previewComprobanteImage" class="preview-comprobante-image" alt="Vista previa del comprobante seleccionado">
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="cerrarModalPreviewComprobante()">
+                    Cerrar
+                </button>
+            </div>
         </div>
     </div>
 
