@@ -14,9 +14,8 @@
     @endif
 
     <div class="form-grid">
-
         <div class="form-group">
-            <label>Título</label>
+            <label>Titulo</label>
             <input type="text" wire:model.defer="titulo">
             @error('titulo') <span class="error">{{ $message }}</span> @enderror
         </div>
@@ -40,25 +39,55 @@
         </div>
 
         <div class="form-group full">
-            <label>Descripción</label>
+            <label>Descripcion</label>
             <textarea wire:model.defer="descripcion"></textarea>
             @error('descripcion') <span class="error">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
-            <label>Servicios aplicables</label>
-            {{-- 🔥 SIN defer para evitar bugs --}}
-            <select multiple wire:model="servicios" class="promo-servicios-select">
-                @foreach($listaServicios as $servicio)
-                    <option value="{{ $servicio->id }}">
-                        {{ $servicio->name }}
-                    </option>
-                @endforeach
-            </select>
+            @php
+                $selectedIds = collect($servicios)->map(fn ($id) => (int) $id)->all();
+                $selectedCount = count($selectedIds);
+                $limitReached = $selectedCount >= 5;
+            @endphp
+
+            <div class="services-picker-head">
+                <label>Servicios / Especialidad (max. 5)</label>
+                <span class="services-picker-counter {{ $limitReached ? 'is-limit' : '' }}">
+                    {{ $selectedCount }}/5 seleccionados
+                </span>
+            </div>
+
+            <div class="services-picker-scroll-card">
+                <div class="services-picker-scroll-body employee-services-scroll">
+                    <div class="services-picker-grid employee-services-grid">
+                        @foreach ($listaServicios as $servicio)
+                            @php
+                                $isSelected = in_array($servicio->id, $selectedIds, true);
+                                $isDisabled = !$isSelected && $limitReached;
+                            @endphp
+                            <button
+                                type="button"
+                                class="service-pick-card {{ $isSelected ? 'is-selected' : '' }} {{ $isDisabled ? 'is-disabled' : '' }}"
+                                wire:click="toggleServicio({{ $servicio->id }})"
+                                @disabled($isDisabled)
+                            >
+                                <span class="service-pick-check" aria-hidden="true">&#10003;</span>
+                                <span class="service-pick-name">{{ $servicio->name }}</span>
+                                <span class="service-pick-meta">
+                                    {{ $servicio->duration_minutes }} min - ${{ number_format((float) $servicio->price, 2) }}
+                                </span>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <small>Selecciona hasta 5 servicios. Al llegar al limite, los demas se desactivan.</small>
             @error('servicios') <span class="error">{{ $message }}</span> @enderror
+            @error('servicios.*') <span class="error">{{ $message }}</span> @enderror
         </div>
 
-        {{-- ✅ CHECKBOX ARREGLADO --}}
         <div class="form-group">
             <label>Imagen</label>
             <input type="file" wire:model="image" accept="image/*">
@@ -78,11 +107,8 @@
 
         <div class="form-group full checkbox">
             <input type="checkbox" id="publicada" wire:model="publicada">
-            <label for="publicada">Publicar promoción</label>
+            <label for="publicada">Publicar promocion</label>
         </div>
-
-        
-
     </div>
 
     <div class="actions">
@@ -97,12 +123,11 @@
         </button>
     </div>
 
-    {{-- MODAL CONFIRMACIÓN --}}
     @if ($confirmar)
         <div class="modal-overlay" wire:click.self="$set('confirmar', false)">
             <div class="modal-box">
-                <h3>¿Guardar promoción?</h3>
-                <p>¿Deseas guardar los cambios de esta promoción?</p>
+                <h3>Guardar promocion?</h3>
+                <p>Deseas guardar los cambios de esta promocion?</p>
 
                 <div class="modal-actions">
                     <button class="btn btn-cancel"
@@ -113,15 +138,11 @@
                     <button class="btn btn-save"
                             wire:click="actualizar"
                             wire:loading.attr="disabled">
-                        <span wire:loading.remove>Sí, guardar</span>
-                        <span wire:loading>Guardando…</span>
+                        <span wire:loading.remove>Si, guardar</span>
+                        <span wire:loading>Guardando...</span>
                     </button>
                 </div>
             </div>
         </div>
     @endif
-
 </div>
-
-
-

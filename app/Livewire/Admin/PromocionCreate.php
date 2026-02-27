@@ -30,9 +30,40 @@ class PromocionCreate extends Component
         'descuento' => 'required|integer|min:1|max:100',
         'fecha_inicio' => 'required|date',
         'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-        'servicios' => 'required|array|min:1',
+        'servicios' => 'required|array|min:1|max:5',
+        'servicios.*' => 'exists:services,id',
         'image' => 'nullable|image|max:2048',
     ];
+
+    public function updatedServicios($value): void
+    {
+        if (count($this->servicios) > 5) {
+            $this->servicios = array_slice($this->servicios, 0, 5);
+        }
+    }
+
+    public function toggleServicio(int $serviceId): void
+    {
+        $selected = collect($this->servicios)->map(fn ($id) => (int) $id)->values();
+
+        if ($selected->contains($serviceId)) {
+            $this->servicios = $selected
+                ->reject(fn ($id) => $id === $serviceId)
+                ->values()
+                ->all();
+            return;
+        }
+
+        if ($selected->count() >= 5) {
+            return;
+        }
+
+        $this->servicios = $selected
+            ->push($serviceId)
+            ->unique()
+            ->values()
+            ->all();
+    }
 
     public function abrirConfirmacion()
     {
