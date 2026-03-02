@@ -93,9 +93,8 @@
             @php $promo = $homePromociones->first(); @endphp
 
             <div class="promo-box" data-reveal>
-                <div class="promo-image">
-                    <img src="{{ $promo->image ? asset('storage/' . $promo->image) : asset('imagenes/servicio_default.png') }}"
-                        alt="{{ $promo->title }}">
+                <div class="promo-image"
+                style="background-image: url('{{ $promo->image ? asset('storage/' . $promo->image) : asset('imagenes/servicio_default.png') }}')">
                 </div>
 
                 <div class="promo-info">
