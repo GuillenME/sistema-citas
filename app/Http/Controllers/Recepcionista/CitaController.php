@@ -11,7 +11,7 @@ use App\Models\Servicio;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+ 
 class CitaController extends Controller
 {
     public function dashboard()
@@ -29,12 +29,13 @@ class CitaController extends Controller
             ->where('status', 'cancelada')
             ->count();
 
-        $citasRecientes = Cita::with(['client.user', 'service'])
-            ->orderByDesc('date')
-            ->orderByDesc('start_time')
+      $citasRecientes = Cita::with(['client.user', 'service'])
+            ->whereDate('date', '>=', now()->toDateString())
+            ->orderBy('date')        // más próxima primero
+            ->orderBy('start_time')  // hora más cercana primero
             ->limit(3)
             ->get();
-
+            
         $recordatorios = RecepcionistaReminder::query()
             ->where('is_active', true)
             ->orderByDesc('created_at')
