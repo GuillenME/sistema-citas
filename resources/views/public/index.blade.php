@@ -425,7 +425,4 @@
             }
         });
     </script>
-
-
-
 @endsection

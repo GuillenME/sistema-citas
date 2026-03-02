@@ -40,7 +40,7 @@
                 @error('service_id')
                     <small class="form-error">{{ $message }}</small>
                 @enderror
-
+ 
                 <label for="comment">Comentario</label>
                 <textarea id="comment" name="comment" required>{{ old('comment') }}</textarea>
                 @error('comment')
