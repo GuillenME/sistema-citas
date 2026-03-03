@@ -7,6 +7,7 @@ const privacidadCheckbox = document.querySelector('input[name="acepta_privacidad
 const horaInicioOld = document.getElementById('horaInicioOld');
 
 let servicioConfirmado = false;
+let serviciosDisponiblesFecha = [];
 
 function formatHora12(hora24) {
     if (!hora24) return '';
@@ -63,6 +64,9 @@ servicio.addEventListener('change', function() {
 function confirmarServicio() {
     servicioConfirmado = true;
     document.getElementById('modalServicioConfirmar').classList.remove('active');
+    if (fecha.value) {
+        cargarHorarios();
+    }
 }
 
 function cancelarServicio() {
@@ -98,6 +102,32 @@ async function cargarHorarios() {
     horarios.dispatchEvent(new Event('change'));
 }
 
+async function actualizarServiciosDisponibles() {
+    if (!fecha.value) return;
+
+    try {
+        const res = await fetch(`/cliente/citas/servicios-disponibles?fecha=${encodeURIComponent(fecha.value)}`);
+        const data = await res.json();
+        serviciosDisponiblesFecha = Array.isArray(data) ? data.map(v => String(v)) : [];
+    } catch (e) {
+        serviciosDisponiblesFecha = [];
+    }
+
+    Array.from(servicio.options).forEach((opt) => {
+        if (!opt.value) return;
+        const disponible = serviciosDisponiblesFecha.includes(String(opt.value));
+        opt.hidden = !disponible;
+        opt.disabled = !disponible;
+    });
+
+    if (servicio.value && !serviciosDisponiblesFecha.includes(String(servicio.value))) {
+        servicio.value = '';
+        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+        servicioConfirmado = false;
+    }
+
+}
+
 if (window.flatpickr && fechaInput) {
     flatpickr(fechaInput, {
         inline: true,
@@ -108,7 +138,7 @@ if (window.flatpickr && fechaInput) {
         minDate: 'today',
         disableMobile: true,
         onChange: function () {
-            cargarHorarios();
+            actualizarServiciosDisponibles().then(cargarHorarios);
         }
     });
 } else if (fechaInput) {
@@ -118,9 +148,13 @@ if (window.flatpickr && fechaInput) {
     fechaInput.addEventListener('focus', function () {
         if (fechaInput.showPicker) fechaInput.showPicker();
     });
-    fechaInput.addEventListener('change', cargarHorarios);
+    fechaInput.addEventListener('change', function () {
+        actualizarServiciosDisponibles().then(cargarHorarios);
+    });
 } else {
-    fecha.addEventListener('change', cargarHorarios);
+    fecha.addEventListener('change', function () {
+        actualizarServiciosDisponibles().then(cargarHorarios);
+    });
 }
 
 /* ===== MODAL CONFIRMAR CITA ===== */
@@ -178,5 +212,5 @@ if (servicio && servicio.value) {
 }
 
 if (servicioConfirmado && fecha && fecha.value) {
-    cargarHorarios();
+    actualizarServiciosDisponibles().then(cargarHorarios);
 }

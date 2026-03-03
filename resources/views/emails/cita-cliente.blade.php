@@ -22,6 +22,8 @@
 
                             @if($tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
                                 <p style="margin:0 0 14px;font-size:16px;">Tu cita fue confirmada y ya tiene empleado asignado.</p>
+                            @elseif($tipo === \App\Notifications\CitaClienteNotification::REASIGNADA_DE_EMPLEADO)
+                                <p style="margin:0 0 14px;font-size:16px;">Tu cita fue reasignada a otro empleado por disponibilidad operativa.</p>
                             @else
                                 <p style="margin:0 0 14px;font-size:16px;">Tu cita fue cancelada por administracion.</p>
                             @endif
@@ -32,7 +34,10 @@
                                         <p style="margin:0 0 8px;color:#f2c464;"><strong>Servicio:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $servicio }}</span></p>
                                         <p style="margin:0 0 8px;color:#f2c464;"><strong>Fecha:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $fecha }}</span></p>
                                         <p style="margin:0 0 8px;color:#f2c464;"><strong>Hora:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $hora }}</span></p>
-                                        @if($tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
+                                        @if(
+                                            $tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO ||
+                                            $tipo === \App\Notifications\CitaClienteNotification::REASIGNADA_DE_EMPLEADO
+                                        )
                                             <p style="margin:0;color:#f2c464;"><strong>Empleado:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $empleado }}</span></p>
                                         @else
                                             <p style="margin:0;color:#f2c464;"><strong>Motivo:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $motivo }}</span></p>
@@ -43,6 +48,8 @@
 
                             @if($tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
                                 <p style="margin:0 0 14px;font-size:15px;">Gracias por confiar en nosotros.</p>
+                            @elseif($tipo === \App\Notifications\CitaClienteNotification::REASIGNADA_DE_EMPLEADO)
+                                <p style="margin:0 0 14px;font-size:15px;">Tu horario no cambia; solo se actualizo el empleado asignado.</p>
                             @else
                                 <p style="margin:0 0 14px;font-size:15px;">Si deseas, puedes reagendar desde tu cuenta.</p>
                             @endif

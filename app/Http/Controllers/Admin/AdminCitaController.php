@@ -116,7 +116,7 @@ class AdminCitaController extends Controller
 
         $statusResumen = $citas
             ->groupBy('status')
-            ->map(fn ($grupo) => $grupo->count())
+            ->map(fn($grupo) => $grupo->count())
             ->sortKeys();
 
         $pdf = Pdf::loadView('admin.citas.reporte-diario-pdf', [
@@ -251,6 +251,19 @@ class AdminCitaController extends Controller
             'change_date' => now()
         ]);
 
+        $cita->loadMissing(['client.user', 'service', 'employee']);
+
+        $clienteUsuario = $cita->client?->user;
+
+        if ($clienteUsuario) {
+            $clienteUsuario->notify(
+                new CitaClienteNotification(
+                    $cita,
+                    CitaClienteNotification::CONFIRMADA_CON_EMPLEADO
+                )
+            );
+        }
+
         return back()->with('success', 'Cita confirmada correctamente');
     }
 
@@ -323,6 +336,10 @@ class AdminCitaController extends Controller
 
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($cita->service->duration_minutes);
+
+        if ($this->isInsideLunchBreak($horaInicio->format('H:i'), $horaFin->format('H:i'))) {
+            return back()->with('error', 'Ese horario corresponde a la hora de comida. Elige otro bloque.');
+        }
 
         $citaSolapada = Cita::query()
             ->whereDate('date', $request->fecha)
@@ -457,5 +474,21 @@ class AdminCitaController extends Controller
         }
 
         return back()->with('success', 'Empleado asignado correctamente');
+    }
+
+    private function isInsideLunchBreak(string $horaInicio, string $horaFin): bool
+    {
+        $comidaInicio = (string) config('citas.horarios.comida_inicio', '15:00');
+        $comidaFin = (string) config('citas.horarios.comida_fin', '16:00');
+
+        if (!preg_match('/^\d{2}:\d{2}$/', $comidaInicio) || !preg_match('/^\d{2}:\d{2}$/', $comidaFin)) {
+            return false;
+        }
+
+        if ($comidaInicio >= $comidaFin) {
+            return false;
+        }
+
+        return $horaInicio < $comidaFin && $horaFin > $comidaInicio;
     }
 }

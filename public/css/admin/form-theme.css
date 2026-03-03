@@ -213,6 +213,201 @@
     cursor: pointer;
 }
 
+.admin-form-shell .schedule-list {
+    display: grid;
+    gap: 10px;
+}
+
+.admin-form-shell .schedule-card {
+    border: 1px solid rgba(252, 204, 124, 0.24);
+    border-radius: 14px;
+    background: linear-gradient(160deg, rgba(23, 16, 8, 0.88), rgba(14, 10, 6, 0.84));
+    padding: 11px;
+}
+
+.admin-form-shell .schedule-card-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr auto;
+    gap: 10px;
+    align-items: end;
+}
+
+.admin-form-shell .schedule-field {
+    display: grid;
+    gap: 5px;
+}
+
+.admin-form-shell .schedule-field-label {
+    font-size: 11px;
+    color: #cfb273;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    font-weight: 700;
+}
+
+.admin-form-shell .schedule-field-action {
+    min-width: 110px;
+}
+
+.admin-form-shell .schedule-remove-btn {
+    height: 42px;
+    border-radius: 11px;
+    border: 1px solid rgba(239, 68, 68, 0.42);
+    background: rgba(239, 68, 68, 0.09);
+    color: #ffc4c4;
+    padding: 0 14px;
+    font-weight: 700;
+    font-size: 13px;
+    transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.admin-form-shell .schedule-remove-btn:hover {
+    background: rgba(239, 68, 68, 0.16);
+    border-color: rgba(239, 68, 68, 0.58);
+    transform: translateY(-1px);
+}
+
+.admin-form-shell .schedule-errors {
+    display: grid;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.admin-form-shell .schedule-actions {
+    margin-top: 4px;
+}
+
+.admin-form-shell .schedule-add-btn {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px dashed rgba(252, 204, 124, 0.54);
+    background: rgba(252, 204, 124, 0.08);
+    color: #f4d48c;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 12px;
+    transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.admin-form-shell .schedule-add-btn:hover {
+    background: rgba(252, 204, 124, 0.14);
+    border-color: rgba(252, 204, 124, 0.74);
+    transform: translateY(-1px);
+}
+
+.admin-form-shell .schedule-table {
+    border: 1px solid rgba(252, 204, 124, 0.24);
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(160deg, rgba(23, 16, 8, 0.88), rgba(14, 10, 6, 0.84));
+}
+
+.admin-form-shell .schedule-table-head {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1.15fr 0.8fr;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(252, 204, 124, 0.2);
+    background: rgba(252, 204, 124, 0.08);
+}
+
+.admin-form-shell .schedule-table-head span {
+    color: #e2c98f;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.admin-form-shell .schedule-table-body {
+    display: grid;
+}
+
+.admin-form-shell .schedule-table-row {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1.15fr 0.8fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(252, 204, 124, 0.14);
+}
+
+.admin-form-shell .schedule-table-row:last-of-type {
+    border-bottom: 0;
+}
+
+.admin-form-shell .schedule-table-row.is-disabled {
+    opacity: 0.72;
+}
+
+.admin-form-shell .schedule-col {
+    min-width: 0;
+}
+
+.admin-form-shell .schedule-col input {
+    height: 42px;
+    padding: 9px 11px;
+}
+
+.admin-form-shell .schedule-day-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(252, 204, 124, 0.24);
+    background: rgba(0, 0, 0, 0.32);
+    color: #f6efdd;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.admin-form-shell .schedule-col-action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.admin-form-shell .schedule-toggle-btn {
+    min-width: 110px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid rgba(239, 68, 68, 0.42);
+    background: rgba(239, 68, 68, 0.1);
+    color: #ffd2d2;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.admin-form-shell .schedule-toggle-btn:hover {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: rgba(239, 68, 68, 0.6);
+    transform: translateY(-1px);
+}
+
+.admin-form-shell .schedule-toggle-btn.is-off {
+    border-color: rgba(34, 197, 94, 0.42);
+    background: rgba(34, 197, 94, 0.1);
+    color: #cdf8dc;
+}
+
+.admin-form-shell .schedule-toggle-btn.is-off:hover {
+    background: rgba(34, 197, 94, 0.18);
+    border-color: rgba(34, 197, 94, 0.6);
+}
+
+.admin-form-shell .schedule-table .schedule-errors {
+    margin: 0;
+    padding: 0 14px 10px;
+    border-bottom: 1px solid rgba(252, 204, 124, 0.08);
+}
+
+.admin-form-shell .schedule-table .schedule-errors:last-child {
+    border-bottom: 0;
+}
+
 .admin-form-shell .preview,
 .admin-form-shell .preview-wide {
     width: 100%;
@@ -327,5 +522,34 @@
 
     .admin-form-shell .employee-services-scroll {
         max-height: 320px;
+    }
+
+    .admin-form-shell .schedule-card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-form-shell .schedule-field-action {
+        min-width: 0;
+    }
+
+    .admin-form-shell .schedule-table-head {
+        display: none;
+    }
+
+    .admin-form-shell .schedule-table-row {
+        grid-template-columns: 1fr;
+        padding: 12px;
+    }
+
+    .admin-form-shell .schedule-col-action {
+        justify-content: stretch;
+    }
+
+    .admin-form-shell .schedule-toggle-btn {
+        width: 100%;
+    }
+
+    .admin-form-shell .schedule-table .schedule-errors {
+        padding: 0 12px 10px;
     }
 }

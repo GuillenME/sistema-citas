@@ -43,6 +43,7 @@
     gap: 8px;
 }
 
+
 .citas-btn {
     border-radius: 999px;
     padding: 8px 14px;
@@ -291,4 +292,5 @@
     .citas-stats {
         grid-template-columns: 1fr;
     }
+
 }

@@ -14,6 +14,7 @@ class CitaClienteNotification extends Notification
 
     public const CONFIRMADA_CON_EMPLEADO = 'confirmada_con_empleado';
     public const CANCELADA_POR_ADMIN = 'cancelada_por_admin';
+    public const REASIGNADA_DE_EMPLEADO = 'reasignada_de_empleado';
 
     public function __construct(
         public Cita $cita,
@@ -32,9 +33,13 @@ class CitaClienteNotification extends Notification
         $fecha = $this->cita->date ? $this->cita->date->format('d/m/Y') : '-';
         $hora = Carbon::parse($this->cita->getRawOriginal('start_time'))->format('h:i A');
         $esConfirmacion = $this->tipo === self::CONFIRMADA_CON_EMPLEADO;
+        $esReasignacion = $this->tipo === self::REASIGNADA_DE_EMPLEADO;
+        $asunto = $esConfirmacion
+            ? 'Tu cita fue confirmada'
+            : ($esReasignacion ? 'Tu cita cambio de empleado' : 'Tu cita fue cancelada');
 
         return (new MailMessage)
-            ->subject($esConfirmacion ? 'Tu cita fue confirmada' : 'Tu cita fue cancelada')
+            ->subject($asunto)
             ->view('emails.cita-cliente', [
                 'nombre' => $notifiable->name ?? 'cliente',
                 'tipo' => $this->tipo,

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Empleado;
 
 class Servicio extends Model
 {
@@ -38,8 +39,12 @@ class Servicio extends Model
 
     public function empleados(): BelongsToMany
     {
-        return $this->belongsToMany(Empleado::class, 'employee_service', 'service_id', 'employee_id')
-            ->withTimestamps();
+        return $this->belongsToMany(
+            Empleado::class,
+            'employee_service',
+            'service_id',
+            'employee_id'
+        )->withTimestamps();
     }
 
     /**

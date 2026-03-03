@@ -108,6 +108,10 @@ class CitaController extends Controller
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
 
+        if ($this->isInsideLunchBreak($horaInicio->format('H:i'), $horaFin->format('H:i'))) {
+            return back()->with('error', 'Ese horario corresponde a la hora de comida. Elige otro bloque.');
+        }
+
         Cita::create([
             'client_id' => $cliente->id,
             'service_id' => $servicio->id,
@@ -176,6 +180,10 @@ class CitaController extends Controller
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($cita->service->duration_minutes);
 
+        if ($this->isInsideLunchBreak($horaInicio->format('H:i'), $horaFin->format('H:i'))) {
+            return back()->with('error', 'Ese horario corresponde a la hora de comida. Elige otro bloque.');
+        }
+
         $citaSolapada = Cita::query()
             ->whereDate('date', $request->fecha)
             ->whereIn('status', ['confirmada', 'pendiente_anticipo'])
@@ -215,5 +223,21 @@ class CitaController extends Controller
         ]);
 
         return back()->with('success', 'Cita reagendada correctamente.');
+    }
+
+    private function isInsideLunchBreak(string $horaInicio, string $horaFin): bool
+    {
+        $comidaInicio = (string) config('citas.horarios.comida_inicio', '15:00');
+        $comidaFin = (string) config('citas.horarios.comida_fin', '16:00');
+
+        if (!preg_match('/^\d{2}:\d{2}$/', $comidaInicio) || !preg_match('/^\d{2}:\d{2}$/', $comidaFin)) {
+            return false;
+        }
+
+        if ($comidaInicio >= $comidaFin) {
+            return false;
+        }
+
+        return $horaInicio < $comidaFin && $horaFin > $comidaInicio;
     }
 }
