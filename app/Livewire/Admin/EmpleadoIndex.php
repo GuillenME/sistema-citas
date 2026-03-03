@@ -6,6 +6,7 @@ use App\Constants\CitaStatus;
 use App\Models\Cita;
 use App\Models\Empleado;
 use App\Notifications\CitaClienteNotification;
+use App\Services\AppointmentAvailabilityService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -15,12 +16,19 @@ class EmpleadoIndex extends Component
 {
     use WithPagination;
 
+    protected AppointmentAvailabilityService $availability;
+
     protected $paginationTheme = 'simple-bootstrap';
 
     public $confirmDeleteId = null;
     public $confirmReassignId = null;
     public $reassignMessage = null;
     public $reassignType = 'success';
+
+    public function boot(AppointmentAvailabilityService $availability): void
+    {
+        $this->availability = $availability;
+    }
 
     public function toggle($id)
     {
@@ -133,11 +141,11 @@ class EmpleadoIndex extends Component
                         return false;
                     }
 
-                    if (!$this->employeeCoversRange($empleado, Carbon::parse($hoy), $horaInicio, $horaFin)) {
+                    if (!$this->availability->employeeCoversRange($empleado, Carbon::parse($hoy), $horaInicio, $horaFin)) {
                         return false;
                     }
 
-                    return !$this->hasOverlap($bloquesOcupados[$empleado->id] ?? [], $horaInicio, $horaFin);
+                    return !$this->availability->hasOverlap($bloquesOcupados[$empleado->id] ?? [], $horaInicio, $horaFin);
                 })
                 ->sortBy(function ($empleado) use ($bloquesOcupados) {
                     return count($bloquesOcupados[$empleado->id] ?? []);
@@ -198,52 +206,10 @@ class EmpleadoIndex extends Component
         $this->confirmReassignId = null;
     }
 
-    private function employeeCoversRange(Empleado $empleado, Carbon $fecha, string $horaInicio, string $horaFin): bool
-    {
-        $diaSemana = $fecha->dayOfWeek;
-
-        return $empleado->schedules
-            ->where('day_of_week', $diaSemana)
-            ->contains(function ($horario) use ($horaInicio, $horaFin) {
-                $inicio = Carbon::parse($horario->start_time)->format('H:i');
-                $fin = Carbon::parse($horario->end_time)->format('H:i');
-                return $horaInicio >= $inicio
-                    && $horaFin <= $fin
-                    && !$this->isInsideLunchBreak($horaInicio, $horaFin);
-            });
-    }
-
-    private function hasOverlap(array $bloques, string $horaInicio, string $horaFin): bool
-    {
-        foreach ($bloques as $bloque) {
-            if ($horaInicio < $bloque['fin'] && $horaFin > $bloque['inicio']) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private function setReassignResult(string $type, string $message): void
     {
         $this->reassignType = $type;
         $this->reassignMessage = $message;
-    }
-
-    private function isInsideLunchBreak(string $horaInicio, string $horaFin): bool
-    {
-        $comidaInicio = (string) config('citas.horarios.comida_inicio', '15:00');
-        $comidaFin = (string) config('citas.horarios.comida_fin', '16:00');
-
-        if (!preg_match('/^\d{2}:\d{2}$/', $comidaInicio) || !preg_match('/^\d{2}:\d{2}$/', $comidaFin)) {
-            return false;
-        }
-
-        if ($comidaInicio >= $comidaFin) {
-            return false;
-        }
-
-        return $horaInicio < $comidaFin && $horaFin > $comidaInicio;
     }
 
     public function render()

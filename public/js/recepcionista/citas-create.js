@@ -72,13 +72,13 @@
         return d.getDay() === 0;
     }
 
-    function renderHoraChips() {
+    function renderHoraChips(mensajeVacio = 'Selecciona servicio y fecha para ver horarios.') {
         chipsWrap.innerHTML = '';
         const opts = Array.from(horarios.options).filter((o) => o.value);
         if (!opts.length) {
             const empty = document.createElement('div');
             empty.className = 'horario-empty';
-            empty.textContent = 'Selecciona servicio y fecha para ver horarios.';
+            empty.textContent = mensajeVacio;
             chipsWrap.appendChild(empty);
             return;
         }
@@ -132,28 +132,34 @@
     async function cargarBloques() {
         if (!servicioConfirmado || !servicio.value || !fecha.value) return;
         horarios.innerHTML = '<option value="">Cargando...</option>';
-        renderHoraChips();
+        renderHoraChips('Cargando horarios...');
 
-        const res = await fetch(`/citas/bloques?servicio_id=${encodeURIComponent(servicio.value)}&fecha=${encodeURIComponent(fecha.value)}`);
-        const bloques = await res.json();
+        try {
+            const res = await fetch(`/citas/bloques?servicio_id=${encodeURIComponent(servicio.value)}&fecha=${encodeURIComponent(fecha.value)}`);
+            const bloques = await res.json();
 
-        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+            horarios.innerHTML = '<option value="">Selecciona un horario</option>';
 
-        if (!Array.isArray(bloques) || !bloques.length) {
+            if (!Array.isArray(bloques) || !bloques.length) {
+                renderHoraChips('No hay horarios disponibles para esa fecha. Revisa horario laboral, hora de comida o saturacion de empleados.');
+                syncSummary();
+                return;
+            }
+
+            bloques.forEach((b) => {
+                const opt = document.createElement('option');
+                opt.value = b.inicio;
+                opt.textContent = `${formatHora12(b.inicio)} - ${formatHora12(b.fin)}`;
+                horarios.appendChild(opt);
+            });
+
             renderHoraChips();
             syncSummary();
-            return;
+        } catch (e) {
+            horarios.innerHTML = '<option value="">Error al cargar horarios</option>';
+            renderHoraChips('No se pudieron cargar horarios. Intenta nuevamente.');
+            syncSummary();
         }
-
-        bloques.forEach((b) => {
-            const opt = document.createElement('option');
-            opt.value = b.inicio;
-            opt.textContent = `${formatHora12(b.inicio)} - ${formatHora12(b.fin)}`;
-            horarios.appendChild(opt);
-        });
-
-        renderHoraChips();
-        syncSummary();
     }
 
     anticipoCheck.addEventListener('change', () => {

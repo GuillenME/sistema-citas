@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AppointmentDateTimeRequest;
 use App\Models\Cita;
 use App\Models\CitaEstado;
 use App\Models\Empleado;
@@ -13,11 +14,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Mail\AnticipoCanceladoPorRechazosMail;
 use App\Mail\PagoRechazadoMail;
+use App\Services\AppointmentAvailabilityService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class AdminCitaController extends Controller
 {
+    public function __construct(private AppointmentAvailabilityService $availability)
+    {
+    }
+
     public function index()
 {
     $hoy = today();
@@ -356,7 +362,7 @@ class AdminCitaController extends Controller
         return back()->with('success', 'Cita cancelada correctamente');
     }
 
-    public function reagendar(Request $request, Cita $cita)
+    public function reagendar(AppointmentDateTimeRequest $request, Cita $cita)
     {
         if ($cita->status !== 'confirmada') {
             return back()->with('error', 'Solo se pueden reagendar citas confirmadas.');
@@ -367,44 +373,30 @@ class AdminCitaController extends Controller
             return back()->with('error', 'Esta cita ya alcanzo el maximo de 2 reagendas.');
         }
 
-        $request->validate([
-            'fecha' => [
-                'required',
-                'date',
-                'after_or_equal:today',
-                function ($attribute, $value, $fail) {
-                    if (Carbon::parse($value)->isSunday()) {
-                        $fail('No se puede reagendar en domingo.');
-                    }
-                },
-            ],
-            'hora_inicio' => 'required|date_format:H:i',
-            'observaciones' => 'nullable|string|max:500',
-        ]);
-
         if (!$cita->service) {
             return back()->with('error', 'La cita no tiene servicio asociado.');
         }
 
+        $cita->service->load([
+            'empleados' => function ($q) {
+                $q->where('active', 1)->with('schedules');
+            },
+        ]);
+
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($cita->service->duration_minutes);
 
-        if ($this->isInsideLunchBreak($horaInicio->format('H:i'), $horaFin->format('H:i'))) {
-            return back()->with('error', 'Ese horario corresponde a la hora de comida. Elige otro bloque.');
-        }
+        $empleadoAsignado = $this->availability->findAssignableEmployee(
+            $cita->service,
+            Carbon::parse($request->fecha),
+            $horaInicio->format('H:i'),
+            $horaFin->format('H:i'),
+            false,
+            $cita->id
+        );
 
-        $citaSolapada = Cita::query()
-            ->whereDate('date', $request->fecha)
-            ->whereIn('status', ['confirmada', 'pendiente_anticipo'])
-            ->where('id', '!=', $cita->id)
-            ->where(function ($query) use ($horaInicio, $horaFin) {
-                $query->where('start_time', '<', $horaFin->format('H:i'))
-                    ->where('end_time', '>', $horaInicio->format('H:i'));
-            })
-            ->exists();
-
-        if ($citaSolapada) {
-            return back()->with('error', 'El horario nuevo se cruza con otra cita.');
+        if (!$empleadoAsignado) {
+            return back()->with('error', 'No hay empleados disponibles para ese nuevo horario.');
         }
 
         $notaReagendada = trim((string) $request->observaciones);
@@ -419,6 +411,7 @@ class AdminCitaController extends Controller
 
         $cita->update([
             'date' => $request->fecha,
+            'employee_id' => $empleadoAsignado->id,
             'start_time' => $horaInicio->format('H:i'),
             'end_time' => $horaFin->format('H:i'),
             'notes' => $notaFinal,
@@ -590,19 +583,4 @@ class AdminCitaController extends Controller
         return back()->with('success', 'Empleado asignado correctamente');
     }
 
-    private function isInsideLunchBreak(string $horaInicio, string $horaFin): bool
-    {
-        $comidaInicio = (string) config('citas.horarios.comida_inicio', '15:00');
-        $comidaFin = (string) config('citas.horarios.comida_fin', '16:00');
-
-        if (!preg_match('/^\d{2}:\d{2}$/', $comidaInicio) || !preg_match('/^\d{2}:\d{2}$/', $comidaFin)) {
-            return false;
-        }
-
-        if ($comidaInicio >= $comidaFin) {
-            return false;
-        }
-
-        return $horaInicio < $comidaFin && $horaFin > $comidaInicio;
-    }
 }
