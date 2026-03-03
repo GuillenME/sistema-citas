@@ -55,7 +55,7 @@
                         </svg>
                     </span>
                 </div>
-                <h3>Configuracion de inicio</h3>
+                <h3>Configuración de inicio</h3>
                 <p>Personaliza la experiencia de clientes en la app movil y el sitio publico.</p>
                 <span class="dh-btn dh-btn-ghost">Personalizar diseño</span>
             </a>

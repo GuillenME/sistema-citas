@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Configuracion de inicio')
+@section('title', 'Configuración de inicio')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/home-edit.css') }}">
 @endsection
@@ -291,7 +291,7 @@
             digits = digits.substring(0, 10);
 
             return '52 ' + digits;
-         }   
+         }
 
             if (whatsappInput && whatsappInput.dataset.normalizeBound !== '1') {
                 whatsappInput.dataset.normalizeBound = '1';
