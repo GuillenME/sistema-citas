@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class ResetPasswordNotification extends Notification
 {
@@ -27,13 +27,10 @@ class ResetPasswordNotification extends Notification
         ], false));
 
         return (new MailMessage)
-            ->subject('Recupera tu acceso | Barbería 💈')
-            ->greeting('Hola 👋')
-            ->line('Recibimos una solicitud para restablecer tu contraseña.')
-            ->line('Haz clic en el botón de abajo para continuar:')
-            ->action('Restablecer contraseña', $url)
-            ->line('Este enlace es válido por 60 minutos.')
-            ->line('Si no solicitaste este cambio, ignora este correo.')
-            ->salutation('— Equipo Barbería ✂️');
+            ->subject('Recupera tu acceso | Barberia')
+            ->view('emails.reset-password', [
+                'name' => $notifiable->name ?? 'Cliente',
+                'url' => $url,
+            ]);
     }
 }

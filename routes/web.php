@@ -189,6 +189,8 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::put('/home-settings', [HomeSettingController::class, 'update'])
             ->name('home_settings.update');
+            Route::post('/citas/{cita}/rechazar', [AdminCitaController::class, 'rechazarPago'])
+            ->name('citas.rechazar');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */

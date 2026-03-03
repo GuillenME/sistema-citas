@@ -1,65 +1,63 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notificacion de cita</title>
-</head>
-<body style="margin:0;padding:0;background:#f3eee8;font-family:Arial,Helvetica,sans-serif;color:#1f1f1f;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:24px 12px;background:#f3eee8;">
-        <tr>
-            <td align="center">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#1a2238;border-radius:16px;overflow:hidden;">
-                    <tr>
-                        <td style="padding:20px 24px;background:linear-gradient(90deg,#2b1a10 0%,#5f3a2b 100%);color:#f5e9d6;">
-                            <h1 style="margin:0;font-size:22px;line-height:1.2;">Barberia &amp; Spa</h1>
-                            <p style="margin:6px 0 0;font-size:13px;opacity:.9;">Notificacion de cita</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding:24px;color:#f5efe6;">
-                            <p style="margin:0 0 16px;font-size:20px;font-weight:700;">Hola, {{ $nombre }}.</p>
-
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#cfd6e1;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="width:560px;max-width:560px;background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 8px 20px rgba(20,28,45,.18);">
+                <tr>
+                    <td style="background:#232936;padding:10px 14px;">
+                        <span style="display:inline-block;width:10px;height:10px;background:#f04b4b;border-radius:50%;margin-right:6px;"></span>
+                        <span style="display:inline-block;width:10px;height:10px;background:#f0cf6a;border-radius:50%;margin-right:6px;"></span>
+                        <span style="display:inline-block;width:10px;height:10px;background:#f3f3f3;border-radius:50%;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background:#e8dccd;color:#222a36;padding:12px 18px;font-weight:700;letter-spacing:.4px;">NEW MESSAGE</td>
+                </tr>
+                <tr>
+                    <td style="padding:14px 18px 0;color:#2c3547;font-size:14px;">
+                        <div style="padding:4px 0;border-bottom:1px solid #ececec;"><strong>To:</strong> {{ $nombre }}</div>
+                        <div style="padding:8px 0;border-bottom:1px solid #ececec;">
+                            <strong>Subject:</strong>
                             @if($tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
-                                <p style="margin:0 0 14px;font-size:16px;">Tu cita fue confirmada y ya tiene empleado asignado.</p>
-                            @elseif($tipo === \App\Notifications\CitaClienteNotification::REASIGNADA_DE_EMPLEADO)
-                                <p style="margin:0 0 14px;font-size:16px;">Tu cita fue reasignada a otro empleado por disponibilidad operativa.</p>
+                                Tu cita fue confirmada
                             @else
-                                <p style="margin:0 0 14px;font-size:16px;">Tu cita fue cancelada por administracion.</p>
+                                Tu cita fue cancelada
                             @endif
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:18px;color:#2e3648;font-size:15px;line-height:1.6;">
+                        <p style="margin:0 0 10px;">Hola {{ $nombre }},</p>
 
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:14px 0 20px;background:#11192b;border:1px solid #3a2a1d;border-radius:12px;">
-                                <tr>
-                                    <td style="padding:14px 16px;">
-                                        <p style="margin:0 0 8px;color:#f2c464;"><strong>Servicio:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $servicio }}</span></p>
-                                        <p style="margin:0 0 8px;color:#f2c464;"><strong>Fecha:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $fecha }}</span></p>
-                                        <p style="margin:0 0 8px;color:#f2c464;"><strong>Hora:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $hora }}</span></p>
-                                        @if(
-                                            $tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO ||
-                                            $tipo === \App\Notifications\CitaClienteNotification::REASIGNADA_DE_EMPLEADO
-                                        )
-                                            <p style="margin:0;color:#f2c464;"><strong>Empleado:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $empleado }}</span></p>
-                                        @else
-                                            <p style="margin:0;color:#f2c464;"><strong>Motivo:</strong> <span style="color:#f5efe6;font-weight:400;">{{ $motivo }}</span></p>
-                                        @endif
-                                    </td>
-                                </tr>
-                            </table>
+                        @if($tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
+                            <p style="margin:0 0 10px;">Tu cita fue confirmada y ya tiene empleado asignado.</p>
+                        @else
+                            <p style="margin:0 0 10px;">Tu cita fue cancelada por administracion.</p>
+                        @endif
 
-                            @if($tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
-                                <p style="margin:0 0 14px;font-size:15px;">Gracias por confiar en nosotros.</p>
-                            @elseif($tipo === \App\Notifications\CitaClienteNotification::REASIGNADA_DE_EMPLEADO)
-                                <p style="margin:0 0 14px;font-size:15px;">Tu horario no cambia; solo se actualizo el empleado asignado.</p>
-                            @else
-                                <p style="margin:0 0 14px;font-size:15px;">Si deseas, puedes reagendar desde tu cuenta.</p>
-                            @endif
+                        <p style="margin:0 0 8px;"><strong>Servicio:</strong> {{ $servicio }}</p>
+                        <p style="margin:0 0 8px;"><strong>Fecha:</strong> {{ $fecha }}</p>
+                        <p style="margin:0 0 8px;"><strong>Hora:</strong> {{ $hora }}</p>
 
-                            <p style="margin:0;font-size:15px;color:#f2c464;"><strong>Atentamente, Barberia &amp; Spa</strong></p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>
+                        @if($tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
+                            <p style="margin:0 0 10px;"><strong>Empleado:</strong> {{ $empleado }}</p>
+                        @else
+                            <p style="margin:0 0 10px;"><strong>Motivo:</strong> {{ $motivo }}</p>
+                        @endif
+
+                        @if($tipo === \App\Notifications\CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
+                            <p style="margin:0;">Gracias por confiar en nosotros.</p>
+                        @else
+                            <p style="margin:0;">Si deseas, puedes reagendar desde tu cuenta.</p>
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background:#e8dccd;padding:12px 18px;color:#202737;font-size:13px;">
+                        Barberia & Spa | Sistema de citas
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

@@ -18,6 +18,8 @@ class Cita extends Model
         'end_time',
         'status',
         'receipt',
+        'payment_deadline',
+        'payment_attempts',
         'notes',
     ];
 
@@ -25,6 +27,8 @@ class Cita extends Model
         'date' => 'date',
         'start_time' => 'datetime:H:i',
         'end_time' => 'datetime:H:i',
+        'payment_deadline' => 'datetime',
+        'payment_attempts' => 'integer',
     ];
 
     public function client()

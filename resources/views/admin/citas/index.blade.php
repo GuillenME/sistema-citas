@@ -118,16 +118,19 @@
                                 <td class="table-actions col-acciones">
                                     <button type="button"
                                         class="btn notes-btn citas-detail-btn"
+                                        data-deadline="{{ $cita->payment_deadline ? $cita->payment_deadline->toIso8601String() : '' }}"
                                         data-notes="{{ e($cita->notes ?? '') }}"
                                         data-employee="{{ e($cita->employee?->name ?? '- Sin asignar -') }}"
                                         data-receipt="{{ $cita->receipt ? asset('storage/' . $cita->receipt) : '' }}"
                                         data-assign-action="{{ route('admin.citas.asignarEmpleado', $cita) }}"
                                         data-can-assign="{{ $cita->status === 'confirmada' && !$cita->employee_id ? '1' : '0' }}"
                                         data-can-confirm="{{ $cita->receipt && $cita->status === 'pendiente_anticipo' ? '1' : '0' }}"
+                                        data-can-reject="{{ $cita->receipt && $cita->status === 'pendiente_anticipo' ? '1' : '0' }}"
                                         data-can-reschedule="{{ $cita->status === 'confirmada' && (($cita->reagendas_count ?? 0) < 2) ? '1' : '0' }}"
                                         data-can-complete="{{ $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($finCita) ? '1' : '0' }}"
                                         data-can-no-show="{{ $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($inicioCita) ? '1' : '0' }}"
                                         data-confirm-action="{{ route('admin.citas.confirmar', $cita) }}"
+                                        data-reject-action="{{ route('admin.citas.rechazar', $cita) }}"
                                         data-cancel-action="{{ route('admin.citas.cancelar', $cita) }}"
                                         data-reschedule-action="{{ route('admin.citas.reagendar', $cita) }}"
                                         data-complete-action="{{ route('admin.citas.completar', $cita) }}"
@@ -161,6 +164,7 @@
             <h3>Detalle de la cita</h3>
             <p><strong>Empleado:</strong> <span id="notesModalEmployee">-</span></p>
             <p><strong>Comprobante:</strong> <span id="notesModalReceipt">-</span></p>
+            <p><strong>Tiempo restante:</strong> <span id="notesModalDeadline">-</span></p>
             <p><strong>Comentario:</strong> <span id="notesModalText">-</span></p>
             <form method="POST" id="assignForm" class="assign-inline">
                 @csrf
@@ -176,6 +180,12 @@
                 @csrf
                 <button type="submit" class="btn btn-save btn-compact">Confirmar</button>
                 <button type="button" class="btn btn-cancel btn-compact" id="openCancelFromModal">Cancelar</button>
+            </form>
+            <form method="POST" id="rejectPaymentForm" class="assign-inline" style="display:none;">
+                @csrf
+                <button type="submit" class="btn btn-cancel btn-compact">
+                Rechazar anticipo
+            </button>
             </form>
             <form method="POST" id="completeForm" class="assign-inline">
                 @csrf
@@ -262,6 +272,7 @@
         var closeBtn = document.getElementById('notesModalClose');
         var rescheduleServiceId = '';
         var rescheduleOriginalDate = '';
+        var deadlineTimer = null;
 
         function formatHora12(hora24) {
             if (!hora24) return '';
@@ -311,6 +322,9 @@
 
         document.querySelectorAll('.notes-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
+                var rejectPaymentForm = document.getElementById('rejectPaymentForm');
+                var rejectAction = btn.getAttribute('data-reject-action') || '';
+                var canReject = btn.getAttribute('data-can-reject') === '1';
                 var text = btn.getAttribute('data-notes') || '-';
                 var employee = btn.getAttribute('data-employee') || '-';
                 var receipt = btn.getAttribute('data-receipt') || '';
@@ -327,10 +341,52 @@
                 var noShowAction = btn.getAttribute('data-no-show-action') || '';
                 var serviceId = btn.getAttribute('data-service-id') || '';
                 var currentDate = btn.getAttribute('data-date') || '';
+                var deadline = btn.getAttribute('data-deadline');
+                var deadlineSpan = document.getElementById('notesModalDeadline');
+
+                if (deadline) {
+                    if (deadlineTimer) {
+                        clearInterval(deadlineTimer);
+                        deadlineTimer = null;
+                    }
+
+                    var end = new Date(deadline);
+
+                    function actualizarTiempo() {
+                        var nowDate = new Date();
+                        var diff = Math.floor((end - nowDate) / 60000);
+
+                        if (diff > 0) {
+                            deadlineSpan.innerHTML = diff + " minutos restantes";
+                            deadlineSpan.style.color = "orange";
+                        } else {
+                            deadlineSpan.innerHTML = "Vencido";
+                            deadlineSpan.style.color = "red";
+                            if (deadlineTimer) {
+                                clearInterval(deadlineTimer);
+                                deadlineTimer = null;
+                            }
+                        }
+                    }
+
+                    actualizarTiempo(); // ejecutar inmediatamente
+                    deadlineTimer = setInterval(actualizarTiempo, 60000);
+
+                    } else {
+                        deadlineSpan.innerHTML = "-";
+                        if (deadlineTimer) {
+                            clearInterval(deadlineTimer);
+                            deadlineTimer = null;
+                        }
+                    }
 
                 modalText.textContent = text;
                 modalEmployee.textContent = employee;
 
+                if (rejectPaymentForm) {
+                rejectPaymentForm.style.display = canReject ? 'inline-flex' : 'none';
+                rejectPaymentForm.setAttribute('action', rejectAction);
+                }
                 if (receipt) {
                     modalReceipt.innerHTML = '<a href="' + receipt + '" target="_blank" rel="noopener">Ver comprobante</a>';
                 } else {
@@ -369,6 +425,10 @@
         });
 
         function closeModal() {
+            if (deadlineTimer) {
+                clearInterval(deadlineTimer);
+                deadlineTimer = null;
+            }
             modal.classList.remove('active');
             modal.setAttribute('aria-hidden', 'true');
         }
