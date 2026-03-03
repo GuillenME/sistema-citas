@@ -872,13 +872,16 @@ body.modal-open {
 
 .promo-box {
     position: relative;
-    min-height: min(86vh, 720px);
-    border-radius: 24px;
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    /* proporción elegante horizontal */
+    min-height: 520px;
     overflow: hidden;
     background: #1a120d;
     box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
     display: flex;
     align-items: stretch;
+    border-radius: 0;
 }
 
 .promo-box::after {
@@ -893,13 +896,23 @@ body.modal-open {
 .promo-image {
     position: absolute;
     inset: 0;
+    background-size: contain;
+    background-color: #1a120d;
+    background-position: 90% center;
+    background-repeat: no-repeat;
 }
 
 .promo-image img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: contrast(1.06) brightness(.74) saturate(.9);
+    /* llena sin deformar */
+    object-position: center;
+    /* centra lo importante */
+    object-fit: cover;
+    object-position: center top;
 }
 
 .promo-info {
@@ -907,6 +920,8 @@ body.modal-open {
     z-index: 2;
     width: min(560px, 100%);
     padding: clamp(26px, 5vw, 56px);
+    margin-left: 60px;
+    /* mueve el texto a la derecha */
     color: #f7f1e9;
     display: flex;
     flex-direction: column;
