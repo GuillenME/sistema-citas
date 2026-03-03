@@ -3,8 +3,11 @@ const fecha = document.getElementById('fecha');
 const horarios = document.getElementById('horarios');
 const fechaInput = document.getElementById('fecha');
 const dateField = document.querySelector('.date-field');
+const privacidadCheckbox = document.querySelector('input[name="acepta_privacidad"]');
+const horaInicioOld = document.getElementById('horaInicioOld');
 
 let servicioConfirmado = false;
+let serviciosDisponiblesFecha = [];
 
 function formatHora12(hora24) {
     if (!hora24) return '';
@@ -61,6 +64,9 @@ servicio.addEventListener('change', function() {
 function confirmarServicio() {
     servicioConfirmado = true;
     document.getElementById('modalServicioConfirmar').classList.remove('active');
+    if (fecha.value) {
+        cargarHorarios();
+    }
 }
 
 function cancelarServicio() {
@@ -85,6 +91,41 @@ async function cargarHorarios() {
         opt.textContent = `${formatHora12(h.inicio)} - ${formatHora12(h.fin)}`;
         horarios.appendChild(opt);
     });
+
+    if (horaInicioOld && horaInicioOld.value) {
+        const existeHorarioOld = Array.from(horarios.options).some(o => o.value === horaInicioOld.value);
+        if (existeHorarioOld) {
+            horarios.value = horaInicioOld.value;
+        }
+    }
+
+    horarios.dispatchEvent(new Event('change'));
+}
+
+async function actualizarServiciosDisponibles() {
+    if (!fecha.value) return;
+
+    try {
+        const res = await fetch(`/cliente/citas/servicios-disponibles?fecha=${encodeURIComponent(fecha.value)}`);
+        const data = await res.json();
+        serviciosDisponiblesFecha = Array.isArray(data) ? data.map(v => String(v)) : [];
+    } catch (e) {
+        serviciosDisponiblesFecha = [];
+    }
+
+    Array.from(servicio.options).forEach((opt) => {
+        if (!opt.value) return;
+        const disponible = serviciosDisponiblesFecha.includes(String(opt.value));
+        opt.hidden = !disponible;
+        opt.disabled = !disponible;
+    });
+
+    if (servicio.value && !serviciosDisponiblesFecha.includes(String(servicio.value))) {
+        servicio.value = '';
+        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+        servicioConfirmado = false;
+    }
+
 }
 
 if (window.flatpickr && fechaInput) {
@@ -97,7 +138,7 @@ if (window.flatpickr && fechaInput) {
         minDate: 'today',
         disableMobile: true,
         onChange: function () {
-            cargarHorarios();
+            actualizarServiciosDisponibles().then(cargarHorarios);
         }
     });
 } else if (fechaInput) {
@@ -107,23 +148,43 @@ if (window.flatpickr && fechaInput) {
     fechaInput.addEventListener('focus', function () {
         if (fechaInput.showPicker) fechaInput.showPicker();
     });
-    fechaInput.addEventListener('change', cargarHorarios);
+    fechaInput.addEventListener('change', function () {
+        actualizarServiciosDisponibles().then(cargarHorarios);
+    });
 } else {
-    fecha.addEventListener('change', cargarHorarios);
+    fecha.addEventListener('change', function () {
+        actualizarServiciosDisponibles().then(cargarHorarios);
+    });
 }
 
 /* ===== MODAL CONFIRMAR CITA ===== */
 function mostrarModalConfirmar() {
+    if (privacidadCheckbox && !privacidadCheckbox.checked) {
+        let errorNode = document.getElementById('privacyInlineError');
+        if (!errorNode) {
+            errorNode = document.createElement('div');
+            errorNode.id = 'privacyInlineError';
+            errorNode.className = 'error-text';
+            const privacyContainer = privacidadCheckbox.closest('.summary-privacy');
+            (privacyContainer || privacidadCheckbox.parentElement || document.body).appendChild(errorNode);
+        }
+        errorNode.textContent = 'Debes aceptar la politica de privacidad.';
+        return;
+    }
+
     if (!servicioConfirmado || !fecha.value || !horarios.value) {
         alert('Completa y confirma todo primero');
         return;
     }
 
+    const selectedOption = servicio.options[servicio.selectedIndex];
     document.getElementById('mcServicio').textContent =
-        servicio.options[servicio.selectedIndex].textContent;
+        selectedOption.textContent;
     document.getElementById('mcFecha').textContent = fecha.value;
     document.getElementById('mcHorario').textContent =
         horarios.options[horarios.selectedIndex].textContent;
+    document.getElementById('mcDuracion').textContent =
+        `${selectedOption.dataset.duracion || '-'} minutos`;
 
     document.getElementById('modalConfirmar').classList.add('active');
 }
@@ -134,4 +195,22 @@ function cerrarModalConfirmar() {
 
 function confirmarAgendar() {
     document.getElementById('formAgendarCita').submit();
+}
+
+if (privacidadCheckbox) {
+    privacidadCheckbox.addEventListener('change', function () {
+        if (!this.checked) return;
+        const errorNode = document.getElementById('privacyInlineError');
+        if (errorNode) {
+            errorNode.remove();
+        }
+    });
+}
+
+if (servicio && servicio.value) {
+    servicioConfirmado = true;
+}
+
+if (servicioConfirmado && fecha && fecha.value) {
+    actualizarServiciosDisponibles().then(cargarHorarios);
 }

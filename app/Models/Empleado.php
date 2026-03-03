@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Servicio;
 
 class Empleado extends Model
 {
@@ -24,5 +25,10 @@ class Empleado extends Model
     public function appointments()
     {
         return $this->hasMany(Cita::class, 'employee_id');
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(EmployeeSchedule::class, 'employee_id');
     }
 }

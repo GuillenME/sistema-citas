@@ -87,13 +87,11 @@ class RecepcionistaIndex extends Component
         session()->flash('success', 'Recordatorio creado correctamente.');
     }
 
-    public function toggleReminderStatus($id)
+    public function deleteReminder($id)
     {
         $reminder = RecepcionistaReminder::findOrFail($id);
-
-        $reminder->update([
-            'is_active' => !$reminder->is_active,
-        ]);
+        $reminder->delete();
+        session()->flash('success', 'Recordatorio eliminado correctamente.');
     }
 
     public function render()

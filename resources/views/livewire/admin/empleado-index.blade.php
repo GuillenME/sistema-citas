@@ -14,6 +14,12 @@
             </div>
         </header>
 
+        @if ($reassignMessage)
+            <div class="serv-reassign-alert {{ $reassignType === 'error' ? 'is-error' : 'is-success' }}">
+                {{ $reassignMessage }}
+            </div>
+        @endif
+
         <div class="table-container serv-table-wrap">
             <table class="admin-table serv-table">
                 <thead>
@@ -49,6 +55,9 @@
                                 <button class="serv-btn ghost" wire:click="toggle({{ $e->id }})">
                                     {{ $e->active ? 'Desactivar' : 'Activar' }}
                                 </button>
+                                <button class="serv-btn ghost" wire:click="confirmReassign({{ $e->id }})">
+                                    Reasignar citas de hoy
+                                </button>
                                 <button class="serv-icon-btn delete" wire:click="confirmDelete({{ $e->id }})" title="Eliminar" aria-label="Eliminar">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                                 </button>
@@ -77,6 +86,22 @@
                     <button class="btn btn-save" wire:click="deleteConfirmed" wire:loading.attr="disabled">
                         <span wire:loading.remove>Eliminar</span>
                         <span wire:loading>Eliminando...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if ($confirmReassignId)
+        <div class="modal-overlay" wire:click.self="cancelReassign">
+            <div class="modal-box">
+                <h3>Reasignar citas de hoy?</h3>
+                <p>Se moveran automaticamente solo las citas compatibles por servicio, horario y disponibilidad.</p>
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" wire:click="cancelReassign">Cancelar</button>
+                    <button class="btn btn-save" wire:click="reassignTodayAppointments" wire:loading.attr="disabled">
+                        <span wire:loading.remove>Reasignar</span>
+                        <span wire:loading>Reasignando...</span>
                     </button>
                 </div>
             </div>

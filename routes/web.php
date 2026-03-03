@@ -234,6 +234,8 @@ Route::middleware(['auth', 'rol:2'])
         // (opcional, puede quedarse)
         Route::get('/citas/bloques', [CitaController::class, 'bloquesDisponibles'])
             ->name('citas.bloques');
+        Route::get('/citas/servicios-disponibles', [CitaController::class, 'serviciosDisponibles'])
+            ->name('citas.serviciosDisponibles');
         Route::post('/citas/{cita}/comprobante', [CitaController::class, 'subirComprobante'])
             ->name('citas.comprobante');
 

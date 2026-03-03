@@ -92,7 +92,7 @@ class HomeSettingController extends Controller
             'footer_references' => 'nullable|string|max:500',
             'footer_phone' => 'nullable|string|max:100',
             'footer_whatsapp' => 'nullable|string|max:100',
-            'footer_hours' => 'nullable|string|max:100',
+            'footer_hours' => 'nullable|string|max:200',
             'featured_services' => 'nullable|array|max:10',
             'featured_services.*' => 'integer|exists:services,id',
         ]);

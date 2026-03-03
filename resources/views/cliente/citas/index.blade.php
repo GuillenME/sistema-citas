@@ -72,13 +72,13 @@
                             default => 'pendiente',
                         };
 
-                        $estadoTexto = match ($cita->status) {
-                            'pendiente_anticipo' => 'Pendiente de anticipo',
-                            'confirmada' => 'Confirmada',
-                            'completada' => 'Completada',
-                            'no_asistio' => 'No asistio',
-                            'cancelada' => 'Cancelada',
-                            default => ucfirst($cita->status),
+	                        $estadoTexto = match ($cita->status) {
+	                            'pendiente_anticipo' => $cita->receipt ? 'Pendiente de confirmacion' : 'Pendiente de anticipo',
+	                            'confirmada' => 'Confirmada',
+	                            'completada' => 'Completada',
+	                            'no_asistio' => 'No asistio',
+	                            'cancelada' => 'Cancelada',
+	                            default => ucfirst($cita->status),
                         };
                     @endphp
 
@@ -165,6 +165,17 @@
                                             <div class="anticipo-hint">Tienes 15 minutos para subir el comprobante.</div>
                                         @endif
                                     </div>
+	                                @if ($cita->status === 'pendiente_anticipo')
+	                                    <div class="anticipo-info">
+	                                        <div>Banco: {{ config('citas.banco.nombre') }}</div>
+	                                        <div>Cuenta: {{ config('citas.banco.cuenta') }}</div>
+	                                        <div>CLABE: {{ config('citas.banco.clabe') }}</div>
+	                                        <div class="anticipo-hint">El {{ $porcentajeRestante }}% restante se paga
+	                                            despues de la cita.</div>
+	                                        <div class="anticipo-hint">
+	                                            {{ $cita->receipt ? 'Comprobante enviado. Estamos validando tu anticipo.' : 'Tienes 15 minutos para subir el comprobante.' }}
+	                                        </div>
+	                                    </div>
 
                                     @if ($cita->receipt)
                                         <a class="link-green" href="{{ asset('storage/' . $cita->receipt) }}"
