@@ -80,16 +80,16 @@
                 <div class="k-value">{{ $totalCitas }}</div>
             </td>
             <td>
-                <div class="k-label">Promedio diario</div>
-                <div class="k-value">{{ number_format($promedioDiario, 2) }}</div>
+                <div class="k-label">Ingresos del mes</div>
+                <div class="k-value">${{ number_format($ingresosMes, 2) }}</div>
             </td>
             <td>
                 <div class="k-label">Dia pico</div>
                 <div class="k-value">{{ $diaPico ?: '-' }}</div>
             </td>
             <td>
-                <div class="k-label">Maximo en un dia</div>
-                <div class="k-value">{{ $maxCitas }}</div>
+                <div class="k-label">Ingreso diario promedio</div>
+                <div class="k-value">${{ number_format($promedioIngresosDiario, 2) }}</div>
             </td>
         </tr>
     </table>
