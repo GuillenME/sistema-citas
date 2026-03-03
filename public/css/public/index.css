@@ -863,22 +863,17 @@ body.modal-open {
 /* ================= PROMO BANNER ================= */
 
 .promo-section {
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    padding: 42px 22px;
+    width: 100%;
+    padding: 0;
 }
 
 .promo-box {
     position: relative;
-    min-height: min(86vh, 720px);
-    border-radius: 24px;
+    width: 100%;
+    aspect-ratio: 16 / 7; 
+    min-height: 520px;
     overflow: hidden;
-    background: #1a120d;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
-    display: flex;
-    align-items: stretch;
+    border-radius: 0;
 }
 
 .promo-box::after {
@@ -893,13 +888,13 @@ body.modal-open {
 .promo-image {
     position: absolute;
     inset: 0;
+    background-size: contain;
+    background-color: #1a120d;
+    background-position: 90% center;
+    background-repeat: no-repeat;
 }
-
 .promo-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: contrast(1.06) brightness(.74) saturate(.9);
+    object-position: 60% center;
 }
 
 .promo-info {
@@ -907,13 +902,8 @@ body.modal-open {
     z-index: 2;
     width: min(560px, 100%);
     padding: clamp(26px, 5vw, 56px);
-    color: #f7f1e9;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
+    margin-left: clamp(40px, 6vw, 100px);
 }
-
 .promo-badge {
     display: inline-flex;
     align-items: center;

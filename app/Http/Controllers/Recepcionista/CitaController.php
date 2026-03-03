@@ -31,8 +31,15 @@ class CitaController extends Controller
             ->count();
 
         $citasRecientes = Cita::with(['client.user', 'service'])
-            ->whereDate('date', $today)
-            ->where('start_time', '>=', $horaActual)
+            ->whereDate('date', '>=', $today)
+            ->where(function ($query) use ($today, $horaActual) {
+                $query->whereDate('date', '>', $today)
+                    ->orWhere(function ($q) use ($today, $horaActual) {
+                        $q->whereDate('date', $today)
+                            ->where('start_time', '>=', $horaActual);
+                    });
+            })
+            ->orderBy('date')
             ->orderBy('start_time')
             ->limit(3)
             ->get();
