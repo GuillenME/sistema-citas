@@ -11,21 +11,37 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Mail\AnticipoCanceladoPorRechazosMail;
+use App\Mail\PagoRechazadoMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class AdminCitaController extends Controller
 {
     public function index()
-    {
-        $hoy = today();
+{
+    $hoy = today();
 
-        $citas = Cita::with(['client', 'service', 'employee'])
-            ->withCount([
-                'estados as reagendas_count' => function ($query) {
-                    $query->where('status', 'reagendada');
-                },
-            ])
-            ->orderByDesc('created_at')
-            ->paginate(5);
+    // Cancelar citas vencidas automaticamente
+    Cita::where('status', 'pendiente_anticipo')
+    ->whereNotNull('payment_deadline')
+    ->where('payment_deadline', '<', now())
+    ->whereNull('receipt')
+    ->update([
+        'status' => 'cancelada',
+        'notes' => 'Cita cancelada automaticamente por no reenviar anticipo a tiempo.',
+        'receipt' => null,
+        'payment_deadline' => null,
+        'payment_attempts' => 0
+    ]);
+    $citas = Cita::with(['client', 'service', 'employee'])
+        ->withCount([
+            'estados as reagendas_count' => function ($query) {
+                $query->where('status', 'reagendada');
+            },
+        ])
+        ->orderByDesc('created_at')
+        ->paginate(5);
 
         $empleados = Empleado::where('active', 1)->get();
 
@@ -299,7 +315,7 @@ class AdminCitaController extends Controller
 
         $reagendas = $cita->estados()->where('status', 'reagendada')->count();
         if ($reagendas >= 2) {
-            return back()->with('error', 'Esta cita ya alcanzó el máximo de 2 reagendas.');
+            return back()->with('error', 'Esta cita ya alcanzo el maximo de 2 reagendas.');
         }
 
         $request->validate([
@@ -374,7 +390,7 @@ class AdminCitaController extends Controller
         $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
         $finCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('end_time'));
         if (Carbon::now()->lessThan($finCita)) {
-            return back()->with('error', 'La cita solo puede marcarse como completada después de la hora de fin.');
+            return back()->with('error', 'La cita solo puede marcarse como completada despues de la hora de fin.');
         }
 
         $notaBase = trim((string) ($cita->notes ?? ''));
@@ -400,19 +416,19 @@ class AdminCitaController extends Controller
     public function marcarNoAsistio(Cita $cita)
     {
         if ($cita->status !== 'confirmada') {
-            return back()->with('error', 'Solo se puede marcar no asistió en citas confirmadas.');
+            return back()->with('error', 'Solo se puede marcar no asistio en citas confirmadas.');
         }
 
         $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
         $inicioCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
         if (Carbon::now()->lessThan($inicioCita)) {
-            return back()->with('error', 'Solo se puede marcar no asistió a partir de la hora de inicio.');
+            return back()->with('error', 'Solo se puede marcar no asistio a partir de la hora de inicio.');
         }
 
         $notaBase = trim((string) ($cita->notes ?? ''));
         $notaFinal = $notaBase === ''
-            ? 'Marcada como no asistió por administrador.'
-            : $notaBase . ' | Marcada como no asistió por administrador.';
+            ? 'Marcada como no asistio por administrador.'
+            : $notaBase . ' | Marcada como no asistio por administrador.';
 
         $cita->update([
             'status' => 'no_asistio',
@@ -426,9 +442,71 @@ class AdminCitaController extends Controller
             'change_date' => now(),
         ]);
 
-        return back()->with('success', 'Cita marcada como no asistió.');
+        return back()->with('success', 'Cita marcada como no asistio.');
     }
 
+    public function rechazarPago(Cita $cita)
+    {
+        if ($cita->status !== 'pendiente_anticipo') {
+            return back()->with('error', 'Solo se puede rechazar anticipo en citas pendientes.');
+        }
+
+        if (!$cita->receipt) {
+            return back()->with('error', 'No hay comprobante para rechazar.');
+        }
+
+        $intentos = ($cita->payment_attempts ?? 0) + 1;
+
+        if ($cita->receipt && Storage::exists('public/' . $cita->receipt)) {
+            Storage::delete('public/' . $cita->receipt);
+        }
+
+        if ($intentos >= 2) {
+            $cita->update([
+                'status' => 'cancelada',
+                'notes' => 'Cita cancelada por 2 intentos fallidos de anticipo.',
+                'receipt' => null,
+                'payment_deadline' => null,
+                'payment_attempts' => $intentos,
+            ]);
+
+            CitaEstado::create([
+                'appointment_id' => $cita->id,
+                'status' => 'cancelada',
+                'user_id' => auth()->id(),
+                'change_date' => now(),
+            ]);
+
+            $email = $cita->client?->user?->email;
+            if ($email) {
+                Mail::to($email)->send(new AnticipoCanceladoPorRechazosMail($cita));
+            }
+
+            return back()->with('error', 'La cita fue cancelada por 2 intentos fallidos.');
+        }
+
+        $cita->update([
+            'status' => 'pendiente_anticipo',
+            'notes' => 'Anticipo rechazado por administrador. Tiene 15 minutos para reenviar comprobante (ultimo intento).',
+            'receipt' => null,
+            'payment_deadline' => now()->addMinutes(15),
+            'payment_attempts' => $intentos,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'anticipo_rechazado',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        $email = $cita->client?->user?->email;
+        if ($email) {
+            Mail::to($email)->send(new PagoRechazadoMail($cita));
+        }
+
+        return back()->with('success', 'Anticipo rechazado. Cliente notificado.');
+    }
 
     public function asignarEmpleado(Request $request, Cita $cita)
     {
@@ -459,3 +537,4 @@ class AdminCitaController extends Controller
         return back()->with('success', 'Empleado asignado correctamente');
     }
 }
+

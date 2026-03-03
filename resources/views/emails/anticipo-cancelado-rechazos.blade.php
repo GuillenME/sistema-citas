@@ -14,16 +14,16 @@
                 </tr>
                 <tr>
                     <td style="padding:14px 18px 0;color:#2c3547;font-size:14px;">
-                        <div style="padding:4px 0;border-bottom:1px solid #ececec;"><strong>To:</strong> Administracion</div>
-                        <div style="padding:8px 0;border-bottom:1px solid #ececec;"><strong>Subject:</strong> Nuevo mensaje de contacto</div>
+                        <div style="padding:4px 0;border-bottom:1px solid #ececec;"><strong>To:</strong> {{ $cita->client->user->name }}</div>
+                        <div style="padding:8px 0;border-bottom:1px solid #ececec;"><strong>Subject:</strong> Cita cancelada por intentos fallidos</div>
                     </td>
                 </tr>
                 <tr>
                     <td style="padding:18px;color:#2e3648;font-size:15px;line-height:1.6;">
-                        <p style="margin:0 0 10px;"><strong>Nombre:</strong> {{ $data['nombre'] }} {{ $data['apellido'] }}</p>
-                        <p style="margin:0 0 10px;"><strong>Email:</strong> {{ $data['email'] }}</p>
-                        <p style="margin:0 0 14px;"><strong>Asunto:</strong> {{ $data['asunto'] }}</p>
-                        <p style="margin:0;"><strong>Mensaje:</strong><br>{{ $data['mensaje'] }}</p>
+                        <p style="margin:0 0 10px;">Hola {{ $cita->client->user->name }},</p>
+                        <p style="margin:0 0 10px;">Tu comprobante de anticipo fue rechazado 2 veces.</p>
+                        <p style="margin:0 0 10px;"><strong>Por este motivo, tu cita fue cancelada automaticamente.</strong></p>
+                        <p style="margin:0;">Si deseas, puedes agendar una nueva cita desde tu cuenta.</p>
                     </td>
                 </tr>
                 <tr>

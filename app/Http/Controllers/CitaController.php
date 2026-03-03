@@ -417,6 +417,23 @@ public function store(Request $request)
             return back()->withErrors('Esta cita no acepta comprobantes');
         }
 
+        if ($cita->payment_deadline && now()->greaterThan($cita->payment_deadline) && empty($cita->receipt)) {
+            $cita->update([
+                'status' => CitaStatus::CANCELADA,
+                'notes' => 'Cita cancelada por no reenviar el comprobante dentro de los 15 minutos.',
+                'payment_deadline' => null,
+            ]);
+
+            CitaEstado::create([
+                'appointment_id' => $cita->id,
+                'status' => CitaStatus::CANCELADA,
+                'user_id' => auth()->id(),
+                'change_date' => now(),
+            ]);
+
+            return back()->withErrors('El tiempo para reenviar comprobante ya vencio. La cita fue cancelada.');
+        }
+
         $request->validate([
             'comprobante' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
@@ -426,6 +443,7 @@ public function store(Request $request)
 
         $cita->update([
             'receipt' => $ruta,
+            'payment_deadline' => null,
         ]);
 
         return back()->with(

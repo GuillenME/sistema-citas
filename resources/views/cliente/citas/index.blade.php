@@ -55,6 +55,13 @@
                         $fechaCita = \Carbon\Carbon::parse($cita->date)->format('Y-m-d');
                         $inicioCita = \Carbon\Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
                         $puedeReagendarPorTiempo = now()->diffInMinutes($inicioCita, false) >= (24 * 60);
+                        $esReenvioTrasRechazo =
+                            $cita->status === 'pendiente_anticipo' &&
+                            ($cita->payment_attempts ?? 0) > 0;
+                        $minutosRestantesReenvio = null;
+                        if ($esReenvioTrasRechazo && $cita->payment_deadline) {
+                            $minutosRestantesReenvio = max(0, now()->diffInMinutes($cita->payment_deadline, false));
+                        }
 
                         $estadoClase = match ($cita->status) {
                             'pendiente_anticipo' => 'pendiente',
@@ -116,6 +123,18 @@
                             </div>
                         </div>
 
+                        @if ($esReenvioTrasRechazo)
+                            <div class="cita-notes">
+                                Tu comprobante fue rechazado.
+                                Se permiten maximo 2 intentos.
+                                @if (!is_null($minutosRestantesReenvio) && $minutosRestantesReenvio > 0)
+                                    Te quedan {{ $minutosRestantesReenvio }} minutos para reenviar uno nuevo.
+                                @elseif (!is_null($minutosRestantesReenvio))
+                                    El tiempo para reenviar comprobante ya vencio.
+                                @endif
+                            </div>
+                        @endif
+
                         @if ($cita->status === 'cancelada' && $cita->notes)
                             <div class="cita-notes">{{ $cita->notes }}</div>
                         @endif
@@ -135,7 +154,16 @@
                                         <div>CLABE: {{ config('citas.banco.clabe') }}</div>
                                         <div class="anticipo-hint">El {{ $porcentajeRestante }}% restante se paga
                                             despues de la cita.</div>
-                                        <div class="anticipo-hint">Tienes 15 minutos para subir el comprobante.</div>
+                                        @if ($esReenvioTrasRechazo)
+                                            <div class="anticipo-hint">
+                                                Reenvio {{ $cita->payment_attempts }}/2.
+                                                @if (!is_null($minutosRestantesReenvio) && $minutosRestantesReenvio > 0)
+                                                    Tiempo restante: {{ $minutosRestantesReenvio }} min.
+                                                @endif
+                                            </div>
+                                        @else
+                                            <div class="anticipo-hint">Tienes 15 minutos para subir el comprobante.</div>
+                                        @endif
                                     </div>
 
                                     @if ($cita->receipt)
