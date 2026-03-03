@@ -15,7 +15,8 @@
         .rm-head { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; }
         .rm-head h3 { margin: 0; color: #fff7e6; }
         .rm-form { display: flex; gap: 8px; align-items: center; }
-        .rm-form input[type="month"] {
+        .rm-form input[type="month"],
+        .rm-form select {
             background: #0d0a06;
             border: 1px solid rgba(244, 211, 138, .25);
             color: #f5e7cf;
@@ -97,11 +98,43 @@
 
 @section('content')
     <div class="rm-shell">
+        @php
+            [$yearSelected, $monthSelected] = array_map('intval', explode('-', $mesSeleccionado));
+            $currentYear = (int) now()->format('Y');
+            $yearFrom = $currentYear - 5;
+            $yearTo = $currentYear + 2;
+            $monthNames = [
+                1 => 'Enero',
+                2 => 'Febrero',
+                3 => 'Marzo',
+                4 => 'Abril',
+                5 => 'Mayo',
+                6 => 'Junio',
+                7 => 'Julio',
+                8 => 'Agosto',
+                9 => 'Septiembre',
+                10 => 'Octubre',
+                11 => 'Noviembre',
+                12 => 'Diciembre',
+            ];
+        @endphp
         <section class="rm-card">
             <div class="rm-head">
                 <h3>Reporte mensual - {{ $inicio->translatedFormat('F Y') }}</h3>
                 <form method="GET" action="{{ route('admin.citas.reporte-mensual') }}" class="rm-form">
-                    <input type="month" name="mes" value="{{ $mesSeleccionado }}">
+                    <input type="hidden" name="mes" id="rmMesHidden" value="{{ $mesSeleccionado }}">
+                    <select id="rmMesSelect" aria-label="Mes">
+                        @foreach ($monthNames as $monthNumber => $monthName)
+                            <option value="{{ str_pad((string) $monthNumber, 2, '0', STR_PAD_LEFT) }}" @selected($monthNumber === $monthSelected)>
+                                {{ $monthName }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <select id="rmYearSelect" aria-label="Ano">
+                        @for ($year = $yearFrom; $year <= $yearTo; $year++)
+                            <option value="{{ $year }}" @selected($year === $yearSelected)>{{ $year }}</option>
+                        @endfor
+                    </select>
                     <button type="submit" class="rm-btn">Ver mes</button>
                     <a href="{{ route('admin.citas.reporte-mensual.pdf', ['mes' => $mesSeleccionado]) }}" class="rm-btn">Descargar PDF</a>
                 </form>
@@ -176,4 +209,23 @@
             </div>
         </section>
     </div>
+@endsection
+
+@section('scripts')
+<script>
+    (function () {
+        var hidden = document.getElementById('rmMesHidden');
+        var month = document.getElementById('rmMesSelect');
+        var year = document.getElementById('rmYearSelect');
+        if (!hidden || !month || !year) return;
+
+        function sync() {
+            hidden.value = year.value + '-' + month.value;
+        }
+
+        month.addEventListener('change', sync);
+        year.addEventListener('change', sync);
+        sync();
+    })();
+</script>
 @endsection
