@@ -105,9 +105,10 @@
                                 </div>
 
                                 <div class="schedule-col schedule-col-action">
-                                    <button type="button" class="schedule-toggle-btn {{ $enabled ? '' : 'is-off' }}"
+                                    <button type="button" class="schedule-toggle-btn {{ $enabled ? 'is-on' : 'is-off' }}"
                                         wire:click="toggleLabora({{ $index }})">
-                                        {{ $enabled ? 'No labora' : 'Labora' }}
+                                        <span class="switch-dot" aria-hidden="true"></span>
+                                        <span>{{ $enabled ? 'Labora' : 'Descanso' }}</span>
                                     </button>
                                 </div>
                             </div>

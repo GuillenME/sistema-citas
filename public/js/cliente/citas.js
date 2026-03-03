@@ -92,6 +92,13 @@ async function cargarHorarios() {
         horarios.appendChild(opt);
     });
 
+    if (!Array.isArray(data) || !data.length) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'No hay horarios disponibles para esa fecha (horario laboral, comida o cupo lleno).';
+        horarios.appendChild(opt);
+    }
+
     if (horaInicioOld && horaInicioOld.value) {
         const existeHorarioOld = Array.from(horarios.options).some(o => o.value === horaInicioOld.value);
         if (existeHorarioOld) {
