@@ -70,6 +70,14 @@ class HomeSettingController extends Controller
             ->orderBy('name')
             ->get();
 
+            if ($homeSetting->footer_whatsapp) {
+    $digits = preg_replace('/\D+/', '', $homeSetting->footer_whatsapp);
+
+    if (str_starts_with($digits, '52')) {
+        $homeSetting->footer_whatsapp = '52 ' . substr($digits, 2);
+    }
+}
+
         return view('admin.home.edit', compact('homeSetting', 'serviciosActivos'));
     }
 

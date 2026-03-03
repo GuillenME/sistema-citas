@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Editar Home Publico')
+@section('title', 'Editar Vista Principal')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/home-edit.css') }}">
 @endsection
@@ -33,7 +33,7 @@
             </header>
 
             <section class="editor-block">
-                <h3>Configuracion del Hero</h3>
+                <h3>Configuracion de la Vista Principal</h3>
                 <p class="block-lead">Personaliza el titulo principal y el mensaje de bienvenida.</p>
                 <div class="form-grid two">
                     <div>
@@ -132,7 +132,7 @@
                 @enderror
 
                 <div class="services-picker-head">
-                    <label>Servicios destacados</label>
+                    <label>Servicios destacados en Vista Principal</label>
                     <span class="services-picker-counter" id="featured_services_counter">0/10 seleccionados</span>
                 </div>
 
@@ -278,13 +278,20 @@
             }
 
             function normalizeWhatsappValue(rawValue) {
-                var digits = String(rawValue || '').replace(/\D+/g, '');
-                if (!digits) return '';
-                if (digits.indexOf('52') !== 0) {
-                    digits = '52' + digits;
-                }
-                return digits;
+            var digits = String(rawValue || '').replace(/\D+/g, '');
+
+            if (!digits) return '';
+
+            // Si ya empieza con 52, lo quitamos temporalmente
+            if (digits.startsWith('52')) {
+            digits = digits.substring(2);
             }
+
+            // Limitar a 10 dígitos (número mexicano normal)
+            digits = digits.substring(0, 10);
+
+            return '52 ' + digits;
+         }   
 
             if (whatsappInput && whatsappInput.dataset.normalizeBound !== '1') {
                 whatsappInput.dataset.normalizeBound = '1';
@@ -366,4 +373,3 @@
     })();
 </script>
 @endsection
-
