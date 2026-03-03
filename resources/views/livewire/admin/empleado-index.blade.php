@@ -55,7 +55,7 @@
                                 <button class="serv-btn ghost" wire:click="toggle({{ $e->id }})">
                                     {{ $e->active ? 'Desactivar' : 'Activar' }}
                                 </button>
-                                <button class="serv-btn ghost" wire:click="confirmReassign({{ $e->id }})">
+                                <button class="serv-btn reassign-btn" wire:click="confirmReassign({{ $e->id }})">
                                     Reasignar citas de hoy
                                 </button>
                                 <button class="serv-icon-btn delete" wire:click="confirmDelete({{ $e->id }})" title="Eliminar" aria-label="Eliminar">
