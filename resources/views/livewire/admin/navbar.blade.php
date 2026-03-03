@@ -127,7 +127,7 @@
                         <circle cx="7" cy="7" r="3" />
                     </svg>
                 </span>
-                <span>Vista Principal</span>
+                <span>Config. inicio</span>
             </a>
 
         </div>
