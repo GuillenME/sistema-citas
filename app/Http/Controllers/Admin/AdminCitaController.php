@@ -192,10 +192,25 @@ class AdminCitaController extends Controller
             ->get()
             ->groupBy('fecha');
 
+        $ingresosPorDia = Cita::query()
+            ->join('services', 'appointments.service_id', '=', 'services.id')
+            ->selectRaw('DATE(appointments.date) as fecha, SUM(services.price) as total')
+            ->whereBetween('appointments.date', [$inicio->toDateString(), $fin->toDateString()])
+            ->whereIn('appointments.status', ['confirmada', 'completada'])
+            ->groupBy(DB::raw('DATE(appointments.date)'))
+            ->pluck('total', 'fecha');
+
         $labels = [];
         $valores = [];
+        $valoresCanceladas = [];
+        $valoresConfirmadas = [];
+        $valoresCompletadas = [];
+        $valoresNoAsistio = [];
+        $valoresPendientes = [];
         $detalleDiario = [];
         $acumulado = 0;
+        $ingresosMes = 0.0;
+
         for ($dia = 1; $dia <= $inicio->daysInMonth; $dia++) {
             $fecha = $inicio->copy()->day($dia)->toDateString();
             $totalDia = (int) ($conteoPorDia[$fecha] ?? 0);
@@ -204,17 +219,27 @@ class AdminCitaController extends Controller
             $confirmadasDia = (int) ($registrosDia->firstWhere('status', 'confirmada')?->total ?? 0);
             $completadasDia = (int) ($registrosDia->firstWhere('status', 'completada')?->total ?? 0);
             $noAsistioDia = (int) ($registrosDia->firstWhere('status', 'no_asistio')?->total ?? 0);
+            $pendientesDia = (int) ($registrosDia->firstWhere('status', 'pendiente_anticipo')?->total ?? 0);
+            $ingresoDia = (float) ($ingresosPorDia[$fecha] ?? 0);
             $acumulado += $totalDia;
+            $ingresosMes += $ingresoDia;
 
             $labels[] = str_pad((string) $dia, 2, '0', STR_PAD_LEFT);
             $valores[] = $totalDia;
+            $valoresCanceladas[] = $canceladasDia;
+            $valoresConfirmadas[] = $confirmadasDia;
+            $valoresCompletadas[] = $completadasDia;
+            $valoresNoAsistio[] = $noAsistioDia;
+            $valoresPendientes[] = $pendientesDia;
             $detalleDiario[] = [
                 'dia' => str_pad((string) $dia, 2, '0', STR_PAD_LEFT),
                 'citas' => $totalDia,
                 'canceladas' => $canceladasDia,
                 'confirmadas' => $confirmadasDia,
                 'completadas' => $completadasDia,
+                'pendientes' => $pendientesDia,
                 'no_asistio' => $noAsistioDia,
+                'ingresos' => round($ingresoDia, 2),
                 'totales' => $acumulado,
             ];
         }
@@ -229,6 +254,9 @@ class AdminCitaController extends Controller
         $promedioDiario = $inicio->daysInMonth > 0
             ? round($totalCitas / $inicio->daysInMonth, 2)
             : 0;
+        $promedioIngresosDiario = $inicio->daysInMonth > 0
+            ? round($ingresosMes / $inicio->daysInMonth, 2)
+            : 0;
 
         $maxCitas = max($valores ?: [0]);
         $indicePico = array_search($maxCitas, $valores, true);
@@ -239,13 +267,21 @@ class AdminCitaController extends Controller
             'inicio' => $inicio,
             'labels' => $labels,
             'valores' => $valores,
+            'valoresCanceladas' => $valoresCanceladas,
+            'valoresConfirmadas' => $valoresConfirmadas,
+            'valoresCompletadas' => $valoresCompletadas,
+            'valoresNoAsistio' => $valoresNoAsistio,
+            'valoresPendientes' => $valoresPendientes,
             'maxCitas' => $maxCitas,
             'totalCitas' => $totalCitas,
             'totalCanceladas' => (int) ($statusResumen['cancelada'] ?? 0),
             'totalConfirmadas' => (int) ($statusResumen['confirmada'] ?? 0),
             'totalCompletadas' => (int) ($statusResumen['completada'] ?? 0),
+            'totalPendientes' => (int) ($statusResumen['pendiente_anticipo'] ?? 0),
             'totalNoAsistio' => (int) ($statusResumen['no_asistio'] ?? 0),
             'promedioDiario' => $promedioDiario,
+            'ingresosMes' => round($ingresosMes, 2),
+            'promedioIngresosDiario' => $promedioIngresosDiario,
             'diaPico' => $diaPico,
             'statusResumen' => $statusResumen,
             'detalleDiario' => $detalleDiario,
@@ -570,4 +606,3 @@ class AdminCitaController extends Controller
         return $horaInicio < $comidaFin && $horaFin > $comidaInicio;
     }
 }
-
