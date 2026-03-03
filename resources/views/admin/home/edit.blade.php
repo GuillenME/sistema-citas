@@ -278,13 +278,20 @@
             }
 
             function normalizeWhatsappValue(rawValue) {
-                var digits = String(rawValue || '').replace(/\D+/g, '');
-                if (!digits) return '';
-                if (digits.indexOf('52') !== 0) {
-                    digits = '52' + digits;
-                }
-                return digits;
+            var digits = String(rawValue || '').replace(/\D+/g, '');
+
+            if (!digits) return '';
+
+            // Si ya empieza con 52, lo quitamos temporalmente
+            if (digits.startsWith('52')) {
+            digits = digits.substring(2);
             }
+
+            // Limitar a 10 dígitos (número mexicano normal)
+            digits = digits.substring(0, 10);
+
+            return '52 ' + digits;
+         }   
 
             if (whatsappInput && whatsappInput.dataset.normalizeBound !== '1') {
                 whatsappInput.dataset.normalizeBound = '1';
