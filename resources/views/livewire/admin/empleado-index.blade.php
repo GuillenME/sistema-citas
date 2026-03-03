@@ -34,13 +34,34 @@
                     @foreach($empleados as $e)
                         <tr>
                             <td>{{ $e->name }}</td>
-                            <td>
+                            <td class="serv-specialty-cell">
                                 @if ($e->servicios && $e->servicios->count())
-                                    @foreach ($e->servicios as $servicio)
-                                        <span class="serv-status on">{{ $servicio->name }}</span>
-                                    @endforeach
+                                    @php
+                                        $serviciosVisibles = $e->servicios->take(2);
+                                        $serviciosOcultos = max(0, $e->servicios->count() - 2);
+                                        $specialtyTargetId = 'specialties-' . $e->id;
+                                    @endphp
+                                    <div class="serv-specialty-list">
+                                        @foreach ($serviciosVisibles as $servicio)
+                                            <span class="serv-specialty-pill">{{ $servicio->name }}</span>
+                                        @endforeach
+                                        @foreach ($e->servicios->slice(2) as $servicio)
+                                            <span class="serv-specialty-pill serv-specialty-pill-hidden" data-specialty-hidden="{{ $specialtyTargetId }}">
+                                                {{ $servicio->name }}
+                                            </span>
+                                        @endforeach
+                                        @if ($serviciosOcultos > 0)
+                                            <button
+                                                type="button"
+                                                class="serv-specialty-more"
+                                                data-specialty-toggle="{{ $specialtyTargetId }}"
+                                                aria-expanded="false">
+                                                +{{ $serviciosOcultos }}
+                                            </button>
+                                        @endif
+                                    </div>
                                 @else
-                                    {{ $e->specialty ?? '-' }}
+                                    <span class="serv-specialty-empty">{{ $e->specialty ?? 'Sin especialidades' }}</span>
                                 @endif
                             </td>
                             <td>
@@ -108,3 +129,23 @@
         </div>
     @endif
 </div>
+
+<script>
+    document.addEventListener('click', function (event) {
+        var toggle = event.target.closest('[data-specialty-toggle]');
+        if (!toggle) return;
+
+        var target = toggle.getAttribute('data-specialty-toggle');
+        if (!target) return;
+
+        var hiddenItems = document.querySelectorAll('[data-specialty-hidden="' + target + '"]');
+        if (!hiddenItems.length) return;
+
+        hiddenItems.forEach(function (item) {
+            item.classList.remove('serv-specialty-pill-hidden');
+        });
+
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.style.display = 'none';
+    });
+</script>

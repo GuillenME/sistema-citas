@@ -235,6 +235,59 @@ td.serv-actions-col .serv-btn.ghost::before {
     border-color: rgba(255, 255, 255, 0.16);
 }
 
+.serv-specialty-cell {
+    min-width: 320px;
+}
+
+.serv-specialty-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.serv-specialty-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(252, 204, 124, 0.42);
+    background: linear-gradient(135deg, rgba(252, 204, 124, 0.15), rgba(214, 150, 55, 0.12));
+    color: #ffe3a3;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.1;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.serv-specialty-more {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px dashed rgba(252, 204, 124, 0.55);
+    background: rgba(252, 204, 124, 0.08);
+    color: #f5cf74;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.serv-specialty-pill-hidden {
+    display: none;
+}
+
+.serv-specialty-empty {
+    color: #b8ab89;
+    font-size: 12px;
+    font-style: italic;
+}
+
 td.serv-actions-col {
     text-align: center;
     white-space: nowrap;
@@ -289,5 +342,14 @@ td.serv-actions-col > * {
     .serv-actions {
         width: 100%;
         justify-content: flex-start;
+    }
+
+    .serv-specialty-cell {
+        min-width: 240px;
+    }
+
+    .serv-specialty-list {
+        justify-content: flex-start;
+        max-width: 100%;
     }
 }
