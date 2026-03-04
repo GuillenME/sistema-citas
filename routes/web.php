@@ -87,6 +87,10 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::get('/citas', [AdminCitaController::class, 'index'])
             ->name('citas.index');
+        Route::get('/citas/create', [AdminCitaController::class, 'create'])
+            ->name('citas.create');
+        Route::post('/citas', [AdminCitaController::class, 'store'])
+            ->name('citas.store');
 
         Route::get('/citas/reporte-diario', [AdminCitaController::class, 'reporteDiario'])
             ->name('citas.reporte-diario');

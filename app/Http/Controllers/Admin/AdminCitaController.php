@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AppointmentDateTimeRequest;
 use App\Models\Cita;
 use App\Models\CitaEstado;
+use App\Models\Cliente;
 use App\Models\Empleado;
+use App\Models\Servicio;
+use App\Models\Usuario;
 use App\Notifications\CitaClienteNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -66,6 +69,113 @@ class AdminCitaController extends Controller
         ];
 
         return view('admin.citas.index', compact('citas', 'empleados', 'stats'));
+    }
+
+    public function create()
+    {
+        $servicios = Servicio::where('active', 1)
+            ->whereHas('empleados', function ($q) {
+                $q->where('active', 1);
+            })
+            ->with(['promociones' => function ($query) {
+                $query->where('published', true)
+                    ->where('start_date', '<=', now()->toDateString())
+                    ->where('end_date', '>=', now()->toDateString());
+            }])
+            ->get();
+
+        $usuarios = Usuario::where('role_id', 2)
+            ->where('active', 1)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.citas.create', compact('servicios', 'usuarios'));
+    }
+
+    public function store(AppointmentDateTimeRequest $request)
+    {
+        $request->validate([
+            'usuario_id' => 'required|exists:users,id',
+            'servicio_id' => 'required|exists:services,id',
+            'anticipo_recibido' => 'required|accepted',
+            'anticipo_monto' => 'required|numeric|min:0.01',
+        ], [
+            'anticipo_recibido.required' => 'Debes confirmar que se recibio anticipo.',
+            'anticipo_recibido.accepted' => 'Debes confirmar que se recibio anticipo.',
+            'anticipo_monto.required' => 'Debes capturar el monto del anticipo.',
+            'anticipo_monto.min' => 'El monto del anticipo debe ser mayor a 0.',
+        ]);
+
+        $cliente = Cliente::where('user_id', $request->usuario_id)->first();
+        if (!$cliente) {
+            return back()->with('error', 'El usuario no es cliente')->withInput();
+        }
+
+        $servicio = Servicio::with(['empleados' => function ($q) {
+            $q->where('active', 1)->with('schedules');
+        }])->findOrFail($request->servicio_id);
+
+        if (!$servicio->active) {
+            return back()->with('error', 'Servicio no disponible')->withInput();
+        }
+
+        if ($servicio->empleados->isEmpty()) {
+            return back()->with('error', 'No hay empleados disponibles para este servicio')->withInput();
+        }
+
+        $horaInicio = Carbon::parse($request->hora_inicio);
+        $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
+
+        $driver = DB::getDriverName();
+        $lockName = 'citas:' . $request->fecha;
+
+        if ($driver === 'mysql') {
+            $lock = DB::selectOne('SELECT GET_LOCK(?, 10) AS l', [$lockName]);
+            if ((int) ($lock->l ?? 0) !== 1) {
+                return back()->with('error', 'Intenta nuevamente')->withInput();
+            }
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $empleadoAsignado = $this->availability->findAssignableEmployee(
+                $servicio,
+                Carbon::parse($request->fecha),
+                $horaInicio->format('H:i'),
+                $horaFin->format('H:i'),
+                true
+            );
+
+            if (!$empleadoAsignado) {
+                DB::rollBack();
+                return back()->with('error', 'Ya no hay empleados disponibles en ese horario.')->withInput();
+            }
+
+            Cita::create([
+                'client_id' => $cliente->id,
+                'service_id' => $servicio->id,
+                'employee_id' => $empleadoAsignado->id,
+                'date' => $request->fecha,
+                'start_time' => $horaInicio->format('H:i'),
+                'end_time' => $horaFin->format('H:i'),
+                'status' => 'confirmada',
+                'notes' => 'Anticipo recibido por administrador: $' . number_format($request->anticipo_monto, 2),
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Ocurrio un error al agendar la cita.')->withInput();
+        } finally {
+            if ($driver === 'mysql') {
+                DB::selectOne('SELECT RELEASE_LOCK(?)', [$lockName]);
+            }
+        }
+
+        return redirect()
+            ->route('admin.citas.index')
+            ->with('success', 'Cita creada correctamente.');
     }
 
     public function reporteDiario(Request $request)

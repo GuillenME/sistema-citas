@@ -9,10 +9,33 @@
     <div class="citas-shell">
         <header class="citas-topbar">
             <div class="citas-topbar-left">
-
-                <input type="text" id="citasSearch" class="citas-search" placeholder="Buscar cliente o servicio...">
+                <div class="citas-control-wrap is-search">
+                    <span class="citas-control-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <path d="m20 20-3.5-3.5"></path>
+                        </svg>
+                    </span>
+                    <input type="text" id="citasSearch" class="citas-search" placeholder="Buscar cliente o servicio...">
+                </div>
+                <div class="citas-control-wrap is-filter">
+                    <span class="citas-control-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="4"></circle>
+                            <path d="M4 20c1.6-3.3 4.2-5 8-5s6.4 1.7 8 5"></path>
+                        </svg>
+                    </span>
+                    <select id="citasEmployeeFilter" class="citas-filter">
+                        <option value="">Todos los empleados</option>
+                        <option value="__unassigned__">Sin asignar</option>
+                        @foreach ($empleados as $empleado)
+                            <option value="{{ $empleado->id }}">{{ $empleado->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
             <div class="citas-topbar-right">
+                <a href="{{ route('admin.citas.create') }}" class="citas-btn ghost">Nueva cita</a>
                 <a href="{{ route('admin.citas.index') }}" class="citas-btn primary">Actualizar página</a>
             </div>
         </header>
@@ -72,6 +95,7 @@
                                 $searchText = strtolower(trim(
                                     ($cita->client->user->name ?? '') . ' ' .
                                     ($cita->service->name ?? '') . ' ' .
+                                    ($cita->employee?->name ?? '') . ' ' .
                                     ($cita->status ?? '')
                                 ));
 
@@ -84,7 +108,7 @@
                                     default => 'status-cancelada',
                                 };
                             @endphp
-                            <tr data-search="{{ $searchText }}">
+                            <tr data-search="{{ $searchText }}" data-employee-id="{{ $cita->employee_id ?? '' }}">
                                 <td class="col-cliente">
                                     <div class="cell-main">{{ $cita->client->user->name }}</div>
                                     <small class="cell-sub">{{ $cita->client->user->email ?? '-' }}</small>
@@ -92,7 +116,15 @@
 
                                 <td class="col-servicio">
                                     <div class="cell-main">{{ $cita->service->name }}</div>
-                                    <small class="cell-sub">Duracion estimada</small>
+                                    @if ($cita->employee)
+                                        <small class="cell-sub">
+                                            <span class="employee-chip is-assigned">Empleado: {{ $cita->employee->name }}</span>
+                                        </small>
+                                    @else
+                                        <small class="cell-sub">
+                                            <span class="employee-chip is-unassigned">Sin empleado asignado</span>
+                                        </small>
+                                    @endif
                                 </td>
 
                                 <td class="col-fecha">
@@ -118,6 +150,7 @@
                                 <td class="table-actions col-acciones">
                                     <button type="button"
                                         class="btn notes-btn citas-detail-btn"
+                                        title="Ver empleado, comprobante y acciones de la cita"
                                         data-deadline="{{ $cita->payment_deadline ? $cita->payment_deadline->toIso8601String() : '' }}"
                                         data-notes="{{ e($cita->notes ?? '') }}"
                                         data-employee="{{ e($cita->employee?->name ?? '- Sin asignar -') }}"
@@ -139,6 +172,7 @@
                                         data-date="{{ \Carbon\Carbon::parse($cita->date)->format('Y-m-d') }}">
                                         Detalles
                                     </button>
+                                    <small class="details-hint">Empleado, comprobante y acciones</small>
                                 </td>
                             </tr>
                         @empty
@@ -245,15 +279,34 @@
 <script>
     (function () {
         var searchInput = document.getElementById('citasSearch');
+        var employeeFilter = document.getElementById('citasEmployeeFilter');
         var rows = Array.prototype.slice.call(document.querySelectorAll('tbody tr[data-search]'));
-        if (searchInput) {
-            searchInput.addEventListener('input', function () {
-                var q = searchInput.value.toLowerCase().trim();
-                rows.forEach(function (row) {
-                    var haystack = row.getAttribute('data-search') || '';
-                    row.style.display = haystack.includes(q) ? '' : 'none';
-                });
+
+        function applyFilters() {
+            var q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            var selectedEmployee = employeeFilter ? employeeFilter.value : '';
+
+            rows.forEach(function (row) {
+                var haystack = row.getAttribute('data-search') || '';
+                var employeeId = row.getAttribute('data-employee-id') || '';
+                var matchesSearch = haystack.includes(q);
+                var matchesEmployee = true;
+
+                if (selectedEmployee === '__unassigned__') {
+                    matchesEmployee = employeeId === '';
+                } else if (selectedEmployee !== '') {
+                    matchesEmployee = employeeId === selectedEmployee;
+                }
+
+                row.style.display = (matchesSearch && matchesEmployee) ? '' : 'none';
             });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', applyFilters);
+        }
+        if (employeeFilter) {
+            employeeFilter.addEventListener('change', applyFilters);
         }
 
         var modal = document.getElementById('notesModal');

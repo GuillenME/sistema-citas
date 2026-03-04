@@ -1,0 +1,262 @@
+.admin-citas-create .container {
+    min-height: auto;
+    padding: 8px 10px 20px;
+    display: block;
+}
+
+.admin-citas-create .card.booking-shell {
+    width: 100%;
+    max-width: none;
+    border: 1px solid rgba(252, 204, 124, 0.24);
+    border-radius: 16px;
+    background: linear-gradient(165deg, rgba(18, 16, 9, 0.96), rgba(24, 20, 10, 0.9));
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.28);
+    padding: 20px;
+    color: #f7efdc;
+}
+
+.admin-citas-create .booking-head {
+    margin-bottom: 16px;
+}
+
+.admin-citas-create .booking-head h2 {
+    margin: 0;
+    font-size: 42px;
+    color: #f8f2df;
+}
+
+.admin-citas-create .booking-head p {
+    margin: 6px 0 0;
+    color: #bfae8d;
+    font-size: 15px;
+}
+
+.admin-citas-create .booking-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.9fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.admin-citas-create .booking-left,
+.admin-citas-create .booking-summary {
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    border-radius: 14px;
+    background: rgba(10, 8, 4, 0.45);
+    padding: 14px;
+}
+
+.admin-citas-create .field {
+    display: grid;
+    gap: 7px;
+    margin-bottom: 10px;
+}
+
+.admin-citas-create label {
+    margin: 0;
+    color: #f3cc73;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.admin-citas-create .step-dot {
+    display: inline-grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: rgba(252, 204, 124, 0.16);
+    color: #ffe7b4;
+    font-size: 11px;
+    margin-right: 6px;
+}
+
+.admin-citas-create input,
+.admin-citas-create select {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(252, 204, 124, 0.26);
+    background: rgba(0, 0, 0, 0.38);
+    color: #f6efdd;
+    padding: 11px 12px;
+    font-size: 14px;
+}
+
+.admin-citas-create input:focus,
+.admin-citas-create select:focus {
+    outline: 0;
+    border-color: rgba(252, 204, 124, 0.58);
+    box-shadow: 0 0 0 3px rgba(252, 204, 124, 0.12);
+}
+
+.admin-citas-create .date-inline {
+    cursor: pointer;
+}
+
+.admin-citas-create .booking-summary h4 {
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 22px;
+}
+
+.admin-citas-create .summary-pill {
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border: 1px solid rgba(252, 204, 124, 0.3);
+    border-radius: 999px;
+    padding: 3px 8px;
+    color: #f3cc73;
+}
+
+.admin-citas-create .summary-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.admin-citas-create .summary-item span {
+    color: #b9aa88;
+    font-size: 13px;
+}
+
+.admin-citas-create .summary-item strong {
+    color: #f8f2df;
+    font-size: 14px;
+}
+
+.admin-citas-create .summary-divider {
+    height: 1px;
+    margin: 10px 0;
+    background: rgba(252, 204, 124, 0.2);
+}
+
+.admin-citas-create .summary-amount {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.admin-citas-create .summary-amount strong {
+    color: #f7d347;
+    font-size: 22px;
+}
+
+.admin-citas-create .privacy-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: none;
+    letter-spacing: 0;
+    color: #efe6d1;
+    font-size: 14px;
+}
+
+.admin-citas-create .summary-submit .submit-btn {
+    width: 100%;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #f7d347, #e5bd2f);
+    border: 1px solid rgba(252, 204, 124, 0.74);
+    color: #231707;
+    padding: 11px 14px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.admin-citas-create .horario-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.admin-citas-create .hora-chip {
+    border: 1px solid rgba(252, 204, 124, 0.28);
+    border-radius: 999px;
+    background: rgba(252, 204, 124, 0.08);
+    color: #f6efdd;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.admin-citas-create .hora-chip.active {
+    background: linear-gradient(135deg, rgba(252, 204, 124, 0.26), rgba(214, 150, 55, 0.3));
+    border-color: rgba(252, 204, 124, 0.68);
+}
+
+.admin-citas-create .horario-empty {
+    color: #a99977;
+    font-size: 12px;
+}
+
+.admin-citas-create .error-box {
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.12);
+    color: #ffd1d1;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+}
+
+.admin-citas-create .modal-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    background: rgba(0, 0, 0, 0.62);
+    z-index: 5000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.admin-citas-create .modal-confirm-overlay.active {
+    display: flex;
+}
+
+.admin-citas-create .modal-confirm-content {
+    width: min(560px, 100%);
+    background: linear-gradient(160deg, rgba(22, 16, 8, 0.96), rgba(15, 11, 6, 0.92));
+    border: 1px solid rgba(252, 204, 124, 0.26);
+    border-radius: 16px;
+    padding: 18px;
+    color: #f8f2df;
+}
+
+.admin-citas-create .modal-confirm-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.admin-citas-create .modal-confirm-btn {
+    flex: 1;
+    border-radius: 999px;
+    padding: 10px 12px;
+    font-weight: 700;
+    border: 1px solid rgba(252, 204, 124, 0.3);
+    cursor: pointer;
+}
+
+.admin-citas-create .modal-confirm-btn-submit {
+    background: linear-gradient(135deg, #f7d347, #e5bd2f);
+    color: #231707;
+}
+
+.admin-citas-create .modal-confirm-btn-cancel {
+    background: rgba(255, 255, 255, 0.06);
+    color: #f6efdd;
+}
+
+@media (max-width: 1100px) {
+    .admin-citas-create .booking-grid {
+        grid-template-columns: 1fr;
+    }
+}
