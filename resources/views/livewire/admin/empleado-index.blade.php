@@ -14,6 +14,12 @@
             </div>
         </header>
 
+        @if ($reassignMessage)
+            <div class="serv-reassign-alert {{ $reassignType === 'error' ? 'is-error' : 'is-success' }}">
+                {{ $reassignMessage }}
+            </div>
+        @endif
+
         <div class="table-container serv-table-wrap">
             <table class="admin-table serv-table">
                 <thead>
@@ -28,13 +34,34 @@
                     @foreach($empleados as $e)
                         <tr>
                             <td>{{ $e->name }}</td>
-                            <td>
+                            <td class="serv-specialty-cell">
                                 @if ($e->servicios && $e->servicios->count())
-                                    @foreach ($e->servicios as $servicio)
-                                        <span class="serv-status on">{{ $servicio->name }}</span>
-                                    @endforeach
+                                    @php
+                                        $serviciosVisibles = $e->servicios->take(2);
+                                        $serviciosOcultos = max(0, $e->servicios->count() - 2);
+                                        $specialtyTargetId = 'specialties-' . $e->id;
+                                    @endphp
+                                    <div class="serv-specialty-list">
+                                        @foreach ($serviciosVisibles as $servicio)
+                                            <span class="serv-specialty-pill">{{ $servicio->name }}</span>
+                                        @endforeach
+                                        @foreach ($e->servicios->slice(2) as $servicio)
+                                            <span class="serv-specialty-pill serv-specialty-pill-hidden" data-specialty-hidden="{{ $specialtyTargetId }}">
+                                                {{ $servicio->name }}
+                                            </span>
+                                        @endforeach
+                                        @if ($serviciosOcultos > 0)
+                                            <button
+                                                type="button"
+                                                class="serv-specialty-more"
+                                                data-specialty-toggle="{{ $specialtyTargetId }}"
+                                                aria-expanded="false">
+                                                +{{ $serviciosOcultos }}
+                                            </button>
+                                        @endif
+                                    </div>
                                 @else
-                                    {{ $e->specialty ?? '-' }}
+                                    <span class="serv-specialty-empty">{{ $e->specialty ?? 'Sin especialidades' }}</span>
                                 @endif
                             </td>
                             <td>
@@ -48,6 +75,9 @@
                                 </a>
                                 <button class="serv-btn ghost" wire:click="toggle({{ $e->id }})">
                                     {{ $e->active ? 'Desactivar' : 'Activar' }}
+                                </button>
+                                <button class="serv-btn reassign-btn" wire:click="confirmReassign({{ $e->id }})">
+                                    Reasignar citas de hoy
                                 </button>
                                 <button class="serv-icon-btn delete" wire:click="confirmDelete({{ $e->id }})" title="Eliminar" aria-label="Eliminar">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -82,4 +112,40 @@
             </div>
         </div>
     @endif
+
+    @if ($confirmReassignId)
+        <div class="modal-overlay" wire:click.self="cancelReassign">
+            <div class="modal-box">
+                <h3>Reasignar citas de hoy?</h3>
+                <p>Se moveran automaticamente solo las citas compatibles por servicio, horario y disponibilidad.</p>
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" wire:click="cancelReassign">Cancelar</button>
+                    <button class="btn btn-save" wire:click="reassignTodayAppointments" wire:loading.attr="disabled">
+                        <span wire:loading.remove>Reasignar</span>
+                        <span wire:loading>Reasignando...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
+
+<script>
+    document.addEventListener('click', function (event) {
+        var toggle = event.target.closest('[data-specialty-toggle]');
+        if (!toggle) return;
+
+        var target = toggle.getAttribute('data-specialty-toggle');
+        if (!target) return;
+
+        var hiddenItems = document.querySelectorAll('[data-specialty-hidden="' + target + '"]');
+        if (!hiddenItems.length) return;
+
+        hiddenItems.forEach(function (item) {
+            item.classList.remove('serv-specialty-pill-hidden');
+        });
+
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.style.display = 'none';
+    });
+</script>

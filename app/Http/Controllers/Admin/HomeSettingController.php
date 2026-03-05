@@ -58,7 +58,9 @@ class HomeSettingController extends Controller
             'feature_3_title' => 'Atención Personalizada',
             'feature_3_description' => 'Productos de primera línea',
             'footer_address' => 'Calle Principal #123 - Guadalajara',
+            'footer_references' => null,
             'footer_phone' => '33 1234 5678',
+            'footer_whatsapp' => '33 1234 5678',
             'footer_hours' => 'Lun-Sab 9:00-20:00',
         ]);
 
@@ -67,6 +69,14 @@ class HomeSettingController extends Controller
             ->orderBy('home_position')
             ->orderBy('name')
             ->get();
+
+            if ($homeSetting->footer_whatsapp) {
+    $digits = preg_replace('/\D+/', '', $homeSetting->footer_whatsapp);
+
+    if (str_starts_with($digits, '52')) {
+        $homeSetting->footer_whatsapp = '52 ' . substr($digits, 2);
+    }
+}
 
         return view('admin.home.edit', compact('homeSetting', 'serviciosActivos'));
     }
@@ -87,11 +97,23 @@ class HomeSettingController extends Controller
             'hero_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'navbar_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'footer_address' => 'nullable|string|max:255',
+            'footer_references' => 'nullable|string|max:500',
             'footer_phone' => 'nullable|string|max:100',
-            'footer_hours' => 'nullable|string|max:100',
+            'footer_whatsapp' => 'nullable|string|max:100',
+            'footer_hours' => 'nullable|string|max:200',
             'featured_services' => 'nullable|array|max:10',
             'featured_services.*' => 'integer|exists:services,id',
         ]);
+
+        $whatsappDigits = preg_replace('/\D+/', '', (string) ($data['footer_whatsapp'] ?? ''));
+        if ($whatsappDigits !== '') {
+            if (!str_starts_with($whatsappDigits, '52')) {
+                $whatsappDigits = '52' . $whatsappDigits;
+            }
+            $data['footer_whatsapp'] = $whatsappDigits;
+        } else {
+            $data['footer_whatsapp'] = null;
+        }
 
         if ($request->hasFile('hero_image')) {
             if ($homeSetting && $homeSetting->hero_image) {

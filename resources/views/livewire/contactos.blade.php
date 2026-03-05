@@ -1,8 +1,15 @@
 <section id="contacto" class="home-section contact-section contact-lux">
     @php
         $footerAddress = $homeSetting->footer_address ?? 'Calle Principal #123 - Guadalajara';
+        $footerReferences = $homeSetting->footer_references ?? '';
         $footerPhone = $homeSetting->footer_phone ?? '33 1234 5678';
+        $footerWhatsapp = $homeSetting->footer_whatsapp ?? '';
         $footerHours = $homeSetting->footer_hours ?? 'Lun-Sab 9:00-20:00';
+        $mapQuery = rawurlencode(trim($footerAddress) !== '' ? $footerAddress : 'Guadalajara Centro');
+        $footerWhatsappDigits = preg_replace('/\D+/', '', $footerWhatsapp ?? '');
+        if ($footerWhatsappDigits !== '' && !str_starts_with($footerWhatsappDigits, '52')) {
+            $footerWhatsappDigits = '52' . $footerWhatsappDigits;
+        }
     @endphp
 
     <div class="contact-lux-head">
@@ -52,8 +59,32 @@
                 </article>
 
                 <article class="contact-info-card">
+                    <h4>REFERENCIAS</h4>
+                    @if (trim($footerReferences) !== '')
+                        <p>{!! nl2br(e($footerReferences)) !!}</p>
+                    @else
+                        <p class="is-muted">Sin referencias adicionales</p>
+                    @endif
+                </article>
+
+                <article class="contact-info-card">
                     <h4>TELÉFONO</h4>
-                    <p>{!! nl2br(e($footerPhone)) !!}</p>
+                    <p>
+                        @if (trim($footerPhone) !== '')
+                            Telefono de contacto: {{ $footerPhone }}
+                        @endif
+                        @if (trim($footerWhatsapp) !== '')
+                            @if (trim($footerPhone) !== '')
+                                <br>
+                            @endif
+                            WhatsApp:
+                            @if (trim($footerWhatsappDigits) !== '')
+                                <a href="https://wa.me/{{ $footerWhatsappDigits }}" target="_blank" rel="noopener noreferrer">{{ $footerWhatsapp }}</a>
+                            @else
+                                {{ $footerWhatsapp }}
+                            @endif
+                        @endif
+                    </p>
                 </article>
 
                 <article class="contact-info-card contact-hours-card">
@@ -66,18 +97,12 @@
 
             <div class="contact-lux-map">
                 <iframe
-                    src="https://www.google.com/maps?q=Guadalajara%20Centro&output=embed"
+                    src="https://www.google.com/maps?q={{ $mapQuery }}&output=embed"
                     loading="lazy">
                 </iframe>
             </div>
 
-            <div class="contact-lux-social">
-                <span>SIGUENOS EN REDES</span>
-                <div class="contact-social-links">
-                    <a href="#" aria-label="Instagram">IG</a>
-                    <a href="#" aria-label="Facebook">FB</a>
-                    <a href="#" aria-label="Twitter">X</a>
-                </div>
+
             </div>
         </div>
     </div>

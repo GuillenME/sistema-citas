@@ -1,93 +1,279 @@
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
-html{
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Urbanist:wght@400;500;600;700;800&display=swap');
+
+html {
     scroll-behavior: smooth;
 }
 
-body{
+body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #b28562;
-    color: #e5e7eb;
+    font-family: 'Urbanist', "Manrope", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #f5f0ea;
+    background:
+        linear-gradient(180deg, rgba(10, 8, 7, 0.92), rgba(10, 8, 7, 0.96)),
+        url("/imagenes/serviciosFon2.png") center/cover fixed no-repeat;
 }
 
-section{
-    max-width: 1200px;
-    margin: auto;
-    padding: 90px 20px 60px;
+.promotions-page {
+    width: min(1240px, 100%);
+    margin: 0 auto;
+    padding: 86px 20px 60px;
 }
 
-h1{
+.promotions-hero {
     text-align: center;
     margin-bottom: 40px;
-    text-shadow: 0 0 15px #fccc7c;
+    padding: 34px 22px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(26, 20, 16, 0.78), rgba(20, 15, 12, 0.84));
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.36);
 }
 
-.promos-wrapper{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+.promotions-title {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: .08em;
+    line-height: .88;
+    text-transform: uppercase;
+    white-space: normal;
+}
 
-        .promo-card{
-            background: #5b4233;
-            padding: 14px;
-            border-radius: 18px;
-            border: 1px solid rgba(255,255,255,.08);
-            transition: .3s;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            min-height: 300px;
-        }
+.promotions-title .title-solid,
+.promotions-title .title-outline {
+    display: inline-block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(34px, 5.2vw, 72px);
+    letter-spacing: .02em;
+}
 
-        .promo-card:hover{
-            transform: translateY(-6px);
-            box-shadow: 0 0 25px rgba(0,0,0,.2);
-        }
+.promotions-title .title-solid {
+    color: #f0f0f0;
+}
 
-        .promo-card h3{
-            color: #fccc7c;
-            margin: 6px 0 8px;
-            font-size: 18px;
-        }
+.promotions-title .title-outline {
+    margin-top: -4px;
+    color: transparent;
+    -webkit-text-stroke: 1.4px rgba(255,255,255,.85);
+}
 
-        .promo-card img{
-            width:100%;
-            height:140px;
-            object-fit:contain;
-            object-position:center;
-            border-radius:14px;
-            margin-bottom:10px;
-            border:1px solid rgba(255,255,255,.12);
-            background: rgba(0,0,0,.25);
-        }
+.promotions-hero p {
+    margin: 10px auto 0;
+    max-width: 720px;
+    color: rgba(245, 240, 234, 0.8);
+    font-size: 17px;
+    line-height: 1.45;
+}
 
-        .promo-card p{
-            font-size: 13px;
-            margin-bottom: 8px;
-            color: #e5e7eb;
-            opacity: .9;
-        }
+.promos-showcase {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    background: rgba(10, 8, 7, 0.55);
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.34);
+    padding: 22px;
+}
 
-        .promo-price{
-        background:#e48815;
-        color:#000;
-        padding:6px 12px;
-        border-radius:999px;
-        font-size:16px;
-        display:inline-block;
-        }
+.promos-head h2 {
+    margin: 0;
+    font-size: clamp(30px, 3vw, 42px);
+    color: #fff8ed;
+}
 
-        .promo-dates{
-            font-size: 11px;
-            color: #c0a799;
-            margin-top: 6px;
-        }
+.promos-head p {
+    margin: 8px 0 0;
+    color: rgba(245, 240, 234, 0.72);
+}
+
+.promos-tabs {
+    margin-top: 18px;
+}
+
+.promos-tab-control {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.promos-tab-buttons {
+    display: inline-flex;
+    gap: 8px;
+    padding: 4px;
+    border-radius: 11px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.promos-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(245, 240, 234, 0.72);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#promos-tab-active:checked ~ .promos-tab-buttons .promos-tab-btn-active,
+#promos-tab-upcoming:checked ~ .promos-tab-buttons .promos-tab-btn-upcoming {
+    color: #1f130b;
+    background: linear-gradient(135deg, #f09f36, #d9791a);
+    box-shadow: 0 8px 18px rgba(240, 159, 54, 0.25);
+}
+
+.promos-panels {
+    margin-top: 18px;
+}
+
+.promos-panel {
+    display: none;
+    grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+    gap: 16px;
+}
+
+#promos-tab-active:checked ~ .promos-panels .promos-panel-active {
+    display: grid;
+}
+
+#promos-tab-upcoming:checked ~ .promos-panels .promos-panel-upcoming {
+    display: grid;
+}
+
+.promo-feature-card {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(160deg, rgba(26, 20, 15, 0.96), rgba(18, 14, 11, 0.98));
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.promo-feature-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(240, 159, 54, 0.55);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.34);
+}
+
+.promo-feature-card.is-featured {
+    border-color: rgba(240, 159, 54, 0.65);
+    box-shadow: inset 0 0 0 1px rgba(240, 159, 54, 0.3);
+}
+
+.promo-image-wrap {
+    position: relative;
+    background: #e7e3df;
+}
+
+.promo-image-wrap img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+.promo-discount {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #f08d2f, #cf5f08);
+}
+
+.promo-badge {
+    position: absolute;
+    top: 34px;
+    right: 10px;
+    border-radius: 999px;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #24140a;
+    background: #f2d08b;
+}
+
+.promo-content {
+    padding: 14px;
+}
+
+.promo-content h3 {
+    margin: 0;
+    font-size: 26px;
+    color: #fff6e7;
+}
+
+.promo-content p {
+    margin: 8px 0 0;
+    min-height: 62px;
+    color: rgba(245, 240, 234, 0.82);
+    line-height: 1.45;
+    font-size: 13px;
+}
+
+.promo-meta {
+    margin-top: 10px;
+    font-size: 12px;
+    color: rgba(245, 240, 234, 0.6);
+}
+
+.promo-cta {
+    margin-top: 12px;
+    width: 100%;
+    border: 0;
+    border-radius: 9px;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #2b170b;
+    background: linear-gradient(135deg, #f09f36, #df7d1a);
+}
+
+.promo-cta-ghost {
+    border: 1px solid rgba(240, 159, 54, 0.5);
+    color: #f4be74;
+    background: rgba(240, 159, 54, 0.08);
+}
 
 .promo-empty {
     grid-column: 1 / -1;
+    margin: 0;
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(245, 240, 234, 0.8);
     text-align: center;
+    padding: 22px;
+}
+
+@media (max-width: 900px) {
+    .promotions-page {
+        padding-top: 76px;
+    }
+
+    .promotions-hero {
+        margin-bottom: 28px;
+    }
+
+    .promos-showcase {
+        padding: 16px;
+    }
+
+    .promo-image-wrap img {
+        height: 220px;
+    }
 }

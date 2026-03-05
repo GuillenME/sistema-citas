@@ -57,6 +57,10 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    background: transparent;
+    color: inherit;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .serv-btn-icon {
@@ -102,8 +106,58 @@ td.serv-actions-col .serv-btn.ghost::before {
     border-color: rgba(252, 204, 124, 0.74);
 }
 
+.serv-btn.reassign-btn,
+button.reassign-btn,
+a.reassign-btn {
+    color: #ffe9b8;
+    background: linear-gradient(135deg, rgba(252, 204, 124, 0.16), rgba(214, 150, 55, 0.18));
+    border-color: rgba(252, 204, 124, 0.42);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    position: relative;
+}
+
+.serv-btn.reassign-btn::before,
+button.reassign-btn::before,
+a.reassign-btn::before {
+    content: "";
+    width: 13px;
+    height: 13px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 13px 13px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffe2a0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3 21 7l-4 4'/%3E%3Cpath d='M21 7H9a4 4 0 0 0-4 4v1'/%3E%3Cpath d='m7 21-4-4 4-4'/%3E%3Cpath d='M3 17h12a4 4 0 0 0 4-4v-1'/%3E%3C/svg%3E");
+}
+
+.serv-btn.reassign-btn:hover,
+button.reassign-btn:hover,
+a.reassign-btn:hover {
+    background: linear-gradient(135deg, rgba(252, 204, 124, 0.26), rgba(214, 150, 55, 0.30));
+    border-color: rgba(252, 204, 124, 0.68);
+    transform: translateY(-1px);
+}
+
 .serv-table-wrap {
     background: transparent;
+}
+
+.serv-reassign-alert {
+    margin: 12px 18px 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    border: 1px solid transparent;
+}
+
+.serv-reassign-alert.is-success {
+    color: #d6ffe2;
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.35);
+}
+
+.serv-reassign-alert.is-error {
+    color: #ffd9d9;
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.35);
 }
 
 .serv-table {
@@ -191,6 +245,59 @@ td.serv-actions-col .serv-btn.ghost::before {
     border-color: rgba(255, 255, 255, 0.16);
 }
 
+.serv-specialty-cell {
+    min-width: 320px;
+}
+
+.serv-specialty-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.serv-specialty-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(252, 204, 124, 0.42);
+    background: linear-gradient(135deg, rgba(252, 204, 124, 0.15), rgba(214, 150, 55, 0.12));
+    color: #ffe3a3;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.1;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.serv-specialty-more {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px dashed rgba(252, 204, 124, 0.55);
+    background: rgba(252, 204, 124, 0.08);
+    color: #f5cf74;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.serv-specialty-pill-hidden {
+    display: none;
+}
+
+.serv-specialty-empty {
+    color: #b8ab89;
+    font-size: 12px;
+    font-style: italic;
+}
+
 td.serv-actions-col {
     text-align: center;
     white-space: nowrap;
@@ -245,5 +352,14 @@ td.serv-actions-col > * {
     .serv-actions {
         width: 100%;
         justify-content: flex-start;
+    }
+
+    .serv-specialty-cell {
+        min-width: 240px;
+    }
+
+    .serv-specialty-list {
+        justify-content: flex-start;
+        max-width: 100%;
     }
 }

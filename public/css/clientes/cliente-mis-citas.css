@@ -361,9 +361,9 @@ body.cliente-citas-index-page {
             font-size: 11px;
         }
 
-        .price-restante {
-            color: #93c5fd;
-        }
+.price-restante {
+            color: #d7ad84;
+}
 
         .cita-notes {
             font-size: 12px;
@@ -429,6 +429,61 @@ body.cliente-citas-index-page {
     gap: 6px;
 }
 
+.upload-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.upload-row .comprobante-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.btn-preview-eye {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    background: rgba(252, 204, 124, 0.1);
+    color: #fccc7c;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .2s ease;
+    flex-shrink: 0;
+}
+
+.btn-preview-eye svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.btn-preview-eye:hover {
+    background: rgba(252, 204, 124, 0.2);
+    transform: translateY(-1px);
+}
+
+.modal-content-preview {
+    max-width: 560px;
+}
+
+.preview-comprobante-image {
+    width: 100%;
+    max-height: 60vh;
+    object-fit: contain;
+    border-radius: 10px;
+    border: 1px solid rgba(252, 204, 124, 0.3);
+    background: rgba(0, 0, 0, 0.28);
+    margin-bottom: 16px;
+}
+
 .cita-actions {
     margin-top: 10px;
 }
@@ -482,7 +537,7 @@ body.cliente-citas-index-page {
             }
         }
 
-        @media (max-width: 600px) {
+@media (max-width: 600px) {
             .citas-grid {
                 grid-template-columns: 1fr;
             }
@@ -688,3 +743,171 @@ body.cliente-citas-index-page {
                 width: 100%;
             }
         }
+
+/* ===== Tarjetas tipo panel premium ===== */
+body.cliente-citas-index-page .citas-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
+    gap: 12px;
+}
+
+body.cliente-citas-index-page .cita-card {
+    background: linear-gradient(160deg, rgba(54, 38, 30, 0.94), rgba(36, 25, 20, 0.94));
+    border: 1px solid rgba(252, 204, 124, 0.22);
+    border-radius: 12px;
+    padding: 12px;
+    min-height: 238px;
+    gap: 10px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+}
+
+body.cliente-citas-index-page .cita-header {
+    align-items: stretch;
+    text-align: left;
+    gap: 6px;
+}
+
+body.cliente-citas-index-page .cita-eyebrow {
+    color: #e67e22;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+body.cliente-citas-index-page .cita-head-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+body.cliente-citas-index-page .cita-title {
+    text-align: left;
+    font-size: 28px;
+    line-height: 1.1;
+    color: #fff6e8;
+}
+
+body.cliente-citas-index-page .estado {
+    font-size: 11px;
+    padding: 5px 11px;
+}
+
+body.cliente-citas-index-page .cita-when {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+body.cliente-citas-index-page .cita-when-box {
+    background: rgba(23, 15, 11, 0.92);
+    border: 1px solid rgba(252, 204, 124, 0.12);
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+body.cliente-citas-index-page .when-label {
+    display: block;
+    font-size: 9px;
+    text-transform: uppercase;
+    color: #b39678;
+    margin-bottom: 3px;
+}
+
+body.cliente-citas-index-page .cita-when-box strong {
+    color: #f8ecd9;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+body.cliente-citas-index-page .cita-price {
+    display: grid;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+body.cliente-citas-index-page .price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 12px;
+}
+
+body.cliente-citas-index-page .price-row span {
+    color: #cdb49a;
+}
+
+body.cliente-citas-index-page .price-row strong {
+    font-size: 13px;
+}
+
+body.cliente-citas-index-page .price-final {
+    color: #f7f8fb;
+}
+
+body.cliente-citas-index-page .price-original {
+    color: #9f866a;
+}
+
+body.cliente-citas-index-page .price-discount {
+    color: #12c66a;
+}
+
+body.cliente-citas-index-page .price-restante {
+    color: #ff8a2a;
+}
+
+body.cliente-citas-index-page .cita-details summary {
+    width: 100%;
+    background: rgba(252, 204, 124, 0.12);
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    border-radius: 8px;
+    color: #f7f8fb;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+body.cliente-citas-index-page .cita-actions {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+body.cliente-citas-index-page .cita-actions .btn-cancel-cita:only-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: min(100%, 360px);
+}
+
+body.cliente-citas-index-page .btn-cancel-cita {
+    border-radius: 8px;
+    height: 38px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    background: rgba(252, 204, 124, 0.08);
+    color: #fff3df;
+}
+
+body.cliente-citas-index-page .btn-reagendar {
+    background: linear-gradient(135deg, rgba(101, 52, 24, 0.9), rgba(122, 58, 22, 0.92));
+    border-color: rgba(226, 118, 39, 0.42);
+    color: #ff9f4d;
+}
+
+body.cliente-citas-index-page .btn-cancelar {
+    background: rgba(169, 33, 33, 0.22);
+    border-color: rgba(218, 72, 72, 0.5);
+    color: #ffb2b2;
+}
+
+@media (max-width: 1000px) {
+    body.cliente-citas-index-page .citas-grid {
+        grid-template-columns: 1fr;
+    }
+}

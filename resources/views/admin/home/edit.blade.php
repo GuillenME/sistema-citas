@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Editar Home Publico')
+@section('title', 'Configuración de inicio')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/home-edit.css') }}">
 @endsection
@@ -33,7 +33,7 @@
             </header>
 
             <section class="editor-block">
-                <h3>Configuracion del Hero</h3>
+                <h3>Configuracion de inicio</h3>
                 <p class="block-lead">Personaliza el titulo principal y el mensaje de bienvenida.</p>
                 <div class="form-grid two">
                     <div>
@@ -131,30 +131,83 @@
                     <p class="error">{{ $message }}</p>
                 @enderror
 
-                <label for="featured_services">Servicios destacados (maximo 10)</label>
-                <select id="featured_services" name="featured_services[]" multiple size="10">
-                    @foreach ($serviciosActivos as $servicio)
-                        <option value="{{ $servicio->id }}" {{ in_array($servicio->id, $selectedHomeServices) ? 'selected' : '' }}>
-                            {{ $servicio->name }}
-                        </option>
+                <div class="services-picker-head">
+                    <label>Servicios destacados en inicio</label>
+                    <span class="services-picker-counter" id="featured_services_counter">0/10 seleccionados</span>
+                </div>
+
+                <div class="services-picker-scroll-card">
+                    <div class="services-picker-scroll-body">
+                        <div class="services-picker-grid" id="featured_services_grid" data-max="10">
+                            @foreach ($serviciosActivos as $servicio)
+                                @php
+                                    $isSelected = in_array($servicio->id, $selectedHomeServices);
+                                @endphp
+                                <button
+                                    type="button"
+                                    class="service-pick-card {{ $isSelected ? 'is-selected' : '' }}"
+                                    data-service-id="{{ $servicio->id }}"
+                                    aria-pressed="{{ $isSelected ? 'true' : 'false' }}"
+                                >
+                                    <span class="service-pick-check" aria-hidden="true">&#10003;</span>
+                                    <span class="service-pick-name">{{ $servicio->name }}</span>
+                                    <span class="service-pick-meta">
+                                        {{ $servicio->duration_minutes }} min - ${{ number_format((float) $servicio->price, 2) }}
+                                    </span>
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div id="featured_services_inputs">
+                    @foreach ($selectedHomeServices as $serviceId)
+                        <input type="hidden" name="featured_services[]" value="{{ $serviceId }}">
                     @endforeach
-                </select>
-                <small>Usa Ctrl/Cmd para seleccionar varios.</small>
+                </div>
+
+                <small>Selecciona hasta 10. Al llegar al limite, los demas servicios se desactivan.</small>
             </section>
 
 
             <section class="editor-block">
                 <h3>Informacion de Contacto</h3>
-                <div class="form-grid three">
-                    <div>
+                @php
+                    $footerAddressValue = old('footer_address', $homeSetting->footer_address);
+                    $footerAddressQuery = rawurlencode(trim((string) $footerAddressValue) !== '' ? $footerAddressValue : 'Guadalajara Centro');
+                @endphp
+
+                <div class="contact-info-row contact-info-row-top">
+                    <div class="contact-info-item">
                         <label for="footer_address">Direccion</label>
-                        <textarea id="footer_address" name="footer_address" rows="2" class="auto-grow">{{ old('footer_address', $homeSetting->footer_address) }}</textarea>
+                        <textarea id="footer_address" name="footer_address" rows="2" class="auto-grow fixed-height-control">{{ old('footer_address', $homeSetting->footer_address) }}</textarea>
+                        <small class="field-note">Usa la direccion exacta de Google Maps (sin referencias) para que el mapa se ubique correctamente.</small>
                     </div>
-                    <div>
-                        <label for="footer_phone">Telefono</label>
-                        <input type="text" id="footer_phone" name="footer_phone" value="{{ old('footer_phone', $homeSetting->footer_phone) }}">
+                    <div class="contact-info-item">
+                        <label for="footer_references">Referencias</label>
+                        <textarea id="footer_references" name="footer_references" rows="2" class="auto-grow fixed-height-control">{{ old('footer_references', $homeSetting->footer_references) }}</textarea>
                     </div>
-                    <div>
+                    <div class="contact-info-item">
+                        <label for="footer_phone">Telefono de contacto</label>
+                        <textarea id="footer_phone" name="footer_phone" rows="2" class="auto-grow fixed-height-control">{{ old('footer_phone', $homeSetting->footer_phone) }}</textarea>
+                    </div>
+                    <div class="contact-info-item">
+                        <label for="footer_whatsapp">WhatsApp</label>
+                        <textarea id="footer_whatsapp" name="footer_whatsapp" rows="2" class="auto-grow fixed-height-control">{{ old('footer_whatsapp', $homeSetting->footer_whatsapp) }}</textarea>
+                        <small class="field-note">Se guardara con lada de Mexico (52) automaticamente.</small>
+                    </div>
+                </div>
+
+                <div class="contact-info-row contact-info-row-bottom">
+                    <div class="contact-info-item map-preview-card">
+                        <span>Vista previa del mapa</span>
+                        <iframe
+                            id="footer_address_map_preview"
+                            src="https://www.google.com/maps?q={{ $footerAddressQuery }}&output=embed"
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="contact-info-item">
                         <label for="footer_hours">Horario de atencion</label>
                         <textarea id="footer_hours" name="footer_hours" rows="2" class="auto-grow">{{ old('footer_hours', $homeSetting->footer_hours) }}</textarea>
                     </div>
@@ -172,8 +225,8 @@
 @section('scripts')
 <script>
     (function () {
-        function initHomeImagePreviews() {
-            var fields = document.querySelectorAll('.auto-grow');
+        function initHomeEditor() {
+            var fields = document.querySelectorAll('.auto-grow:not(.fixed-height-control)');
             function adjust(el) {
                 el.style.height = 'auto';
                 el.style.height = el.scrollHeight + 'px';
@@ -206,10 +259,117 @@
 
             bindImagePreview('hero_image', 'hero_image_preview');
             bindImagePreview('navbar_logo', 'navbar_logo_preview');
+
+            var addressInput = document.getElementById('footer_address');
+            var addressMapPreview = document.getElementById('footer_address_map_preview');
+            var whatsappInput = document.getElementById('footer_whatsapp');
+
+            function updateAddressMapPreview() {
+                if (!addressInput || !addressMapPreview) return;
+                var value = (addressInput.value || '').trim();
+                var query = encodeURIComponent(value !== '' ? value : 'Guadalajara Centro');
+                addressMapPreview.src = 'https://www.google.com/maps?q=' + query + '&output=embed';
+            }
+
+            if (addressInput && addressMapPreview && addressInput.dataset.mapPreviewBound !== '1') {
+                addressInput.dataset.mapPreviewBound = '1';
+                addressInput.addEventListener('input', updateAddressMapPreview);
+                addressInput.addEventListener('change', updateAddressMapPreview);
+            }
+
+            function normalizeWhatsappValue(rawValue) {
+            var digits = String(rawValue || '').replace(/\D+/g, '');
+
+            if (!digits) return '';
+
+            // Si ya empieza con 52, lo quitamos temporalmente
+            if (digits.startsWith('52')) {
+            digits = digits.substring(2);
+            }
+
+            // Limitar a 10 dígitos (número mexicano normal)
+            digits = digits.substring(0, 10);
+
+            return '52 ' + digits;
+         }
+
+            if (whatsappInput && whatsappInput.dataset.normalizeBound !== '1') {
+                whatsappInput.dataset.normalizeBound = '1';
+                whatsappInput.addEventListener('blur', function () {
+                    whatsappInput.value = normalizeWhatsappValue(whatsappInput.value);
+                });
+                whatsappInput.addEventListener('change', function () {
+                    whatsappInput.value = normalizeWhatsappValue(whatsappInput.value);
+                });
+            }
+
+            var grid = document.getElementById('featured_services_grid');
+            var counter = document.getElementById('featured_services_counter');
+            var hiddenInputs = document.getElementById('featured_services_inputs');
+
+            if (!grid || !counter || !hiddenInputs) return;
+            if (grid.dataset.bound === '1') return;
+            grid.dataset.bound = '1';
+
+            var max = Number(grid.dataset.max || '10');
+            var cards = Array.prototype.slice.call(grid.querySelectorAll('.service-pick-card'));
+
+            function selectedCards() {
+                return cards.filter(function (card) {
+                    return card.classList.contains('is-selected');
+                });
+            }
+
+            function syncHiddenInputs() {
+                var selected = selectedCards();
+                hiddenInputs.innerHTML = '';
+
+                selected.forEach(function (card) {
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'featured_services[]';
+                    input.value = card.dataset.serviceId;
+                    hiddenInputs.appendChild(input);
+                });
+            }
+
+            function updateCounterAndState() {
+                var selected = selectedCards();
+                var selectedCount = selected.length;
+                var reachedLimit = selectedCount >= max;
+
+                counter.textContent = selectedCount + '/' + max + ' seleccionados';
+                counter.classList.toggle('is-limit', reachedLimit);
+
+                cards.forEach(function (card) {
+                    var isSelected = card.classList.contains('is-selected');
+                    card.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+                    card.disabled = !isSelected && reachedLimit;
+                    card.classList.toggle('is-disabled', !isSelected && reachedLimit);
+                });
+            }
+
+            cards.forEach(function (card) {
+                card.addEventListener('click', function () {
+                    var currentlySelected = card.classList.contains('is-selected');
+                    var selectedCount = selectedCards().length;
+
+                    if (!currentlySelected && selectedCount >= max) {
+                        return;
+                    }
+
+                    card.classList.toggle('is-selected');
+                    syncHiddenInputs();
+                    updateCounterAndState();
+                });
+            });
+
+            syncHiddenInputs();
+            updateCounterAndState();
         }
 
-        document.addEventListener('DOMContentLoaded', initHomeImagePreviews, { once: true });
-        document.addEventListener('livewire:navigated', initHomeImagePreviews);
+        document.addEventListener('DOMContentLoaded', initHomeEditor, { once: true });
+        document.addEventListener('livewire:navigated', initHomeEditor);
     })();
 </script>
 @endsection

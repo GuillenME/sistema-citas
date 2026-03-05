@@ -15,7 +15,7 @@ class RecepcionistaCreate extends Component
         'nombre' => 'required|string|min:3',
         'apellido' => 'required|string|min:2',
         'email' => 'required|email|unique:users,email',
-        'telefono' => 'required|string|min:7|max:10',
+        'telefono' => 'required|digits:10',
         'password' => 'required|min:6|confirmed',
     ];
 
@@ -26,6 +26,7 @@ class RecepcionistaCreate extends Component
         'min' => 'El campo :attribute debe tener al menos :min caracteres.',
         'max' => 'El campo :attribute no debe superar :max caracteres.',
         'confirmed' => 'La confirmación de :attribute no coincide.',
+        'telefono.digits' => 'El campo :attribute debe tener exactamente 10 digitos numericos.',
     ];
 
     protected $validationAttributes = [
@@ -41,6 +42,11 @@ class RecepcionistaCreate extends Component
     {
         $this->validate();
         $this->confirmar = true;
+    }
+
+    public function updatedTelefono($value): void
+    {
+        $this->telefono = substr(preg_replace('/\D/', '', (string) $value), 0, 10);
     }
 
     public function guardar()

@@ -20,7 +20,7 @@
 
         <div class="form-group">
             <label>Imagen del servicio</label>
-            <input type="file" wire:model="image">
+            <input type="file" wire:model="image" accept="image/*">
         </div>
 
 
@@ -39,12 +39,6 @@
             @else
                 <div class="preview-empty">Sin imagen</div>
             @endif
-        </div>
-
-        <div class="form-group">
-            <label>Activo</label>
-            <input type="checkbox" wire:model.defer="activo">
-            @error('activo') <small class="error">{{ $message }}</small> @enderror
         </div>
 
     </div>

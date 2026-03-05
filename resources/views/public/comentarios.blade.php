@@ -10,7 +10,9 @@
 <section class="reviews-page">
     <div class="reviews-head">
         <span class="reviews-eyebrow">EXPERIENCIAS REALES</span>
-        <h1 class="reviews-title">Comentarios</h1>
+        <h1 class="reviews-title">
+            <span class="title-solid">COMENTARIOS</span>
+        </h1>
         <p class="subtitle">Gracias por compartir tu opinion con nosotros.</p>
     </div>
 

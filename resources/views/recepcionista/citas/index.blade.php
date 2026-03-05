@@ -20,7 +20,7 @@
     <div class="container">
 
         <div class="table-card">
-            <h2>Historial de citas</h2>
+            <h2>Citas de la semana</h2>
 
             <div class="citas-grid">
                 @foreach ($citas as $cita)
@@ -56,8 +56,20 @@
                             <div><strong>Hora:</strong> {{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($cita->end_time)->format('H:i') }}</div>
                         </div>
 
-                        @if (in_array($cita->status, ['confirmada', 'pendiente_anticipo'], true) && (($cita->reagendas_count ?? 0) < 2))
-                            <div class="cita-actions">
+                        <div class="cita-actions">
+                            <button type="button"
+                                class="detalle-btn"
+                                data-servicio="{{ e($cita->service->name ?? 'Servicio') }}"
+                                data-cliente="{{ e(trim(($cita->client->user->name ?? '') . ' ' . ($cita->client->user->last_name ?? ''))) }}"
+                                data-email="{{ e($cita->client->user->email ?? '-') }}"
+                                data-fecha="{{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}"
+                                data-hora="{{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($cita->end_time)->format('H:i') }}"
+                                data-estado="{{ e($estadoTexto) }}"
+                                data-notas="{{ e($cita->notes ?? 'Sin observaciones') }}">
+                                Ver detalle
+                            </button>
+
+                            @if (in_array($cita->status, ['confirmada', 'pendiente_anticipo'], true) && (($cita->reagendas_count ?? 0) < 2))
                                 <button type="button"
                                     class="reagendar-btn"
                                     data-reagendar-action="{{ route('recepcionista.citas.reagendar', $cita) }}"
@@ -65,8 +77,8 @@
                                     data-date="{{ \Carbon\Carbon::parse($cita->date)->format('Y-m-d') }}">
                                     Reagendar
                                 </button>
-                            </div>
-                        @endif
+                            @endif
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -99,6 +111,29 @@
         </div>
     </div>
 
+    <div id="detalleModal" class="modal-overlay" onclick="if(event.target === this) cerrarModalDetalle()">
+        <div class="modal-content detalle-modal-content">
+            <h3>Detalle de la cita</h3>
+            <div class="detalle-grid">
+                <div><span>Servicio</span><strong id="detalleServicio">-</strong></div>
+                <div><span>Cliente</span><strong id="detalleCliente">-</strong></div>
+                <div><span>Correo</span><strong id="detalleEmail">-</strong></div>
+                <div><span>Fecha</span><strong id="detalleFecha">-</strong></div>
+                <div><span>Horario</span><strong id="detalleHora">-</strong></div>
+                <div><span>Estado</span><strong id="detalleEstado">-</strong></div>
+            </div>
+
+            <div class="detalle-notas-wrap">
+                <span>Notas</span>
+                <p id="detalleNotas">Sin observaciones</p>
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="cerrarModalDetalle()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Modal de confirmacion de logout
         function mostrarModalLogout() {
@@ -117,6 +152,7 @@
         const reagendarForm = document.getElementById('reagendarForm');
         const reagendarFecha = document.getElementById('reagendarFecha');
         const reagendarHorario = document.getElementById('reagendarHorario');
+        const detalleModal = document.getElementById('detalleModal');
         let reagendarServiceId = '';
 
         function formatHora12(hora24) {
@@ -175,6 +211,21 @@
             reagendarModal.classList.remove('active');
         }
 
+        function abrirModalDetalle(btn) {
+            document.getElementById('detalleServicio').textContent = btn.getAttribute('data-servicio') || '-';
+            document.getElementById('detalleCliente').textContent = btn.getAttribute('data-cliente') || '-';
+            document.getElementById('detalleEmail').textContent = btn.getAttribute('data-email') || '-';
+            document.getElementById('detalleFecha').textContent = btn.getAttribute('data-fecha') || '-';
+            document.getElementById('detalleHora').textContent = btn.getAttribute('data-hora') || '-';
+            document.getElementById('detalleEstado').textContent = btn.getAttribute('data-estado') || '-';
+            document.getElementById('detalleNotas').textContent = btn.getAttribute('data-notas') || 'Sin observaciones';
+            detalleModal.classList.add('active');
+        }
+
+        function cerrarModalDetalle() {
+            detalleModal.classList.remove('active');
+        }
+
         reagendarFecha.addEventListener('change', cargarBloquesReagenda);
 
         document.querySelectorAll('.reagendar-btn').forEach((btn) => {
@@ -185,6 +236,10 @@
                     btn.getAttribute('data-date')
                 );
             });
+        });
+
+        document.querySelectorAll('.detalle-btn').forEach((btn) => {
+            btn.addEventListener('click', () => abrirModalDetalle(btn));
         });
     </script>
 

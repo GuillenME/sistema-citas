@@ -7,6 +7,8 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -22,26 +24,44 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $throttleKey = Str::lower((string) $request->input('email')) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $minutes = (int) ceil($seconds / 60);
+
+            return back()->withErrors([
+                'email' => "Demasiados intentos. Intenta nuevamente en {$minutes} minuto(s).",
+            ])->withInput();
+        }
+
         $credentials = $request->validate(
             [
-                'email' => ['required', 'email'],
-                'password' => ['required', 'min:6'],
+                'email' => ['required', 'email', 'max:255'],
+                'password' => ['required', 'min:6', 'max:255'],
             ],
             [
                 'email.required' => 'El correo es obligatorio',
-                'email.email' => 'El correo no es válido',
-                'password.required' => 'La contraseña es obligatoria',
-                'password.min' => 'La contraseña debe tener al menos 6 caracteres',
+                'email.email' => 'El correo no es valido',
+                'password.required' => 'La contrasena es obligatoria',
+                'password.min' => 'La contrasena debe tener al menos 6 caracteres',
             ]
         );
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt([
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+            'active' => 1,
+        ])) {
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
             return redirect('/redirect');
         }
 
+        RateLimiter::hit($throttleKey, 60);
+
         return back()->withErrors([
-            'email' => 'Correo o contraseña incorrectos'
+            'email' => 'Correo o contrasena incorrectos',
         ])->withInput();
     }
 
@@ -49,51 +69,42 @@ class AuthController extends Controller
     {
         $request->validate(
             [
-                'nombre'    => ['required', 'string', 'min:3'],
-                'apellido'  => ['required', 'string', 'min:3'],
-                'telefono'  => ['required', 'digits:10'],
-                'email'     => ['required', 'email', 'unique:users,email'],
-                'password'  => ['required', 'confirmed', 'min:6'],
+                'nombre' => ['required', 'string', 'min:3'],
+                'apellido' => ['required', 'string', 'min:3'],
+                'telefono' => ['required', 'digits:10'],
+                'email' => ['required', 'email', 'unique:users,email'],
+                'password' => ['required', 'confirmed', 'min:6'],
             ],
             [
                 'nombre.required' => 'El nombre es obligatorio',
                 'nombre.min' => 'El nombre debe tener al menos 3 letras',
-
                 'apellido.required' => 'Los apellidos son obligatorios',
                 'apellido.min' => 'Los apellidos deben tener al menos 3 letras',
-
-
-                'telefono.required' => 'El teléfono es obligatorio',
-                'telefono.digits' => 'El teléfono debe tener exactamente 10 dígitos',
-
+                'telefono.required' => 'El telefono es obligatorio',
+                'telefono.digits' => 'El telefono debe tener exactamente 10 digitos',
                 'email.required' => 'El correo es obligatorio',
-                'email.email' => 'El correo no es válido',
-                'email.unique' => 'Este correo ya está registrado',
-
-                'password.required' => 'La contraseña es obligatoria',
-                'password.confirmed' => 'Las contraseñas no coinciden',
-                'password.min' => 'La contraseña debe tener mínimo 6 caracteres',
+                'email.email' => 'El correo no es valido',
+                'email.unique' => 'Este correo ya esta registrado',
+                'password.required' => 'La contrasena es obligatoria',
+                'password.confirmed' => 'Las contrasenas no coinciden',
+                'password.min' => 'La contrasena debe tener minimo 6 caracteres',
             ]
         );
 
         $usuario = Usuario::create([
-            'name'      => $request->nombre,
+            'name' => $request->nombre,
             'last_name' => $request->apellido,
-            'phone'     => $request->telefono,
-            'email'     => $request->email,
-            'password'  => Hash::make($request->password),
-            'role_id'   => 2,
+            'phone' => $request->telefono,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role_id' => 2,
         ]);
 
-        // 👇 Si el usuario es cliente, crear registro en clientes
-        if ($usuario->role_id == 2) {
+        if ($usuario->role_id === 2) {
             Cliente::create([
                 'user_id' => $usuario->id,
-               // 'phone'   => $usuario->phone,
             ]);
         }
-
-
 
         return redirect('/login')->with('success', 'Cuenta creada correctamente');
     }

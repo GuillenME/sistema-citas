@@ -1,81 +1,139 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Registro</title>
-
     <link rel="stylesheet" href="{{ asset('css/auth/register.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body class="auth-register-page">
-
-<a href="{{ route('login') }}" class="back-arrow">←</a>
-
-<div class="blur-panel-left">
-    <form method="POST" action="{{ route('register') }}" class="register-container">
-        @csrf
-
-        <h2>Registro de cliente</h2>
-
-        @if ($errors->any())
-            <div class="error-box">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+    <main class="register-layout">
+        <section class="register-hero" aria-hidden="true">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <span class="hero-brand">{{ optional($homeSetting)->hero_title ?? 'Barberia & Spa' }}</span>
+                <h1>Eleva tu estilo a un nuevo nivel de <em>distincion.</em></h1>
+                <p>Descubre el equilibrio perfecto entre la tradicion de la barberia clasica y el relax de un spa
+                    moderno.</p>
             </div>
-        @endif
+        </section>
 
-        <div class="grid">
-            <div class="card">
-                <input type="text" name="nombre" placeholder="Nombre"
-                       value="{{ old('nombre') }}"
-                       class="@error('nombre') input-error @enderror"
-                       oninput="this.value=this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g,'')">
+        <section class="register-panel">
+            <a href="{{ route('login') }}" class="back-arrow" aria-label="Volver">&larr;</a>
+
+            <div class="register-header">
+                <h2>Registro de Cliente</h2>
+                <p>Unete a nuestra comunidad exclusiva y reserva tu proxima experiencia de lujo.</p>
             </div>
 
-            <div class="card">
-                <input type="text" name="apellido" placeholder="Apellidos"
-                       value="{{ old('apellido') }}"
-                       class="@error('apellido') input-error @enderror"
-                       oninput="this.value=this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g,'')">
-            </div>
+            @if ($errors->any())
+                <div class="error-box">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-            <div class="card">
-                <input type="tel" name="telefono" placeholder="Teléfono (10 dígitos)"
-                       value="{{ old('telefono') }}"
-                       class="@error('telefono') input-error @enderror"
-                       maxlength="10"
-                       oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
-            </div>
+            <form method="POST" action="{{ route('register') }}" class="register-form">
+                @csrf
 
-            <div class="card">
-                <input type="email" name="email" placeholder="Correo electrónico"
-                       value="{{ old('email') }}"
-                       class="@error('email') input-error @enderror">
-            </div>
+                <div class="field-grid">
+                    <div class="field-group">
+                        <label for="nombre">Nombre</label>
+                        <input id="nombre" type="text" name="nombre" placeholder="Ej. Juan"
+                            value="{{ old('nombre') }}" class="@error('nombre') input-error @enderror"
+                            oninput="this.value=this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g,'')">
+                    </div>
 
-            <div class="card">
-                <input type="password" name="password" placeholder="Contraseña"
-                       class="@error('password') input-error @enderror">
-            </div>
+                    <div class="field-group">
+                        <label for="apellido">Apellido</label>
+                        <input id="apellido" type="text" name="apellido" placeholder="Ej. Perez"
+                            value="{{ old('apellido') }}" class="@error('apellido') input-error @enderror"
+                            oninput="this.value=this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g,'')">
+                    </div>
+                </div>
 
-            <div class="card">
-                <input type="password" name="password_confirmation"
-                       placeholder="Confirmar contraseña">
-            </div>
-        </div>
+                <div class="field-group">
+                    <label for="telefono">Teléfono (10 digitos)</label>
+                    <input id="telefono" type="tel" name="telefono" placeholder="55 1234 5678"
+                        value="{{ old('telefono') }}" class="@error('telefono') input-error @enderror" maxlength="10"
+                        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                </div>
 
-        <input type="hidden" name="role_id" value="2">
+                <div class="field-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input id="email" type="email" name="email" placeholder="nombre@ejemplo.com"
+                        value="{{ old('email') }}" class="@error('email') input-error @enderror">
+                </div>
 
-        <div class="submit-wrapper">
-            <button type="submit">REGISTRARSE</button>
-        </div>
-    </form>
-</div>
+                <div class="field-group">
+                    <label for="password">Contraseña</label>
+                    <div class="password-wrapper">
+                        <input id="password" type="password" name="password" placeholder="********"
+                            class="@error('password') input-error @enderror">
+                        <button type="button" class="toggle-password" data-target="password"
+                            aria-label="Mostrar contraseña">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
 
-<div class="image-panel-right"></div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label for="password_confirmation">Confirmar Contraseña</label>
+                    <div class="password-wrapper">
+                        <input id="password_confirmation" type="password" name="password_confirmation"
+                            placeholder="********">
+
+                        <button type="button" class="toggle-password" data-target="password_confirmation"
+                            aria-label="Mostrar confirmación de contraseña">
+
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+
+                <input type="hidden" name="role_id" value="2">
+                <button type="submit" class="submit-button">REGISTRARSE</button>
+            </form>
+
+            <p class="login-link">
+                ¿Ya tienes una cuenta? <a href="{{ route('login') }}">Iniciar Sesion</a>
+            </p>
+        </section>
+    </main>
+
+    <script>
+        document.querySelectorAll('.toggle-password').forEach(function(button) {
+            button.addEventListener('click', function() {
+
+                var targetId = button.getAttribute('data-target');
+                var input = document.getElementById(targetId);
+                if (!input) return;
+
+                var isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+
+                var icon = button.querySelector('i');
+
+                if (isPassword) {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+
+            });
+        });
+    </script>
 
 </body>
+
 </html>

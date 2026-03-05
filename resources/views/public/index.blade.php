@@ -13,9 +13,6 @@
 </main>
 
 
-</body>
-
-
 @section('content')
     <div class="hero" id="inicio"
         style="--hero-bg-image: url('{{ $homeSetting && $homeSetting->hero_image ? asset('storage/' . $homeSetting->hero_image) : asset('imagenes/registro_fondo3.png') }}');">
@@ -93,10 +90,9 @@
             @php $promo = $homePromociones->first(); @endphp
 
             <div class="promo-box" data-reveal>
-                <div class="promo-image">
-                    <img src="{{ $promo->image ? asset('storage/' . $promo->image) : asset('imagenes/servicio_default.png') }}"
-                        alt="{{ $promo->title }}">
-                </div>
+            <div class="promo-image"
+            style="background-image: url('{{ $promo->image ? asset('storage/' . $promo->image) : asset('imagenes/servicio_default.png') }}')">
+            </div>
 
                 <div class="promo-info">
                     <span class="promo-badge">DESCUENTO EN PROMOCION</span>
@@ -336,6 +332,55 @@
                     observer.observe(item);
                 });
             }
+
+            // ===== NAV ACTIVO POR SECCION (HOME) =====
+            const sectionLinks = Array.from(document.querySelectorAll('.public-navbar nav a[data-section]'));
+            if (sectionLinks.length) {
+                const sectionMap = new Map();
+                sectionLinks.forEach((link) => {
+                    const id = link.dataset.section;
+                    const el = id ? document.getElementById(id) : null;
+                    if (el) sectionMap.set(id, el);
+                });
+
+                const setActiveNav = (id) => {
+                    sectionLinks.forEach((link) => {
+                        link.classList.toggle('active', link.dataset.section === id);
+                    });
+                };
+
+                const currentHash = (window.location.hash || '').replace('#', '');
+                if (currentHash && sectionMap.has(currentHash)) {
+                    setActiveNav(currentHash);
+                } else {
+                    setActiveNav('inicio');
+                }
+
+                sectionLinks.forEach((link) => {
+                    link.addEventListener('click', () => {
+                        const id = link.dataset.section;
+                        if (id) setActiveNav(id);
+                    });
+                });
+
+                const sectionObserver = new IntersectionObserver((entries) => {
+                    let topVisible = null;
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) return;
+                        if (!topVisible || entry.intersectionRatio > topVisible.intersectionRatio) {
+                            topVisible = entry;
+                        }
+                    });
+                    if (topVisible?.target?.id) {
+                        setActiveNav(topVisible.target.id);
+                    }
+                }, {
+                    threshold: [0.2, 0.5, 0.75],
+                    rootMargin: '-20% 0px -55% 0px'
+                });
+
+                sectionMap.forEach((el) => sectionObserver.observe(el));
+            }
         });
 
         // ===== MODAL SERVICIO =====
@@ -377,7 +422,4 @@
             }
         });
     </script>
-
-
-
 @endsection

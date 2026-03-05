@@ -18,13 +18,25 @@ class Cita extends Model
         'end_time',
         'status',
         'receipt',
+        'payment_deadline',
+        'payment_attempts',
         'notes',
+        'service_price',
+        'deposit_amount',
+        'final_payment',
+        'total_paid',
     ];
 
     protected $casts = [
         'date' => 'date',
         'start_time' => 'datetime:H:i',
         'end_time' => 'datetime:H:i',
+        'payment_deadline' => 'datetime',
+        'payment_attempts' => 'integer',
+        'service_price' => 'decimal:2',
+        'deposit_amount' => 'decimal:2',
+        'final_payment' => 'decimal:2',
+        'total_paid' => 'decimal:2',
     ];
 
     public function client()

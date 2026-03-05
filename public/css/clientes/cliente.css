@@ -213,7 +213,7 @@ header {
 }
 
 
-/* Modal de confirmaciÃ³n de agendar cita */
+/* Modal de confirmación de agendar cita */
 
 .modal-confirm-overlay {
     display: none;
@@ -948,4 +948,372 @@ input[type="date"] {
     margin-top: 15px;
 }
 
+/* ===== Agendar Cita (nuevo layout) ===== */
+body.cliente-citas-create-page .booking-shell {
+    background: linear-gradient(170deg, rgba(35, 19, 12, 0.92), rgba(20, 10, 7, 0.9));
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    border-radius: 18px;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.38);
+    max-width: 1280px;
+    margin: 0 auto;
+}
 
+body.cliente-citas-create-page .booking-head {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+body.cliente-citas-create-page .booking-head h2 {
+    margin: 0;
+    font-size: clamp(28px, 2.5vw, 42px);
+    color: #fff3e1;
+}
+
+body.cliente-citas-create-page .booking-head p {
+    margin: 8px auto 0;
+    max-width: 700px;
+    color: rgba(255, 232, 209, 0.72);
+    font-size: 14px;
+}
+
+body.cliente-citas-create-page .booking-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(340px, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+body.cliente-citas-create-page .booking-left {
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+}
+
+body.cliente-citas-create-page .booking-left .field {
+    max-width: none;
+}
+
+body.cliente-citas-create-page .booking-grid .anticipo-field {
+    grid-column: auto;
+    align-self: start;
+}
+
+body.cliente-citas-create-page .booking-left label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #fff0dc;
+    margin-top: 0;
+    font-size: clamp(16px, 1.5vw, 28px);
+}
+
+body.cliente-citas-create-page .step-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(226, 104, 21, 0.24);
+    color: #e47f2f;
+    font-size: 10px;
+    border: 1px solid rgba(226, 104, 21, 0.46);
+}
+
+body.cliente-citas-create-page .form-grid select,
+body.cliente-citas-create-page .form-grid input:not([type="checkbox"]) {
+    max-width: none;
+    margin-top: 6px;
+    border: 1px solid rgba(252, 204, 124, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff2df;
+    border-radius: 12px;
+    height: 52px;
+    font-size: 18px;
+    padding: 0 18px;
+}
+
+/* Contraste correcto en el desplegable nativo del servicio */
+body.cliente-citas-create-page select option {
+    color: #1f1712;
+    background: #ffffff;
+}
+
+body.cliente-citas-create-page select option:checked {
+    color: #1f1712;
+    background: #f3dfc7;
+}
+
+/* Evita que los estilos de campos principales deformen controles internos de Flatpickr */
+body.cliente-citas-create-page .flatpickr-calendar input,
+body.cliente-citas-create-page .flatpickr-calendar select {
+    height: auto !important;
+    min-height: 0 !important;
+    font-size: 14px !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+/* El calendario inline no debe flotar sobre otros bloques */
+body.cliente-citas-create-page .date-field {
+    grid-row: auto;
+}
+
+body.cliente-citas-create-page .date-field .flatpickr-calendar {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: 100%;
+    max-width: 340px;
+    margin: 10px auto 0;
+    z-index: 1;
+}
+
+body.cliente-citas-create-page .flatpickr-calendar {
+    padding: 10px 8px;
+}
+
+body.cliente-citas-create-page .flatpickr-months .flatpickr-month {
+    height: 34px;
+}
+
+body.cliente-citas-create-page .date-field .flatpickr-months {
+    position: relative;
+}
+
+body.cliente-citas-create-page .date-field .flatpickr-prev-month,
+body.cliente-citas-create-page .date-field .flatpickr-next-month {
+    top: 6px;
+}
+
+body.cliente-citas-create-page .date-field .flatpickr-prev-month {
+    left: 6px;
+}
+
+body.cliente-citas-create-page .date-field .flatpickr-next-month {
+    right: 6px;
+}
+
+body.cliente-citas-create-page .flatpickr-weekday {
+    font-size: 11px !important;
+}
+
+body.cliente-citas-create-page .flatpickr-day {
+    max-width: 42px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 13px;
+}
+
+body.cliente-citas-create-page .sr-only-select {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    height: 0 !important;
+    width: 0 !important;
+}
+
+body.cliente-citas-create-page .horario-chips {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 6px;
+    max-width: 520px;
+}
+
+body.cliente-citas-create-page .hora-chip {
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffe8cb;
+    border-radius: 12px;
+    height: 46px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+body.cliente-citas-create-page .hora-chip.active {
+    background: linear-gradient(135deg, #db5f10, #bf4d08);
+    border-color: rgba(219, 95, 16, 0.8);
+    color: #fff8f0;
+}
+
+body.cliente-citas-create-page .horario-empty {
+    grid-column: 1 / -1;
+    color: rgba(255, 232, 209, 0.68);
+    font-size: 13px;
+    padding: 10px 0;
+}
+
+body.cliente-citas-create-page .booking-summary {
+    background: linear-gradient(165deg, rgba(54, 37, 28, 0.92), rgba(39, 26, 20, 0.92));
+    border: 1px solid rgba(252, 204, 124, 0.18);
+    border-radius: 16px;
+    padding: 16px;
+    max-width: none;
+    margin-top: 26px;
+}
+
+body.cliente-citas-create-page .booking-summary h4 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff3e1;
+    font-size: 24px;
+}
+
+body.cliente-citas-create-page .summary-pill {
+    font-size: 12px;
+    color: #eb8f2f;
+    border: 1px solid rgba(235, 143, 47, 0.42);
+    border-radius: 999px;
+    padding: 4px 8px;
+    text-transform: uppercase;
+}
+
+body.cliente-citas-create-page .summary-item {
+    margin-top: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+body.cliente-citas-create-page .summary-item span {
+    display: block;
+    color: rgba(255, 232, 209, 0.62);
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+body.cliente-citas-create-page .summary-item strong {
+    color: #fff3e1;
+    font-size: 17px;
+}
+
+body.cliente-citas-create-page .summary-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.12);
+    margin: 14px 0;
+}
+
+body.cliente-citas-create-page .summary-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    color: #ffe8cb;
+}
+
+body.cliente-citas-create-page .summary-amount strong {
+    color: #f19b3f;
+    font-size: 34px;
+}
+
+body.cliente-citas-create-page .summary-bank {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(226, 104, 21, 0.12);
+    border: 1px solid rgba(226, 104, 21, 0.22);
+}
+
+body.cliente-citas-create-page .summary-bank p {
+    margin: 4px 0;
+    color: #f8ecdc;
+    font-size: 16px;
+}
+
+body.cliente-citas-create-page .summary-bank strong {
+    color: #ffd29c;
+}
+
+body.cliente-citas-create-page .privacy-field {
+    margin-top: 8px;
+}
+
+body.cliente-citas-create-page .center {
+    margin-top: 8px;
+}
+
+body.cliente-citas-create-page .booking-summary .summary-privacy {
+    margin-top: 12px;
+    max-width: none;
+}
+
+body.cliente-citas-create-page .booking-summary .summary-privacy .privacy-label {
+    align-items: flex-start;
+    gap: 8px;
+}
+
+body.cliente-citas-create-page .booking-summary .summary-privacy .privacy-text {
+    font-size: 16px;
+}
+
+body.cliente-citas-create-page .booking-summary .summary-privacy .error-text {
+    margin-top: 8px;
+    color: #ffb4b4;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+body.cliente-citas-create-page .booking-summary .summary-submit {
+    margin-top: 8px;
+    max-width: none;
+}
+
+body.cliente-citas-create-page .booking-summary .submit-btn {
+    width: 100%;
+    max-width: none;
+    margin-top: 0;
+}
+
+body.cliente-citas-create-page .submit-btn {
+    max-width: none;
+    height: 50px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #db5f10, #bf4d08);
+    color: #fff9f1;
+    letter-spacing: 0.04em;
+    font-size: 15px;
+}
+
+@media (max-width: 980px) {
+    body.cliente-citas-create-page .container {
+        padding: 18px;
+    }
+
+    body.cliente-citas-create-page .card.booking-shell {
+        padding: 20px;
+    }
+
+    body.cliente-citas-create-page .booking-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.cliente-citas-create-page .booking-left label {
+        font-size: 20px;
+    }
+
+    body.cliente-citas-create-page .form-grid select,
+    body.cliente-citas-create-page .form-grid input:not([type="checkbox"]) {
+        font-size: 15px;
+        height: 46px;
+    }
+
+    body.cliente-citas-create-page .horario-chips {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.cliente-citas-create-page .booking-summary {
+        margin-top: 8px;
+    }
+}
+
+.submit-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    filter: grayscale(.3);
+}

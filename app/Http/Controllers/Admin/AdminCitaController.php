@@ -3,21 +3,44 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AppointmentDateTimeRequest;
 use App\Models\Cita;
 use App\Models\CitaEstado;
+use App\Models\Cliente;
 use App\Models\Empleado;
+use App\Models\Servicio;
+use App\Models\Usuario;
 use App\Notifications\CitaClienteNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Mail\AnticipoCanceladoPorRechazosMail;
+use App\Mail\PagoRechazadoMail;
+use App\Services\AppointmentAvailabilityService;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class AdminCitaController extends Controller
 {
+    public function __construct(private AppointmentAvailabilityService $availability) {}
+
     public function index()
     {
         $hoy = today();
 
+        // Cancelar citas vencidas automaticamente
+        Cita::where('status', 'pendiente_anticipo')
+            ->whereNotNull('payment_deadline')
+            ->where('payment_deadline', '<', now())
+            ->whereNull('receipt')
+            ->update([
+                'status' => 'cancelada',
+                'notes' => 'Cita cancelada automaticamente por no reenviar anticipo a tiempo.',
+                'receipt' => null,
+                'payment_deadline' => null,
+                'payment_attempts' => 0
+            ]);
         $citas = Cita::with(['client', 'service', 'employee'])
             ->withCount([
                 'estados as reagendas_count' => function ($query) {
@@ -44,6 +67,108 @@ class AdminCitaController extends Controller
         ];
 
         return view('admin.citas.index', compact('citas', 'empleados', 'stats'));
+    }
+
+    public function create()
+    {
+        $servicios = Servicio::where('active', 1)
+            ->whereHas('empleados', function ($q) {
+                $q->where('active', 1);
+            })
+            ->with(['promociones' => function ($query) {
+                $query->where('published', true)
+                    ->where('start_date', '<=', now()->toDateString())
+                    ->where('end_date', '>=', now()->toDateString());
+            }])
+            ->get();
+
+        $usuarios = Usuario::where('role_id', 2)
+            ->where('active', 1)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.citas.create', compact('servicios', 'usuarios'));
+    }
+
+    public function store(AppointmentDateTimeRequest $request)
+    {
+        $request->validate([
+            'usuario_id' => 'required|exists:users,id',
+            'servicio_id' => 'required|exists:services,id',
+            'anticipo_recibido' => 'required|accepted',
+            'anticipo_monto' => 'required|numeric|min:0.01',
+        ]);
+
+        $cliente = Cliente::where('user_id', $request->usuario_id)->first();
+
+        if (!$cliente) {
+            return back()->with('error', 'El usuario no es cliente')->withInput();
+        }
+
+        $servicio = Servicio::with(['empleados' => function ($q) {
+            $q->where('active', 1)->with('schedules');
+        }])->findOrFail($request->servicio_id);
+
+        $horaInicio = Carbon::parse($request->hora_inicio);
+        $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
+
+        $precioServicio = $servicio->precioConDescuento();
+        $anticipo = $request->anticipo_monto;
+
+        $totalPagado = $anticipo;
+
+        $status = $anticipo >= $precioServicio
+            ? 'completada'
+            : 'confirmada';
+
+        try {
+
+            DB::beginTransaction();
+
+            $empleadoAsignado = $this->availability->findAssignableEmployee(
+                $servicio,
+                Carbon::parse($request->fecha),
+                $horaInicio->format('H:i'),
+                $horaFin->format('H:i'),
+                true
+            );
+
+            if (!$empleadoAsignado) {
+                DB::rollBack();
+                return back()->with('error', 'No hay empleados disponibles')->withInput();
+            }
+
+            Cita::create([
+
+                'client_id' => $cliente->id,
+                'service_id' => $servicio->id,
+                'employee_id' => $empleadoAsignado->id,
+
+                'date' => $request->fecha,
+                'start_time' => $horaInicio->format('H:i'),
+                'end_time' => $horaFin->format('H:i'),
+
+                'service_price' => $servicio->price,
+                'deposit_amount' => $anticipo,
+                'total_paid' => $totalPagado,
+
+                'status' => $status,
+
+                'notes' => 'Anticipo recibido por administrador'
+
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->with('error', 'Error al crear cita')->withInput();
+        }
+
+        return redirect()
+            ->route('admin.citas.index')
+            ->with('success', 'Cita creada correctamente');
     }
 
     public function reporteDiario(Request $request)
@@ -116,7 +241,7 @@ class AdminCitaController extends Controller
 
         $statusResumen = $citas
             ->groupBy('status')
-            ->map(fn ($grupo) => $grupo->count())
+            ->map(fn($grupo) => $grupo->count())
             ->sortKeys();
 
         $pdf = Pdf::loadView('admin.citas.reporte-diario-pdf', [
@@ -176,10 +301,25 @@ class AdminCitaController extends Controller
             ->get()
             ->groupBy('fecha');
 
+        $ingresosPorDia = Cita::query()
+            ->join('services', 'appointments.service_id', '=', 'services.id')
+            ->selectRaw('DATE(appointments.date) as fecha, SUM(services.price) as total')
+            ->whereBetween('appointments.date', [$inicio->toDateString(), $fin->toDateString()])
+            ->whereIn('appointments.status', ['confirmada', 'completada'])
+            ->groupBy(DB::raw('DATE(appointments.date)'))
+            ->pluck('total', 'fecha');
+
         $labels = [];
         $valores = [];
+        $valoresCanceladas = [];
+        $valoresConfirmadas = [];
+        $valoresCompletadas = [];
+        $valoresNoAsistio = [];
+        $valoresPendientes = [];
         $detalleDiario = [];
         $acumulado = 0;
+        $ingresosMes = 0.0;
+
         for ($dia = 1; $dia <= $inicio->daysInMonth; $dia++) {
             $fecha = $inicio->copy()->day($dia)->toDateString();
             $totalDia = (int) ($conteoPorDia[$fecha] ?? 0);
@@ -188,17 +328,27 @@ class AdminCitaController extends Controller
             $confirmadasDia = (int) ($registrosDia->firstWhere('status', 'confirmada')?->total ?? 0);
             $completadasDia = (int) ($registrosDia->firstWhere('status', 'completada')?->total ?? 0);
             $noAsistioDia = (int) ($registrosDia->firstWhere('status', 'no_asistio')?->total ?? 0);
+            $pendientesDia = (int) ($registrosDia->firstWhere('status', 'pendiente_anticipo')?->total ?? 0);
+            $ingresoDia = (float) ($ingresosPorDia[$fecha] ?? 0);
             $acumulado += $totalDia;
+            $ingresosMes += $ingresoDia;
 
             $labels[] = str_pad((string) $dia, 2, '0', STR_PAD_LEFT);
             $valores[] = $totalDia;
+            $valoresCanceladas[] = $canceladasDia;
+            $valoresConfirmadas[] = $confirmadasDia;
+            $valoresCompletadas[] = $completadasDia;
+            $valoresNoAsistio[] = $noAsistioDia;
+            $valoresPendientes[] = $pendientesDia;
             $detalleDiario[] = [
                 'dia' => str_pad((string) $dia, 2, '0', STR_PAD_LEFT),
                 'citas' => $totalDia,
                 'canceladas' => $canceladasDia,
                 'confirmadas' => $confirmadasDia,
                 'completadas' => $completadasDia,
+                'pendientes' => $pendientesDia,
                 'no_asistio' => $noAsistioDia,
+                'ingresos' => round($ingresoDia, 2),
                 'totales' => $acumulado,
             ];
         }
@@ -213,6 +363,9 @@ class AdminCitaController extends Controller
         $promedioDiario = $inicio->daysInMonth > 0
             ? round($totalCitas / $inicio->daysInMonth, 2)
             : 0;
+        $promedioIngresosDiario = $inicio->daysInMonth > 0
+            ? round($ingresosMes / $inicio->daysInMonth, 2)
+            : 0;
 
         $maxCitas = max($valores ?: [0]);
         $indicePico = array_search($maxCitas, $valores, true);
@@ -223,13 +376,21 @@ class AdminCitaController extends Controller
             'inicio' => $inicio,
             'labels' => $labels,
             'valores' => $valores,
+            'valoresCanceladas' => $valoresCanceladas,
+            'valoresConfirmadas' => $valoresConfirmadas,
+            'valoresCompletadas' => $valoresCompletadas,
+            'valoresNoAsistio' => $valoresNoAsistio,
+            'valoresPendientes' => $valoresPendientes,
             'maxCitas' => $maxCitas,
             'totalCitas' => $totalCitas,
             'totalCanceladas' => (int) ($statusResumen['cancelada'] ?? 0),
             'totalConfirmadas' => (int) ($statusResumen['confirmada'] ?? 0),
             'totalCompletadas' => (int) ($statusResumen['completada'] ?? 0),
+            'totalPendientes' => (int) ($statusResumen['pendiente_anticipo'] ?? 0),
             'totalNoAsistio' => (int) ($statusResumen['no_asistio'] ?? 0),
             'promedioDiario' => $promedioDiario,
+            'ingresosMes' => round($ingresosMes, 2),
+            'promedioIngresosDiario' => $promedioIngresosDiario,
             'diaPico' => $diaPico,
             'statusResumen' => $statusResumen,
             'detalleDiario' => $detalleDiario,
@@ -250,6 +411,19 @@ class AdminCitaController extends Controller
             'user_id' => auth()->id(),
             'change_date' => now()
         ]);
+
+        $cita->loadMissing(['client.user', 'service', 'employee']);
+
+        $clienteUsuario = $cita->client?->user;
+
+        if ($clienteUsuario) {
+            $clienteUsuario->notify(
+                new CitaClienteNotification(
+                    $cita,
+                    CitaClienteNotification::CONFIRMADA_CON_EMPLEADO
+                )
+            );
+        }
 
         return back()->with('success', 'Cita confirmada correctamente');
     }
@@ -291,7 +465,7 @@ class AdminCitaController extends Controller
         return back()->with('success', 'Cita cancelada correctamente');
     }
 
-    public function reagendar(Request $request, Cita $cita)
+    public function reagendar(AppointmentDateTimeRequest $request, Cita $cita)
     {
         if ($cita->status !== 'confirmada') {
             return back()->with('error', 'Solo se pueden reagendar citas confirmadas.');
@@ -299,43 +473,33 @@ class AdminCitaController extends Controller
 
         $reagendas = $cita->estados()->where('status', 'reagendada')->count();
         if ($reagendas >= 2) {
-            return back()->with('error', 'Esta cita ya alcanzó el máximo de 2 reagendas.');
+            return back()->with('error', 'Esta cita ya alcanzo el maximo de 2 reagendas.');
         }
-
-        $request->validate([
-            'fecha' => [
-                'required',
-                'date',
-                'after_or_equal:today',
-                function ($attribute, $value, $fail) {
-                    if (Carbon::parse($value)->isSunday()) {
-                        $fail('No se puede reagendar en domingo.');
-                    }
-                },
-            ],
-            'hora_inicio' => 'required|date_format:H:i',
-            'observaciones' => 'nullable|string|max:500',
-        ]);
 
         if (!$cita->service) {
             return back()->with('error', 'La cita no tiene servicio asociado.');
         }
 
+        $cita->service->load([
+            'empleados' => function ($q) {
+                $q->where('active', 1)->with('schedules');
+            },
+        ]);
+
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($cita->service->duration_minutes);
 
-        $citaSolapada = Cita::query()
-            ->whereDate('date', $request->fecha)
-            ->whereIn('status', ['confirmada', 'pendiente_anticipo'])
-            ->where('id', '!=', $cita->id)
-            ->where(function ($query) use ($horaInicio, $horaFin) {
-                $query->where('start_time', '<', $horaFin->format('H:i'))
-                    ->where('end_time', '>', $horaInicio->format('H:i'));
-            })
-            ->exists();
+        $empleadoAsignado = $this->availability->findAssignableEmployee(
+            $cita->service,
+            Carbon::parse($request->fecha),
+            $horaInicio->format('H:i'),
+            $horaFin->format('H:i'),
+            false,
+            $cita->id
+        );
 
-        if ($citaSolapada) {
-            return back()->with('error', 'El horario nuevo se cruza con otra cita.');
+        if (!$empleadoAsignado) {
+            return back()->with('error', 'No hay empleados disponibles para ese nuevo horario.');
         }
 
         $notaReagendada = trim((string) $request->observaciones);
@@ -350,6 +514,7 @@ class AdminCitaController extends Controller
 
         $cita->update([
             'date' => $request->fecha,
+            'employee_id' => $empleadoAsignado->id,
             'start_time' => $horaInicio->format('H:i'),
             'end_time' => $horaFin->format('H:i'),
             'notes' => $notaFinal,
@@ -365,26 +530,21 @@ class AdminCitaController extends Controller
         return back()->with('success', 'Cita reagendada correctamente.');
     }
 
-    public function completar(Cita $cita)
+    public function completar(Request $request, Cita $cita)
     {
-        if ($cita->status !== 'confirmada') {
-            return back()->with('error', 'Solo se pueden completar citas confirmadas.');
-        }
+        $request->validate([
+            'pago_final' => 'required|numeric|min:0'
+        ]);
 
-        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
-        $finCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('end_time'));
-        if (Carbon::now()->lessThan($finCita)) {
-            return back()->with('error', 'La cita solo puede marcarse como completada después de la hora de fin.');
-        }
+        $pagoFinal = (float) $request->pago_final;
+        $deposito = (float) ($cita->deposit_amount ?? 0);
 
-        $notaBase = trim((string) ($cita->notes ?? ''));
-        $notaFinal = $notaBase === ''
-            ? 'Marcada como completada por administrador.'
-            : $notaBase . ' | Marcada como completada por administrador.';
+        $totalPagado = $deposito + $pagoFinal;
 
         $cita->update([
-            'status' => 'completada',
-            'notes' => $notaFinal,
+            'final_payment' => $pagoFinal,
+            'total_paid' => $totalPagado,
+            'status' => 'completada'
         ]);
 
         CitaEstado::create([
@@ -400,19 +560,19 @@ class AdminCitaController extends Controller
     public function marcarNoAsistio(Cita $cita)
     {
         if ($cita->status !== 'confirmada') {
-            return back()->with('error', 'Solo se puede marcar no asistió en citas confirmadas.');
+            return back()->with('error', 'Solo se puede marcar no asistio en citas confirmadas.');
         }
 
         $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
         $inicioCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
         if (Carbon::now()->lessThan($inicioCita)) {
-            return back()->with('error', 'Solo se puede marcar no asistió a partir de la hora de inicio.');
+            return back()->with('error', 'Solo se puede marcar no asistio a partir de la hora de inicio.');
         }
 
         $notaBase = trim((string) ($cita->notes ?? ''));
         $notaFinal = $notaBase === ''
-            ? 'Marcada como no asistió por administrador.'
-            : $notaBase . ' | Marcada como no asistió por administrador.';
+            ? 'Marcada como no asistio por administrador.'
+            : $notaBase . ' | Marcada como no asistio por administrador.';
 
         $cita->update([
             'status' => 'no_asistio',
@@ -426,9 +586,71 @@ class AdminCitaController extends Controller
             'change_date' => now(),
         ]);
 
-        return back()->with('success', 'Cita marcada como no asistió.');
+        return back()->with('success', 'Cita marcada como no asistio.');
     }
 
+    public function rechazarPago(Cita $cita)
+    {
+        if ($cita->status !== 'pendiente_anticipo') {
+            return back()->with('error', 'Solo se puede rechazar anticipo en citas pendientes.');
+        }
+
+        if (!$cita->receipt) {
+            return back()->with('error', 'No hay comprobante para rechazar.');
+        }
+
+        $intentos = ($cita->payment_attempts ?? 0) + 1;
+
+        if ($cita->receipt && Storage::exists('public/' . $cita->receipt)) {
+            Storage::delete('public/' . $cita->receipt);
+        }
+
+        if ($intentos >= 2) {
+            $cita->update([
+                'status' => 'cancelada',
+                'notes' => 'Cita cancelada por 2 intentos fallidos de anticipo.',
+                'receipt' => null,
+                'payment_deadline' => null,
+                'payment_attempts' => $intentos,
+            ]);
+
+            CitaEstado::create([
+                'appointment_id' => $cita->id,
+                'status' => 'cancelada',
+                'user_id' => auth()->id(),
+                'change_date' => now(),
+            ]);
+
+            $email = $cita->client?->user?->email;
+            if ($email) {
+                Mail::to($email)->send(new AnticipoCanceladoPorRechazosMail($cita));
+            }
+
+            return back()->with('error', 'La cita fue cancelada por 2 intentos fallidos.');
+        }
+
+        $cita->update([
+            'status' => 'pendiente_anticipo',
+            'notes' => 'Anticipo rechazado por administrador. Tiene 15 minutos para reenviar comprobante (ultimo intento).',
+            'receipt' => null,
+            'payment_deadline' => now()->addMinutes(15),
+            'payment_attempts' => $intentos,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'anticipo_rechazado',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        $email = $cita->client?->user?->email;
+        if ($email) {
+            Mail::to($email)->send(new PagoRechazadoMail($cita));
+        }
+
+        return back()->with('success', 'Anticipo rechazado. Cliente notificado.');
+    }
 
     public function asignarEmpleado(Request $request, Cita $cita)
     {

@@ -3,19 +3,28 @@
 namespace App\Http\Controllers\Recepcionista;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AppointmentDateTimeRequest;
 use App\Models\Cita;
 use App\Models\CitaEstado;
 use App\Models\Cliente;
+use App\Models\RecepcionistaReminder;
 use App\Models\Servicio;
 use App\Models\Usuario;
+use App\Services\AppointmentAvailabilityService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class CitaController extends Controller
 {
+    public function __construct(private AppointmentAvailabilityService $availability)
+    {
+    }
+
     public function dashboard()
     {
         $today = now()->toDateString();
+        $horaActual = now()->format('H:i');
 
         $citasHoy = Cita::whereDate('date', $today)->count();
         $pendientes = Cita::whereDate('date', $today)
@@ -28,9 +37,16 @@ class CitaController extends Controller
             ->where('status', 'cancelada')
             ->count();
 
-        $citasRecientes = Cita::with(['client.user', 'service'])
-            ->orderByDesc('date')
-            ->orderByDesc('start_time')
+      $citasRecientes = Cita::with(['client.user', 'service'])
+            ->whereDate('date', '>=', now()->toDateString())
+            ->orderBy('date')        // más próxima primero
+            ->orderBy('start_time')
+            ->limit(3)
+            ->get();
+
+        $recordatorios = RecepcionistaReminder::query()
+            ->where('is_active', true)
+            ->orderByDesc('created_at')
             ->limit(3)
             ->get();
 
@@ -39,13 +55,17 @@ class CitaController extends Controller
             'pendientes',
             'confirmadas',
             'canceladas',
-            'citasRecientes'
+            'citasRecientes',
+            'recordatorios'
         ));
     }
 
     public function create()
     {
         $servicios = Servicio::where('active', 1)
+            ->whereHas('empleados', function ($q) {
+                $q->where('active', 1);
+            })
             ->with(['promociones' => function($query) {
                 $query->where('published', true)
                     ->where('start_date', '<=', now()->toDateString())
@@ -61,24 +81,18 @@ class CitaController extends Controller
         return view('recepcionista.citas.create', compact('servicios', 'usuarios'));
     }
 
-    public function store(Request $request)
+    public function store(AppointmentDateTimeRequest $request)
     {
         $request->validate([
             'usuario_id' => 'required|exists:users,id',
             'servicio_id' => 'required|exists:services,id',
-            'fecha' => [
-                'required',
-                'date',
-                'after_or_equal:today',
-                function ($attribute, $value, $fail) {
-                    $fecha = Carbon::parse($value);
-                    if ($fecha->isSunday()) {
-                        $fail('Los domingos no se atiende. Por favor selecciona otro día.');
-                    }
-                },
-            ],
-            'hora_inicio' => 'required|date_format:H:i',
-            'anticipo_monto' => 'nullable|numeric|min:0',
+            'anticipo_recibido' => 'required|accepted',
+            'anticipo_monto' => 'required|numeric|min:0.01',
+        ], [
+            'anticipo_recibido.required' => 'Debes confirmar que se recibio anticipo en recepcion.',
+            'anticipo_recibido.accepted' => 'Debes confirmar que se recibio anticipo en recepcion.',
+            'anticipo_monto.required' => 'Debes capturar el monto del anticipo.',
+            'anticipo_monto.min' => 'El monto del anticipo debe ser mayor a 0.',
         ]);
 
         $cliente = Cliente::where('user_id', $request->usuario_id)->first();
@@ -87,24 +101,67 @@ class CitaController extends Controller
             return back()->with('error', 'El usuario no es cliente');
         }
 
-        $servicio = Servicio::findOrFail($request->servicio_id);
+        $servicio = Servicio::with(['empleados' => function ($q) {
+            $q->where('active', 1)->with('schedules');
+        }])->findOrFail($request->servicio_id);
+
+        if (!$servicio->active) {
+            return back()->with('error', 'Servicio no disponible')->withInput();
+        }
+
+        if ($servicio->empleados->isEmpty()) {
+            return back()->with('error', 'No hay empleados disponibles para este servicio')->withInput();
+        }
 
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
 
-        $anticipo = $request->filled('anticipo_monto');
+        $driver = DB::getDriverName();
+        $lockName = 'citas:' . $request->fecha;
 
-        Cita::create([
-            'client_id' => $cliente->id,
-            'service_id' => $servicio->id,
-            'date' => $request->fecha,
-            'start_time' => $horaInicio->format('H:i'),
-            'end_time' => $horaFin->format('H:i'),
-            'status' => $anticipo ? 'confirmada' : 'pendiente_anticipo',
-            'notes' => $anticipo
-                ? 'Anticipo recibido en recepción: $' . number_format($request->anticipo_monto, 2)
-                : 'Cita creada por recepción, pendiente de anticipo',
-        ]);
+        if ($driver === 'mysql') {
+            $lock = DB::selectOne('SELECT GET_LOCK(?, 10) AS l', [$lockName]);
+            if ((int) ($lock->l ?? 0) !== 1) {
+                return back()->with('error', 'Intenta nuevamente')->withInput();
+            }
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $empleadoAsignado = $this->availability->findAssignableEmployee(
+                $servicio,
+                Carbon::parse($request->fecha),
+                $horaInicio->format('H:i'),
+                $horaFin->format('H:i'),
+                true
+            );
+
+            if (!$empleadoAsignado) {
+                DB::rollBack();
+                return back()->with('error', 'Ya no hay empleados disponibles en ese horario.')->withInput();
+            }
+
+            Cita::create([
+                'client_id' => $cliente->id,
+                'service_id' => $servicio->id,
+                'employee_id' => $empleadoAsignado->id,
+                'date' => $request->fecha,
+                'start_time' => $horaInicio->format('H:i'),
+                'end_time' => $horaFin->format('H:i'),
+                'status' => 'confirmada',
+                'notes' => 'Anticipo recibido en recepcion: $' . number_format($request->anticipo_monto, 2),
+            ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Ocurrio un error al agendar la cita.')->withInput();
+        } finally {
+            if ($driver === 'mysql') {
+                DB::selectOne('SELECT RELEASE_LOCK(?)', [$lockName]);
+            }
+        }
 
         return redirect()
             ->route('recepcionista.dashboard')
@@ -113,20 +170,24 @@ class CitaController extends Controller
 
     public function index()
     {
+        $inicioSemana = now()->startOfWeek(Carbon::MONDAY)->toDateString();
+        $finSemana = now()->endOfWeek(Carbon::SUNDAY)->toDateString();
+
         $citas = Cita::with(['client.user', 'service'])
             ->withCount([
                 'estados as reagendas_count' => function ($query) {
                     $query->where('status', 'reagendada');
                 },
             ])
-            ->whereDate('date', now())
-            ->orderBy('start_time')
+            ->whereBetween('date', [$inicioSemana, $finSemana])
+            ->orderByDesc('date')
+            ->orderByDesc('start_time')
             ->get();
 
         return view('recepcionista.citas.index', compact('citas'));
     }
 
-    public function reagendar(Request $request, Cita $cita)
+    public function reagendar(AppointmentDateTimeRequest $request, Cita $cita)
     {
         if (!in_array($cita->status, ['confirmada', 'pendiente_anticipo'], true)) {
             return back()->with('error', 'Solo se pueden reagendar citas confirmadas o pendientes de anticipo.');
@@ -134,44 +195,33 @@ class CitaController extends Controller
 
         $reagendas = $cita->estados()->where('status', 'reagendada')->count();
         if ($reagendas >= 2) {
-            return back()->with('error', 'Esta cita ya alcanzó el máximo de 2 reagendas.');
+            return back()->with('error', 'Esta cita ya alcanzo el maximo de 2 reagendas.');
         }
-
-        $request->validate([
-            'fecha' => [
-                'required',
-                'date',
-                'after_or_equal:today',
-                function ($attribute, $value, $fail) {
-                    $fecha = Carbon::parse($value);
-                    if ($fecha->isSunday()) {
-                        $fail('Los domingos no se atiende. Por favor selecciona otro día.');
-                    }
-                },
-            ],
-            'hora_inicio' => 'required|date_format:H:i',
-            'observaciones' => 'nullable|string|max:500',
-        ]);
 
         if (!$cita->service) {
             return back()->with('error', 'La cita no tiene servicio asociado.');
         }
 
+        $cita->service->load([
+            'empleados' => function ($q) {
+                $q->where('active', 1)->with('schedules');
+            },
+        ]);
+
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($cita->service->duration_minutes);
 
-        $citaSolapada = Cita::query()
-            ->whereDate('date', $request->fecha)
-            ->whereIn('status', ['confirmada', 'pendiente_anticipo'])
-            ->where('id', '!=', $cita->id)
-            ->where(function ($query) use ($horaInicio, $horaFin) {
-                $query->where('start_time', '<', $horaFin->format('H:i'))
-                    ->where('end_time', '>', $horaInicio->format('H:i'));
-            })
-            ->exists();
+        $empleadoAsignado = $this->availability->findAssignableEmployee(
+            $cita->service,
+            Carbon::parse($request->fecha),
+            $horaInicio->format('H:i'),
+            $horaFin->format('H:i'),
+            false,
+            $cita->id
+        );
 
-        if ($citaSolapada) {
-            return back()->with('error', 'El horario nuevo se cruza con otra cita.');
+        if (!$empleadoAsignado) {
+            return back()->with('error', 'No hay empleados disponibles para ese nuevo horario.');
         }
 
         $notaReagendada = trim((string) $request->observaciones);
@@ -186,6 +236,7 @@ class CitaController extends Controller
 
         $cita->update([
             'date' => $request->fecha,
+            'employee_id' => $empleadoAsignado->id,
             'start_time' => $horaInicio->format('H:i'),
             'end_time' => $horaFin->format('H:i'),
             'notes' => $notaFinal,
@@ -200,4 +251,5 @@ class CitaController extends Controller
 
         return back()->with('success', 'Cita reagendada correctamente.');
     }
+
 }

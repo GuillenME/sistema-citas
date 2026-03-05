@@ -87,6 +87,10 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::get('/citas', [AdminCitaController::class, 'index'])
             ->name('citas.index');
+        Route::get('/citas/create', [AdminCitaController::class, 'create'])
+            ->name('citas.create');
+        Route::post('/citas', [AdminCitaController::class, 'store'])
+            ->name('citas.store');
 
         Route::get('/citas/reporte-diario', [AdminCitaController::class, 'reporteDiario'])
             ->name('citas.reporte-diario');
@@ -189,6 +193,8 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::put('/home-settings', [HomeSettingController::class, 'update'])
             ->name('home_settings.update');
+            Route::post('/citas/{cita}/rechazar', [AdminCitaController::class, 'rechazarPago'])
+            ->name('citas.rechazar');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */
@@ -232,11 +238,16 @@ Route::middleware(['auth', 'rol:2'])
         // (opcional, puede quedarse)
         Route::get('/citas/bloques', [CitaController::class, 'bloquesDisponibles'])
             ->name('citas.bloques');
+        Route::get('/citas/servicios-disponibles', [CitaController::class, 'serviciosDisponibles'])
+            ->name('citas.serviciosDisponibles');
         Route::post('/citas/{cita}/comprobante', [CitaController::class, 'subirComprobante'])
             ->name('citas.comprobante');
 
         Route::post('/citas/{cita}/cancelar', [CitaController::class, 'cancelar'])
             ->name('citas.cancelar');
+
+        Route::post('/citas/{cita}/reagendar', [CitaController::class, 'reagendar'])
+            ->name('citas.reagendar');
 
         Route::post('/citas', [CitaController::class, 'store'])
             ->name('citas.store');

@@ -17,7 +17,7 @@
     <section class="hero">
         <div class="hero-copy">
             <p class="hero-tag">Recepcionista</p>
-            <h2>Bienvenida a tu panel de control</h2>
+            <h2>Bienvenido a tu panel de control</h2>
             <p class="hero-text">
                 Organiza tus citas y mantén el flujo del día bajo control.
             </p>
@@ -33,7 +33,6 @@
                 </a>
             </div>
         </div>
-
         <div class="hero-visual">
             <div class="summary-card">
                 <h3>Resumen rápido</h3>
@@ -59,7 +58,6 @@
             </div>
         </div>
     </section>
-
     <section class="secondary">
         <div class="secondary-card">
             <h3>📌 Recomendaciones diarias</h3>
@@ -71,7 +69,7 @@
             </ul>
         </div>
         <div class="secondary-card recent-card">
-            <h3>Citas mas recientes</h3>
+            <h3>Proximas citas de hoy</h3>
             <div class="recent-list">
                 @forelse ($citasRecientes as $cita)
                     @php
@@ -95,22 +93,25 @@
                             <p class="recent-service">{{ $cita->service->name ?? 'Servicio' }}</p>
                         </div>
                         <div class="recent-meta">
-                            <p class="recent-time">{{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }}</p>
+                            <p class="recent-time">{{ optional($cita->date)->format('d/m/Y') }} {{ \Carbon\Carbon::parse($cita->start_time)->format('h:i A') }}</p>
                             <p class="recent-status recent-status--{{ $estadoClase }}">{{ $estadoTexto }}</p>
                         </div>
                     </article>
                 @empty
-                    <p class="recent-empty">Aun no hay citas registradas.</p>
+                    <p class="recent-empty">No hay mas citas para hoy.</p>
                 @endforelse
             </div>
         </div>
         <div class="secondary-card">
             <h3>📌 Recordatorio</h3>
-            <p>Mantén actualizada la agenda y avisa a clientes ante cambios.</p>
+            @forelse ($recordatorios as $recordatorio)
+                <p style="margin-bottom: 8px;">• {{ $recordatorio->message }}</p>
+            @empty
+                <p>Mantén actualizada la agenda y avisa a clientes ante cambios.</p>
+            @endforelse
         </div>
     </section>
 </main>
-
 <!-- MODAL LOGOUT -->
 <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
     <div class="modal-content">
@@ -122,7 +123,6 @@
         </div>
     </div>
 </div>
-
 <script>
     function mostrarModalLogout() {
         document.getElementById('modalLogout').classList.add('active');
@@ -136,6 +136,5 @@
         document.getElementById('logoutForm').submit();
     }
 </script>
-
 </body>
 </html>

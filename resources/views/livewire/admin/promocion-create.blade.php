@@ -54,22 +54,56 @@
             @enderror
         </div>
         <div class="form-group">
-            <label>Servicios</label>
-            <select wire:model="servicios" multiple class="promo-servicios-select">
-                @foreach ($listaServicios as $servicio)
-                    <option value="{{ $servicio->id }}">
-                        {{ $servicio->name }}
-                    </option>
-                @endforeach
-            </select>
+            @php
+                $selectedIds = collect($servicios)->map(fn ($id) => (int) $id)->all();
+                $selectedCount = count($selectedIds);
+                $limitReached = $selectedCount >= 5;
+            @endphp
+
+            <div class="services-picker-head">
+                <label>Servicios / Especialidad (max. 5)</label>
+                <span class="services-picker-counter {{ $limitReached ? 'is-limit' : '' }}">
+                    {{ $selectedCount }}/5 seleccionados
+                </span>
+            </div>
+
+            <div class="services-picker-scroll-card">
+                <div class="services-picker-scroll-body employee-services-scroll">
+                    <div class="services-picker-grid employee-services-grid">
+                        @foreach ($listaServicios as $servicio)
+                            @php
+                                $isSelected = in_array($servicio->id, $selectedIds, true);
+                                $isDisabled = !$isSelected && $limitReached;
+                            @endphp
+                            <button
+                                type="button"
+                                class="service-pick-card {{ $isSelected ? 'is-selected' : '' }} {{ $isDisabled ? 'is-disabled' : '' }}"
+                                wire:click="toggleServicio({{ $servicio->id }})"
+                                @disabled($isDisabled)
+                            >
+                                <span class="service-pick-check" aria-hidden="true">&#10003;</span>
+                                <span class="service-pick-name">{{ $servicio->name }}</span>
+                                <span class="service-pick-meta">
+                                    {{ $servicio->duration_minutes }} min - ${{ number_format((float) $servicio->price, 2) }}
+                                </span>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <small>Selecciona hasta 5 servicios. Al llegar al limite, los demas se desactivan.</small>
             @error('servicios')
+                <small class="error">{{ $message }}</small>
+            @enderror
+            @error('servicios.*')
                 <small class="error">{{ $message }}</small>
             @enderror
         </div>
 
         <div class="form-group">
             <label>Imagen</label>
-            <input type="file" wire:model="image">
+            <input type="file" wire:model="image" accept="image/*">
             @error('image')
                 <small class="error">{{ $message }}</small>
             @enderror
@@ -125,4 +159,3 @@
     @endif
 
 </div>
-

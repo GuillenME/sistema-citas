@@ -19,4 +19,19 @@ class Noticia extends Model
         'published',
         'user_id'
     ];
+
+    public function getContentAttribute($value): string
+    {
+        $decoded = (string) $value;
+
+        for ($i = 0; $i < 3; $i++) {
+            $next = html_entity_decode($decoded, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            if ($next === $decoded) {
+                break;
+            }
+            $decoded = $next;
+        }
+
+        return $decoded;
+    }
 }

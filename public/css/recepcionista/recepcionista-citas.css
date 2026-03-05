@@ -14,12 +14,12 @@ body.recepcionista-citas-index-page {
     max-width: 95%;
     width: 100%;
     margin: auto;
-    background: #5f4030;
+    background: rgba(52, 30, 20, 0.92);
     backdrop-filter: blur(12px);
     border-radius: 16px;
     padding: 30px;
-    border: 1px solid #c0a799;
-    box-shadow: 0 20px 50px #825944;
+    border: 1px solid rgba(252, 204, 124, 0.25);
+    box-shadow: 0 20px 52px rgba(0, 0, 0, 0.45);
     overflow-x: auto;
 }
 
@@ -40,8 +40,8 @@ body.recepcionista-citas-index-page {
 }
 
 .cita-card {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.24);
+    border: 1px solid rgba(252, 204, 124, 0.2);
     border-radius: 6px;
     padding: 14px;
     min-height: 180px;
@@ -62,7 +62,7 @@ body.recepcionista-citas-index-page {
 .cita-title {
     font-size: 14px;
     font-weight: bold;
-    color: #fff;
+    color: #fff7e6;
     text-align: center;
 }
 
@@ -93,26 +93,28 @@ body.recepcionista-citas-index-page {
 
 .cita-meta {
     font-size: 12px;
-    color: #e5e7eb;
+    color: #f0e2d2;
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
 .cita-meta strong {
-    color: #fde68a;
+    color: #fccc7c;
 }
 
 .cita-actions {
     margin-top: auto;
     display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
     justify-content: center;
 }
 
 .reagendar-btn {
     border: 1px solid rgba(252, 204, 124, 0.28);
-    background: rgba(252, 204, 124, 0.12);
-    color: #f4d284;
+    background: linear-gradient(135deg, #f2a93b, #ffdca0);
+    color: #3a2417;
     border-radius: 999px;
     padding: 7px 12px;
     font-size: 12px;
@@ -121,7 +123,80 @@ body.recepcionista-citas-index-page {
 }
 
 .reagendar-btn:hover {
-    background: rgba(252, 204, 124, 0.2);
+    filter: brightness(1.04);
+}
+
+.detalle-btn {
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    color: #f6d79f;
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.detalle-btn:hover {
+    background: rgba(252, 204, 124, 0.16);
+}
+
+.detalle-modal-content {
+    max-width: 560px;
+}
+
+.detalle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 10px 0 12px;
+}
+
+.detalle-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.detalle-grid span {
+    font-size: 11px;
+    color: #fccc7c;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.detalle-grid strong {
+    font-size: 13px;
+    color: #fff7e6;
+    font-weight: 700;
+}
+
+.detalle-notas-wrap {
+    margin: 6px 0 12px;
+}
+
+.detalle-notas-wrap > span {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: #fccc7c;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.detalle-notas-wrap p {
+    margin: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    border-radius: 10px;
+    padding: 10px;
+    color: #f4e7cc;
+    font-size: 13px;
+    line-height: 1.4;
 }
 
 #reagendarForm {
@@ -134,9 +209,9 @@ body.recepcionista-citas-index-page {
 #reagendarForm select,
 #reagendarForm textarea {
     width: 100%;
-    border: 1px solid rgba(252, 204, 124, 0.2);
+    border: 1px solid rgba(252, 204, 124, 0.35);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.06);
     color: #f4e7cc;
     padding: 8px 10px;
 }
@@ -172,6 +247,10 @@ body.recepcionista-citas-index-page {
 
 @media (max-width: 600px) {
     .citas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detalle-grid {
         grid-template-columns: 1fr;
     }
 }

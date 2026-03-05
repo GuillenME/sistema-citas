@@ -10,7 +10,9 @@
     @livewireStyles
 </head>
 <body>
-    @include('partials.navbar')
+    @if (!trim($__env->yieldContent('hide_navbar')))
+        @include('partials.navbar')
+    @endif
 
     @yield('content')
 
@@ -29,10 +31,32 @@
                 <span>📍Ubicacion</span>
                 {{ $homeSetting->footer_address ?? 'Calle Principal #123 - Guadalajara' }}
             </div>
+            @if (!empty($homeSetting->footer_references))
+                <div class="footer-item">
+                    <span>Referencias</span>
+                    {{ $homeSetting->footer_references }}
+                </div>
+            @endif
             <div class="footer-item">
                 <span>📱 Teléfono</span>
                 {{ $homeSetting->footer_phone ?? '33 1234 5678' }}
             </div>
+            @if (!empty($homeSetting->footer_whatsapp))
+                <div class="footer-item">
+                    <span>WhatsApp</span>
+                    @php
+                        $footerWhatsappDigits = preg_replace('/\D+/', '', (string) $homeSetting->footer_whatsapp);
+                        if ($footerWhatsappDigits !== '' && !str_starts_with($footerWhatsappDigits, '52')) {
+                            $footerWhatsappDigits = '52' . $footerWhatsappDigits;
+                        }
+                    @endphp
+                    @if (!empty($footerWhatsappDigits))
+                        <a href="https://wa.me/{{ $footerWhatsappDigits }}" target="_blank" rel="noopener noreferrer">{{ $homeSetting->footer_whatsapp }}</a>
+                    @else
+                        {{ $homeSetting->footer_whatsapp }}
+                    @endif
+                </div>
+            @endif
             <div class="footer-item">
                 <span>🕜 Horarios</span>
                 {{ $homeSetting->footer_hours ?? 'Lun-Sab 9:00-20:00' }}
@@ -47,3 +71,5 @@
     @livewireScripts
 </body>
 </html>
+
+

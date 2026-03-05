@@ -3,8 +3,8 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class NuevaPromocionNotification extends Notification
 {
@@ -17,22 +17,20 @@ class NuevaPromocionNotification extends Notification
         $this->promocion = $promocion;
     }
 
- public function via($notifiable)
-{
-    return ['mail']; // SOLO MAIL por ahora
-}
+    public function via($notifiable)
+    {
+        return ['mail'];
+    }
 
-public function toMail($notifiable)
-{
-    return (new MailMessage)
-        ->subject('🎉 Nueva promoción disponible')
-        ->greeting('Hola ' . $notifiable->name)
-        ->line('Tenemos una nueva promoción para ti:')
-        ->line($this->promocion->title)
-        ->line($this->promocion->description)
-        ->action('Ver promoción', url('/promociones'))
-        ->line('¡Aprovecha antes de que termine!');
-}
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+            ->subject('Nueva promocion disponible')
+            ->view('emails.nueva-promocion', [
+                'user' => $notifiable,
+                'promo' => $this->promocion,
+            ]);
+    }
 
     public function toArray($notifiable)
     {

@@ -1,4 +1,4 @@
-header{
+.public-navbar{
     position: fixed;
     top: 0;
     left: 0;
@@ -8,9 +8,13 @@ header{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 40px;
-    z-index: 1000;
+    z-index: 1200;
     backdrop-filter: blur(6px);
+    padding: 0 40px;
+}
+
+body{
+    padding-top: 70px;
 }
 
 .logo{
@@ -20,16 +24,44 @@ header{
     color: #e48815;
 }
 
-nav a{
+.public-navbar nav a{
     margin: 0 14px;
     color: #e5e7eb;
     text-decoration: none;
     font-weight: bold;
-    transition: .3s;
+    position: relative;
+    transition: color .3s ease, text-shadow .3s ease;
 }
 
-nav a:hover{
+.public-navbar nav a::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #f2a93b, #ffdca0);
+    border-radius: 999px;
+    box-shadow: 0 0 10px rgba(242, 169, 59, .65);
+    transition: width .25s ease;
+}
+
+.public-navbar nav a:hover{
     color: #e48815;
+    text-shadow: 0 0 10px rgba(228, 136, 21, .45);
+}
+
+.public-navbar nav a:hover::after{
+    width: 100%;
+}
+
+.public-navbar nav a.active{
+    color: #ffdca0;
+    text-shadow: 0 0 12px rgba(242, 169, 59, .55);
+}
+
+.public-navbar nav a.active::after{
+    width: 100%;
 }
 
 .login-icon {
@@ -83,6 +115,17 @@ footer{
     font-size: 12px;
     letter-spacing: 1px;
     margin-bottom: 6px;
+}
+
+.footer-item a{
+    color: #fff2d2;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 242, 210, 0.55);
+}
+
+.footer-item a:hover{
+    color: #ffe4a6;
+    border-bottom-color: rgba(255, 228, 166, 0.95);
 }
 
 .footer-bottom{
