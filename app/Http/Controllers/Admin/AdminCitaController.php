@@ -23,34 +23,32 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminCitaController extends Controller
 {
-    public function __construct(private AppointmentAvailabilityService $availability)
-    {
-    }
+    public function __construct(private AppointmentAvailabilityService $availability) {}
 
     public function index()
-{
-    $hoy = today();
+    {
+        $hoy = today();
 
-    // Cancelar citas vencidas automaticamente
-    Cita::where('status', 'pendiente_anticipo')
-    ->whereNotNull('payment_deadline')
-    ->where('payment_deadline', '<', now())
-    ->whereNull('receipt')
-    ->update([
-        'status' => 'cancelada',
-        'notes' => 'Cita cancelada automaticamente por no reenviar anticipo a tiempo.',
-        'receipt' => null,
-        'payment_deadline' => null,
-        'payment_attempts' => 0
-    ]);
-    $citas = Cita::with(['client', 'service', 'employee'])
-        ->withCount([
-            'estados as reagendas_count' => function ($query) {
-                $query->where('status', 'reagendada');
-            },
-        ])
-        ->orderByDesc('created_at')
-        ->paginate(5);
+        // Cancelar citas vencidas automaticamente
+        Cita::where('status', 'pendiente_anticipo')
+            ->whereNotNull('payment_deadline')
+            ->where('payment_deadline', '<', now())
+            ->whereNull('receipt')
+            ->update([
+                'status' => 'cancelada',
+                'notes' => 'Cita cancelada automaticamente por no reenviar anticipo a tiempo.',
+                'receipt' => null,
+                'payment_deadline' => null,
+                'payment_attempts' => 0
+            ]);
+        $citas = Cita::with(['client', 'service', 'employee'])
+            ->withCount([
+                'estados as reagendas_count' => function ($query) {
+                    $query->where('status', 'reagendada');
+                },
+            ])
+            ->orderByDesc('created_at')
+            ->paginate(5);
 
         $empleados = Empleado::where('active', 1)->get();
 
@@ -99,14 +97,10 @@ class AdminCitaController extends Controller
             'servicio_id' => 'required|exists:services,id',
             'anticipo_recibido' => 'required|accepted',
             'anticipo_monto' => 'required|numeric|min:0.01',
-        ], [
-            'anticipo_recibido.required' => 'Debes confirmar que se recibio anticipo.',
-            'anticipo_recibido.accepted' => 'Debes confirmar que se recibio anticipo.',
-            'anticipo_monto.required' => 'Debes capturar el monto del anticipo.',
-            'anticipo_monto.min' => 'El monto del anticipo debe ser mayor a 0.',
         ]);
 
         $cliente = Cliente::where('user_id', $request->usuario_id)->first();
+
         if (!$cliente) {
             return back()->with('error', 'El usuario no es cliente')->withInput();
         }
@@ -115,28 +109,20 @@ class AdminCitaController extends Controller
             $q->where('active', 1)->with('schedules');
         }])->findOrFail($request->servicio_id);
 
-        if (!$servicio->active) {
-            return back()->with('error', 'Servicio no disponible')->withInput();
-        }
-
-        if ($servicio->empleados->isEmpty()) {
-            return back()->with('error', 'No hay empleados disponibles para este servicio')->withInput();
-        }
-
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
 
-        $driver = DB::getDriverName();
-        $lockName = 'citas:' . $request->fecha;
+        $precioServicio = $servicio->precioConDescuento();
+        $anticipo = $request->anticipo_monto;
 
-        if ($driver === 'mysql') {
-            $lock = DB::selectOne('SELECT GET_LOCK(?, 10) AS l', [$lockName]);
-            if ((int) ($lock->l ?? 0) !== 1) {
-                return back()->with('error', 'Intenta nuevamente')->withInput();
-            }
-        }
+        $totalPagado = $anticipo;
+
+        $status = $anticipo >= $precioServicio
+            ? 'completada'
+            : 'confirmada';
 
         try {
+
             DB::beginTransaction();
 
             $empleadoAsignado = $this->availability->findAssignableEmployee(
@@ -149,33 +135,40 @@ class AdminCitaController extends Controller
 
             if (!$empleadoAsignado) {
                 DB::rollBack();
-                return back()->with('error', 'Ya no hay empleados disponibles en ese horario.')->withInput();
+                return back()->with('error', 'No hay empleados disponibles')->withInput();
             }
 
             Cita::create([
+
                 'client_id' => $cliente->id,
                 'service_id' => $servicio->id,
                 'employee_id' => $empleadoAsignado->id,
+
                 'date' => $request->fecha,
                 'start_time' => $horaInicio->format('H:i'),
                 'end_time' => $horaFin->format('H:i'),
-                'status' => 'confirmada',
-                'notes' => 'Anticipo recibido por administrador: $' . number_format($request->anticipo_monto, 2),
+
+                'service_price' => $servicio->price,
+                'deposit_amount' => $anticipo,
+                'total_paid' => $totalPagado,
+
+                'status' => $status,
+
+                'notes' => 'Anticipo recibido por administrador'
+
             ]);
 
             DB::commit();
         } catch (\Exception $e) {
+
             DB::rollBack();
-            return back()->with('error', 'Ocurrio un error al agendar la cita.')->withInput();
-        } finally {
-            if ($driver === 'mysql') {
-                DB::selectOne('SELECT RELEASE_LOCK(?)', [$lockName]);
-            }
+
+            return back()->with('error', 'Error al crear cita')->withInput();
         }
 
         return redirect()
             ->route('admin.citas.index')
-            ->with('success', 'Cita creada correctamente.');
+            ->with('success', 'Cita creada correctamente');
     }
 
     public function reporteDiario(Request $request)
@@ -537,26 +530,21 @@ class AdminCitaController extends Controller
         return back()->with('success', 'Cita reagendada correctamente.');
     }
 
-    public function completar(Cita $cita)
+    public function completar(Request $request, Cita $cita)
     {
-        if ($cita->status !== 'confirmada') {
-            return back()->with('error', 'Solo se pueden completar citas confirmadas.');
-        }
+        $request->validate([
+            'pago_final' => 'required|numeric|min:0'
+        ]);
 
-        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
-        $finCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('end_time'));
-        if (Carbon::now()->lessThan($finCita)) {
-            return back()->with('error', 'La cita solo puede marcarse como completada despues de la hora de fin.');
-        }
+        $pagoFinal = (float) $request->pago_final;
+        $deposito = (float) ($cita->deposit_amount ?? 0);
 
-        $notaBase = trim((string) ($cita->notes ?? ''));
-        $notaFinal = $notaBase === ''
-            ? 'Marcada como completada por administrador.'
-            : $notaBase . ' | Marcada como completada por administrador.';
+        $totalPagado = $deposito + $pagoFinal;
 
         $cita->update([
-            'status' => 'completada',
-            'notes' => $notaFinal,
+            'final_payment' => $pagoFinal,
+            'total_paid' => $totalPagado,
+            'status' => 'completada'
         ]);
 
         CitaEstado::create([
@@ -692,5 +680,4 @@ class AdminCitaController extends Controller
 
         return back()->with('success', 'Empleado asignado correctamente');
     }
-
 }
