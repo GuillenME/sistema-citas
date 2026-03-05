@@ -14,12 +14,64 @@
     const warningToast = document.getElementById('warningToast');
     const warningToastText = document.getElementById('warningToastText');
     const anticipoPct = parseFloat(document.body?.dataset?.anticipoPct || '50');
+    const btnAgendar = document.getElementById('btnAgendar');
 
     if (!usuario || !servicio || !fecha || !horarios || !chipsWrap) {
         return;
     }
 
     let servicioConfirmado = false;
+    let fpInstance = null;
+
+    function limpiarHorarios() {
+        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+        renderHoraChips();
+    }
+
+    function bloquearCalendario(locked) {
+        if (!fpInstance || !fpInstance.calendarContainer) return;
+        const cal = fpInstance.calendarContainer;
+        cal.classList.toggle('is-locked', locked);
+        cal.style.pointerEvents = locked ? 'none' : '';
+        cal.style.opacity = locked ? '0.45' : '';
+        cal.style.filter = locked ? 'grayscale(0.15)' : '';
+    }
+
+    function actualizarEstadoCampos() {
+        const clienteSeleccionado = !!usuario.value;
+        const servicioSeleccionado = !!servicio.value;
+        const fechaSeleccionada = !!fecha.value;
+        const horaSeleccionada = !!horarios.value;
+
+        servicio.disabled = !clienteSeleccionado;
+        fecha.disabled = !(clienteSeleccionado && servicioSeleccionado && servicioConfirmado);
+        horarios.disabled = !(clienteSeleccionado && servicioSeleccionado && servicioConfirmado && fechaSeleccionada);
+
+        anticipoCheck.disabled = !horaSeleccionada;
+        if (!horaSeleccionada) {
+            anticipoCheck.checked = false;
+        }
+
+        anticipoBox.hidden = !anticipoCheck.checked;
+        anticipoMonto.disabled = !anticipoCheck.checked;
+        if (!anticipoCheck.checked) {
+            anticipoMonto.value = '';
+        }
+
+        bloquearCalendario(fecha.disabled);
+
+        if (btnAgendar) {
+            btnAgendar.disabled = !(
+                usuario.value &&
+                servicioConfirmado &&
+                fecha.value &&
+                horarios.value &&
+                anticipoCheck.checked &&
+                anticipoMonto.value &&
+                parseFloat(anticipoMonto.value) > 0
+            );
+        }
+    }
 
     function formatHora12(hora24) {
         if (!hora24) return '';
@@ -96,6 +148,7 @@
                 horarios.value = opt.value;
                 renderHoraChips();
                 syncSummary();
+                actualizarEstadoCampos();
             });
             chipsWrap.appendChild(btn);
         });
@@ -123,9 +176,9 @@
         }
 
         fecha.value = '';
-        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
-        renderHoraChips();
+        limpiarHorarios();
         syncSummary();
+        actualizarEstadoCampos();
         document.getElementById('modalServicioConfirmar').classList.add('active');
     });
 
@@ -163,52 +216,72 @@
     }
 
     anticipoCheck.addEventListener('change', () => {
-        anticipoBox.hidden = !anticipoCheck.checked;
-        anticipoMonto.disabled = !anticipoCheck.checked;
-        if (!anticipoCheck.checked) {
-            anticipoMonto.value = '';
-        }
+        actualizarEstadoCampos();
     });
 
-    usuario.addEventListener('change', syncSummary);
+    anticipoMonto.addEventListener('input', actualizarEstadoCampos);
+
+    usuario.addEventListener('change', () => {
+        if (!usuario.value) {
+            servicio.value = '';
+            servicioConfirmado = false;
+            fecha.value = '';
+            limpiarHorarios();
+        } else {
+            servicio.value = '';
+            servicioConfirmado = false;
+            fecha.value = '';
+            limpiarHorarios();
+        }
+        syncSummary();
+        actualizarEstadoCampos();
+    });
+
     fecha.addEventListener('change', () => {
         if (!fecha.value) return;
         if (esDomingo(fecha.value)) {
             alert('Los domingos no se atiende. Por favor selecciona otro dia.');
             fecha.value = '';
-            horarios.innerHTML = '<option value="">Selecciona un horario</option>';
-            renderHoraChips();
+            limpiarHorarios();
             syncSummary();
+            actualizarEstadoCampos();
             return;
         }
         cargarBloques();
         syncSummary();
+        actualizarEstadoCampos();
     });
 
     horarios.addEventListener('change', () => {
         renderHoraChips();
         syncSummary();
+        actualizarEstadoCampos();
     });
 
     if (window.flatpickr) {
-        flatpickr(fecha, {
+        fpInstance = flatpickr(fecha, {
             inline: true,
             locale: 'es',
             dateFormat: 'Y-m-d',
             minDate: 'today',
             disableMobile: true,
             onChange: function () {
+                if (fecha.disabled) {
+                    if (fpInstance) fpInstance.clear();
+                    return;
+                }
                 if (!fecha.value) return;
                 if (esDomingo(fecha.value)) {
                     alert('Los domingos no se atiende. Por favor selecciona otro dia.');
                     fecha.value = '';
-                    horarios.innerHTML = '<option value="">Selecciona un horario</option>';
-                    renderHoraChips();
+                    limpiarHorarios();
                     syncSummary();
+                    actualizarEstadoCampos();
                     return;
                 }
                 cargarBloques();
                 syncSummary();
+                actualizarEstadoCampos();
             }
         });
     } else {
@@ -236,16 +309,17 @@
     function confirmarServicio() {
         servicioConfirmado = true;
         document.getElementById('modalServicioConfirmar').classList.remove('active');
+        actualizarEstadoCampos();
     }
 
     function cancelarServicio() {
         servicio.value = '';
         fecha.value = '';
-        horarios.innerHTML = '<option value="">Selecciona un horario</option>';
+        limpiarHorarios();
         servicioConfirmado = false;
         document.getElementById('modalServicioConfirmar').classList.remove('active');
-        renderHoraChips();
         syncSummary();
+        actualizarEstadoCampos();
     }
 
     function mostrarModalConfirmar() {
@@ -300,4 +374,5 @@
     anticipoMonto.disabled = !anticipoCheck.checked;
     renderHoraChips();
     syncSummary();
+    actualizarEstadoCampos();
 })();

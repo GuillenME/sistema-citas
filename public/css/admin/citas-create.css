@@ -52,6 +52,10 @@
     margin-bottom: 10px;
 }
 
+.admin-citas-create .horario-field {
+    position: relative;
+}
+
 .admin-citas-create label {
     margin: 0;
     color: #f3cc73;
@@ -82,6 +86,23 @@
     color: #f6efdd;
     padding: 11px 12px;
     font-size: 14px;
+}
+
+.admin-citas-create select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.admin-citas-create select option,
+.admin-citas-create select optgroup {
+    color: #f6efdd;
+    background: #1b1309;
+}
+
+.admin-citas-create select option:checked {
+    color: #221605;
+    background: #f3cc73;
 }
 
 .admin-citas-create input:focus,
@@ -177,6 +198,15 @@
     margin-bottom: 6px;
 }
 
+.admin-citas-create .sr-only-select {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
 .admin-citas-create .hora-chip {
     border: 1px solid rgba(252, 204, 124, 0.28);
     border-radius: 999px;
@@ -230,6 +260,80 @@
     color: #f8f2df;
 }
 
+.admin-citas-create .modal-servicio {
+    width: min(680px, 100%);
+}
+
+.admin-citas-create .modal-servicio-img {
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid rgba(252, 204, 124, 0.2);
+    margin-bottom: 10px;
+}
+
+.admin-citas-create .modal-servicio-desc {
+    margin: 8px 0 10px;
+    color: #c9b995;
+}
+
+.admin-citas-create .modal-servicio-info {
+    margin: 4px 0;
+}
+
+.admin-citas-create .privacy-label {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 14px;
+}
+
+.admin-citas-create .privacy-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: #e5bd2f;
+}
+
+.admin-citas-create .privacy-text {
+    color: #efe6d1;
+    font-weight: 600;
+}
+
+.admin-citas-create .flatpickr-calendar {
+    background: linear-gradient(180deg, #5b3b2c 0%, #4b3226 100%);
+    border: 1px solid rgba(252, 204, 124, 0.25);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    border-radius: 14px;
+    color: #f3e8d9;
+}
+
+.admin-citas-create .flatpickr-months .flatpickr-month,
+.admin-citas-create .flatpickr-weekdays,
+.admin-citas-create .flatpickr-day,
+.admin-citas-create .flatpickr-current-month {
+    color: #f3e8d9;
+}
+
+.admin-citas-create .flatpickr-day.today {
+    border-color: rgba(252, 204, 124, 0.7);
+}
+
+.admin-citas-create .flatpickr-day.selected,
+.admin-citas-create .flatpickr-day.startRange,
+.admin-citas-create .flatpickr-day.endRange {
+    background: #fccc7c;
+    border-color: #fccc7c;
+    color: #111;
+}
+
+.admin-citas-create .flatpickr-day.flatpickr-disabled,
+.admin-citas-create .flatpickr-day.prevMonthDay.flatpickr-disabled,
+.admin-citas-create .flatpickr-day.nextMonthDay.flatpickr-disabled {
+    color: rgba(243, 232, 217, 0.35);
+    cursor: not-allowed;
+    background: transparent;
+}
+
 .admin-citas-create .modal-confirm-buttons {
     display: flex;
     gap: 10px;
@@ -259,4 +363,10 @@
     .admin-citas-create .booking-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.submit-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    filter: grayscale(.3);
 }

@@ -1311,3 +1311,9 @@ body.cliente-citas-create-page .submit-btn {
         margin-top: 8px;
     }
 }
+
+.submit-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    filter: grayscale(.3);
+}

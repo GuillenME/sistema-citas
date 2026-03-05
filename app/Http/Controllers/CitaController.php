@@ -93,6 +93,45 @@ class CitaController extends Controller
         return response()->json($serviciosDisponibles);
     }
 
+    public function fechasDisponibles(Request $request)
+    {
+        $request->validate([
+            'servicio_id' => 'required|exists:services,id',
+            'dias' => 'nullable|integer|min:7|max:120',
+        ]);
+
+        $horizonteDias = (int) $request->input('dias', 60);
+        $inicio = today();
+        $fin = today()->addDays($horizonteDias);
+
+        $servicio = Servicio::query()
+            ->where('active', 1)
+            ->with(['empleados' => function ($q) {
+                $q->where('active', 1)->with('schedules');
+            }])
+            ->findOrFail($request->servicio_id);
+
+        if ($servicio->empleados->isEmpty()) {
+            return response()->json([]);
+        }
+
+        $fechasDisponibles = [];
+        $cursor = $inicio->copy();
+
+        while ($cursor->lte($fin)) {
+            if (!$cursor->isSunday()) {
+                $bloques = $this->availability->buildAvailableBlocksForService($servicio, $cursor->copy());
+                if (!empty($bloques)) {
+                    $fechasDisponibles[] = $cursor->toDateString();
+                }
+            }
+
+            $cursor->addDay();
+        }
+
+        return response()->json($fechasDisponibles);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | BLOQUES DISPONIBLES

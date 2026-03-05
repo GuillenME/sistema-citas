@@ -373,4 +373,8 @@
     display: none;
 }
 
-
+.submit-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    filter: grayscale(.3);
+}

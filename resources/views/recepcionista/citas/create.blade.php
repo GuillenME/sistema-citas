@@ -74,8 +74,8 @@
 
                     <div class="field date-field">
                         <label><span class="step-dot">3</span>Seleccionar Fecha</label>
-                        <input type="text" id="fecha" name="fecha" class="date-inline" placeholder="Selecciona una fecha"
-                            onkeydown="return false;" readonly required>
+                        <input type="text" id="fecha" name="fecha" class="date-inline"
+                            placeholder="Selecciona una fecha" onkeydown="return false;" readonly required>
                     </div>
 
                     <div class="field horario-field">
@@ -108,18 +108,19 @@
                     </div>
                     <div class="field">
                         <label class="privacy-label">
-                            <input type="checkbox" id="anticipo_check" name="anticipo_recibido" value="1" class="privacy-checkbox" required>
+                            <input type="checkbox" id="anticipo_check" name="anticipo_recibido" value="1"
+                                class="privacy-checkbox" required>
                             <span class="privacy-text">Se recibio anticipo en recepcion</span>
                         </label>
                     </div>
                     <div class="field" id="anticipo_box" hidden>
                         <label for="anticipo_monto">Monto recibido</label>
-                        <input type="number" id="anticipo_monto" name="anticipo_monto" min="0.01" step="0.01" required disabled
-                            placeholder="Ej. 100.00">
+                        <input type="number" id="anticipo_monto" name="anticipo_monto" min="0.01" step="0.01"
+                            required disabled placeholder="Ej. 100.00">
                     </div>
 
                     <div class="field summary-submit">
-                        <button type="button" class="submit-btn" onclick="mostrarModalConfirmar()">
+                        <button id="btnAgendar" type="button" class="submit-btn" onclick="mostrarModalConfirmar()">
                             AGENDAR CITA
                         </button>
                     </div>
@@ -128,7 +129,8 @@
         </div>
     </div>
 
-    <div id="modalServicioConfirmar" class="modal-confirm-overlay" onclick="if(event.target === this) cancelarServicio()">
+    <div id="modalServicioConfirmar" class="modal-confirm-overlay"
+        onclick="if(event.target === this) cancelarServicio()">
         <div class="modal-confirm-content modal-servicio">
             <img id="msImagen" class="modal-servicio-img" src="" alt="Servicio">
             <h3 id="msNombre"></h3>
@@ -148,7 +150,8 @@
         </div>
     </div>
 
-    <div id="modalConfirmar" class="modal-confirm-overlay" onclick="if(event.target === this) cerrarModalConfirmar()">
+    <div id="modalConfirmar" class="modal-confirm-overlay"
+        onclick="if(event.target === this) cerrarModalConfirmar()">
         <div class="modal-confirm-content">
             <h3>Confirmar cita</h3>
             <p><strong>Cliente:</strong> <span id="mcCliente"></span></p>
@@ -196,4 +199,3 @@
 </body>
 
 </html>
-
