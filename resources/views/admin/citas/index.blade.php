@@ -186,6 +186,7 @@
                                 <td class="table-actions col-acciones">
                                     <button type="button" class="btn notes-btn citas-detail-btn"
                                         title="Ver empleado, comprobante y acciones de la cita"
+                                        data-origin="{{ $cita->receipt ? 'cliente' : 'recepcion' }}"
                                         data-price="{{ $cita->service_price ?? $cita->service->price }}"
                                         data-deposit="{{ $cita->deposit_amount ?? 0 }}"
                                         data-remaining="{{ ($cita->service_price ?? $cita->service->price) - ($cita->deposit_amount ?? 0) }}"
@@ -234,6 +235,7 @@
     <div id="notesModal" class="notes-modal" aria-hidden="true">
         <div class="modal-box">
             <h3>Detalle de la cita</h3>
+            <p><strong>Origen:</strong> <span id="notesModalOrigin">-</span></p>
             <p><strong>Empleado:</strong> <span id="notesModalEmployee">-</span></p>
             <p><strong>Comprobante:</strong> <span id="notesModalReceipt">-</span></p>
             <p><strong>Precio servicio:</strong> $<span id="modalPrice">0.00</span></p>
@@ -385,6 +387,7 @@
             var rescheduleOriginalDate = '';
             var deadlineTimer = null;
 
+
             function formatHora12(hora24) {
                 if (!hora24) return '';
                 var partes = hora24.split(':');
@@ -439,6 +442,8 @@
                     var canReject = btn.getAttribute('data-can-reject') === '1';
                     var text = btn.getAttribute('data-notes') || '-';
                     var employee = btn.getAttribute('data-employee') || '-';
+                    var origin = btn.getAttribute('data-origin') || 'recepcion';
+                    var modalOrigin = document.getElementById('notesModalOrigin');
                     var receipt = btn.getAttribute('data-receipt') || '';
                     var assignAction = btn.getAttribute('data-assign-action') || '';
                     var canAssign = btn.getAttribute('data-can-assign') === '1';
@@ -455,6 +460,7 @@
                     var currentDate = btn.getAttribute('data-date') || '';
                     var deadline = btn.getAttribute('data-deadline');
                     var deadlineSpan = document.getElementById('notesModalDeadline');
+                    var deadlineRow = deadlineSpan.closest('p');
                     var price = btn.getAttribute('data-price') || 0;
                     var deposit = btn.getAttribute('data-deposit') || 0;
                     var remaining = btn.getAttribute('data-remaining') || 0;
@@ -470,9 +476,12 @@
                     }
 
                     if (deadline) {
+                        deadlineRow.style.display = '';
                         if (deadlineTimer) {
                             clearInterval(deadlineTimer);
                             deadlineTimer = null;
+                        } else {
+                            deadlineRow.style.display = 'none';
                         }
 
                         var end = new Date(deadline);
@@ -507,16 +516,21 @@
 
                     modalText.textContent = text;
                     modalEmployee.textContent = employee;
-
+                    modalOrigin.textContent = origin === 'cliente' ?
+                        'Cliente (anticipo por transferencia)' :
+                        'Recepción / Administrador';
                     if (rejectPaymentForm) {
                         rejectPaymentForm.style.display = canReject ? 'inline-flex' : 'none';
                         rejectPaymentForm.setAttribute('action', rejectAction);
                     }
+                    var receiptRow = modalReceipt.closest('p');
+
                     if (receipt) {
+                        receiptRow.style.display = '';
                         modalReceipt.innerHTML = '<a href="' + receipt +
                             '" target="_blank" rel="noopener">Ver comprobante</a>';
                     } else {
-                        modalReceipt.textContent = '-';
+                        receiptRow.style.display = 'none';
                     }
 
                     if (assignForm && assignSelect) {
