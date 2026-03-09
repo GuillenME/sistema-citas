@@ -4,9 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
-use App\Http\Controllers\Admin\AdminClientesController;
-use App\Http\Controllers\Admin\AdminEmpleadoController;
-use App\Http\Controllers\Admin\AdminRecepcionistaController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\Admin\HomeSettingController;
 use App\Http\Controllers\PasswordResetController;
@@ -14,6 +11,7 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServicioPublicController;
+
 
 /* HOME PÚBLICO */
 
@@ -196,11 +194,18 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/rechazar', [AdminCitaController::class, 'rechazarPago'])
             ->name('citas.rechazar');
 
-        Route::get('/admin/notificacion/{id}', function ($id) {
-            $noti = auth()->user()->notifications()->findOrFail($id);
+        Route::get('/notificacion/{id}', function ($id) {
+
+            /** @var \App\Models\Usuario $user */
+            $user = auth()->user();
+
+            $noti = $user->notifications()->findOrFail($id);
+
             $noti->markAsRead();
+
             return redirect()->route('admin.citas.index');
         })->name('notificacion.leer');
+
         Route::get('/notificaciones', function () {
 
             $user = auth()->user();
