@@ -232,7 +232,7 @@ class CitaController extends Controller
 
             return redirect()
                 ->route('cliente.citas.index')
-                ->with('success', 'Cita agendada correctamente.');
+                ->with('success', 'Cita agendada correctamente. Por favor, realiza el pago del anticipo para confirmar tu cita.');
         } catch (\Exception $e) {
             DB::rollBack();
 

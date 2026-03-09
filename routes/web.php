@@ -193,8 +193,29 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::put('/home-settings', [HomeSettingController::class, 'update'])
             ->name('home_settings.update');
-            Route::post('/citas/{cita}/rechazar', [AdminCitaController::class, 'rechazarPago'])
+        Route::post('/citas/{cita}/rechazar', [AdminCitaController::class, 'rechazarPago'])
             ->name('citas.rechazar');
+
+        Route::get('/admin/notificacion/{id}', function ($id) {
+            $noti = auth()->user()->notifications()->findOrFail($id);
+            $noti->markAsRead();
+            return redirect()->route('admin.citas.index');
+        })->name('notificacion.leer');
+        Route::get('/notificaciones', function () {
+
+            $user = auth()->user();
+
+            return response()->json([
+                'count' => $user->unreadNotifications->count(),
+                'notificaciones' => $user->unreadNotifications->take(5)->map(function ($n) {
+                    return [
+                        'id' => $n->id,
+                        'mensaje' => $n->data['mensaje'],
+                        'tiempo' => $n->created_at->diffForHumans()
+                    ];
+                })
+            ]);
+        })->name('notificaciones.json');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */

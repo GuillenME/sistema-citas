@@ -14,12 +14,13 @@ class Kernel extends ConsoleKernel
         // Cancelar citas sin anticipo
         $schedule->command('citas:cancelar-sin-anticipo')
             ->everyMinute();
-   
+
         $schedule->job(new AvisarClientesInactivos)
             ->dailyAt('10:30');
 
         $schedule->job(new EliminarClientesInactivos)
             ->dailyAt('10:40');
+        $schedule->command('citas:recordatorios')->everyFiveMinutes();
     }
 
     protected function commands(): void

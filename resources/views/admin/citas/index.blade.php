@@ -255,8 +255,18 @@
             </form>
             <form method="POST" id="confirmForm" class="assign-inline">
                 @csrf
-                <button type="submit" class="btn btn-save btn-compact">Confirmar</button>
-                <button type="button" class="btn btn-cancel btn-compact" id="openCancelFromModal">Cancelar</button>
+
+                <label>Monto recibido</label>
+                <input type="number" name="anticipo_monto" id="modalAnticipoMonto" step="0.01" min="0"
+                    required>
+
+                <button type="submit" class="btn btn-save btn-compact">
+                    Confirmar anticipo
+                </button>
+
+                <button type="button" class="btn btn-cancel btn-compact" id="openCancelFromModal">
+                    Cancelar
+                </button>
             </form>
             <form method="POST" id="rejectPaymentForm" class="assign-inline" style="display:none;">
                 @csrf
@@ -267,19 +277,8 @@
             <form method="POST" id="completeForm" class="assign-inline">
                 @csrf
 
-                @php
-                    $precio = $cita->service_price ?? $cita->service->price;
-                    $anticipo = $cita->deposit_amount ?? 0;
-                    $restante = $precio - $anticipo;
-                @endphp
-
-                @if ($restante > 0)
-                    <label>Pago restante</label>
-                    <input type="number" name="pago_final" step="0.01" min="0" value="{{ $restante }}"
-                        required>
-                @else
-                    <input type="hidden" name="pago_final" value="0">
-                @endif
+                <label>Pago restante</label>
+                <input type="number" name="pago_final" id="modalPagoFinal" step="0.01" min="0" required>
 
                 <button type="submit" class="btn btn-save btn-compact">
                     Marcar completada

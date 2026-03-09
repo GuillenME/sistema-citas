@@ -2282,3 +2282,69 @@ main.dashboard.dashboard-home .admin-home {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================
+   NOTIFICACIONES
+========================= */
+
+.notif-dropdown{
+    position: relative;
+}
+
+.notif-btn{
+    position: relative;
+    background: rgba(252,204,124,0.12);
+    border: 1px solid rgba(252,204,124,0.28);
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.notif-count{
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    border-radius: 50%;
+    padding: 2px 6px;
+}
+
+.notif-menu{
+    position: absolute;
+    right: 0;
+    top: 42px;
+    width: 260px;
+    background: #1e1e1e;
+    border: 1px solid rgba(252,204,124,0.2);
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 2000;
+}
+
+.notif-dropdown:hover .notif-menu{
+    display: flex;
+}
+
+.notif-item{
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-decoration: none;
+    color: #fff;
+    font-size: 13px;
+}
+
+.notif-item small{
+    display: block;
+    color: #c9bfa5;
+}
+
+.notif-empty{
+    padding: 10px;
+    font-size: 13px;
+    color: #aaa;
+}

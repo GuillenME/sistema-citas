@@ -398,13 +398,20 @@ class AdminCitaController extends Controller
     }
 
 
-    public function confirmar(Cita $cita)
+    public function confirmar(Request $request,Cita $cita)
     {
-        $cita->update([
-            'status' => 'confirmada',
-            'notes' => 'Cita confirmada por el administrador',
+        $request->validate([
+            'anticipo_monto' => 'required|numeric|min:0'
         ]);
 
+        $anticipo = (float) $request->anticipo_monto;
+
+        $cita->update([
+            'deposit_amount' => $anticipo,
+            'total_paid' => $anticipo,
+            'status' => 'confirmada',
+            'notes' => 'Anticipo validado por administrador'
+        ]);
         CitaEstado::create([
             'appointment_id' => $cita->id,
             'status' => 'confirmada',
