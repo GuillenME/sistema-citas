@@ -195,17 +195,12 @@ Route::middleware(['auth', 'rol:1'])
             ->name('citas.rechazar');
 
         Route::get('/notificacion/{id}', function ($id) {
-
             /** @var \App\Models\Usuario $user */
             $user = auth()->user();
-
             $noti = $user->notifications()->findOrFail($id);
-
             $noti->markAsRead();
-
             return redirect()->route('admin.citas.index');
         })->name('notificacion.leer');
-
         Route::get('/notificaciones', function () {
 
             $user = auth()->user();
