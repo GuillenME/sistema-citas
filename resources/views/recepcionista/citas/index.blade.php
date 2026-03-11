@@ -22,8 +22,20 @@
         <div class="table-card">
             <h2>Citas de la semana</h2>
 
+            @if ($statusOptions->isNotEmpty())
+                <div class="status-tabs">
+                    @foreach ($statusOptions as $statusOption)
+                        <a
+                            href="{{ request()->url() }}?status={{ $statusOption['key'] }}"
+                            class="status-tab {{ $selectedStatus === $statusOption['key'] ? 'active' : '' }}">
+                            {{ $statusOption['label'] }} ({{ $statusOption['count'] }})
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+
             <div class="citas-grid">
-                @foreach ($citas as $cita)
+                @forelse ($citas as $cita)
                     @php
                         $estadoClase = match ($cita->status) {
                             'pendiente_anticipo' => 'pendiente',
@@ -80,8 +92,18 @@
                             @endif
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="citas-empty-state">
+                        No hay citas en este estado durante esta semana.
+                    </div>
+                @endforelse
             </div>
+
+            @if ($citas->hasPages())
+                <div class="citas-pagination">
+                    {{ $citas->links('pagination::simple-bootstrap-4') }}
+                </div>
+            @endif
 
         </div>
 

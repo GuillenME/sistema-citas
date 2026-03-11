@@ -43,8 +43,20 @@
                 </div>
             @endif
 
+            @if ($statusOptions->isNotEmpty())
+                <div class="status-tabs">
+                    @foreach ($statusOptions as $statusOption)
+                        <a
+                            href="{{ request()->url() }}?status={{ $statusOption['key'] }}"
+                            class="status-tab {{ $selectedStatus === $statusOption['key'] ? 'active' : '' }}">
+                            {{ $statusOption['label'] }} ({{ $statusOption['count'] }})
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+
             <div class="citas-grid">
-                @foreach ($citas as $cita)
+                @forelse ($citas as $cita)
                     @php
                         $precioOriginal = $cita->service->price;
                         $promocionActiva = $cita->service->promocionActiva();
@@ -139,73 +151,12 @@
                             <div class="cita-notes">{{ $cita->notes }}</div>
                         @endif
 
-                        <details class="cita-details">
-                            <summary>Ver detalles</summary>
-                            <div class="cita-details-body">
-                                <div>Anticipo ({{ $porcentajeAnticipo }}%):
-                                    <strong>${{ number_format($anticipo, 2) }}</strong></div>
-                                <div>Restante ({{ $porcentajeRestante }}%): <strong
-                                        class="price-restante">${{ number_format($restante, 2) }}</strong></div>
-
-                                @if ($cita->status === 'pendiente_anticipo')
-                                    <div class="anticipo-info">
-                                        <div>Banco: {{ config('citas.banco.nombre') }}</div>
-                                        <div>Cuenta: {{ config('citas.banco.cuenta') }}</div>
-                                        <div>CLABE: {{ config('citas.banco.clabe') }}</div>
-                                        <div class="anticipo-hint">El {{ $porcentajeRestante }}% restante se paga
-                                            despues de la cita.</div>
-                                        @if ($esReenvioTrasRechazo)
-                                            <div class="anticipo-hint">
-                                                Reenvio {{ $cita->payment_attempts }}/2.
-                                                @if (!is_null($minutosRestantesReenvio) && $minutosRestantesReenvio > 0)
-                                                    Tiempo restante: {{ $minutosRestantesReenvio }} min.
-                                                @endif
-                                            </div>
-                                        @else
-                                            <div class="anticipo-hint">Tienes 15 minutos para subir el comprobante.</div>
-                                        @endif
-                                    </div>
-
-                                    @if ($cita->receipt)
-                                        <a class="link-green" href="{{ asset('storage/' . $cita->receipt) }}"
-                                            target="_blank">
-                                            Ver comprobante
-                                        </a>
-                                    @else
-                                        <form method="POST" action="{{ route('cliente.citas.comprobante', $cita) }}"
-                                            enctype="multipart/form-data" class="upload-form">
-                                            @csrf
-                                            <div class="upload-row">
-                                                <input
-                                                    type="file"
-                                                    name="comprobante"
-                                                    accept="image/*"
-                                                    required
-                                                    class="comprobante-input"
-                                                    data-preview-input>
-                                                <button
-                                                    type="button"
-                                                    class="btn-preview-eye"
-                                                    title="Ver imagen seleccionada"
-                                                    aria-label="Ver imagen seleccionada"
-                                                    data-preview-trigger>
-                                                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                                                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path>
-                                                        <circle cx="12" cy="12" r="3"></circle>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <button type="submit" class="btn-upload">Subir comprobante</button>
-                                        </form>
-                                    @endif
-                                @elseif ($cita->receipt)
-                                    <a class="link-green" href="{{ asset('storage/' . $cita->receipt) }}"
-                                        target="_blank">
-                                        Ver comprobante
-                                    </a>
-                                @endif
-                            </div>
-                        </details>
+                        <button
+                            type="button"
+                            class="btn-detail-open"
+                            onclick="abrirModalDetalleCita('detalle-cita-{{ $cita->id }}')">
+                            Ver detalles
+                        </button>
 
                         @if ($cita->status === 'confirmada')
                             <div class="cita-actions">
@@ -237,8 +188,143 @@
                             </div>
                         @endif
                     </div>
-                @endforeach
+
+                    <template id="detalle-cita-{{ $cita->id }}">
+                        <div class="detalle-cita-shell">
+                            <div class="detalle-cita-head">
+                                <div>
+                                    <span class="detalle-kicker">Servicio</span>
+                                    <h3>{{ $cita->service->name }}</h3>
+                                </div>
+                                <span class="estado {{ $estadoClase }}">{{ $estadoTexto }}</span>
+                            </div>
+
+                            <div class="detalle-cita-grid">
+                                <div class="detalle-card">
+                                    <span>Fecha</span>
+                                    <strong>{{ \Carbon\Carbon::parse($cita->date)->format('d M, Y') }}</strong>
+                                </div>
+                                <div class="detalle-card">
+                                    <span>Hora</span>
+                                    <strong>{{ \Carbon\Carbon::parse($cita->start_time)->format('h:i A') }}</strong>
+                                </div>
+                                <div class="detalle-card">
+                                    <span>Precio total</span>
+                                    <strong>${{ number_format($precioFinal, 2) }}</strong>
+                                </div>
+                                <div class="detalle-card">
+                                    <span>Anticipo</span>
+                                    <strong class="price-discount">-${{ number_format($anticipo, 2) }}</strong>
+                                </div>
+                                <div class="detalle-card">
+                                    <span>Restante en sucursal</span>
+                                    <strong class="price-restante">${{ number_format($restante, 2) }}</strong>
+                                </div>
+                                <div class="detalle-card">
+                                    <span>Politica</span>
+                                    <strong>El {{ $porcentajeRestante }}% restante se paga despues de la cita.</strong>
+                                </div>
+                            </div>
+
+                            @if ($cita->status === 'pendiente_anticipo')
+                                <div class="detalle-section">
+                                    <span class="detalle-section-title">Datos bancarios</span>
+                                    <div class="detalle-bank-grid">
+                                        <div class="detalle-bank-item">
+                                            <span>Banco</span>
+                                            <strong>{{ config('citas.banco.nombre') }}</strong>
+                                        </div>
+                                        <div class="detalle-bank-item">
+                                            <span>Cuenta</span>
+                                            <strong>{{ config('citas.banco.cuenta') }}</strong>
+                                        </div>
+                                        <div class="detalle-bank-item">
+                                            <span>CLABE</span>
+                                            <strong>{{ config('citas.banco.clabe') }}</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="detalle-hints">
+                                        @if ($esReenvioTrasRechazo)
+                                            <div class="detalle-hint is-warning">
+                                                Reenvio {{ $cita->payment_attempts }}/2.
+                                                @if (!is_null($minutosRestantesReenvio) && $minutosRestantesReenvio > 0)
+                                                    Tiempo restante: {{ $minutosRestantesReenvio }} min.
+                                                @endif
+                                            </div>
+                                        @else
+                                            <div class="detalle-hint">Tienes 15 minutos para subir el comprobante.</div>
+                                        @endif
+                                    </div>
+
+                                    @if ($cita->receipt)
+                                        <a class="link-green detalle-receipt-link" href="{{ asset('storage/' . $cita->receipt) }}"
+                                            target="_blank">
+                                            Ver comprobante
+                                        </a>
+                                    @else
+                                        <form method="POST" action="{{ route('cliente.citas.comprobante', $cita) }}"
+                                            enctype="multipart/form-data" class="upload-form detalle-upload-form">
+                                            @csrf
+                                            <div class="upload-row">
+                                                <input
+                                                    type="file"
+                                                    name="comprobante"
+                                                    accept="image/*"
+                                                    required
+                                                    class="comprobante-input"
+                                                    data-preview-input>
+                                                <button
+                                                    type="button"
+                                                    class="btn-preview-eye"
+                                                    title="Ver imagen seleccionada"
+                                                    aria-label="Ver imagen seleccionada"
+                                                    data-preview-trigger>
+                                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z"></path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <button type="submit" class="btn-upload">Subir comprobante</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            @elseif ($cita->receipt)
+                                <div class="detalle-section">
+                                    <span class="detalle-section-title">Comprobante</span>
+                                    <a class="link-green detalle-receipt-link" href="{{ asset('storage/' . $cita->receipt) }}"
+                                        target="_blank">
+                                        Ver comprobante
+                                    </a>
+                                </div>
+                            @endif
+
+                            @if ($cita->notes)
+                                <div class="detalle-section">
+                                    <span class="detalle-section-title">Notas</span>
+                                    <div class="detalle-note-box">{{ $cita->notes }}</div>
+                                </div>
+                            @endif
+                        </div>
+                    </template>
+                @empty
+                    <div class="citas-empty-state">
+                        No hay citas en este estado por ahora.
+                    </div>
+                @endforelse
+
+                <a href="{{ route('cliente.citas.create') }}" class="cita-card cita-card-create">
+                    <span class="create-plus">+</span>
+                    <span class="create-label">Agendar una nueva cita</span>
+                </a>
             </div>
+
+            @if ($citas->hasPages())
+                <div class="citas-pagination">
+                    {{ $citas->links('pagination::simple-bootstrap-4') }}
+                </div>
+            @endif
 
         </div>
 
@@ -401,6 +487,23 @@
             document.getElementById('modalPreviewComprobante').classList.remove('active');
         }
 
+        function abrirModalDetalleCita(templateId) {
+            const template = document.getElementById(templateId);
+            const modal = document.getElementById('modalDetalleCita');
+            const body = document.getElementById('detalleCitaBody');
+
+            if (!template || !modal || !body) {
+                return;
+            }
+
+            body.innerHTML = template.innerHTML;
+            modal.classList.add('active');
+        }
+
+        function cerrarModalDetalleCita() {
+            document.getElementById('modalDetalleCita').classList.remove('active');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const fechaInput = document.getElementById('reagendarFecha');
             const horaSelect = document.getElementById('reagendarHora');
@@ -408,7 +511,6 @@
             const btnToReagendar = document.getElementById('cancelarToReagendarBtn');
             const previewModal = document.getElementById('modalPreviewComprobante');
             const previewImage = document.getElementById('previewComprobanteImage');
-            const uploadForms = document.querySelectorAll('.upload-form');
 
             if (fechaInput) {
                 fechaInput.addEventListener('change', cargarHorasReagenda);
@@ -441,30 +543,27 @@
                 });
             }
 
-            if (uploadForms.length && previewModal && previewImage) {
-                uploadForms.forEach((form) => {
-                    const fileInput = form.querySelector('[data-preview-input]');
-                    const previewButton = form.querySelector('[data-preview-trigger]');
+            document.addEventListener('click', (event) => {
+                const previewButton = event.target.closest('[data-preview-trigger]');
+                if (!previewButton || !previewModal || !previewImage) {
+                    return;
+                }
 
-                    if (!fileInput || !previewButton) {
-                        return;
-                    }
+                const form = previewButton.closest('form');
+                const fileInput = form?.querySelector('[data-preview-input]');
+                const [file] = fileInput?.files || [];
 
-                    previewButton.addEventListener('click', () => {
-                        const [file] = fileInput.files || [];
-                        if (!file) {
-                            alert('Selecciona una imagen antes de previsualizar.');
-                            fileInput.focus();
-                            return;
-                        }
+                if (!file) {
+                    alert('Selecciona una imagen antes de previsualizar.');
+                    fileInput?.focus();
+                    return;
+                }
 
-                        const fileUrl = URL.createObjectURL(file);
-                        previewImage.src = fileUrl;
-                        previewModal.classList.add('active');
-                        previewImage.onload = () => URL.revokeObjectURL(fileUrl);
-                    });
-                });
-            }
+                const fileUrl = URL.createObjectURL(file);
+                previewImage.src = fileUrl;
+                previewModal.classList.add('active');
+                previewImage.onload = () => URL.revokeObjectURL(fileUrl);
+            });
         });
     </script>
 
@@ -519,6 +618,17 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div id="modalDetalleCita" class="modal-overlay" onclick="if(event.target === this) cerrarModalDetalleCita()">
+        <div class="modal-content modal-content-detail">
+            <div id="detalleCitaBody"></div>
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="cerrarModalDetalleCita()">
+                    Cerrar
+                </button>
+            </div>
         </div>
     </div>
 

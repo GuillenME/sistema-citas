@@ -15,6 +15,22 @@ use Illuminate\Http\Request;
 
 class CitaController extends Controller
 {
+    private const STATUS_LABELS = [
+        CitaStatus::PENDIENTE_ANTICIPO => 'Pendientes de anticipo',
+        CitaStatus::CONFIRMADA => 'Confirmadas',
+        CitaStatus::COMPLETADA => 'Completadas',
+        CitaStatus::CANCELADA => 'Canceladas',
+        CitaStatus::NO_ASISTIO => 'No asistio',
+    ];
+
+    private const STATUS_PRIORITY = [
+        CitaStatus::PENDIENTE_ANTICIPO,
+        CitaStatus::CONFIRMADA,
+        CitaStatus::COMPLETADA,
+        CitaStatus::CANCELADA,
+        CitaStatus::NO_ASISTIO,
+    ];
+
     public function __construct(private AppointmentAvailabilityService $availability)
     {
     }
@@ -32,22 +48,55 @@ class CitaController extends Controller
             abort(403, 'Cliente no encontrado');
         }
 
-        $citas = Cita::where('client_id', $cliente->id)
+        $baseQuery = Cita::query()
+            ->where('client_id', $cliente->id)
             ->with(['service' => function ($query) {
                 $query->with(['promociones' => function ($q) {
                     $q->where('published', true)
                         ->where('start_date', '<=', now()->toDateString())
                         ->where('end_date', '>=', now()->toDateString());
                 }]);
-            }])
+            }]);
+
+        $statusCounts = (clone $baseQuery)
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $statusOptions = collect(self::STATUS_PRIORITY)
+            ->filter(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0)
+            ->map(fn (string $status) => [
+                'key' => $status,
+                'label' => self::STATUS_LABELS[$status] ?? ucfirst($status),
+                'count' => (int) ($statusCounts[$status] ?? 0),
+            ])
+            ->values();
+
+        $defaultStatus = collect(self::STATUS_PRIORITY)
+            ->first(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0);
+
+        $requestedStatus = (string) request('status');
+        $selectedStatus = $requestedStatus !== '' && CitaStatus::isValid($requestedStatus) && (int) ($statusCounts[$requestedStatus] ?? 0) > 0
+            ? $requestedStatus
+            : $defaultStatus;
+
+        $citas = (clone $baseQuery)
+            ->when($selectedStatus, fn ($query) => $query->where('status', $selectedStatus))
             ->orderByDesc('created_at')
             ->orderByDesc('id')
-            ->get();
+            ->paginate(5)
+            ->withQueryString();
 
         $porcentajeAnticipo = config('citas.porcentaje_anticipo', 50);
         $porcentajeRestante = 100 - $porcentajeAnticipo;
 
-        return view('cliente.citas.index', compact('citas', 'porcentajeAnticipo', 'porcentajeRestante'));
+        return view('cliente.citas.index', compact(
+            'citas',
+            'porcentajeAnticipo',
+            'porcentajeRestante',
+            'statusOptions',
+            'selectedStatus'
+        ));
     }
 
     public function create()

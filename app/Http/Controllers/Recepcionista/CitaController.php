@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Recepcionista;
 
+use App\Constants\CitaStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppointmentDateTimeRequest;
 use App\Models\Cita;
@@ -17,6 +18,22 @@ use Carbon\Carbon;
 
 class CitaController extends Controller
 {
+    private const STATUS_LABELS = [
+        CitaStatus::PENDIENTE_ANTICIPO => 'Pendientes de anticipo',
+        CitaStatus::CONFIRMADA => 'Confirmadas',
+        CitaStatus::COMPLETADA => 'Completadas',
+        CitaStatus::CANCELADA => 'Canceladas',
+        CitaStatus::NO_ASISTIO => 'No asistio',
+    ];
+
+    private const STATUS_PRIORITY = [
+        CitaStatus::PENDIENTE_ANTICIPO,
+        CitaStatus::CONFIRMADA,
+        CitaStatus::COMPLETADA,
+        CitaStatus::CANCELADA,
+        CitaStatus::NO_ASISTIO,
+    ];
+
     public function __construct(private AppointmentAvailabilityService $availability)
     {
     }
@@ -173,18 +190,45 @@ class CitaController extends Controller
         $inicioSemana = now()->startOfWeek(Carbon::MONDAY)->toDateString();
         $finSemana = now()->endOfWeek(Carbon::SUNDAY)->toDateString();
 
-        $citas = Cita::with(['client.user', 'service'])
+        $baseQuery = Cita::query()
+            ->with(['client.user', 'service'])
             ->withCount([
                 'estados as reagendas_count' => function ($query) {
                     $query->where('status', 'reagendada');
                 },
             ])
-            ->whereBetween('date', [$inicioSemana, $finSemana])
+            ->whereBetween('date', [$inicioSemana, $finSemana]);
+
+        $statusCounts = (clone $baseQuery)
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $statusOptions = collect(self::STATUS_PRIORITY)
+            ->filter(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0)
+            ->map(fn (string $status) => [
+                'key' => $status,
+                'label' => self::STATUS_LABELS[$status] ?? ucfirst($status),
+                'count' => (int) ($statusCounts[$status] ?? 0),
+            ])
+            ->values();
+
+        $defaultStatus = collect(self::STATUS_PRIORITY)
+            ->first(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0);
+
+        $requestedStatus = (string) request('status');
+        $selectedStatus = $requestedStatus !== '' && CitaStatus::isValid($requestedStatus) && (int) ($statusCounts[$requestedStatus] ?? 0) > 0
+            ? $requestedStatus
+            : $defaultStatus;
+
+        $citas = (clone $baseQuery)
+            ->when($selectedStatus, fn ($query) => $query->where('status', $selectedStatus))
             ->orderByDesc('date')
             ->orderByDesc('start_time')
-            ->get();
+            ->paginate(4)
+            ->withQueryString();
 
-        return view('recepcionista.citas.index', compact('citas'));
+        return view('recepcionista.citas.index', compact('citas', 'statusOptions', 'selectedStatus'));
     }
 
     public function reagendar(AppointmentDateTimeRequest $request, Cita $cita)
