@@ -41,8 +41,9 @@ class EmpleadoCreate extends Component
         $this->horarios[$index]['enabled'] = !$enabled;
 
         if ($this->horarios[$index]['enabled']) {
-            $this->horarios[$index]['start_time'] = $this->horarios[$index]['start_time'] ?: '08:00';
-            $this->horarios[$index]['end_time'] = $this->horarios[$index]['end_time'] ?: '15:00';
+            $dayOfWeek = (int) ($this->horarios[$index]['day_of_week'] ?? 0);
+            $this->horarios[$index]['start_time'] = $this->horarios[$index]['start_time'] ?: '09:00';
+            $this->horarios[$index]['end_time'] = $this->horarios[$index]['end_time'] ?: ($dayOfWeek === 6 ? '16:00' : '18:00');
         }
     }
 
@@ -178,8 +179,8 @@ class EmpleadoCreate extends Component
         return collect(range(1, 6))->map(function ($day) {
             return [
                 'day_of_week' => $day,
-                'start_time' => '08:00',
-                'end_time' => '15:00',
+                'start_time' => '09:00',
+                'end_time' => $day === 6 ? '16:00' : '18:00',
                 'enabled' => true,
             ];
         })->all();

@@ -76,7 +76,8 @@
             </div>
 
             <div class="form-group full">
-                <label>Horarios de trabajo</label>
+                <label>Horario base semanal</label>
+                <small>Define la jornada regular del empleado. Los descansos o bloqueos especiales se gestionan aparte cuando ya este creado.</small>
 
                 <div class="schedule-table">
                     <div class="schedule-table-head">
@@ -111,7 +112,7 @@
                                     <button type="button" class="schedule-toggle-btn {{ $enabled ? 'is-on' : 'is-off' }}"
                                         wire:click="toggleLabora({{ $index }})">
                                         <span class="switch-dot" aria-hidden="true"></span>
-                                        <span>{{ $enabled ? 'Labora' : 'Descanso' }}</span>
+                                        <span>{{ $enabled ? 'Jornada activa' : 'Dia libre' }}</span>
                                     </button>
                                 </div>
                             </div>

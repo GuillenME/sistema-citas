@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Empleado;
+use App\Models\EmployeeBreak;
 use App\Models\Servicio;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -13,6 +14,7 @@ class EmpleadoEdit extends Component
     public $nombre, $telefono;
     public $serviciosSeleccionados = [];
     public $horarios = [];
+    public $descansos = [];
 
     protected $messages = [
         'telefono.required' => 'El telefono es obligatorio.',
@@ -38,6 +40,23 @@ class EmpleadoEdit extends Component
             $this->horarios[$index]['end_time'] = Carbon::parse($schedule->end_time)->format('H:i');
             $this->horarios[$index]['enabled'] = true;
         }
+
+        $this->descansos = $empleado->breaks()
+            ->whereDate('date', '>=', today()->toDateString())
+            ->orderBy('date')
+            ->orderBy('start_time')
+            ->get()
+            ->map(function (EmployeeBreak $break) {
+                return [
+                    'date' => optional($break->date)->format('Y-m-d'),
+                    'start_time' => $break->start_time ? Carbon::parse($break->start_time)->format('H:i') : '',
+                    'end_time' => $break->end_time ? Carbon::parse($break->end_time)->format('H:i') : '',
+                    'is_all_day' => (bool) $break->is_all_day,
+                    'reason' => (string) ($break->reason ?? ''),
+                ];
+            })
+            ->values()
+            ->all();
     }
 
     public function toggleLabora($index): void
@@ -50,8 +69,9 @@ class EmpleadoEdit extends Component
         $this->horarios[$index]['enabled'] = !$enabled;
 
         if ($this->horarios[$index]['enabled']) {
-            $this->horarios[$index]['start_time'] = $this->horarios[$index]['start_time'] ?: '08:00';
-            $this->horarios[$index]['end_time'] = $this->horarios[$index]['end_time'] ?: '15:00';
+            $dayOfWeek = (int) ($this->horarios[$index]['day_of_week'] ?? 0);
+            $this->horarios[$index]['start_time'] = $this->horarios[$index]['start_time'] ?: '09:00';
+            $this->horarios[$index]['end_time'] = $this->horarios[$index]['end_time'] ?: ($dayOfWeek === 6 ? '16:00' : '18:00');
         }
     }
 
@@ -94,6 +114,27 @@ class EmpleadoEdit extends Component
             ->all();
     }
 
+    public function addDescanso(): void
+    {
+        $this->descansos[] = [
+            'date' => today()->toDateString(),
+            'start_time' => '15:00',
+            'end_time' => '16:00',
+            'is_all_day' => false,
+            'reason' => '',
+        ];
+    }
+
+    public function removeDescanso(int $index): void
+    {
+        if (!isset($this->descansos[$index])) {
+            return;
+        }
+
+        unset($this->descansos[$index]);
+        $this->descansos = array_values($this->descansos);
+    }
+
     private function validarHorarios(): bool
     {
         $activos = 0;
@@ -132,6 +173,42 @@ class EmpleadoEdit extends Component
         return true;
     }
 
+    private function validarDescansos(): bool
+    {
+        foreach ($this->descansos as $i => $descanso) {
+            $fecha = (string) ($descanso['date'] ?? '');
+            $inicio = (string) ($descanso['start_time'] ?? '');
+            $fin = (string) ($descanso['end_time'] ?? '');
+            $todoDia = (bool) ($descanso['is_all_day'] ?? false);
+
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
+                $this->addError("descansos.$i.date", 'La fecha del descanso no es valida.');
+                return false;
+            }
+
+            if ($todoDia) {
+                continue;
+            }
+
+            if (!preg_match('/^\d{2}:\d{2}$/', $inicio)) {
+                $this->addError("descansos.$i.start_time", 'La hora inicial del descanso no es valida.');
+                return false;
+            }
+
+            if (!preg_match('/^\d{2}:\d{2}$/', $fin)) {
+                $this->addError("descansos.$i.end_time", 'La hora final del descanso no es valida.');
+                return false;
+            }
+
+            if ($inicio >= $fin) {
+                $this->addError("descansos.$i.start_time", 'El descanso debe iniciar antes de terminar.');
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function actualizar()
     {
         $this->validate([
@@ -140,9 +217,10 @@ class EmpleadoEdit extends Component
             'serviciosSeleccionados' => 'required|array|min:1|max:5',
             'serviciosSeleccionados.*' => 'exists:services,id',
             'horarios' => 'required|array|size:6',
+            'descansos' => 'nullable|array',
         ]);
 
-        if (!$this->validarHorarios()) {
+        if (!$this->validarHorarios() || !$this->validarDescansos()) {
             return;
         }
 
@@ -166,8 +244,22 @@ class EmpleadoEdit extends Component
             ]);
         }
 
+        $this->empleado->breaks()
+            ->whereDate('date', '>=', today()->toDateString())
+            ->delete();
+
+        foreach ($this->descansos as $descanso) {
+            $this->empleado->breaks()->create([
+                'date' => $descanso['date'],
+                'start_time' => (bool) ($descanso['is_all_day'] ?? false) ? null : ($descanso['start_time'] ?: null),
+                'end_time' => (bool) ($descanso['is_all_day'] ?? false) ? null : ($descanso['end_time'] ?: null),
+                'is_all_day' => (bool) ($descanso['is_all_day'] ?? false),
+                'reason' => trim((string) ($descanso['reason'] ?? '')) ?: null,
+            ]);
+        }
+
         return redirect()->route('admin.empleados.index')
-            ->with('success', 'Empleado actualizado con horarios');
+            ->with('success', 'Empleado actualizado con horarios y descansos');
     }
 
     public function render()
@@ -182,8 +274,8 @@ class EmpleadoEdit extends Component
         return collect(range(1, 6))->map(function ($day) {
             return [
                 'day_of_week' => $day,
-                'start_time' => '08:00',
-                'end_time' => '15:00',
+                'start_time' => '09:00',
+                'end_time' => $day === 6 ? '16:00' : '18:00',
                 'enabled' => false,
             ];
         })->all();

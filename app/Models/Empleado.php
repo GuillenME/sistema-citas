@@ -31,4 +31,9 @@ class Empleado extends Model
     {
         return $this->hasMany(EmployeeSchedule::class, 'employee_id');
     }
+
+    public function breaks()
+    {
+        return $this->hasMany(EmployeeBreak::class, 'employee_id');
+    }
 }

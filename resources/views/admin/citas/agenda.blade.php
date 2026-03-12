@@ -119,6 +119,7 @@
                                                     'cancelada' => 'is-cancelada',
                                                     'no_asistio' => 'is-no-asistio',
                                                     'pendiente_anticipo' => 'is-pendiente',
+                                                    'break' => 'is-break',
                                                     default => 'is-default',
                                                 };
                                             @endphp

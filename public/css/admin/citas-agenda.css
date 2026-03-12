@@ -429,6 +429,12 @@
     background: linear-gradient(145deg, rgba(100, 63, 24, 0.96), rgba(73, 43, 17, 0.96));
 }
 
+.agenda-appointment-card.is-break {
+    border-style: dashed;
+    border-color: rgba(234, 191, 112, 0.3);
+    background: linear-gradient(145deg, rgba(82, 46, 20, 0.9), rgba(60, 34, 15, 0.9));
+}
+
 .agenda-empty-state {
     padding: 60px 18px;
     text-align: center;

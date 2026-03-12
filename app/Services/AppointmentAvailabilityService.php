@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Constants\CitaStatus;
 use App\Models\Cita;
 use App\Models\Empleado;
+use App\Models\EmployeeBreak;
 use App\Models\Servicio;
 use Carbon\Carbon;
 
@@ -23,8 +24,12 @@ class AppointmentAvailabilityService
             && $finPropuesto > ($inicioExistente - $descanso);
     }
 
-    public function isInsideLunchBreak(string $horaInicio, string $horaFin): bool
+    public function isInsideLunchBreak(string $horaInicio, string $horaFin, ?Carbon $fecha = null): bool
     {
+        if ($fecha && $fecha->isSaturday()) {
+            return false;
+        }
+
         $comidaInicio = (string) config('citas.horarios.comida_inicio', '15:00');
         $comidaFin = (string) config('citas.horarios.comida_fin', '16:00');
 
@@ -45,13 +50,38 @@ class AppointmentAvailabilityService
 
         return $empleado->schedules
             ->where('day_of_week', $diaSemana)
-            ->contains(function ($horario) use ($horaInicio, $horaFin) {
+            ->contains(function ($horario) use ($horaInicio, $horaFin, $fecha, $empleado) {
                 $inicio = Carbon::parse($horario->start_time)->format('H:i');
                 $fin = Carbon::parse($horario->end_time)->format('H:i');
 
                 return $horaInicio >= $inicio
                     && $horaFin <= $fin
-                    && !$this->isInsideLunchBreak($horaInicio, $horaFin);
+                    && !$this->isInsideLunchBreak($horaInicio, $horaFin, $fecha)
+                    && !$this->employeeHasBreakConflict($empleado, $fecha, $horaInicio, $horaFin);
+            });
+    }
+
+    public function employeeHasBreakConflict(Empleado $empleado, Carbon $fecha, string $horaInicio, string $horaFin): bool
+    {
+        $fechaTexto = $fecha->toDateString();
+        $inicioPropuesto = Carbon::parse($horaInicio)->hour * 60 + Carbon::parse($horaInicio)->minute;
+        $finPropuesto = Carbon::parse($horaFin)->hour * 60 + Carbon::parse($horaFin)->minute;
+
+        return $empleado->breaks
+            ->filter(fn (EmployeeBreak $break) => optional($break->date)->toDateString() === $fechaTexto)
+            ->contains(function (EmployeeBreak $break) use ($inicioPropuesto, $finPropuesto) {
+                if ($break->is_all_day) {
+                    return true;
+                }
+
+                if (!$break->start_time || !$break->end_time) {
+                    return true;
+                }
+
+                $inicioBreak = Carbon::parse($break->start_time)->hour * 60 + Carbon::parse($break->start_time)->minute;
+                $finBreak = Carbon::parse($break->end_time)->hour * 60 + Carbon::parse($break->end_time)->minute;
+
+                return $inicioPropuesto < $finBreak && $finPropuesto > $inicioBreak;
             });
     }
 
@@ -95,6 +125,13 @@ class AppointmentAvailabilityService
                 continue;
             }
 
+            $descansosEmpleado = $empleado->breaks
+                ->filter(fn (EmployeeBreak $break) => optional($break->date)->toDateString() === $fecha->toDateString());
+
+            if ($descansosEmpleado->contains(fn (EmployeeBreak $break) => $break->is_all_day)) {
+                continue;
+            }
+
             foreach ($horarios as $horario) {
                 $inicioR = Carbon::parse($horario->start_time)->hour * 60
                     + Carbon::parse($horario->start_time)->minute;
@@ -114,7 +151,11 @@ class AppointmentAvailabilityService
                     $inicioBloque = sprintf('%02d:%02d', intdiv($min, 60), $min % 60);
                     $finBloqueFmt = sprintf('%02d:%02d', intdiv($finBloque, 60), $finBloque % 60);
 
-                    if ($this->isInsideLunchBreak($inicioBloque, $finBloqueFmt)) {
+                    if ($this->isInsideLunchBreak($inicioBloque, $finBloqueFmt, $fecha)) {
+                        continue;
+                    }
+
+                    if ($this->employeeHasBreakConflict($empleado, $fecha, $inicioBloque, $finBloqueFmt)) {
                         continue;
                     }
 

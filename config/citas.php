@@ -14,11 +14,11 @@ return [
     // Configuracion de horarios
     'horarios' => [
         'dias_semana' => [
-            [480, 900],   // 8:00 - 15:00
-            [960, 1200],  // 16:00 - 20:00
+            [540, 900],   // 9:00 - 15:00
+            [960, 1080],  // 16:00 - 18:00
         ],
         'sabados' => [
-            [480, 900],   // 8:00 - 15:00
+            [540, 960],   // 9:00 - 16:00
         ],
         'intervalo_minutos' => 15,
         'hora_minima_adelantada' => 60,

@@ -428,6 +428,173 @@
     border-bottom: 0;
 }
 
+.admin-form-shell .breaks-section,
+.breaks-section {
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(252, 204, 124, 0.18);
+    background: linear-gradient(165deg, rgba(18, 12, 7, 0.92), rgba(11, 8, 5, 0.9));
+}
+
+.admin-form-shell .breaks-section-head,
+.breaks-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.admin-form-shell .breaks-section-kicker,
+.breaks-section-kicker {
+    display: inline-flex;
+    margin-bottom: 8px;
+    color: #efc97f;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.admin-form-shell .breaks-section-head p,
+.breaks-section-head p {
+    margin: 0;
+    color: #ccb693;
+    line-height: 1.55;
+}
+
+.admin-form-shell .breaks-panel,
+.breaks-panel {
+    display: grid;
+    gap: 12px;
+}
+
+.admin-form-shell .break-row,
+.admin-form-shell .breaks-empty,
+.break-row,
+.breaks-empty {
+    border: 1px solid rgba(252, 204, 124, 0.18);
+    border-radius: 16px;
+    background: linear-gradient(160deg, rgba(20, 12, 8, 0.9), rgba(12, 9, 6, 0.86));
+}
+
+.admin-form-shell .break-row,
+.break-row {
+    display: grid;
+    padding: 14px;
+    gap: 14px;
+}
+
+.admin-form-shell .break-row-top,
+.break-row-top {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.9fr) minmax(150px, 0.9fr) minmax(220px, 1.6fr) auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.admin-form-shell .break-row-time,
+.break-row-time {
+    display: grid;
+    grid-template-columns: minmax(140px, 0.8fr) minmax(140px, 0.8fr) minmax(220px, 1.4fr);
+    gap: 12px;
+    align-items: end;
+}
+
+.admin-form-shell .break-row-time.is-disabled,
+.break-row-time.is-disabled {
+    opacity: 0.92;
+}
+
+.admin-form-shell .break-field,
+.break-field {
+    min-width: 0;
+}
+
+.admin-form-shell .break-field label,
+.break-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #e2c98f;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.admin-form-shell .break-field-toggle .schedule-toggle-btn,
+.break-field-toggle .schedule-toggle-btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+}
+
+.admin-form-shell .break-field-action,
+.break-field-action {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-form-shell .break-remove-btn,
+.break-remove-btn {
+    min-height: 42px;
+    padding: 0 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(248, 113, 113, 0.36);
+    background: rgba(127, 29, 29, 0.18);
+    color: #ffd5d5;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.admin-form-shell .break-remove-btn:hover,
+.break-remove-btn:hover {
+    background: rgba(127, 29, 29, 0.28);
+    border-color: rgba(248, 113, 113, 0.48);
+}
+
+.admin-form-shell .break-all-day-note,
+.break-all-day-note {
+    display: grid;
+    align-content: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px dashed rgba(252, 204, 124, 0.24);
+    background: rgba(252, 204, 124, 0.06);
+}
+
+.admin-form-shell .break-all-day-note span,
+.break-all-day-note span {
+    color: #f4ddaf;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.admin-form-shell .break-all-day-note p,
+.break-all-day-note p {
+    margin: 0;
+    color: #d4c0a2;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.admin-form-shell .breaks-empty,
+.breaks-empty {
+    padding: 18px 16px;
+}
+
+.admin-form-shell .breaks-empty p,
+.breaks-empty p {
+    margin: 0;
+    color: #cdb898;
+    line-height: 1.6;
+}
+
 .admin-form-shell .preview,
 .admin-form-shell .preview-wide {
     width: 100%;
@@ -573,5 +740,20 @@
 
     .admin-form-shell .schedule-table .schedule-errors {
         padding: 0 12px 10px;
+    }
+
+    .admin-form-shell .breaks-section-head,
+    .breaks-section-head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-form-shell .break-row,
+    .break-row,
+    .admin-form-shell .break-row-top,
+    .break-row-top,
+    .admin-form-shell .break-row-time,
+    .break-row-time {
+        grid-template-columns: 1fr;
     }
 }

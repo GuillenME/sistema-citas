@@ -101,7 +101,10 @@ class AdminCitaController extends Controller
         $ocultarSinCitas = $request->boolean('ocultar_sin_citas');
         $empleados = Empleado::query()
             ->where('active', 1)
-            ->with('schedules')
+            ->with([
+                'schedules',
+                'breaks' => fn ($query) => $query->whereDate('date', $fechaSeleccionada->toDateString())->orderBy('start_time'),
+            ])
             ->orderBy('name')
             ->get();
 
@@ -143,14 +146,18 @@ class AdminCitaController extends Controller
             $hasScheduleToday = $empleado
                 ? $empleado->schedules->where('day_of_week', $fechaSeleccionada->dayOfWeek)->isNotEmpty()
                 : false;
+            $employeeBreaks = $empleado?->breaks ?? collect();
+            $allDayBreak = $employeeBreaks->first(fn ($break) => $break->is_all_day);
 
             return [
                 'id' => $empleado?->id ? 'employee-' . $empleado->id : 'unassigned',
                 'name' => $label,
                 'subtitle' => $empleado
-                    ? ($hasScheduleToday ? ($empleado->specialty ?: 'Disponible') : 'Descansa hoy')
+                    ? ($allDayBreak
+                        ? ($allDayBreak->reason ?: 'Descansa hoy')
+                        : ($hasScheduleToday ? ($empleado->specialty ?: 'Disponible') : 'Descansa hoy'))
                     : 'Requiere asignacion',
-                'is_rest_day' => $empleado ? !$hasScheduleToday : false,
+                'is_rest_day' => $empleado ? (!$hasScheduleToday || (bool) $allDayBreak) : false,
                 'appointments' => $appointments
                     ->sortBy(fn (Cita $cita) => $cita->getRawOriginal('start_time'))
                     ->map(function (Cita $cita) use ($fechaSeleccionada, $horaInicio, $totalMinutos) {
@@ -181,6 +188,39 @@ class AdminCitaController extends Controller
                             ],
                         ];
                     })
+                    ->concat(
+                        $employeeBreaks
+                            ->reject(fn ($break) => $break->is_all_day)
+                            ->map(function ($break) use ($fechaSeleccionada, $horaInicio, $totalMinutos) {
+                                $inicio = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $break->start_time);
+                                $fin = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $break->end_time);
+                                $duracionMinutos = max(30, $inicio->diffInMinutes($fin));
+                                $offsetMinutos = max(0, ($inicio->hour * 60 + $inicio->minute) - ($horaInicio * 60));
+
+                                return [
+                                    'id' => 'break-' . $break->id,
+                                    'client' => '',
+                                    'service' => $break->reason ?: 'Descanso bloqueado',
+                                    'time_range' => $inicio->format('g:i A') . ' - ' . $fin->format('g:i A'),
+                                    'status' => 'break',
+                                    'employee' => $break->empleado?->name,
+                                    'top_percent' => round(($offsetMinutos / $totalMinutos) * 100, 4),
+                                    'height_percent' => round(($duracionMinutos / $totalMinutos) * 100, 4),
+                                    'payment_label' => '',
+                                    'details' => [
+                                        'client' => 'Bloque interno',
+                                        'service' => $break->reason ?: 'Descanso bloqueado',
+                                        'time_range' => $inicio->format('g:i A') . ' - ' . $fin->format('g:i A'),
+                                        'employee' => 'No disponible',
+                                        'status' => 'Descanso',
+                                        'deposit' => '-',
+                                        'remaining' => '-',
+                                        'notes' => trim((string) ($break->reason ?? '')) ?: 'Bloque de descanso manual del empleado.',
+                                    ],
+                                ];
+                            })
+                    )
+                    ->sortBy('top_percent')
                     ->values(),
             ];
         };
@@ -271,7 +311,7 @@ class AdminCitaController extends Controller
         }
 
         $servicio = Servicio::with(['empleados' => function ($q) {
-            $q->where('active', 1)->with('schedules');
+            $q->where('active', 1)->with(['schedules', 'breaks']);
         }])->findOrFail($request->servicio_id);
 
         $horaInicio = Carbon::parse($request->hora_inicio);
@@ -658,7 +698,7 @@ class AdminCitaController extends Controller
 
         $cita->service->load([
             'empleados' => function ($q) {
-                $q->where('active', 1)->with('schedules');
+                $q->where('active', 1)->with(['schedules', 'breaks']);
             },
         ]);
 

@@ -131,7 +131,7 @@ class CitaController extends Controller
                 $q->where('active', 1);
             })
             ->with(['empleados' => function ($q) {
-                $q->where('active', 1)->with('schedules');
+                $q->where('active', 1)->with(['schedules', 'breaks']);
             }])
             ->get()
             ->filter(function (Servicio $servicio) use ($fecha) {
@@ -157,7 +157,7 @@ class CitaController extends Controller
         $servicio = Servicio::query()
             ->where('active', 1)
             ->with(['empleados' => function ($q) {
-                $q->where('active', 1)->with('schedules');
+                $q->where('active', 1)->with(['schedules', 'breaks']);
             }])
             ->findOrFail($request->servicio_id);
 
@@ -200,7 +200,7 @@ class CitaController extends Controller
         }
 
         $servicio = Servicio::with(['empleados' => function ($q) {
-            $q->where('active', 1)->with('schedules');
+            $q->where('active', 1)->with(['schedules', 'breaks']);
         }])->findOrFail($request->servicio_id);
 
         $bloquesDisponibles = $this->availability->buildAvailableBlocksForService($servicio, $fecha);
@@ -225,7 +225,7 @@ class CitaController extends Controller
         }
 
         $servicio = Servicio::with(['empleados' => function ($q) {
-            $q->where('active', 1)->with('schedules');
+            $q->where('active', 1)->with(['schedules', 'breaks']);
         }])->findOrFail($request->servicio_id);
 
         if (!$servicio->active) {
@@ -377,7 +377,7 @@ class CitaController extends Controller
         }
 
         $cita->service->loadMissing(['empleados' => function ($q) {
-            $q->where('active', 1)->with('schedules');
+            $q->where('active', 1)->with(['schedules', 'breaks']);
         }]);
 
         $horaInicio = Carbon::parse($request->hora_inicio);
