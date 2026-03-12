@@ -50,6 +50,7 @@ class CitaController extends Controller
 
         $baseQuery = Cita::query()
             ->where('client_id', $cliente->id)
+            ->with('estados.user')
             ->with(['service' => function ($query) {
                 $query->with(['promociones' => function ($q) {
                     $q->where('published', true)

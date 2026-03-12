@@ -54,21 +54,47 @@
                             'cancelada' => 'Cancelada',
                             default => ucfirst($cita->status),
                         };
+
+                        $inicioCita = \Carbon\Carbon::parse(
+                            \Carbon\Carbon::parse($cita->date)->format('Y-m-d') . ' ' . $cita->getRawOriginal('start_time'),
+                        );
+                        $puedeReagendar = in_array($cita->status, ['confirmada', 'pendiente_anticipo'], true)
+                            && (($cita->reagendas_count ?? 0) < 2)
+                            && now()->lt($inicioCita);
                     @endphp
 
-                    <div class="cita-card">
-                        <div class="cita-header">
-                            <div class="cita-title">{{ $cita->service->name }}</div>
-                            <span class="estado {{ $estadoClase }}">{{ $estadoTexto }}</span>
-                        </div>
+	                    <div class="cita-card">
+	                        <div class="cita-header">
+	                            <div class="cita-eyebrow">Servicio</div>
+	                            <div class="cita-head-row">
+	                                <div class="cita-title">{{ $cita->service->name }}</div>
+	                                <span class="estado {{ $estadoClase }}">{{ $estadoTexto }}</span>
+	                            </div>
+	                        </div>
 
-                        <div class="cita-meta">
-                            <div><strong>Cliente:</strong> {{ $cita->client->user->name ?? '' }} {{ $cita->client->user->last_name ?? '' }}</div>
-                            <div><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}</div>
-                            <div><strong>Hora:</strong> {{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($cita->end_time)->format('H:i') }}</div>
-                        </div>
+	                        <div class="cita-when">
+	                            <div class="cita-when-box">
+	                                <span class="when-label">Fecha</span>
+	                                <strong>{{ \Carbon\Carbon::parse($cita->date)->format('d M, Y') }}</strong>
+	                            </div>
+	                            <div class="cita-when-box">
+	                                <span class="when-label">Hora</span>
+	                                <strong>{{ \Carbon\Carbon::parse($cita->start_time)->format('h:i A') }}</strong>
+	                            </div>
+	                        </div>
 
-                        <div class="cita-actions">
+	                        <div class="cita-meta">
+	                            <div class="meta-row">
+	                                <span>Cliente</span>
+	                                <strong>{{ trim(($cita->client->user->name ?? '') . ' ' . ($cita->client->user->last_name ?? '')) }}</strong>
+	                            </div>
+	                            <div class="meta-row">
+	                                <span>Horario</span>
+	                                <strong>{{ \Carbon\Carbon::parse($cita->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($cita->end_time)->format('H:i') }}</strong>
+	                            </div>
+	                        </div>
+
+	                        <div class="cita-actions">
                             <button type="button"
                                 class="detalle-btn"
                                 data-servicio="{{ e($cita->service->name ?? 'Servicio') }}"
@@ -81,7 +107,7 @@
                                 Ver detalle
                             </button>
 
-                            @if (in_array($cita->status, ['confirmada', 'pendiente_anticipo'], true) && (($cita->reagendas_count ?? 0) < 2))
+                            @if ($puedeReagendar)
                                 <button type="button"
                                     class="reagendar-btn"
                                     data-reagendar-action="{{ route('recepcionista.citas.reagendar', $cita) }}"

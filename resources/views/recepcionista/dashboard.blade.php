@@ -28,7 +28,7 @@
                     <span class="action-desc">Registra una nueva cita en segundos.</span>
                 </a>
                 <a class="action-card" href="{{ route('recepcionista.citas.index') }}">
-                    <span class="action-title">Citas del día</span>
+                    <span class="action-title">Citas de la semana</span>
                     <span class="action-desc">Consulta el historial y el estado actual.</span>
                 </a>
             </div>

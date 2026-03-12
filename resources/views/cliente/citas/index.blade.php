@@ -91,8 +91,37 @@
 	                            'no_asistio' => 'No asistio',
 	                            'cancelada' => 'Cancelada',
 	                            default => ucfirst($cita->status),
-                        };
-                    @endphp
+	                        };
+
+                            $timelineItems = collect([
+                                [
+                                    'label' => 'Cita creada',
+                                    'meta' => 'Sistema',
+                                    'date' => optional($cita->created_at)->format('d/m/Y H:i'),
+                                ],
+                            ])->merge(
+                                $cita->estados
+                                    ->sortBy('change_date')
+                                    ->map(function ($estado) {
+                                        $label = match ($estado->status) {
+                                            'confirmada' => 'Confirmada',
+                                            'cancelada' => 'Cancelada',
+                                            'completada' => 'Completada',
+                                            'no_asistio' => 'No asistio',
+                                            'reagendada' => 'Reagendada',
+                                            'pendiente_anticipo' => 'Pendiente de anticipo',
+                                            'anticipo_rechazado' => 'Anticipo rechazado',
+                                            default => ucfirst(str_replace('_', ' ', (string) $estado->status)),
+                                        };
+
+                                        return [
+                                            'label' => $label,
+                                            'meta' => trim((string) (($estado->user?->name ?? '') . ' ' . ($estado->user?->last_name ?? ''))) ?: 'Sistema',
+                                            'date' => \Carbon\Carbon::parse($estado->change_date)->format('d/m/Y H:i'),
+                                        ];
+                                    })
+                            )->values();
+	                    @endphp
 
                     <div class="cita-card">
                         <div class="cita-header">
@@ -300,14 +329,32 @@
                                 </div>
                             @endif
 
-                            @if ($cita->notes)
+	                            @if ($cita->notes)
+	                                <div class="detalle-section">
+	                                    <span class="detalle-section-title">Notas</span>
+	                                    <div class="detalle-note-box">{{ $cita->notes }}</div>
+	                                </div>
+	                            @endif
+
                                 <div class="detalle-section">
-                                    <span class="detalle-section-title">Notas</span>
-                                    <div class="detalle-note-box">{{ $cita->notes }}</div>
+                                    <span class="detalle-section-title">Historial</span>
+                                    <div class="detalle-timeline">
+                                        @forelse ($timelineItems as $item)
+                                            <div class="timeline-item">
+                                                <div class="timeline-dot"></div>
+                                                <div class="timeline-copy">
+                                                    <strong>{{ $item['label'] }}</strong>
+                                                    <span>{{ $item['meta'] }}</span>
+                                                    <small>{{ $item['date'] }}</small>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <p class="timeline-empty">No hay movimientos registrados.</p>
+                                        @endforelse
+                                    </div>
                                 </div>
-                            @endif
-                        </div>
-                    </template>
+	                        </div>
+	                    </template>
                 @empty
                     <div class="citas-empty-state">
                         No hay citas en este estado por ahora.

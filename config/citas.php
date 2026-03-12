@@ -22,6 +22,7 @@ return [
         ],
         'intervalo_minutos' => 15,
         'hora_minima_adelantada' => 60,
+        'descanso_entre_servicios' => env('CITAS_DESCANSO_ENTRE_SERVICIOS', 10),
 
         // Bloque de comida global (se excluye de disponibilidad)
         'comida_inicio' => env('CITAS_COMIDA_INICIO', '15:00'),

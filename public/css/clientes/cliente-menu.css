@@ -50,8 +50,53 @@ header.cliente-menu nav {
     min-width: 0;
 }
 
-header.cliente-menu form {
+header.cliente-menu .cliente-menu-actions {
+    display: flex;
+    align-items: center;
     justify-self: end;
+    gap: 12px;
+}
+
+header.cliente-menu form {
+    margin: 0;
+}
+
+header.cliente-menu .profile-btn {
+    background: linear-gradient(145deg, #5b3b2c, #4b3226);
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    color: #fccc7c;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .25s ease;
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+header.cliente-menu .profile-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: #fccc7c;
+    transition: transform .2s ease, stroke .2s ease;
+}
+
+header.cliente-menu .profile-btn:hover,
+header.cliente-menu .profile-btn.active {
+    background: linear-gradient(145deg, #6a4633, #553728);
+    transform: translateY(-2px);
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.45),
+        0 0 15px rgba(252, 204, 124, 0.35);
+}
+
+header.cliente-menu .profile-btn:hover svg,
+header.cliente-menu .profile-btn.active svg {
+    stroke: #ffdca0;
 }
 
 header.cliente-menu nav a {
@@ -156,5 +201,9 @@ header.cliente-menu .logout-btn:active {
         flex-wrap: wrap;
         gap: 16px;
         justify-content: flex-start;
+    }
+
+    header.cliente-menu .cliente-menu-actions {
+        justify-self: auto;
     }
 }

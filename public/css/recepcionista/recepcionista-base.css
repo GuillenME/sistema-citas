@@ -1,5 +1,5 @@
 html {
-    scrollbar-gutter: stable;
+    background: #1a0d07;
 }
 
 * {
@@ -10,11 +10,12 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     min-height: 100vh;
-    overflow-y: scroll;
+    overflow-y: auto;
     background-image: var(--bg-url);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: #1a0d07;
     position: relative;
 }
 

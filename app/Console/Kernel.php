@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new EliminarClientesInactivos)
             ->dailyAt('10:40');
         $schedule->command('citas:recordatorios')->everyFiveMinutes();
+        $schedule->command('citas:notificar-pendientes-cierre')->everyTenMinutes();
     }
 
     protected function commands(): void

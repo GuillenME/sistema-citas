@@ -10,6 +10,19 @@ use Carbon\Carbon;
 
 class AppointmentAvailabilityService
 {
+    public function breakMinutes(): int
+    {
+        return max(0, (int) config('citas.horarios.descanso_entre_servicios', 10));
+    }
+
+    private function overlapsWithBreakBuffer(int $inicioPropuesto, int $finPropuesto, int $inicioExistente, int $finExistente): bool
+    {
+        $descanso = $this->breakMinutes();
+
+        return $inicioPropuesto < ($finExistente + $descanso)
+            && $finPropuesto > ($inicioExistente - $descanso);
+    }
+
     public function isInsideLunchBreak(string $horaInicio, string $horaFin): bool
     {
         $comidaInicio = (string) config('citas.horarios.comida_inicio', '15:00');
@@ -111,7 +124,7 @@ class AppointmentAvailabilityService
                         $finCita = Carbon::parse($cita->end_time)->hour * 60
                             + Carbon::parse($cita->end_time)->minute;
 
-                        if ($min < $finCita && $finBloque > $inicioCita) {
+                        if ($this->overlapsWithBreakBuffer($min, $finBloque, $inicioCita, $finCita)) {
                             $ocupado = true;
                             break;
                         }
@@ -149,11 +162,7 @@ class AppointmentAvailabilityService
 
             $query = Cita::where('employee_id', $empleado->id)
                 ->whereDate('date', $fecha->toDateString())
-                ->whereIn('status', [CitaStatus::CONFIRMADA, CitaStatus::PENDIENTE_ANTICIPO])
-                ->where(function ($q) use ($horaInicio, $horaFin) {
-                    $q->where('start_time', '<', $horaFin)
-                        ->where('end_time', '>', $horaInicio);
-                });
+                ->whereIn('status', [CitaStatus::CONFIRMADA, CitaStatus::PENDIENTE_ANTICIPO]);
 
             if ($excludeAppointmentId !== null) {
                 $query->where('id', '!=', $excludeAppointmentId);
@@ -163,7 +172,19 @@ class AppointmentAvailabilityService
                 $query->lockForUpdate();
             }
 
-            if (!$query->exists()) {
+            $inicioPropuesto = Carbon::parse($horaInicio)->hour * 60 + Carbon::parse($horaInicio)->minute;
+            $finPropuesto = Carbon::parse($horaFin)->hour * 60 + Carbon::parse($horaFin)->minute;
+
+            $tieneConflicto = $query->get()->contains(function (Cita $cita) use ($inicioPropuesto, $finPropuesto) {
+                $inicioExistente = Carbon::parse($cita->getRawOriginal('start_time'))->hour * 60
+                    + Carbon::parse($cita->getRawOriginal('start_time'))->minute;
+                $finExistente = Carbon::parse($cita->getRawOriginal('end_time'))->hour * 60
+                    + Carbon::parse($cita->getRawOriginal('end_time'))->minute;
+
+                return $this->overlapsWithBreakBuffer($inicioPropuesto, $finPropuesto, $inicioExistente, $finExistente);
+            });
+
+            if (!$tieneConflicto) {
                 return $empleado;
             }
         }

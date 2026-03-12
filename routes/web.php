@@ -11,6 +11,8 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServicioPublicController;
+use App\Models\Cliente;
+use Illuminate\Http\Request;
 
 
 /* HOME PÚBLICO */
@@ -85,6 +87,8 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::get('/citas', [AdminCitaController::class, 'index'])
             ->name('citas.index');
+        Route::get('/citas/agenda', [AdminCitaController::class, 'agenda'])
+            ->name('citas.agenda');
         Route::get('/citas/create', [AdminCitaController::class, 'create'])
             ->name('citas.create');
         Route::post('/citas', [AdminCitaController::class, 'store'])
@@ -116,6 +120,8 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::post('/citas/{cita}/no-asistio', [AdminCitaController::class, 'marcarNoAsistio'])
             ->name('citas.noAsistio');
+        Route::get('/citas/{cita}/ticket', [AdminCitaController::class, 'ticket'])
+            ->name('citas.ticket');
 
         // PROMOCIONES (LIVEWIRE)
         Route::get('/promociones', function () {
@@ -249,6 +255,71 @@ Route::middleware(['auth', 'rol:2'])
         Route::get('/dashboard', function () {
             return view('cliente.dashboard');
         })->name('dashboard');
+
+        Route::get('/perfil', function () {
+            $usuario = auth()->user()->load('client');
+            $cliente = $usuario->client;
+
+            $stats = [
+                'citas_total' => \App\Models\Cita::query()
+                    ->where('client_id', $cliente?->id)
+                    ->count(),
+                'proxima_cita' => \App\Models\Cita::query()
+                    ->where('client_id', $cliente?->id)
+                    ->whereDate('date', '>=', today())
+                    ->orderBy('date')
+                    ->orderBy('start_time')
+                    ->first(),
+            ];
+
+            return view('cliente.perfil', compact('usuario', 'cliente', 'stats'));
+        })->name('perfil');
+
+        Route::post('/perfil', function (Request $request) {
+            /** @var \App\Models\Usuario $usuario */
+            $usuario = auth()->user();
+            $cliente = $usuario->client ?? Cliente::create([
+                'user_id' => $usuario->id,
+            ]);
+
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'last_name' => 'nullable|string|max:255',
+                'phone' => 'nullable|string|max:30',
+                'email' => 'required|email|max:255|unique:users,email,' . $usuario->id,
+                'birth_date' => 'nullable|date|before:today',
+            ]);
+
+            $birthDateActual = $cliente->birth_date?->format('Y-m-d');
+            $birthDateNueva = $validated['birth_date'] ?? null;
+
+            if ($birthDateNueva !== $birthDateActual) {
+                if ($birthDateActual !== null && (int) ($cliente->birth_date_change_count ?? 0) >= 1) {
+                    return back()->withErrors([
+                        'birth_date' => 'La fecha de nacimiento solo puede modificarse una vez despues de registrarla.',
+                    ])->withInput();
+                }
+
+                if ($birthDateActual !== null) {
+                    $cliente->birth_date_change_count = (int) ($cliente->birth_date_change_count ?? 0) + 1;
+                }
+
+                $cliente->birth_date = $birthDateNueva;
+            }
+
+            $usuario->update([
+                'name' => $validated['name'],
+                'last_name' => $validated['last_name'] ?? null,
+                'phone' => $validated['phone'] ?? null,
+                'email' => $validated['email'],
+            ]);
+
+            $cliente->save();
+
+            return redirect()
+                ->route('cliente.perfil')
+                ->with('success', 'Perfil actualizado correctamente.');
+        })->name('perfil.update');
 
         Route::get('/citas', [CitaController::class, 'index'])
             ->name('citas.index');

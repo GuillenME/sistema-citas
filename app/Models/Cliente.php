@@ -13,6 +13,12 @@ class Cliente extends Model
         'user_id',
         'birth_date',
         'notes',
+        'birth_date_change_count',
+    ];
+
+    protected $casts = [
+        'birth_date' => 'date',
+        'birth_date_change_count' => 'integer',
     ];
 
     public function user()

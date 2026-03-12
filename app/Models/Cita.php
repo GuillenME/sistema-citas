@@ -59,6 +59,35 @@ class Cita extends Model
         return $this->hasMany(CitaEstado::class, 'appointment_id');
     }
 
+    public function anticipoRegistrado(): float
+    {
+        $deposito = $this->deposit_amount;
+
+        if ($deposito !== null && (float) $deposito > 0) {
+            return (float) $deposito;
+        }
+
+        $notas = (string) ($this->notes ?? '');
+        if (preg_match('/Anticipo recibido en (?:recepcion|recepción):\s*\$?([\d,]+(?:\.\d{1,2})?)/iu', $notas, $matches) === 1) {
+            return (float) str_replace(',', '', $matches[1]);
+        }
+
+        if (preg_match('/Anticipo recibido por administrador:\s*\$?([\d,]+(?:\.\d{1,2})?)/iu', $notas, $matches) === 1) {
+            return (float) str_replace(',', '', $matches[1]);
+        }
+
+        return 0.0;
+    }
+
+    public function precioRegistrado(): float
+    {
+        if ($this->service_price !== null) {
+            return (float) $this->service_price;
+        }
+
+        return (float) ($this->service?->price ?? 0);
+    }
+
     // public function staff()
     // {
     //     return $this->belongsTo(Staff::class, 'staff_id');

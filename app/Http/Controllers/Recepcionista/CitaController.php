@@ -34,6 +34,14 @@ class CitaController extends Controller
         CitaStatus::NO_ASISTIO,
     ];
 
+    private function citaYaInicio(Cita $cita): bool
+    {
+        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
+        $inicioCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
+
+        return now()->greaterThanOrEqualTo($inicioCita);
+    }
+
     public function __construct(private AppointmentAvailabilityService $availability)
     {
     }
@@ -132,6 +140,10 @@ class CitaController extends Controller
 
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
+        $precioServicio = $servicio->precioConDescuento();
+        $anticipo = (float) $request->anticipo_monto;
+        $totalPagado = $anticipo;
+        $status = $anticipo >= $precioServicio ? 'completada' : 'confirmada';
 
         $driver = DB::getDriverName();
         $lockName = 'citas:' . $request->fecha;
@@ -166,8 +178,11 @@ class CitaController extends Controller
                 'date' => $request->fecha,
                 'start_time' => $horaInicio->format('H:i'),
                 'end_time' => $horaFin->format('H:i'),
-                'status' => 'confirmada',
-                'notes' => 'Anticipo recibido en recepcion: $' . number_format($request->anticipo_monto, 2),
+                'service_price' => $servicio->price,
+                'deposit_amount' => $anticipo,
+                'total_paid' => $totalPagado,
+                'status' => $status,
+                'notes' => 'Anticipo recibido en recepcion: $' . number_format($anticipo, 2),
             ]);
 
             DB::commit();
@@ -199,7 +214,8 @@ class CitaController extends Controller
             ])
             ->whereBetween('date', [$inicioSemana, $finSemana]);
 
-        $statusCounts = (clone $baseQuery)
+        $statusCounts = Cita::query()
+            ->whereBetween('date', [$inicioSemana, $finSemana])
             ->selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
@@ -235,6 +251,10 @@ class CitaController extends Controller
     {
         if (!in_array($cita->status, ['confirmada', 'pendiente_anticipo'], true)) {
             return back()->with('error', 'Solo se pueden reagendar citas confirmadas o pendientes de anticipo.');
+        }
+
+        if ($this->citaYaInicio($cita)) {
+            return back()->with('error', 'La cita ya inicio o ya paso y no puede reagendarse.');
         }
 
         $reagendas = $cita->estados()->where('status', 'reagendada')->count();
