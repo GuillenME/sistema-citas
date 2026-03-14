@@ -16,7 +16,10 @@
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <div class="brand-led">{{ optional($homeSetting)->hero_title ?? 'BARBERÍA & SPA' }}</div>
-                <h1>La excelencia del <span>cuidado.</span></h1>
+                <h1 class="hero-subtitle">
+                    <span class="accent-text">Estilo</span>, cuidado y bienestar en 
+                    <span class="accent-text">un solo lugar</span>
+                </h1>
                 <p>Reserva tu lugar en el santuario de la elegancia y la tradición. Donde cada detalle cuenta.</p>
             </div>
         </section>

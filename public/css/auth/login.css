@@ -85,7 +85,7 @@ body {
     text-transform: uppercase;
     color: #fff;
     text-shadow:
-        0 0 7px rgba(255, 255, 255, 0.85),
+        0 0 7px rgba(238, 115, 15, 0.85),
         0 0 16px rgba(243, 154, 43, 0.65),
         0 0 34px rgba(243, 154, 43, 0.42);
     animation: led-flicker 3.7s infinite;
@@ -101,6 +101,18 @@ body {
 
 .hero-content h1 span {
     color: var(--accent);
+}
+
+.hero-subtitle{
+    margin:10px 0 10px;
+    font-size:clamp(1.4rem,2.2vw,2rem);
+    line-height:1.25;
+    font-weight:650;
+    max-width:520px;
+}
+
+.accent-text{
+    color:var(--accent);
 }
 
 .hero-content p {
