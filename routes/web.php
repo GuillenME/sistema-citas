@@ -333,7 +333,6 @@ Route::middleware(['auth', 'rol:2'])
                 'name' => 'required|string|max:255',
                 'last_name' => 'nullable|string|max:255',
                 'phone' => 'nullable|string|max:30',
-                'email' => 'required|email|max:255|unique:users,email,' . $usuario->id,
                 'birth_date' => 'nullable|date|before:today',
             ]);
 
@@ -358,7 +357,6 @@ Route::middleware(['auth', 'rol:2'])
                 'name' => $validated['name'],
                 'last_name' => $validated['last_name'] ?? null,
                 'phone' => $validated['phone'] ?? null,
-                'email' => $validated['email'],
             ]);
 
             $cliente->save();
