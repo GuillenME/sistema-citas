@@ -239,8 +239,44 @@ Route::middleware(['auth', 'rol:3'])
         Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
             ->name('citas.store');
 
+        Route::get('/citas/agenda', [RecepcionistaCitaController::class, 'agenda'])
+            ->name('citas.agenda');
+
+        Route::get('/citas/reporte-diario', [RecepcionistaCitaController::class, 'reporteDiario'])
+            ->name('citas.reporte-diario');
+
+        Route::get('/citas/reporte-diario/pdf', [RecepcionistaCitaController::class, 'reporteDiarioPdf'])
+            ->name('citas.reporte-diario.pdf');
+
+        Route::get('/citas/reporte-mensual', [RecepcionistaCitaController::class, 'reporteMensual'])
+            ->name('citas.reporte-mensual');
+
+        Route::get('/citas/reporte-mensual/pdf', [RecepcionistaCitaController::class, 'reporteMensualPdf'])
+            ->name('citas.reporte-mensual.pdf');
+
+        Route::post('/citas/{cita}/confirmar', [RecepcionistaCitaController::class, 'confirmar'])
+            ->name('citas.confirmar');
+
+        Route::post('/citas/{cita}/cancelar', [RecepcionistaCitaController::class, 'cancelar'])
+            ->name('citas.cancelar');
+
         Route::post('/citas/{cita}/reagendar', [RecepcionistaCitaController::class, 'reagendar'])
             ->name('citas.reagendar');
+
+        Route::post('/citas/{cita}/completar', [RecepcionistaCitaController::class, 'completar'])
+            ->name('citas.completar');
+
+        Route::post('/citas/{cita}/no-asistio', [RecepcionistaCitaController::class, 'marcarNoAsistio'])
+            ->name('citas.noAsistio');
+
+        Route::post('/citas/{cita}/asignar-empleado', [RecepcionistaCitaController::class, 'asignarEmpleado'])
+            ->name('citas.asignarEmpleado');
+
+        Route::post('/citas/{cita}/rechazar', [RecepcionistaCitaController::class, 'rechazarPago'])
+            ->name('citas.rechazar');
+
+        Route::get('/citas/{cita}/ticket', [RecepcionistaCitaController::class, 'ticket'])
+            ->name('citas.ticket');
 
         Route::get('/citas', [RecepcionistaCitaController::class, 'index'])
             ->name('citas.index');
