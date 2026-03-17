@@ -109,6 +109,9 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/confirmar', [AdminCitaController::class, 'confirmar'])
             ->name('citas.confirmar');
 
+        Route::post('/citas/{cita}/anticipo', [AdminCitaController::class, 'actualizarAnticipo'])
+            ->name('citas.actualizarAnticipo');
+
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
 

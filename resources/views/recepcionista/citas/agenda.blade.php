@@ -45,7 +45,7 @@
             padding: 22px 24px 18px;
         }
 
-        #agendaAppointmentModal .citas-detail-summary-item span,
+        #agendaAppointmentModal .citas-detail-summary-item > span,
         #agendaAppointmentModal .citas-detail-extra > span,
         #agendaAppointmentModal .citas-detail-comment-box > span {
             display: block;
@@ -61,6 +61,15 @@
             color: #fff1d8;
             font-size: 22px;
             line-height: 1.25;
+        }
+
+        #agendaAppointmentModal .citas-detail-summary-item strong span {
+            color: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline;
         }
 
         #agendaAppointmentModal .citas-detail-comment-box,
