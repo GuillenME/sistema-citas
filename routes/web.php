@@ -225,6 +225,14 @@ Route::middleware(['auth', 'rol:1'])
                 })
             ]);
         })->name('notificaciones.json');
+
+        Route::get('/notificaciones/todas', function () {
+            /** @var \App\Models\Usuario $user */
+            $user = auth()->user();
+            $notificaciones = $user->notifications()->latest()->paginate(15);
+
+            return view('admin.notificaciones.index', compact('notificaciones'));
+        })->name('notificaciones.index');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */
