@@ -207,3 +207,70 @@ header.cliente-menu .logout-btn:active {
         justify-self: auto;
     }
 }
+
+/* ===== FOOTER CLIENTE ===== */
+
+.cliente-footer {
+    margin-top: 40px;
+    padding: 20px 40px;
+
+    background: rgba(52, 30, 20, 0.96);
+    border-top: 1px solid rgba(252, 204, 124, 0.2);
+
+    color: #fffaf4;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.footer-brand {
+    font-size: 13px;
+    color: #cbb79c;
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: #fccc7c;
+    text-decoration: none;
+    font-size: 14px;
+    position: relative;
+    transition: all .25s ease;
+}
+
+.footer-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0;
+    height: 1.5px;
+    background: #ffdca0;
+    transition: width .25s ease;
+}
+
+.footer-links a:hover {
+    color: #ffdca0;
+}
+
+.footer-links a:hover::after {
+    width: 100%;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+

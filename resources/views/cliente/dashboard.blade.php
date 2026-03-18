@@ -71,6 +71,8 @@
     </section>
 </main>
 
+@include('cliente.partials.footer')
+
 <!-- MODAL LOGOUT -->
 <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
     <div class="modal-content">
