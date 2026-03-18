@@ -94,4 +94,5 @@
 </main>
 
 </body>
+@include('cliente.partials.footer')
 </html>

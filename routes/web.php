@@ -369,7 +369,8 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
     ->name('password.update');
 
 
-
+Route::view('/terminos', 'cliente.terminos')->name('terminos');
+Route::view('/privacidad', 'cliente.privacidad')->name('privacidad');
 
 Route::get('/promociones', function () {
     return view('promociones.index');
