@@ -815,17 +815,21 @@ class CitaController extends Controller
 
     public function completar(Request $request, Cita $cita)
     {
-        $request->validate([
-            'pago_final' => 'required|numeric|min:0'
-        ]);
+        if ($cita->status !== 'confirmada') {
+            return back()->with('error', 'Solo se pueden completar citas confirmadas.');
+        }
 
-        $pagoFinal = (float) $request->pago_final;
         $deposito = $cita->anticipoRegistrado();
+        $restante = max(0, round($cita->precioRegistrado() - $deposito, 2));
 
-        $totalPagado = $deposito + $pagoFinal;
+        if ($restante <= 0) {
+            return back()->with('error', 'La cita ya no tiene saldo pendiente.');
+        }
+
+        $totalPagado = $deposito + $restante;
 
         $cita->update([
-            'final_payment' => $pagoFinal,
+            'final_payment' => $restante,
             'total_paid' => $totalPagado,
             'status' => 'completada'
         ]);

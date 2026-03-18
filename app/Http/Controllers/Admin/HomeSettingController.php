@@ -51,6 +51,7 @@ class HomeSettingController extends Controller
         $homeSetting = HomeSetting::firstOrCreate([], [
             'hero_title' => 'BARBERíA & SPA',
             'hero_subtitle' => 'Estilo, cuidado y bienestar en un solo lugar',
+            'register_subtitle' => 'Unete a nuestra comunidad exclusiva y reserva tu proxima experiencia de lujo.',
             'feature_1_title' => 'Cortes Modernos',
             'feature_1_description' => 'Técnicas actuales y tendencias',
             'feature_2_title' => 'Tratamientos Spa',
@@ -88,6 +89,7 @@ class HomeSettingController extends Controller
         $data = $request->validate([
             'hero_title' => 'required|string|min:3|max:255',
             'hero_subtitle' => 'required|string|max:255',
+            'register_subtitle' => 'nullable|string|max:255',
             'feature_1_title' => 'required|string|max:255',
             'feature_1_description' => 'required|string',
             'feature_2_title' => 'required|string|max:255',

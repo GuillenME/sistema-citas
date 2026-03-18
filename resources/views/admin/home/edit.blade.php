@@ -45,6 +45,12 @@
                         <textarea id="hero_subtitle" name="hero_subtitle" rows="2" class="auto-grow">{{ old('hero_subtitle', $homeSetting->hero_subtitle) }}</textarea>
                     </div>
                 </div>
+                <div class="form-grid">
+                    <div>
+                        <label for="register_subtitle">Texto del registro</label>
+                        <textarea id="register_subtitle" name="register_subtitle" rows="2" class="auto-grow">{{ old('register_subtitle', $homeSetting->register_subtitle) }}</textarea>
+                    </div>
+                </div>
             </section>
 
             <section class="editor-block">

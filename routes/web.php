@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
+use App\Http\Controllers\Admin\AdminClientesController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\Admin\HomeSettingController;
 use App\Http\Controllers\PasswordResetController;
@@ -178,9 +179,12 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('citas/{cita}/asignar-empleado', [AdminCitaController::class, 'asignarEmpleado'])
             ->name('citas.asignarEmpleado');
 
-        Route::get('/clientes', function () {
-            return view('admin.clientes.index');
-        })->name('clientes.index');
+        Route::get('/clientes', [AdminClientesController::class, 'index'])
+            ->name('clientes.index');
+        Route::get('/clientes/create', [AdminClientesController::class, 'create'])
+            ->name('clientes.create');
+        Route::post('/clientes', [AdminClientesController::class, 'store'])
+            ->name('clientes.store');
 
 
         Route::get('/recepcionistas', function () {

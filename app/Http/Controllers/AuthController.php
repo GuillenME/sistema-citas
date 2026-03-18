@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\Usuario;
+use App\Notifications\SelfRegisteredWelcomeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -43,8 +44,8 @@ class AuthController extends Controller
             [
                 'email.required' => 'El correo es obligatorio',
                 'email.email' => 'El correo no es valido',
-                'password.required' => 'La contrasena es obligatoria',
-                'password.min' => 'La contrasena debe tener al menos 6 caracteres',
+                'password.required' => 'La contraseña es obligatoria',
+                'password.min' => 'La contraseña debe tener al menos 6 caracteres',
             ]
         );
 
@@ -61,7 +62,7 @@ class AuthController extends Controller
         RateLimiter::hit($throttleKey, 60);
 
         return back()->withErrors([
-            'email' => 'Correo o contrasena incorrectos',
+            'email' => 'Correo o contraseña incorrectos',
         ])->withInput();
     }
 
@@ -85,9 +86,9 @@ class AuthController extends Controller
                 'email.required' => 'El correo es obligatorio',
                 'email.email' => 'El correo no es valido',
                 'email.unique' => 'Este correo ya esta registrado',
-                'password.required' => 'La contrasena es obligatoria',
-                'password.confirmed' => 'Las contrasenas no coinciden',
-                'password.min' => 'La contrasena debe tener minimo 6 caracteres',
+                'password.required' => 'La contraseña es obligatoria',
+                'password.confirmed' => 'Las contraseñas no coinciden',
+                'password.min' => 'La contraseña debe tener minimo 6 caracteres',
             ]
         );
 
@@ -104,6 +105,12 @@ class AuthController extends Controller
             Cliente::create([
                 'user_id' => $usuario->id,
             ]);
+        }
+
+        try {
+            $usuario->notify(new SelfRegisteredWelcomeNotification());
+        } catch (\Throwable $exception) {
+            report($exception);
         }
 
         return redirect('/login')->with('success', 'Cuenta creada correctamente');

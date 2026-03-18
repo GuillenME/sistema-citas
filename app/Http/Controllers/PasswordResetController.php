@@ -27,7 +27,7 @@ class PasswordResetController extends Controller
         // Respuesta generica para evitar enumeracion de cuentas.
         return back()->with(
             'success',
-            'Si el correo existe en el sistema, te enviaremos un enlace para restablecer tu contrasena.'
+            'Si el correo existe en el sistema, te enviaremos un enlace para restablecer tu contraseña.'
         );
     }
 
@@ -47,9 +47,9 @@ class PasswordResetController extends Controller
         ], [
             'email.required' => 'El correo es obligatorio',
             'email.email' => 'Correo invalido',
-            'password.required' => 'La contrasena es obligatoria',
-            'password.confirmed' => 'Las contrasenas no coinciden',
-            'password.min' => 'La contrasena debe tener al menos 6 caracteres',
+            'password.required' => 'La contraseña es obligatoria',
+            'password.confirmed' => 'Las contraseñas no coinciden',
+            'password.min' => 'La contraseña debe tener al menos 6 caracteres',
         ]);
 
         $status = Password::reset(
@@ -63,7 +63,7 @@ class PasswordResetController extends Controller
         if ($status === Password::PASSWORD_RESET) {
             return redirect()
                 ->route('login')
-                ->with('success', 'Tu contrasena fue actualizada correctamente. Inicia sesion.');
+                ->with('success', 'Tu contraseña fue actualizada correctamente. Inicia sesion.');
         }
 
         return back()->withErrors([

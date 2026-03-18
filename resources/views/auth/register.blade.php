@@ -15,7 +15,7 @@
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <span class="hero-brand">{{ optional($homeSetting)->hero_title ?? 'Barberia & Spa' }}</span>
-                <h1>Eleva tu estilo a un nuevo nivel de <em>distincion.</em></h1>
+                <h1>Eleva tu estilo a un nuevo nivel de distincion.</h1>
                 <p>Descubre el equilibrio perfecto entre la tradicion de la barberia clasica y el relax de un spa
                     moderno.</p>
             </div>
@@ -26,7 +26,7 @@
 
             <div class="register-header">
                 <h2>Registro de Cliente</h2>
-                <p>Unete a nuestra comunidad exclusiva y reserva tu proxima experiencia de lujo.</p>
+                <p>{{ optional($homeSetting)->register_subtitle ?? 'Unete a nuestra comunidad exclusiva y reserva tu proxima experiencia de lujo.' }}</p>
             </div>
 
             @if ($errors->any())

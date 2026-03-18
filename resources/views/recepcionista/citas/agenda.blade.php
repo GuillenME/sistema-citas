@@ -164,6 +164,23 @@
             min-width: 150px;
         }
 
+        #agendaAppointmentModal input[readonly] {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(20, 8, 4, 0.42));
+            color: #f8efdf;
+            cursor: default;
+            box-shadow: inset 0 0 0 1px rgba(212, 155, 80, 0.14);
+        }
+
+        #agendaAppointmentModal input[readonly]::-webkit-outer-spin-button,
+        #agendaAppointmentModal input[readonly]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        #agendaAppointmentModal input[readonly][type=number] {
+            -moz-appearance: textfield;
+        }
+
         #agendaAppointmentModal .citas-detail-footer {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -464,7 +481,8 @@
                     <form method="POST" id="agendaCompleteForm" class="assign-inline" style="display:none;">
                         @csrf
                         <label>Pago restante</label>
-                        <input type="number" name="pago_final" id="agendaModalPagoFinal" step="0.01" min="0" required>
+                        <input type="number" name="pago_final" id="agendaModalPagoFinal" step="0.01" min="0" required readonly>
+                        <small class="profile-help" style="color:#d6c1a4;">Se completa automaticamente con el restante del servicio.</small>
                         <button type="submit" class="btn btn-save btn-compact">Marcar completada</button>
                     </form>
 
