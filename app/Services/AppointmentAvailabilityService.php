@@ -196,6 +196,8 @@ class AppointmentAvailabilityService
         bool $useLock = false,
         ?int $excludeAppointmentId = null
     ): ?Empleado {
+        $candidatos = collect();
+
         foreach ($servicio->empleados as $empleado) {
             if (!$this->employeeCoversRange($empleado, $fecha, $horaInicio, $horaFin)) {
                 continue;
@@ -216,7 +218,9 @@ class AppointmentAvailabilityService
             $inicioPropuesto = Carbon::parse($horaInicio)->hour * 60 + Carbon::parse($horaInicio)->minute;
             $finPropuesto = Carbon::parse($horaFin)->hour * 60 + Carbon::parse($horaFin)->minute;
 
-            $tieneConflicto = $query->get()->contains(function (Cita $cita) use ($inicioPropuesto, $finPropuesto) {
+            $citasEmpleado = $query->get();
+
+            $tieneConflicto = $citasEmpleado->contains(function (Cita $cita) use ($inicioPropuesto, $finPropuesto) {
                 $inicioExistente = Carbon::parse($cita->getRawOriginal('start_time'))->hour * 60
                     + Carbon::parse($cita->getRawOriginal('start_time'))->minute;
                 $finExistente = Carbon::parse($cita->getRawOriginal('end_time'))->hour * 60
@@ -226,10 +230,20 @@ class AppointmentAvailabilityService
             });
 
             if (!$tieneConflicto) {
-                return $empleado;
+                $candidatos->push([
+                    'empleado' => $empleado,
+                    'carga' => $citasEmpleado->count(),
+                ]);
             }
         }
 
-        return null;
+        return $candidatos
+            ->sortBy([
+                ['carga', 'asc'],
+                [fn (array $item) => mb_strtolower((string) $item['empleado']->name), 'asc'],
+                [fn (array $item) => $item['empleado']->id, 'asc'],
+            ])
+            ->pluck('empleado')
+            ->first();
     }
 }
