@@ -60,8 +60,8 @@ class HomeSettingController extends Controller
             'feature_3_description' => 'Productos de primera línea',
             'footer_address' => 'Calle Principal #123 - Guadalajara',
             'footer_references' => null,
-            'footer_phone' => '33 1234 5678',
-            'footer_whatsapp' => '33 1234 5678',
+            'footer_phone' => '3312345678',
+            'footer_whatsapp' => '3312345678',
             'footer_hours' => 'Lun-Sab 9:00-20:00',
         ]);
 
@@ -71,13 +71,13 @@ class HomeSettingController extends Controller
             ->orderBy('name')
             ->get();
 
-            if ($homeSetting->footer_whatsapp) {
-    $digits = preg_replace('/\D+/', '', $homeSetting->footer_whatsapp);
+        if ($homeSetting->footer_phone) {
+            $homeSetting->footer_phone = preg_replace('/\D+/', '', $homeSetting->footer_phone);
+        }
 
-    if (str_starts_with($digits, '52')) {
-        $homeSetting->footer_whatsapp = '52 ' . substr($digits, 2);
-    }
-}
+        if ($homeSetting->footer_whatsapp) {
+            $homeSetting->footer_whatsapp = preg_replace('/\D+/', '', $homeSetting->footer_whatsapp);
+        }
 
         return view('admin.home.edit', compact('homeSetting', 'serviciosActivos'));
     }
@@ -107,15 +107,11 @@ class HomeSettingController extends Controller
             'featured_services.*' => 'integer|exists:services,id',
         ]);
 
+        $phoneDigits = preg_replace('/\D+/', '', (string) ($data['footer_phone'] ?? ''));
+        $data['footer_phone'] = $phoneDigits !== '' ? $phoneDigits : null;
+
         $whatsappDigits = preg_replace('/\D+/', '', (string) ($data['footer_whatsapp'] ?? ''));
-        if ($whatsappDigits !== '') {
-            if (!str_starts_with($whatsappDigits, '52')) {
-                $whatsappDigits = '52' . $whatsappDigits;
-            }
-            $data['footer_whatsapp'] = $whatsappDigits;
-        } else {
-            $data['footer_whatsapp'] = null;
-        }
+        $data['footer_whatsapp'] = $whatsappDigits !== '' ? $whatsappDigits : null;
 
         if ($request->hasFile('hero_image')) {
             if ($homeSetting && $homeSetting->hero_image) {
