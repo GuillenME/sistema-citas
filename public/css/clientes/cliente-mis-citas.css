@@ -1153,6 +1153,38 @@ body.cliente-citas-index-page .detalle-bank-item strong {
     font-size: 14px;
 }
 
+body.cliente-citas-index-page .detalle-bank-copy {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+body.cliente-citas-index-page .copy-bank-btn {
+    border: 1px solid rgba(212, 155, 80, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff3e1;
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease, border-color .2s ease;
+    white-space: nowrap;
+}
+
+body.cliente-citas-index-page .copy-bank-btn:hover {
+    background: rgba(212, 155, 80, 0.16);
+    border-color: rgba(212, 155, 80, 0.58);
+    transform: translateY(-1px);
+}
+
+body.cliente-citas-index-page .copy-bank-btn.is-copied {
+    background: rgba(34, 197, 94, 0.18);
+    border-color: rgba(34, 197, 94, 0.55);
+    color: #d7ffe2;
+}
+
 body.cliente-citas-index-page .detalle-section {
     display: grid;
     gap: 12px;
@@ -1262,6 +1294,15 @@ body.cliente-citas-index-page .detalle-section:has(.detalle-timeline) {
     body.cliente-citas-index-page .detalle-cita-grid,
     body.cliente-citas-index-page .detalle-bank-grid {
         grid-template-columns: 1fr;
+    }
+
+    body.cliente-citas-index-page .detalle-bank-copy {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    body.cliente-citas-index-page .copy-bank-btn {
+        width: 100%;
     }
 
     body.cliente-citas-index-page .modal-content-detail {

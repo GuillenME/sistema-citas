@@ -166,7 +166,7 @@
 
         <div id="warningToast" class="warning-toast" role="alert" aria-live="assertive">
             <div class="warning-toast-head">
-                <p class="warning-toast-title">Atencion requerida</p>
+                <p class="warning-toast-title">Atención requerida</p>
                 <button type="button" class="warning-toast-close" onclick="cerrarWarningToast()">x</button>
             </div>
             <div class="warning-toast-body" id="warningToastText"></div>

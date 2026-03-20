@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Citas - Recepcion</title>
+    <title>Citas - Recepción</title>
 
     <!-- RESPONSIVE -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -294,10 +294,10 @@
     <!-- Modal de confirmacion de logout -->
     <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
         <div class="modal-content">
-            <h3>¿Cerrar sesion?</h3>
-            <p>¿Estas seguro de que deseas cerrar sesion?</p>
+            <h3>¿Cerrar sesión?</h3>
+            <p>¿Estás seguro de que deseas cerrar sesión?</p>
             <div class="modal-buttons">
-                <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Si, cerrar sesion</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
                 <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
             </div>
         </div>

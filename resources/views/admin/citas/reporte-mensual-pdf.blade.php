@@ -66,7 +66,7 @@
 </head>
 <body>
     <div class="top">
-        <div class="brand">Barberia & Spa</div>
+        <div class="brand">Barbería & Spa</div>
         <h1>Reporte mensual de citas</h1>
         <div class="meta">
             <strong>Mes:</strong> {{ $inicio->translatedFormat('F Y') }}
@@ -94,7 +94,7 @@
         </tr>
     </table>
 
-    <div class="section-title">Detalle por dia</div>
+    <div class="section-title">Detalle por día</div>
     <table class="chart">
         <thead>
             <tr>

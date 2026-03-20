@@ -2,7 +2,7 @@
     <div class="serv-panel">
         <header class="serv-head">
             <div>
-                <h3>Gestion de clientes del sistema.</h3>
+                <h3>Gestión de clientes del sistema.</h3>
             </div>
         </header>
 
@@ -12,7 +12,7 @@
                     <tr>
                         <th>Cliente</th>
                         <th>Email</th>
-                        <th>Telefono</th>
+                        <th>Teléfono</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>

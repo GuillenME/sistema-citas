@@ -54,7 +54,7 @@
                 </tr>
                 <tr>
                     <td style="background:#e8dccd;padding:12px 18px;color:#202737;font-size:13px;">
-                        Barberia & Spa | Sistema de citas
+                        Barbería & Spa | Sistema de citas
                     </td>
                 </tr>
             </table>

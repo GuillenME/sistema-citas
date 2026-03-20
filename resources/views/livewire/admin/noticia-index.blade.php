@@ -18,7 +18,7 @@
             <table class="admin-table serv-table">
                 <thead>
                     <tr>
-                        <th>Titulo</th>
+                        <th>Título</th>
                         <th>Fecha</th>
                         <th>Publicada</th>
                         <th>Acciones</th>

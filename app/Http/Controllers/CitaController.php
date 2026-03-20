@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 
 class CitaController extends Controller
 {
+    private const STATUS_ALL = 'all';
+
     private const STATUS_LABELS = [
         CitaStatus::PENDIENTE_ANTICIPO => 'Pendientes de anticipo',
         CitaStatus::CONFIRMADA => 'Confirmadas',
@@ -64,25 +66,37 @@ class CitaController extends Controller
             ->groupBy('status')
             ->pluck('total', 'status');
 
-        $statusOptions = collect(self::STATUS_PRIORITY)
+        $totalAppointments = (int) $statusCounts->sum();
+
+        $statusOptions = collect([
+            [
+                'key' => self::STATUS_ALL,
+                'label' => 'Todas',
+                'count' => $totalAppointments,
+            ],
+        ])->merge(
+            collect(self::STATUS_PRIORITY)
             ->filter(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0)
             ->map(fn (string $status) => [
                 'key' => $status,
                 'label' => self::STATUS_LABELS[$status] ?? ucfirst($status),
                 'count' => (int) ($statusCounts[$status] ?? 0),
             ])
-            ->values();
+        )->values();
 
-        $defaultStatus = collect(self::STATUS_PRIORITY)
-            ->first(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0);
+        $defaultStatus = $totalAppointments > 0
+            ? self::STATUS_ALL
+            : null;
 
         $requestedStatus = (string) request('status');
-        $selectedStatus = $requestedStatus !== '' && CitaStatus::isValid($requestedStatus) && (int) ($statusCounts[$requestedStatus] ?? 0) > 0
-            ? $requestedStatus
-            : $defaultStatus;
+        $selectedStatus = match (true) {
+            $requestedStatus === self::STATUS_ALL && $totalAppointments > 0 => self::STATUS_ALL,
+            $requestedStatus !== '' && CitaStatus::isValid($requestedStatus) && (int) ($statusCounts[$requestedStatus] ?? 0) > 0 => $requestedStatus,
+            default => $defaultStatus,
+        };
 
         $citas = (clone $baseQuery)
-            ->when($selectedStatus, fn ($query) => $query->where('status', $selectedStatus))
+            ->when($selectedStatus && $selectedStatus !== self::STATUS_ALL, fn ($query) => $query->where('status', $selectedStatus))
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->paginate(5)

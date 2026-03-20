@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Servicios | Barberia & Spa')
+@section('title', 'Servicios | Barbería & Spa')
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/servicios/index.css') }}?v={{ filemtime(public_path('css/servicios/index.css')) }}">
@@ -15,7 +15,7 @@
                 <span class="title-outline">SERVICIOS</span>
             </h1>
             <p class="services-lead">
-                Donde la tradicion se encuentra con la innovacion. Ofrecemos rituales de cuidado personal
+                Donde la tradición se encuentra con la innovación. Ofrecemos rituales de cuidado personal
                 disenados exclusivamente para una imagen contemporanea.
             </p>
         </div>

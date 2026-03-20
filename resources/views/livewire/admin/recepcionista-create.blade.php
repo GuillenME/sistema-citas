@@ -21,13 +21,13 @@
         </div>
 
         <div class="form-group">
-            <label>Telefono</label>
+            <label>Teléfono</label>
             <input type="tel" name="telefono" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" autocomplete="tel" wire:model.defer="telefono" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
             @error('telefono') <span class="error">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
-            <label>Contrasena</label>
+            <label>Contraseña</label>
             <div class="input-icon">
                 <input type="password" name="password" autocomplete="new-password" wire:model.defer="password" id="passwordInput">
                 <button type="button" class="btn-eye" data-toggle="passwordInput" aria-label="Mostrar contrasena">
@@ -43,7 +43,7 @@
             <label>Confirmar contrasena</label>
             <div class="input-icon">
                 <input type="password" name="password_confirmation" autocomplete="new-password" wire:model.defer="password_confirmation" id="passwordConfirmInput">
-                <button type="button" class="btn-eye" data-toggle="passwordConfirmInput" aria-label="Mostrar confirmacion de contrasena">
+                <button type="button" class="btn-eye" data-toggle="passwordConfirmInput" aria-label="Mostrar confirmación de contraseña">
                     <svg class="eye-icon" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M12 5c5.2 0 9.3 3.3 11 7-1.7 3.7-5.8 7-11 7S2.7 15.7 1 12c1.7-3.7 5.8-7 11-7zm0 2.2c-3.9 0-7.2 2.4-8.7 4.8 1.5 2.4 4.8 4.8 8.7 4.8s7.2-2.4 8.7-4.8c-1.5-2.4-4.8-4.8-8.7-4.8zm0 1.8a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" fill="currentColor"/>
                     </svg>

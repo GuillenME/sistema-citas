@@ -6,6 +6,7 @@
         $footerWhatsapp = $homeSetting->footer_whatsapp ?? '';
         $footerHours = $homeSetting->footer_hours ?? 'Lun-Sab 9:00-20:00';
         $mapQuery = rawurlencode(trim($footerAddress) !== '' ? $footerAddress : 'Guadalajara Centro');
+        $footerPhoneHref = preg_replace('/[^\d+]+/', '', (string) $footerPhone);
         $footerWhatsappDigits = preg_replace('/\D+/', '', $footerWhatsapp ?? '');
         if ($footerWhatsappDigits !== '' && !str_starts_with($footerWhatsappDigits, '52')) {
             $footerWhatsappDigits = '52' . $footerWhatsappDigits;
@@ -14,7 +15,7 @@
 
     <div class="contact-lux-head">
         <h2>CONTACTANOS</h2>
-        <p>Vive la experiencia del estandar de oro en belleza. Nuestro equipo esta listo para disenar tu proximo look iconico.</p>
+        <p>Vive la experiencia del estándar de oro en belleza. Nuestro equipo está listo para diseñar tu próximo look icónico.</p>
     </div>
 
     <div class="contact-lux-grid">
@@ -71,7 +72,12 @@
                     <h4>TELÉFONO</h4>
                     <p>
                         @if (trim($footerPhone) !== '')
-                            Telefono de contacto: {{ $footerPhone }}
+                            Teléfono de contacto:
+                            @if (trim($footerPhoneHref) !== '')
+                                <a href="tel:{{ $footerPhoneHref }}">{{ $footerPhone }}</a>
+                            @else
+                                {{ $footerPhone }}
+                            @endif
                         @endif
                         @if (trim($footerWhatsapp) !== '')
                             @if (trim($footerPhone) !== '')

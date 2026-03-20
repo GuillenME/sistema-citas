@@ -13,7 +13,7 @@
             </div>
 
             <div class="form-group">
-                <label>Telefono</label>
+                <label>Teléfono</label>
                 <input type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" wire:model.defer="telefono"
                     oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
                 @error('telefono')
@@ -66,7 +66,7 @@
                     </div>
                 </div>
 
-                <small>Selecciona hasta 5 servicios. Al llegar al limite, los demas se desactivan.</small>
+                <small>Selecciona hasta 5 servicios. Al llegar al límite, los demás se desactivan.</small>
                 @error('serviciosSeleccionados')
                     <span class="error">{{ $message }}</span>
                 @enderror

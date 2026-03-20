@@ -2,7 +2,7 @@
 
     <div class="form-grid">
         <div class="form-group">
-            <label>Titulo</label>
+            <label>Título</label>
             <input type="text" wire:model.defer="titulo">
             @error('titulo')
                 <small class="error">{{ $message }}</small>

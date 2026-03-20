@@ -15,7 +15,7 @@
         </div>
 
         <div class="form-group full">
-            <label>Descripcion</label>
+            <label>Descripción</label>
             <textarea wire:model.defer="descripcion"></textarea>
             @error('descripcion') <span class="error">{{ $message }}</span> @enderror
         </div>

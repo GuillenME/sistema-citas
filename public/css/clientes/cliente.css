@@ -944,6 +944,17 @@ input[type="date"] {
     font-size: 14px;
 }
 
+.modal-bank-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.modal-bank-row + .modal-bank-row {
+    margin-top: 8px;
+}
+
 .modal-confirm-buttons-spaced {
     margin-top: 15px;
 }
@@ -1230,6 +1241,42 @@ body.cliente-citas-create-page .summary-bank strong {
     color: #ffd29c;
 }
 
+body.cliente-citas-create-page .bank-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+body.cliente-citas-create-page .bank-row + .bank-row {
+    margin-top: 8px;
+}
+
+body.cliente-citas-create-page .copy-bank-btn {
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff3e1;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease, border-color .2s ease;
+    white-space: nowrap;
+}
+
+body.cliente-citas-create-page .copy-bank-btn:hover {
+    background: rgba(252, 204, 124, 0.16);
+    border-color: rgba(252, 204, 124, 0.6);
+    transform: translateY(-1px);
+}
+
+body.cliente-citas-create-page .copy-bank-btn.is-copied {
+    background: rgba(34, 197, 94, 0.18);
+    border-color: rgba(34, 197, 94, 0.55);
+    color: #d7ffe2;
+}
+
 body.cliente-citas-create-page .privacy-field {
     margin-top: 8px;
 }
@@ -1316,4 +1363,16 @@ body.cliente-citas-create-page .submit-btn {
     opacity: .5;
     cursor: not-allowed;
     filter: grayscale(.3);
+}
+
+@media (max-width: 640px) {
+    body.cliente-citas-create-page .bank-row,
+    .modal-bank-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    body.cliente-citas-create-page .copy-bank-btn {
+        width: 100%;
+    }
 }

@@ -16,7 +16,7 @@
         <div class="profile-card profile-card-main">
             <span class="profile-kicker">Perfil</span>
             <h1>{{ trim(($usuario->name ?? '') . ' ' . ($usuario->last_name ?? '')) }}</h1>
-            <p class="profile-subtitle">Aqui puedes consultar la informacion principal de tu cuenta.</p>
+            <p class="profile-subtitle">Aquí puedes consultar la información principal de tu cuenta.</p>
 
             @if (session('success'))
                 <div class="profile-alert profile-alert-success">{{ session('success') }}</div>
@@ -43,7 +43,7 @@
                         <input type="email" name="email" value="{{ old('email', $usuario->email) }}" required>
                     </label>
                     <label class="profile-item">
-                        <span>Telefono</span>
+                        <span>Teléfono</span>
                         <input type="text" name="phone" value="{{ old('phone', $usuario->phone) }}">
                     </label>
                     <label class="profile-item">
