@@ -164,7 +164,7 @@
             </div>
 
             <div class="form-group">
-                <label>Telefono</label>
+                <label>Teléfono</label>
                 <input type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" wire:model.defer="telefono"
                     oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
                 @error('telefono')
@@ -217,7 +217,7 @@
                     </div>
                 </div>
 
-                <small>Selecciona hasta 5 servicios. Al llegar al limite, los demas se desactivan.</small>
+                <small>Selecciona hasta 5 servicios. Al llegar al límite, los demás se desactivan.</small>
                 @error('serviciosSeleccionados')
                     <span class="error">{{ $message }}</span>
                 @enderror
@@ -314,7 +314,7 @@
                                         class="schedule-toggle-btn {{ !empty($descanso['is_all_day']) ? 'is-on' : 'is-off' }}"
                                         wire:click="$toggle('descansos.{{ $index }}.is_all_day')">
                                         <span class="switch-dot" aria-hidden="true"></span>
-                                        <span>{{ !empty($descanso['is_all_day']) ? 'Todo el dia' : 'Por horas' }}</span>
+                                        <span>{{ !empty($descanso['is_all_day']) ? 'Todo el día' : 'Por horas' }}</span>
                                     </button>
                                 </div>
 

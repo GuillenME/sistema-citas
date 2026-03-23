@@ -115,7 +115,7 @@
             @if ($reviews->hasPages())
                 <div class="comentarios-pagination">
                     <div class="pagination-info">
-                        Pagina {{ $reviews->currentPage() }} de {{ $reviews->lastPage() }}
+                        Página {{ $reviews->currentPage() }} de {{ $reviews->lastPage() }}
                         ({{ $reviews->total() }} comentarios)
                     </div>
                     {{ $reviews->links('pagination::simple-bootstrap-4') }}
@@ -127,10 +127,10 @@
 
 <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
     <div class="modal-content">
-        <h3>Cerrar sesion?</h3>
-        <p>Estas seguro de que deseas cerrar sesion?</p>
+        <h3>¿Cerrar sesión?</h3>
+        <p>¿Estás seguro de que deseas cerrar sesión?</p>
         <div class="modal-buttons">
-            <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Si, cerrar sesion</button>
+            <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
             <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
         </div>
     </div>

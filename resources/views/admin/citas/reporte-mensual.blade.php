@@ -161,7 +161,7 @@
         </section>
 
         <section class="rm-card">
-            <h3 style="margin:0 0 10px 0;color:#fff7e6;">Citas por dia (desglose por estado)</h3>
+            <h3 style="margin:0 0 10px 0;color:#fff7e6;">Citas por día (desglose por estado)</h3>
             <div class="rm-legend">
                 <span class="rm-legend-item"><span class="rm-legend-dot seg-confirmada"></span>Confirmadas</span>
                 <span class="rm-legend-item"><span class="rm-legend-dot seg-completada"></span>Completadas</span>

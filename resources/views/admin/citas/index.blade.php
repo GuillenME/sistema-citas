@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Gestion de Citas')
+@section('title', 'Gestión de citas')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/citas-index.css') }}">
 @endsection
@@ -61,7 +61,7 @@
         <section class="citas-panel">
             <div class="citas-panel-head">
                 <div>
-                    <h3>Listado de Proximas Citas</h3>
+                    <h3>Listado de próximas citas</h3>
                     <p>Actualizado al momento</p>
                 </div>
             </div>
@@ -482,7 +482,7 @@
 
                 <div class="client-profile-grid">
                     <div class="client-profile-card">
-                        <span>Telefono</span>
+                        <span>Teléfono</span>
                         <strong id="clientProfilePhone">-</strong>
                     </div>
                     <div class="client-profile-card">
@@ -521,7 +521,7 @@
                         <strong id="clientProfileAvgTicket">$0.00</strong>
                     </div>
                     <div class="client-profile-card">
-                        <span>Proximas citas</span>
+                        <span>Próximas citas</span>
                         <strong id="clientProfileUpcomingCount">0</strong>
                     </div>
                     <div class="client-profile-card">
@@ -578,10 +578,10 @@
             <form method="POST" id="cancelForm">
                 @csrf
                 <label for="cancelNotes">Observaciones (opcional)</label>
-                <textarea id="cancelNotes" name="observaciones" rows="4" placeholder="Motivo de cancelacion..."></textarea>
+                <textarea id="cancelNotes" name="observaciones" rows="4" placeholder="Motivo de cancelación..."></textarea>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-cancel" id="cancelModalClose">Cerrar</button>
-                    <button type="submit" class="btn btn-save">Confirmar cancelacion</button>
+                    <button type="submit" class="btn btn-save">Confirmar cancelación</button>
                 </div>
             </form>
         </div>

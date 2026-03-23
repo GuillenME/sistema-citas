@@ -19,7 +19,7 @@
 
         <section class="dh-hero">
             <h2>Hola de nuevo.</h2>
-            <p>Aqui tienes un resumen rapido para operar agenda, servicios, equipo y contenido.</p>
+            <p>Aquí tienes un resumen rápido para operar agenda, servicios, equipo y contenido.</p>
         </section>
 
         <section class="dh-main-grid">
@@ -38,7 +38,7 @@
                     <span class="dh-chip">{{ $citasHoy ?? 0 }} citas hoy</span>
                 </div>
                 <h3>Gestionar Citas</h3>
-                <p>Administra la agenda del dia, confirma solicitudes y reasigna turnos a tu staff.</p>
+                <p>Administra la agenda del día, confirma solicitudes y reasigna turnos a tu staff.</p>
                 <div class="dh-card-foot">
                     <span class="dh-btn dh-btn-primary">Ver calendario</span>
                 </div>

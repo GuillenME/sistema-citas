@@ -85,7 +85,7 @@
                         };
 
 	                        $estadoTexto = match ($cita->status) {
-	                            'pendiente_anticipo' => $cita->receipt ? 'Pendiente de confirmacion' : 'Pendiente de anticipo',
+	                            'pendiente_anticipo' => $cita->receipt ? 'Pendiente de confirmación' : 'Pendiente de anticipo',
 	                            'confirmada' => 'Confirmada',
 	                            'completada' => 'Completada',
 	                            'no_asistio' => 'No asistio',
@@ -265,11 +265,30 @@
                                         </div>
                                         <div class="detalle-bank-item">
                                             <span>Cuenta</span>
-                                            <strong>{{ config('citas.banco.cuenta') }}</strong>
+                                            <div class="detalle-bank-copy">
+                                                <strong>{{ config('citas.banco.cuenta') }}</strong>
+                                                <button type="button" class="copy-bank-btn" data-copy-text="{{ config('citas.banco.cuenta') }}">
+                                                    Copiar
+                                                </button>
+                                            </div>
                                         </div>
                                         <div class="detalle-bank-item">
                                             <span>CLABE</span>
-                                            <strong>{{ config('citas.banco.clabe') }}</strong>
+                                            <div class="detalle-bank-copy">
+                                                <strong>{{ config('citas.banco.clabe') }}</strong>
+                                                <button type="button" class="copy-bank-btn" data-copy-text="{{ config('citas.banco.clabe') }}">
+                                                    Copiar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="detalle-bank-item">
+                                            <span>Beneficiario</span>
+                                            <div class="detalle-bank-copy">
+                                                <strong>{{ config('citas.banco.beneficiario') }}</strong>
+                                                <button type="button" class="copy-bank-btn" data-copy-text="{{ config('citas.banco.beneficiario') }}">
+                                                    Copiar
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -424,8 +443,8 @@
                 }
             } else {
                 modalText.textContent = canReagendarTime
-                    ? 'Esta cita ya tiene anticipo/confirmacion. El anticipo no es reembolsable, pero puedes reagendar una vez con minimo 24 horas de anticipacion.'
-                    : 'Esta cita ya tiene anticipo/confirmacion. El anticipo no es reembolsable y ya no se puede reagendar porque faltan menos de 24 horas.';
+                    ? 'Esta cita ya tiene anticipo/confirmación. El anticipo no es reembolsable, pero puedes reagendar una vez con mínimo 24 horas de anticipación.'
+                    : 'Esta cita ya tiene anticipo/confirmación. El anticipo no es reembolsable y ya no se puede reagendar porque faltan menos de 24 horas.';
                 submitBtn.style.display = 'none';
                 if (canReagendarTime) {
                     goReagendarBtn.style.display = 'inline-flex';
@@ -591,6 +610,49 @@
             }
 
             document.addEventListener('click', (event) => {
+                const copyButton = event.target.closest('.copy-bank-btn');
+                if (copyButton) {
+                    const text = copyButton.getAttribute('data-copy-text');
+                    if (!text) {
+                        return;
+                    }
+
+                    const copyText = async (value) => {
+                        if (navigator.clipboard && window.isSecureContext) {
+                            await navigator.clipboard.writeText(value);
+                            return;
+                        }
+
+                        const tempInput = document.createElement('input');
+                        tempInput.value = value;
+                        document.body.appendChild(tempInput);
+                        tempInput.select();
+                        document.execCommand('copy');
+                        tempInput.remove();
+                    };
+
+                    const originalText = copyButton.dataset.originalText || copyButton.textContent.trim();
+                    copyButton.dataset.originalText = originalText;
+
+                    copyText(text)
+                        .then(() => {
+                            copyButton.textContent = 'Copiado';
+                            copyButton.classList.add('is-copied');
+
+                            window.setTimeout(() => {
+                                copyButton.textContent = originalText;
+                                copyButton.classList.remove('is-copied');
+                            }, 1600);
+                        })
+                        .catch(() => {
+                            copyButton.textContent = 'Error';
+                            window.setTimeout(() => {
+                                copyButton.textContent = originalText;
+                            }, 1600);
+                        });
+                    return;
+                }
+
                 const previewButton = event.target.closest('[data-preview-trigger]');
                 if (!previewButton || !previewModal || !previewImage) {
                     return;
@@ -648,7 +710,7 @@
     <div id="modalReagendarCita" class="modal-overlay" onclick="if(event.target === this) cerrarModalReagendarCita()">
         <div class="modal-content">
             <h3>Reagendar cita</h3>
-            <p>Si ya pagaste anticipo no hay reembolso, pero puedes reagendar una vez con minimo 24 horas de anticipacion.</p>
+            <p>Si ya pagaste anticipo no hay reembolso, pero puedes reagendar una vez con mínimo 24 horas de anticipación.</p>
             <form method="POST" id="reagendarCitaForm" class="upload-form">
                 @csrf
                 <input type="date" id="reagendarFecha" name="fecha" required>

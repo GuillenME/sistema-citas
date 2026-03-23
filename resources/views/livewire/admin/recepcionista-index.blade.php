@@ -2,7 +2,7 @@
     <div class="serv-panel">
         <header class="serv-head">
             <div>
-                <h3>Gestion de recepcionistas y estado de acceso.</h3>
+                <h3>Gestión de recepcionistas y estado de acceso.</h3>
             </div>
             <div class="serv-actions">
                 <button type="button" class="serv-btn ghost" wire:click="openReminderListModal">
@@ -32,7 +32,7 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Email</th>
-                        <th>Telefono</th>
+                        <th>Teléfono</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>

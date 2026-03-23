@@ -161,7 +161,7 @@
 
     <article class="ticket-sheet">
         <header class="ticket-head">
-            <span class="ticket-kicker">Barberia & Spa</span>
+            <span class="ticket-kicker">Barbería & Spa</span>
             <h1>Ticket de cita #{{ $cita->id }}</h1>
             <p>Resumen imprimible de la cita, pagos registrados y datos clave para control interno.</p>
         </header>

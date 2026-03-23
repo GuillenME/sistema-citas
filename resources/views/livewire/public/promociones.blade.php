@@ -11,7 +11,7 @@
 
             <div class="promos-tab-buttons">
                 <label for="promos-tab-active" class="promos-tab-btn promos-tab-btn-active">Activas</label>
-                <label for="promos-tab-upcoming" class="promos-tab-btn promos-tab-btn-upcoming">Proximas</label>
+                <label for="promos-tab-upcoming" class="promos-tab-btn promos-tab-btn-upcoming">Próximas</label>
             </div>
 
             <div class="promos-panels">

@@ -2,7 +2,7 @@
     <div class="serv-panel">
         <header class="serv-head">
             <div>
-                <h3>Gestion de empleados y sus especialidades.</h3>
+                <h3>Gestión de empleados y sus especialidades.</h3>
             </div>
             <div class="serv-actions">
                 <a href="{{ route('admin.empleados.create') }}" class="serv-btn primary">

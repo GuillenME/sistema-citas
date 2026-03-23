@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="field anticipo-field booking-summary">
-                    <h4>Resumen de Cita <span class="summary-pill">Recepcion</span></h4>
+                    <h4>Resumen de cita <span class="summary-pill">Recepción</span></h4>
                     <div class="summary-item">
                         <span>Cliente</span>
                         <strong id="summaryCliente">-</strong>
@@ -175,10 +175,10 @@
 
     <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
         <div class="modal-content">
-            <h3>Cerrar sesion</h3>
-            <p>Estas seguro de que deseas cerrar sesion?</p>
+            <h3>¿Cerrar sesión?</h3>
+            <p>¿Estás seguro de que deseas cerrar sesión?</p>
             <div class="modal-buttons">
-                <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Si, cerrar sesion</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
                 <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
             </div>
         </div>
@@ -186,7 +186,7 @@
 
     <div id="warningToast" class="warning-toast" role="alert" aria-live="assertive">
         <div class="warning-toast-head">
-            <p class="warning-toast-title">Atencion requerida</p>
+            <p class="warning-toast-title">Atención requerida</p>
             <button type="button" class="warning-toast-close" onclick="cerrarWarningToast()">x</button>
         </div>
         <div class="warning-toast-body" id="warningToastText"></div>

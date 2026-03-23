@@ -56,7 +56,7 @@
 </head>
 <body>
     <div class="top">
-        <div class="brand">Barberia & Spa</div>
+        <div class="brand">Barbería & Spa</div>
         <h1>Reporte diario de citas</h1>
         <div class="meta">
             <strong>Fecha:</strong> {{ $fecha->format('d/m/Y') }}
@@ -76,7 +76,7 @@
         </tr>
     </table>
 
-    <div class="section-title">Detalle de citas del dia</div>
+    <div class="section-title">Detalle de citas del día</div>
     <table>
         <thead>
             <tr>
@@ -120,7 +120,7 @@
     </div>
 
     <div class="footer">
-        Barberia & Spa
+        Barbería & Spa
     </div>
 </body>
 </html>

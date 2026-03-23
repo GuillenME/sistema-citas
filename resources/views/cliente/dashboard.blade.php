@@ -17,7 +17,7 @@
             <p class="hero-tag">Panel del cliente</p>
             <h2>Bienvenido a tu espacio personal "{{ auth()->user()->name }}"</h2>
             <p class="hero-text">
-                En Barberia & Spa cuidamos cada detalle para que tu experiencia sea unica. Desde aqui puedes
+                En Barbería & Spa cuidamos cada detalle para que tu experiencia sea única. Desde aquí puedes
                 agendar, revisar y gestionar tus citas sin complicaciones.
             </p>
 
@@ -31,7 +31,7 @@
                         </svg>
                     </span>
                     <span class="action-title">Agendar cita</span>
-                    <span class="action-desc">Reserva tu proximo servicio en segundos.</span>
+                    <span class="action-desc">Reserva tu próximo servicio en segundos.</span>
                 </a>
                 <a class="action-card" href="{{ route('cliente.citas.index') }}">
                     <span class="action-icon" aria-hidden="true">
@@ -76,10 +76,10 @@
 <!-- MODAL LOGOUT -->
 <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
     <div class="modal-content">
-        <h3>Cerrar sesion?</h3>
-        <p>Estas seguro de que deseas cerrar sesion?</p>
+        <h3>¿Cerrar sesión?</h3>
+        <p>¿Estás seguro de que deseas cerrar sesión?</p>
         <div class="modal-buttons">
-            <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Si, cerrar sesion</button>
+            <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
             <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
         </div>
     </div>

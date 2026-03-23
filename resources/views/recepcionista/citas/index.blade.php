@@ -1,68 +1,36 @@
-@extends('layouts.recepcionista')
+<!DOCTYPE html>
+<html lang="es">
 
-@section('title', 'Gestion de Citas')
-@section('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/citas-index.css') }}">
-@endsection
+<head>
+    <meta charset="UTF-8">
+    <title>Citas - Recepción</title>
 
-@section('content')
-    <div class="citas-shell">
-        <header class="citas-topbar">
-            <div class="citas-topbar-left">
-                <div class="citas-control-wrap is-search">
-                    <span class="citas-control-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="7"></circle>
-                            <path d="m20 20-3.5-3.5"></path>
-                        </svg>
-                    </span>
-                    <input type="text" id="citasSearch" class="citas-search" placeholder="Buscar cliente o servicio...">
-                </div>
-                <div class="citas-control-wrap is-filter">
-                    <span class="citas-control-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="8" r="4"></circle>
-                            <path d="M4 20c1.6-3.3 4.2-5 8-5s6.4 1.7 8 5"></path>
-                        </svg>
-                    </span>
-                    <select id="citasEmployeeFilter" class="citas-filter">
-                        <option value="">Todos los empleados</option>
-                        <option value="__unassigned__">Sin asignar</option>
-                        @foreach ($empleados as $empleado)
-                            <option value="{{ $empleado->id }}">{{ $empleado->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="citas-topbar-right">
-                <a href="{{ route('recepcionista.citas.agenda') }}" class="citas-btn ghost">Agenda visual</a>
-                <a href="{{ route('recepcionista.citas.create') }}" class="citas-btn ghost">Nueva cita</a>
-                <a href="{{ route('recepcionista.citas.index') }}" class="citas-btn primary">Actualizar página</a>
-            </div>
-        </header>
+    <!-- RESPONSIVE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-menu.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-base.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-ui.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-citas.css') }}">
+</head>
 
-        <section class="citas-stats">
-            <article class="stat-card">
-                <p>Citas de Hoy</p>
-                <strong>{{ $stats['hoy'] ?? 0 }}</strong>
-            </article>
-            <article class="stat-card">
-                <p>Pendientes</p>
-                <strong>{{ $stats['pendientes'] ?? 0 }}</strong>
-            </article>
-            <article class="stat-card">
-                <p>Canceladas</p>
-                <strong>{{ $stats['canceladas'] ?? 0 }}</strong>
-            </article>
-        </section>
+<body class="recepcionista-citas-index-page">
 
-        <section class="citas-panel">
-            <div class="citas-panel-head">
-                <div>
-                    <h3>Listado de Proximas Citas</h3>
-                    <p>Actualizado al momento</p>
+    @include('recepcionista.partials.menu')
+
+    <div class="container">
+
+        <div class="table-card">
+            <h2>Citas de la semana</h2>
+
+            @if ($statusOptions->isNotEmpty())
+                <div class="status-tabs">
+                    @foreach ($statusOptions as $statusOption)
+                        <a
+                            href="{{ request()->url() }}?status={{ $statusOption['key'] }}"
+                            class="status-tab {{ $selectedStatus === $statusOption['key'] ? 'active' : '' }}">
+                            {{ $statusOption['label'] }} ({{ $statusOption['count'] }})
+                        </a>
+                    @endforeach
                 </div>
             </div>
 

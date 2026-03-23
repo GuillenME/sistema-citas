@@ -101,9 +101,27 @@
                         <strong id="summaryAnticipo">$0.00</strong>
                     </div>
                     <div class="summary-bank">
-                        <p>Banco: <strong>{{ config('citas.banco.nombre') }}</strong></p>
-                        <p>Cuenta: <strong>{{ config('citas.banco.cuenta') }}</strong></p>
-                        <p>CLABE: <strong>{{ config('citas.banco.clabe') }}</strong></p>
+                        <div class="bank-row">
+                            <p>Banco: <strong>{{ config('citas.banco.nombre') }}</strong></p>
+                        </div>
+                        <div class="bank-row bank-row-copy">
+                            <p>Beneficiario: <strong>{{ config('citas.banco.beneficiario') }}</strong></p>
+                            <button type="button" class="copy-bank-btn" data-copy-text="{{ config('citas.banco.beneficiario') }}">
+                                Copiar
+                            </button>
+                        </div>
+                        <div class="bank-row bank-row-copy">
+                            <p>Cuenta: <strong>{{ config('citas.banco.cuenta') }}</strong></p>
+                            <button type="button" class="copy-bank-btn" data-copy-text="{{ config('citas.banco.cuenta') }}">
+                                Copiar
+                            </button>
+                        </div>
+                        <div class="bank-row bank-row-copy">
+                            <p>CLABE: <strong>{{ config('citas.banco.clabe') }}</strong></p>
+                            <button type="button" class="copy-bank-btn" data-copy-text="{{ config('citas.banco.clabe') }}">
+                                Copiar
+                            </button>
+                        </div>
                     </div>
                     <p class="anticipo-time-note">
                         Tiene 15 minutos para realizar el depósito y subir el comprobante. De lo contrario, la cita será
@@ -189,11 +207,27 @@
             </p>
 
             <div class="modal-bank-box">
-                <p class="modal-bank-text">
-                    <strong>Banco:</strong> {{ config('citas.banco.nombre') }}<br>
-                    <strong>Cuenta:</strong> {{ config('citas.banco.cuenta') }}<br>
-                    <strong>CLABE:</strong> {{ config('citas.banco.clabe') }}
-                </p>
+                <div class="modal-bank-row">
+                    <p class="modal-bank-text"><strong>Banco:</strong> {{ config('citas.banco.nombre') }}</p>
+                </div>
+                <div class="modal-bank-row modal-bank-row-copy">
+                    <p class="modal-bank-text"><strong>Beneficiario:</strong> {{ config('citas.banco.beneficiario') }}</p>
+                    <button type="button" class="copy-bank-btn" data-copy-text="{{ config('citas.banco.beneficiario') }}">
+                        Copiar
+                    </button>
+                </div>
+                <div class="modal-bank-row modal-bank-row-copy">
+                    <p class="modal-bank-text"><strong>Cuenta:</strong> {{ config('citas.banco.cuenta') }}</p>
+                    <button type="button" class="copy-bank-btn" data-copy-text="{{ config('citas.banco.cuenta') }}">
+                        Copiar
+                    </button>
+                </div>
+                <div class="modal-bank-row modal-bank-row-copy">
+                    <p class="modal-bank-text"><strong>CLABE:</strong> {{ config('citas.banco.clabe') }}</p>
+                    <button type="button" class="copy-bank-btn" data-copy-text="{{ config('citas.banco.clabe') }}">
+                        Copiar
+                    </button>
+                </div>
             </div>
 
             <div class="modal-confirm-buttons modal-confirm-buttons-spaced">
@@ -339,6 +373,56 @@
 
             renderHoraChips();
             syncSummary();
+        })();
+
+        (function() {
+            async function copyText(text) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    return;
+                }
+
+                const tempInput = document.createElement('input');
+                tempInput.value = text;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                tempInput.remove();
+            }
+
+            function showCopiedState(button) {
+                const originalText = button.dataset.originalText || button.textContent.trim();
+                button.dataset.originalText = originalText;
+                button.textContent = 'Copiado';
+                button.classList.add('is-copied');
+
+                window.setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('is-copied');
+                }, 1600);
+            }
+
+            document.addEventListener('click', async (event) => {
+                const button = event.target.closest('.copy-bank-btn');
+                if (!button) {
+                    return;
+                }
+
+                const text = button.getAttribute('data-copy-text');
+                if (!text) {
+                    return;
+                }
+
+                try {
+                    await copyText(text);
+                    showCopiedState(button);
+                } catch (error) {
+                    button.textContent = 'Error';
+                    window.setTimeout(() => {
+                        button.textContent = button.dataset.originalText || 'Copiar';
+                    }, 1600);
+                }
+            });
         })();
     </script>
 

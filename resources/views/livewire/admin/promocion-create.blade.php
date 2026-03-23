@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <small>Selecciona hasta 5 servicios. Al llegar al limite, los demas se desactivan.</small>
+            <small>Selecciona hasta 5 servicios. Al llegar al límite, los demás se desactivan.</small>
             @error('servicios')
                 <small class="error">{{ $message }}</small>
             @enderror

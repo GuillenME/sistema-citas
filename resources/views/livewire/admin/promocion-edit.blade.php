@@ -15,7 +15,7 @@
 
     <div class="form-grid">
         <div class="form-group">
-            <label>Titulo</label>
+            <label>Título</label>
             <input type="text" wire:model.defer="titulo">
             @error('titulo') <span class="error">{{ $message }}</span> @enderror
         </div>
@@ -39,7 +39,7 @@
         </div>
 
         <div class="form-group full">
-            <label>Descripcion</label>
+            <label>Descripción</label>
             <textarea wire:model.defer="descripcion"></textarea>
             @error('descripcion') <span class="error">{{ $message }}</span> @enderror
         </div>
@@ -83,7 +83,7 @@
                 </div>
             </div>
 
-            <small>Selecciona hasta 5 servicios. Al llegar al limite, los demas se desactivan.</small>
+            <small>Selecciona hasta 5 servicios. Al llegar al límite, los demás se desactivan.</small>
             @error('servicios') <span class="error">{{ $message }}</span> @enderror
             @error('servicios.*') <span class="error">{{ $message }}</span> @enderror
         </div>

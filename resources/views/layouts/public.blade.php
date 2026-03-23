@@ -26,7 +26,7 @@
                     <img src="{{ asset('storage/' . $homeSetting->navbar_logo) }}" alt="Logo"
                         class="footer-logo-img">
                 @else
-                    Barberia & Spa
+                    Barbería & Spa
                 @endif
 
                 <p class="footer-tag">
@@ -45,10 +45,18 @@
 
             <div class="footer-item">
                 <span>📞 CONTACTO</span>
+                @php
+                    $footerPhone = $homeSetting->footer_phone ?? '33 1234 5678';
+                    $footerPhoneHref = preg_replace('/[^\d+]+/', '', (string) $footerPhone);
+                @endphp
 
                 <p>
                     TELÉFONO:
-                    {{ $homeSetting->footer_phone ?? '33 1234 5678' }}
+                    @if (!empty($footerPhoneHref))
+                        <a href="tel:{{ $footerPhoneHref }}">{{ $footerPhone }}</a>
+                    @else
+                        {{ $footerPhone }}
+                    @endif
                 </p>
 
                 @if (!empty($homeSetting->footer_whatsapp))
@@ -83,7 +91,7 @@
         </div>
 
         <div class="footer-bottom">
-            © 2026 Barberia & Spa · <span>Cybac</span>
+            © 2026 Barbería & Spa · <span>Cybac</span>
         </div>
     </footer>
 

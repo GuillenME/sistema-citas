@@ -23,12 +23,12 @@
                         <p style="margin:0 0 10px;">Hola {{ $usuario->name }},</p>
                         <p style="margin:0 0 10px;">Tu cuenta ha estado desactivada por varios dias.</p>
                         <p style="margin:0 0 10px;">Si no reactivas tu cuenta en los proximos <strong>5 dias</strong>, sera eliminada automaticamente del sistema.</p>
-                        <p style="margin:0;">Para conservar tu informacion, solo inicia sesion nuevamente.</p>
+                        <p style="margin:0;">Para conservar tu información, solo inicia sesión nuevamente.</p>
                     </td>
                 </tr>
                 <tr>
                     <td style="background:#e8dccd;padding:12px 18px;color:#202737;font-size:13px;">
-                        Barberia & Spa | Aviso automatico
+                        Barbería & Spa | Aviso automático
                     </td>
                 </tr>
             </table>

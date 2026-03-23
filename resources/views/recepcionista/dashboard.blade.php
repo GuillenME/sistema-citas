@@ -69,7 +69,7 @@
             </ul>
         </div>
         <div class="secondary-card recent-card">
-            <h3>Proximas citas de hoy</h3>
+            <h3>Próximas citas de hoy</h3>
             <div class="recent-list">
                 @forelse ($citasRecientes as $cita)
                     @php

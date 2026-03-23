@@ -9,6 +9,7 @@ return [
         'nombre' => env('BANCO_NOMBRE', 'BBVA'),
         'cuenta' => env('BANCO_CUENTA', '1234567890'),
         'clabe' => env('BANCO_CLABE', '012345678901234567'),
+        'beneficiario' => env('BANCO_BENEFICIARIO', 'Barberia & Spa'),
     ],
 
     // Configuracion de horarios

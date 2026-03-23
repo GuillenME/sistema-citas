@@ -2,7 +2,7 @@
     <div class="serv-panel">
         <header class="serv-head">
             <div>
-                <h3>Gestion de clientes del sistema.</h3>
+                <h3>Gestión de clientes del sistema.</h3>
             </div>
             <a href="{{ route('admin.clientes.create') }}" class="serv-btn primary">Agregar cliente</a>
         </header>
@@ -13,7 +13,7 @@
                     <tr>
                         <th>Cliente</th>
                         <th>Email</th>
-                        <th>Telefono</th>
+                        <th>Teléfono</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>

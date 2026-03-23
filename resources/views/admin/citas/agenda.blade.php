@@ -59,7 +59,7 @@
 
         <section class="agenda-stats">
             <article class="agenda-stat-card">
-                <span>Total del dia</span>
+                <span>Total del día</span>
                 <strong>{{ $stats['total'] }}</strong>
             </article>
             <article class="agenda-stat-card">

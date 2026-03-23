@@ -14,9 +14,9 @@
         <section class="register-hero" aria-hidden="true">
             <div class="hero-overlay"></div>
             <div class="hero-content">
-                <span class="hero-brand">{{ optional($homeSetting)->hero_title ?? 'Barberia & Spa' }}</span>
-                <h1>Eleva tu estilo a un nuevo nivel de distincion.</h1>
-                <p>Descubre el equilibrio perfecto entre la tradicion de la barberia clasica y el relax de un spa
+                <span class="hero-brand">{{ optional($homeSetting)->hero_title ?? 'Barbería & Spa' }}</span>
+                <h1>Eleva tu estilo a un nuevo nivel de <em>distinción.</em></h1>
+                <p>Descubre el equilibrio perfecto entre la tradición de la barbería clásica y el relax de un spa
                     moderno.</p>
             </div>
         </section>
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="field-group">
-                    <label for="telefono">Teléfono (10 digitos)</label>
+                    <label for="telefono">Teléfono (10 dígitos)</label>
                     <input id="telefono" type="tel" name="telefono" placeholder="55 1234 5678"
                         value="{{ old('telefono') }}" class="@error('telefono') input-error @enderror" maxlength="10"
                         oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
@@ -104,7 +104,7 @@
             </form>
 
             <p class="login-link">
-                ¿Ya tienes una cuenta? <a href="{{ route('login') }}">Iniciar Sesion</a>
+                ¿Ya tienes una cuenta? <a href="{{ route('login') }}">Iniciar sesión</a>
             </p>
         </section>
     </main>
