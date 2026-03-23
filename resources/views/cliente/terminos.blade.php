@@ -22,6 +22,28 @@
     padding: 60px 80px;
 }
 
+.legal-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 26px;
+    border-radius: 999px;
+    background: linear-gradient(145deg, var(--brown), var(--soft-brown));
+    color: #fff7ec;
+    text-decoration: none;
+    font-size: 28px;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+.legal-back:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.24);
+}
+
 /* HEADER */
 .legal-header h1 {
     font-family: "Cinzel", serif;
@@ -117,6 +139,10 @@
         flex-direction: column;
     }
 
+    .legal-left {
+        padding: 26px 18px 34px;
+    }
+
     .legal-right {
         width: 100%;
         height: 150px;
@@ -128,7 +154,13 @@
 <div class="legal-wrapper">
 
     <div class="legal-left">
-        
+        <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('home') }}"
+           class="legal-back"
+           onclick="if (window.history.length > 1) { event.preventDefault(); window.history.back(); }"
+           aria-label="Regresar">
+            &larr;
+        </a>
+
         <div class="legal-header">
             <h1>Términos y condiciones</h1>
             <p>Última actualización: {{ date('d/m/Y') }}</p>

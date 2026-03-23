@@ -20,7 +20,7 @@
         <nav>
             <a href="{{ route('recepcionista.dashboard') }}" class="{{ request()->routeIs('recepcionista.dashboard') ? 'active' : '' }}">Inicio</a>
             <a href="{{ route('recepcionista.citas.create') }}" class="{{ request()->routeIs('recepcionista.citas.create') ? 'active' : '' }}">Agendar cita</a>
-            <a href="{{ route('recepcionista.citas.agenda') }}" class="{{ request()->routeIs('recepcionista.citas.*') ? 'active' : '' }}">Citas</a>
+            <a href="{{ route('recepcionista.citas.agenda') }}" class="{{ request()->routeIs('recepcionista.citas.agenda', 'recepcionista.citas.index', 'recepcionista.citas.reporte-diario', 'recepcionista.citas.reporte-diario.pdf', 'recepcionista.citas.reporte-mensual', 'recepcionista.citas.reporte-mensual.pdf', 'recepcionista.citas.ticket') ? 'active' : '' }}">Citas</a>
         </nav>
 
         <form method="POST" action="{{ route('logout') }}" id="logoutForm">
