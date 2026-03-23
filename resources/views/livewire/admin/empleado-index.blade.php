@@ -79,7 +79,7 @@
                                 <button class="serv-btn reassign-btn" wire:click="confirmReassign({{ $e->id }})">
                                     Reasignar citas de hoy
                                 </button>
-                                <button class="serv-icon-btn delete" wire:click="confirmDelete({{ $e->id }})" title="Eliminar" aria-label="Eliminar">
+                                <button class="serv-icon-btn delete" wire:click="confirmDelete({{ $e->id }})" title="Dar de baja" aria-label="Dar de baja">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                                 </button>
                             </td>
@@ -100,13 +100,13 @@
     @if ($confirmDeleteId)
         <div class="modal-overlay" wire:click.self="cancelDelete">
             <div class="modal-box">
-                <h3>Eliminar empleado?</h3>
-                <p>Esta accion eliminara el empleado seleccionado.</p>
+                <h3>Dar de baja al empleado?</h3>
+                <p>El empleado quedara inactivo y ya no podra recibir nuevas citas, pero su historial se conservara.</p>
                 <div class="modal-actions">
                     <button class="btn btn-cancel" wire:click="cancelDelete">Cancelar</button>
                     <button class="btn btn-save" wire:click="deleteConfirmed" wire:loading.attr="disabled">
-                        <span wire:loading.remove>Eliminar</span>
-                        <span wire:loading>Eliminando...</span>
+                        <span wire:loading.remove>Dar de baja</span>
+                        <span wire:loading>Dando de baja...</span>
                     </button>
                 </div>
             </div>
