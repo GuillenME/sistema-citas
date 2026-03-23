@@ -45,6 +45,12 @@
                         <textarea id="hero_subtitle" name="hero_subtitle" rows="2" class="auto-grow">{{ old('hero_subtitle', $homeSetting->hero_subtitle) }}</textarea>
                     </div>
                 </div>
+                <div class="form-grid">
+                    <div>
+                        <label for="register_subtitle">Texto del registro</label>
+                        <textarea id="register_subtitle" name="register_subtitle" rows="2" class="auto-grow">{{ old('register_subtitle', $homeSetting->register_subtitle) }}</textarea>
+                    </div>
+                </div>
             </section>
 
             <section class="editor-block">
@@ -188,13 +194,18 @@
                         <textarea id="footer_references" name="footer_references" rows="2" class="auto-grow fixed-height-control">{{ old('footer_references', $homeSetting->footer_references) }}</textarea>
                     </div>
                     <div class="contact-info-item">
+<<<<<<< HEAD
                         <label for="footer_phone">Teléfono de contacto</label>
                         <textarea id="footer_phone" name="footer_phone" rows="2" class="auto-grow fixed-height-control">{{ old('footer_phone', $homeSetting->footer_phone) }}</textarea>
+=======
+                        <label for="footer_phone">Telefono de contacto</label>
+                        <textarea id="footer_phone" name="footer_phone" rows="2" class="auto-grow fixed-height-control" inputmode="numeric">{{ old('footer_phone', $homeSetting->footer_phone) }}</textarea>
+>>>>>>> 07f4d73cb1073a8ec358cef8101849d0370a5ff7
                     </div>
                     <div class="contact-info-item">
                         <label for="footer_whatsapp">WhatsApp</label>
-                        <textarea id="footer_whatsapp" name="footer_whatsapp" rows="2" class="auto-grow fixed-height-control">{{ old('footer_whatsapp', $homeSetting->footer_whatsapp) }}</textarea>
-                        <small class="field-note">Se guardara con lada de Mexico (52) automaticamente.</small>
+                        <textarea id="footer_whatsapp" name="footer_whatsapp" rows="2" class="auto-grow fixed-height-control" inputmode="numeric">{{ old('footer_whatsapp', $homeSetting->footer_whatsapp) }}</textarea>
+                        <small class="field-note">Se guardan solo numeros, sin espacios ni prefijos automaticos.</small>
                     </div>
                 </div>
 
@@ -262,6 +273,7 @@
 
             var addressInput = document.getElementById('footer_address');
             var addressMapPreview = document.getElementById('footer_address_map_preview');
+            var phoneInput = document.getElementById('footer_phone');
             var whatsappInput = document.getElementById('footer_whatsapp');
 
             function updateAddressMapPreview() {
@@ -277,31 +289,26 @@
                 addressInput.addEventListener('change', updateAddressMapPreview);
             }
 
-            function normalizeWhatsappValue(rawValue) {
-            var digits = String(rawValue || '').replace(/\D+/g, '');
-
-            if (!digits) return '';
-
-            // Si ya empieza con 52, lo quitamos temporalmente
-            if (digits.startsWith('52')) {
-            digits = digits.substring(2);
+            function normalizePhoneValue(rawValue) {
+                return String(rawValue || '').replace(/\D+/g, '');
             }
 
-            // Limitar a 10 dígitos (número mexicano normal)
-            digits = digits.substring(0, 10);
+            function bindPhoneNormalizer(input) {
+                if (!input || input.dataset.normalizeBound === '1') return;
+                input.dataset.normalizeBound = '1';
 
-            return '52 ' + digits;
-         }
+                function syncValue() {
+                    input.value = normalizePhoneValue(input.value);
+                }
 
-            if (whatsappInput && whatsappInput.dataset.normalizeBound !== '1') {
-                whatsappInput.dataset.normalizeBound = '1';
-                whatsappInput.addEventListener('blur', function () {
-                    whatsappInput.value = normalizeWhatsappValue(whatsappInput.value);
-                });
-                whatsappInput.addEventListener('change', function () {
-                    whatsappInput.value = normalizeWhatsappValue(whatsappInput.value);
-                });
+                input.addEventListener('input', syncValue);
+                input.addEventListener('blur', syncValue);
+                input.addEventListener('change', syncValue);
+                syncValue();
             }
+
+            bindPhoneNormalizer(phoneInput);
+            bindPhoneNormalizer(whatsappInput);
 
             var grid = document.getElementById('featured_services_grid');
             var counter = document.getElementById('featured_services_counter');

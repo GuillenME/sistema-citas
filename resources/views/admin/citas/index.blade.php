@@ -306,11 +306,13 @@
                                         data-can-complete="{{ $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($finCita) ? '1' : '0' }}"
                                         data-can-no-show="{{ $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($inicioCita) ? '1' : '0' }}"
                                         data-confirm-action="{{ route('admin.citas.confirmar', $cita) }}"
+                                        data-edit-deposit-action="{{ route('admin.citas.actualizarAnticipo', $cita) }}"
                                         data-reject-action="{{ route('admin.citas.rechazar', $cita) }}"
                                         data-cancel-action="{{ route('admin.citas.cancelar', $cita) }}"
                                         data-reschedule-action="{{ route('admin.citas.reagendar', $cita) }}"
                                         data-complete-action="{{ route('admin.citas.completar', $cita) }}"
                                         data-no-show-action="{{ route('admin.citas.noAsistio', $cita) }}"
+                                        data-can-edit-deposit="{{ $cita->status !== 'cancelada' ? '1' : '0' }}"
                                         data-service-id="{{ $cita->service_id }}"
                                         data-date="{{ \Carbon\Carbon::parse($cita->date)->format('Y-m-d') }}"
                                         data-timeline='@json($timelineItems)'
@@ -412,6 +414,14 @@
 
                 <button type="button" class="btn btn-cancel btn-compact" id="openCancelFromModal">
                     Cancelar
+                </button>
+            </form>
+            <form method="POST" id="editDepositForm" class="assign-inline" style="display:none;">
+                @csrf
+                <label>Editar anticipo</label>
+                <input type="number" name="anticipo_monto" id="modalEditarAnticipo" step="0.01" min="0" required>
+                <button type="submit" class="btn btn-save btn-compact">
+                    Guardar anticipo
                 </button>
             </form>
             <form method="POST" id="rejectPaymentForm" class="assign-inline" style="display:none;">
@@ -640,6 +650,7 @@
             var assignForm = document.getElementById('assignForm');
             var assignSelect = document.getElementById('assignEmployeeSelect');
             var confirmForm = document.getElementById('confirmForm');
+            var editDepositForm = document.getElementById('editDepositForm');
             var completeForm = document.getElementById('completeForm');
             var noShowForm = document.getElementById('noShowForm');
             var openCancelFromModal = document.getElementById('openCancelFromModal');
@@ -720,10 +731,12 @@
                     var assignAction = btn.getAttribute('data-assign-action') || '';
                     var canAssign = btn.getAttribute('data-can-assign') === '1';
                     var canConfirm = btn.getAttribute('data-can-confirm') === '1';
+                    var canEditDeposit = btn.getAttribute('data-can-edit-deposit') === '1';
                     var canReschedule = btn.getAttribute('data-can-reschedule') === '1';
                     var canComplete = btn.getAttribute('data-can-complete') === '1';
                     var canNoShow = btn.getAttribute('data-can-no-show') === '1';
                     var confirmAction = btn.getAttribute('data-confirm-action') || '';
+                    var editDepositAction = btn.getAttribute('data-edit-deposit-action') || '';
                     var cancelAction = btn.getAttribute('data-cancel-action') || '';
                     var rescheduleAction = btn.getAttribute('data-reschedule-action') || '';
                     var completeAction = btn.getAttribute('data-complete-action') || '';
@@ -746,6 +759,14 @@
                         2);
                     document.getElementById('modalRemaining').textContent = parseFloat(remaining)
                         .toFixed(2);
+                    var anticipoInput = document.getElementById('modalAnticipoMonto');
+                    if (anticipoInput) {
+                        anticipoInput.value = parseFloat(deposit).toFixed(2);
+                    }
+                    var editarAnticipoInput = document.getElementById('modalEditarAnticipo');
+                    if (editarAnticipoInput) {
+                        editarAnticipoInput.value = parseFloat(deposit).toFixed(2);
+                    }
                     var pagoInput = document.querySelector('#completeForm input[name="pago_final"]');
                     if (pagoInput) {
                         pagoInput.value = parseFloat(remaining).toFixed(2);
@@ -842,6 +863,10 @@
                     if (confirmForm) {
                         confirmForm.style.display = canConfirm ? 'inline-flex' : 'none';
                         confirmForm.setAttribute('action', confirmAction);
+                    }
+                    if (editDepositForm) {
+                        editDepositForm.style.display = canEditDeposit ? 'inline-flex' : 'none';
+                        editDepositForm.setAttribute('action', editDepositAction);
                     }
                     if (completeForm) {
                         completeForm.style.display = canComplete ? 'inline-flex' : 'none';

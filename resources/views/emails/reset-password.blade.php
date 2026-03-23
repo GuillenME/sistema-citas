@@ -20,11 +20,11 @@
                 </tr>
                 <tr>
                     <td style="padding:18px;color:#2e3648;font-size:15px;line-height:1.6;">
-                        <p style="margin:0 0 10px;">Recibimos una solicitud para restablecer tu contrasena.</p>
+                        <p style="margin:0 0 10px;">Recibimos una solicitud para restablecer tu contraseña.</p>
                         <p style="margin:0 0 14px;">Haz clic en el boton de abajo para continuar. Este enlace es valido por 60 minutos.</p>
                         <a href="{{ $url }}"
                            style="display:inline-block;background:#232936;color:#ffffff;text-decoration:none;padding:10px 16px;border-radius:6px;font-weight:700;">
-                            Restablecer contrasena
+                            Restablecer contraseña
                         </a>
                         <p style="margin:14px 0 0;">Si no solicitaste este cambio, ignora este correo.</p>
                     </td>

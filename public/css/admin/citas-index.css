@@ -430,7 +430,7 @@
     flex-shrink: 0;
 }
 
-#notesModal .citas-detail-summary-item span,
+#notesModal .citas-detail-summary-item > span,
 #notesModal .citas-detail-extra > span,
 #notesModal .citas-detail-comment-box > span {
     display: block;
@@ -448,6 +448,16 @@
     font-size: 18px;
     font-weight: 700;
     line-height: 1.45;
+}
+
+#notesModal .citas-detail-summary-item strong span {
+    display: inline;
+    margin-bottom: 0;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 #notesModal .citas-detail-summary-item.is-positive strong {

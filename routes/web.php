@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
+use App\Http\Controllers\Admin\AdminClientesController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\Admin\HomeSettingController;
 use App\Http\Controllers\PasswordResetController;
@@ -109,6 +110,9 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/confirmar', [AdminCitaController::class, 'confirmar'])
             ->name('citas.confirmar');
 
+        Route::post('/citas/{cita}/anticipo', [AdminCitaController::class, 'actualizarAnticipo'])
+            ->name('citas.actualizarAnticipo');
+
         Route::post('/citas/{cita}/cancelar', [AdminCitaController::class, 'cancelar'])
             ->name('citas.cancelar');
 
@@ -175,9 +179,12 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('citas/{cita}/asignar-empleado', [AdminCitaController::class, 'asignarEmpleado'])
             ->name('citas.asignarEmpleado');
 
-        Route::get('/clientes', function () {
-            return view('admin.clientes.index');
-        })->name('clientes.index');
+        Route::get('/clientes', [AdminClientesController::class, 'index'])
+            ->name('clientes.index');
+        Route::get('/clientes/create', [AdminClientesController::class, 'create'])
+            ->name('clientes.create');
+        Route::post('/clientes', [AdminClientesController::class, 'store'])
+            ->name('clientes.store');
 
 
         Route::get('/recepcionistas', function () {
@@ -222,6 +229,14 @@ Route::middleware(['auth', 'rol:1'])
                 })
             ]);
         })->name('notificaciones.json');
+
+        Route::get('/notificaciones/todas', function () {
+            /** @var \App\Models\Usuario $user */
+            $user = auth()->user();
+            $notificaciones = $user->notifications()->latest()->paginate(15);
+
+            return view('admin.notificaciones.index', compact('notificaciones'));
+        })->name('notificaciones.index');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */
@@ -239,8 +254,44 @@ Route::middleware(['auth', 'rol:3'])
         Route::post('/citas', [RecepcionistaCitaController::class, 'store'])
             ->name('citas.store');
 
+        Route::get('/citas/agenda', [RecepcionistaCitaController::class, 'agenda'])
+            ->name('citas.agenda');
+
+        Route::get('/citas/reporte-diario', [RecepcionistaCitaController::class, 'reporteDiario'])
+            ->name('citas.reporte-diario');
+
+        Route::get('/citas/reporte-diario/pdf', [RecepcionistaCitaController::class, 'reporteDiarioPdf'])
+            ->name('citas.reporte-diario.pdf');
+
+        Route::get('/citas/reporte-mensual', [RecepcionistaCitaController::class, 'reporteMensual'])
+            ->name('citas.reporte-mensual');
+
+        Route::get('/citas/reporte-mensual/pdf', [RecepcionistaCitaController::class, 'reporteMensualPdf'])
+            ->name('citas.reporte-mensual.pdf');
+
+        Route::post('/citas/{cita}/confirmar', [RecepcionistaCitaController::class, 'confirmar'])
+            ->name('citas.confirmar');
+
+        Route::post('/citas/{cita}/cancelar', [RecepcionistaCitaController::class, 'cancelar'])
+            ->name('citas.cancelar');
+
         Route::post('/citas/{cita}/reagendar', [RecepcionistaCitaController::class, 'reagendar'])
             ->name('citas.reagendar');
+
+        Route::post('/citas/{cita}/completar', [RecepcionistaCitaController::class, 'completar'])
+            ->name('citas.completar');
+
+        Route::post('/citas/{cita}/no-asistio', [RecepcionistaCitaController::class, 'marcarNoAsistio'])
+            ->name('citas.noAsistio');
+
+        Route::post('/citas/{cita}/asignar-empleado', [RecepcionistaCitaController::class, 'asignarEmpleado'])
+            ->name('citas.asignarEmpleado');
+
+        Route::post('/citas/{cita}/rechazar', [RecepcionistaCitaController::class, 'rechazarPago'])
+            ->name('citas.rechazar');
+
+        Route::get('/citas/{cita}/ticket', [RecepcionistaCitaController::class, 'ticket'])
+            ->name('citas.ticket');
 
         Route::get('/citas', [RecepcionistaCitaController::class, 'index'])
             ->name('citas.index');
@@ -286,7 +337,6 @@ Route::middleware(['auth', 'rol:2'])
                 'name' => 'required|string|max:255',
                 'last_name' => 'nullable|string|max:255',
                 'phone' => 'nullable|string|max:30',
-                'email' => 'required|email|max:255|unique:users,email,' . $usuario->id,
                 'birth_date' => 'nullable|date|before:today',
             ]);
 
@@ -311,7 +361,6 @@ Route::middleware(['auth', 'rol:2'])
                 'name' => $validated['name'],
                 'last_name' => $validated['last_name'] ?? null,
                 'phone' => $validated['phone'] ?? null,
-                'email' => $validated['email'],
             ]);
 
             $cliente->save();

@@ -2,54 +2,33 @@
 
 namespace App\Http\Controllers\Recepcionista;
 
-use App\Constants\CitaStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppointmentDateTimeRequest;
 use App\Models\Cita;
 use App\Models\CitaEstado;
 use App\Models\Cliente;
+use App\Models\Empleado;
 use App\Models\RecepcionistaReminder;
 use App\Models\Servicio;
 use App\Models\Usuario;
-use App\Services\AppointmentAvailabilityService;
+use App\Notifications\CitaClienteNotification;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Mail\AnticipoCanceladoPorRechazosMail;
+use App\Mail\PagoRechazadoMail;
+use App\Services\AppointmentAvailabilityService;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class CitaController extends Controller
 {
-    private const STATUS_LABELS = [
-        CitaStatus::PENDIENTE_ANTICIPO => 'Pendientes de anticipo',
-        CitaStatus::CONFIRMADA => 'Confirmadas',
-        CitaStatus::COMPLETADA => 'Completadas',
-        CitaStatus::CANCELADA => 'Canceladas',
-        CitaStatus::NO_ASISTIO => 'No asistio',
-    ];
-
-    private const STATUS_PRIORITY = [
-        CitaStatus::PENDIENTE_ANTICIPO,
-        CitaStatus::CONFIRMADA,
-        CitaStatus::COMPLETADA,
-        CitaStatus::CANCELADA,
-        CitaStatus::NO_ASISTIO,
-    ];
-
-    private function citaYaInicio(Cita $cita): bool
-    {
-        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
-        $inicioCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
-
-        return now()->greaterThanOrEqualTo($inicioCita);
-    }
-
-    public function __construct(private AppointmentAvailabilityService $availability)
-    {
-    }
+    public function __construct(private AppointmentAvailabilityService $availability) {}
 
     public function dashboard()
     {
         $today = now()->toDateString();
-        $horaActual = now()->format('H:i');
 
         $citasHoy = Cita::whereDate('date', $today)->count();
         $pendientes = Cita::whereDate('date', $today)
@@ -62,9 +41,9 @@ class CitaController extends Controller
             ->where('status', 'cancelada')
             ->count();
 
-      $citasRecientes = Cita::with(['client.user', 'service'])
-            ->whereDate('date', '>=', now()->toDateString())
-            ->orderBy('date')        // más próxima primero
+        $citasRecientes = Cita::with(['client.user', 'service'])
+            ->whereDate('date', '>=', $today)
+            ->orderBy('date')
             ->orderBy('start_time')
             ->limit(3)
             ->get();
@@ -85,13 +64,290 @@ class CitaController extends Controller
         ));
     }
 
+    private function citaYaInicio(Cita $cita): bool
+    {
+        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
+        $inicioCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
+
+        return now()->greaterThanOrEqualTo($inicioCita);
+    }
+
+    public function index()
+    {
+        return redirect()->route('recepcionista.citas.agenda');
+    }
+
+    public function ticket(Cita $cita)
+    {
+        $cita->loadMissing(['client.user', 'service', 'employee']);
+
+        $precio = $cita->precioRegistrado();
+        $anticipo = $cita->anticipoRegistrado();
+        $restante = max(0, $precio - $anticipo);
+
+        return view('recepcionista.citas.ticket', compact('cita', 'precio', 'anticipo', 'restante'));
+    }
+
+    public function agenda(Request $request)
+    {
+        $request->validate([
+            'fecha' => 'nullable|date',
+            'ocultar_descansos' => 'nullable|boolean',
+            'ocultar_sin_citas' => 'nullable|boolean',
+        ]);
+
+        $fechaSeleccionada = Carbon::parse($request->input('fecha', today()->toDateString()));
+        $ocultarDescansos = $request->boolean('ocultar_descansos');
+        $ocultarSinCitas = $request->boolean('ocultar_sin_citas');
+        $empleados = Empleado::query()
+            ->where('active', 1)
+            ->with([
+                'schedules',
+                'breaks' => fn ($query) => $query->whereDate('date', $fechaSeleccionada->toDateString())->orderBy('start_time'),
+            ])
+            ->orderBy('name')
+            ->get();
+
+        $citasDia = Cita::with(['client.user', 'service', 'employee', 'estados.user'])
+            ->withCount([
+                'estados as reagendas_count' => function ($query) {
+                    $query->where('status', 'reagendada');
+                },
+            ])
+            ->whereDate('date', $fechaSeleccionada->toDateString())
+            ->orderBy('start_time')
+            ->get();
+
+        $horasBase = collect([8, 20]);
+        $horasCitas = $citasDia->flatMap(function (Cita $cita) {
+            $inicio = Carbon::parse($cita->getRawOriginal('start_time'));
+            $fin = Carbon::parse($cita->getRawOriginal('end_time'));
+
+            return [
+                max(6, $inicio->copy()->hour - 1),
+                min(22, (int) ceil(($fin->copy()->hour + ($fin->copy()->minute > 0 ? 1 : 0)) + 1)),
+            ];
+        });
+
+        $horaInicio = $horasBase->merge($horasCitas)->min();
+        $horaFin = $horasBase->merge($horasCitas)->max();
+
+        $slots = collect();
+        $cursor = $fechaSeleccionada->copy()->setTime($horaInicio, 0);
+        $finAgenda = $fechaSeleccionada->copy()->setTime($horaFin, 0);
+
+        while ($cursor->lt($finAgenda)) {
+            $slots->push([
+                'time' => $cursor->format('H:i'),
+                'label' => $cursor->format('g:i A'),
+                'is_hour' => $cursor->minute === 0,
+            ]);
+            $cursor->addMinutes(30);
+        }
+
+        $totalMinutos = max(30, $horaFin * 60 - $horaInicio * 60);
+
+        $laneBuilder = function ($label, $appointments, ?Empleado $empleado = null) use ($fechaSeleccionada, $horaInicio, $totalMinutos) {
+            $hasScheduleToday = $empleado
+                ? $empleado->schedules->where('day_of_week', $fechaSeleccionada->dayOfWeek)->isNotEmpty()
+                : false;
+            $employeeBreaks = $empleado?->breaks ?? collect();
+            $allDayBreak = $employeeBreaks->first(fn ($break) => $break->is_all_day);
+
+            return [
+                'id' => $empleado?->id ? 'employee-' . $empleado->id : 'unassigned',
+                'name' => $label,
+                'subtitle' => $empleado
+                    ? ($allDayBreak
+                        ? ($allDayBreak->reason ?: 'Descansa hoy')
+                        : ($hasScheduleToday ? ($empleado->specialty ?: 'Disponible') : 'Descansa hoy'))
+                    : 'Requiere asignacion',
+                'is_rest_day' => $empleado ? (!$hasScheduleToday || (bool) $allDayBreak) : false,
+                'appointments' => $appointments
+                    ->sortBy(fn (Cita $cita) => $cita->getRawOriginal('start_time'))
+                    ->map(function (Cita $cita) use ($fechaSeleccionada, $horaInicio, $totalMinutos) {
+                        $inicio = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $cita->getRawOriginal('start_time'));
+                        $fin = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $cita->getRawOriginal('end_time'));
+                        $duracionMinutos = max(30, $inicio->diffInMinutes($fin));
+                        $offsetMinutos = max(0, ($inicio->hour * 60 + $inicio->minute) - ($horaInicio * 60));
+                        $timelineItems = collect([
+                            [
+                                'label' => 'Cita creada',
+                                'meta' => 'Sistema',
+                                'date' => optional($cita->created_at)->format('d/m/Y H:i'),
+                            ],
+                        ])->merge(
+                            $cita->estados
+                                ->sortBy('change_date')
+                                ->map(function ($estado) {
+                                    $label = match ($estado->status) {
+                                        'confirmada' => 'Confirmada',
+                                        'cancelada' => 'Cancelada',
+                                        'completada' => 'Completada',
+                                        'no_asistio' => 'No asistio',
+                                        'reagendada' => 'Reagendada',
+                                        'pendiente_anticipo' => 'Pendiente de anticipo',
+                                        'anticipo_rechazado' => 'Anticipo rechazado',
+                                        default => ucfirst(str_replace('_', ' ', (string) $estado->status)),
+                                    };
+
+                                    return [
+                                        'label' => $label,
+                                        'meta' => trim((string) (($estado->user?->name ?? '') . ' ' . ($estado->user?->last_name ?? ''))) ?: 'Sistema',
+                                        'date' => Carbon::parse($estado->change_date)->format('d/m/Y H:i'),
+                                    ];
+                                })
+                        )->values();
+                        $precio = $cita->precioRegistrado();
+                        $anticipo = $cita->anticipoRegistrado();
+                        $restante = max(0, $precio - $anticipo);
+                        $canAssign = $cita->status === 'confirmada' && !$cita->employee_id;
+                        $canConfirm = $cita->status === 'pendiente_anticipo';
+                        $canReject = (bool) $cita->receipt && $cita->status === 'pendiente_anticipo';
+                        $canReschedule = in_array($cita->status, ['confirmada', 'pendiente_anticipo'], true)
+                            && (($cita->reagendas_count ?? 0) < 2)
+                            && now()->lt($inicio);
+                        $canComplete = $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($fin);
+                        $canNoShow = $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($inicio);
+
+                        return [
+                            'id' => $cita->id,
+                            'client' => trim((string) (($cita->client?->user?->name ?? '') . ' ' . ($cita->client?->user?->last_name ?? ''))) ?: 'Cliente',
+                            'service' => $cita->service?->name ?? 'Servicio',
+                            'time_range' => $inicio->format('g:i A') . ' - ' . $fin->format('g:i A'),
+                            'status' => $cita->status,
+                            'employee' => $cita->employee?->name,
+                            'top_percent' => round(($offsetMinutos / $totalMinutos) * 100, 4),
+                            'height_percent' => round(($duracionMinutos / $totalMinutos) * 100, 4),
+                            'payment_label' => '$' . number_format($cita->anticipoRegistrado(), 2) . ' anticipo',
+                            'details' => [
+                                'id' => $cita->id,
+                                'client' => trim((string) (($cita->client?->user?->name ?? '') . ' ' . ($cita->client?->user?->last_name ?? ''))) ?: 'Cliente',
+                                'service' => $cita->service?->name ?? 'Servicio',
+                                'time_range' => $inicio->format('g:i A') . ' - ' . $fin->format('g:i A'),
+                                'employee' => $cita->employee?->name ?? 'Sin asignar',
+                                'status' => ucfirst(str_replace('_', ' ', $cita->status)),
+                                'deposit' => '$' . number_format($anticipo, 2),
+                                'remaining' => '$' . number_format($restante, 2),
+                                'notes' => trim((string) ($cita->notes ?? '')) ?: 'Sin comentarios adicionales.',
+                                'origin' => $cita->receipt ? 'Cliente (anticipo por transferencia)' : 'Recepcion',
+                                'price' => number_format($precio, 2, '.', ''),
+                                'deposit_amount' => number_format($anticipo, 2, '.', ''),
+                                'remaining_amount' => number_format($restante, 2, '.', ''),
+                                'deadline' => $cita->payment_deadline?->toIso8601String(),
+                                'receipt_url' => $cita->receipt ? asset('storage/' . $cita->receipt) : '',
+                                'assign_action' => route('recepcionista.citas.asignarEmpleado', $cita),
+                                'confirm_action' => route('recepcionista.citas.confirmar', $cita),
+                                'reject_action' => route('recepcionista.citas.rechazar', $cita),
+                                'cancel_action' => route('recepcionista.citas.cancelar', $cita),
+                                'reschedule_action' => route('recepcionista.citas.reagendar', $cita),
+                                'complete_action' => route('recepcionista.citas.completar', $cita),
+                                'no_show_action' => route('recepcionista.citas.noAsistio', $cita),
+                                'ticket_url' => route('recepcionista.citas.ticket', $cita),
+                                'service_id' => $cita->service_id,
+                                'date' => $fechaSeleccionada->toDateString(),
+                                'can_assign' => $canAssign,
+                                'can_confirm' => $canConfirm,
+                                'can_reject' => $canReject,
+                                'can_reschedule' => $canReschedule,
+                                'can_complete' => $canComplete,
+                                'can_no_show' => $canNoShow,
+                                'timeline' => $timelineItems,
+                            ],
+                        ];
+                    })
+                    ->concat(
+                        $employeeBreaks
+                            ->reject(fn ($break) => $break->is_all_day)
+                            ->map(function ($break) use ($fechaSeleccionada, $horaInicio, $totalMinutos) {
+                                $inicio = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $break->start_time);
+                                $fin = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $break->end_time);
+                                $duracionMinutos = max(30, $inicio->diffInMinutes($fin));
+                                $offsetMinutos = max(0, ($inicio->hour * 60 + $inicio->minute) - ($horaInicio * 60));
+
+                                return [
+                                    'id' => 'break-' . $break->id,
+                                    'client' => '',
+                                    'service' => $break->reason ?: 'Descanso bloqueado',
+                                    'time_range' => $inicio->format('g:i A') . ' - ' . $fin->format('g:i A'),
+                                    'status' => 'break',
+                                    'employee' => $break->empleado?->name,
+                                    'top_percent' => round(($offsetMinutos / $totalMinutos) * 100, 4),
+                                    'height_percent' => round(($duracionMinutos / $totalMinutos) * 100, 4),
+                                    'payment_label' => '',
+                                    'details' => [
+                                        'client' => 'Bloque interno',
+                                        'service' => $break->reason ?: 'Descanso bloqueado',
+                                        'time_range' => $inicio->format('g:i A') . ' - ' . $fin->format('g:i A'),
+                                        'employee' => 'No disponible',
+                                        'status' => 'Descanso',
+                                        'deposit' => '-',
+                                        'remaining' => '-',
+                                        'notes' => trim((string) ($break->reason ?? '')) ?: 'Bloque de descanso manual del empleado.',
+                                    ],
+                                ];
+                            })
+                    )
+                    ->sortBy('top_percent')
+                    ->values(),
+            ];
+        };
+
+        $lanes = $empleados->map(function (Empleado $empleado) use ($citasDia, $laneBuilder) {
+            return $laneBuilder(
+                $empleado->name,
+                $citasDia->where('employee_id', $empleado->id)->values(),
+                $empleado
+            );
+        })->values();
+
+        $sinAsignar = $citasDia->whereNull('employee_id')->values();
+        if ($sinAsignar->isNotEmpty()) {
+            $lanes->push($laneBuilder('Sin asignar', $sinAsignar));
+        }
+
+        $lanes = $lanes->filter(function (array $lane) use ($ocultarDescansos, $ocultarSinCitas) {
+            if ($ocultarDescansos && !empty($lane['is_rest_day'])) {
+                return false;
+            }
+
+            if ($ocultarSinCitas && count($lane['appointments']) === 0) {
+                return false;
+            }
+
+            return true;
+        })->values();
+
+        $stats = [
+            'total' => $citasDia->count(),
+            'confirmadas' => $citasDia->where('status', 'confirmada')->count(),
+            'completadas' => $citasDia->where('status', 'completada')->count(),
+            'ingresos_estimados' => round(
+                $citasDia->sum(fn (Cita $cita) => (float) ($cita->total_paid ?? 0)),
+                2
+            ),
+        ];
+
+        return view('recepcionista.citas.agenda', [
+            'fechaSeleccionada' => $fechaSeleccionada,
+            'lanes' => $lanes,
+            'slots' => $slots,
+            'horaInicio' => $horaInicio,
+            'horaFin' => $horaFin,
+            'stats' => $stats,
+            'empleados' => $empleados,
+            'ocultarDescansos' => $ocultarDescansos,
+            'ocultarSinCitas' => $ocultarSinCitas,
+        ]);
+    }
+
     public function create()
     {
         $servicios = Servicio::where('active', 1)
             ->whereHas('empleados', function ($q) {
                 $q->where('active', 1);
             })
-            ->with(['promociones' => function($query) {
+            ->with(['promociones' => function ($query) {
                 $query->where('published', true)
                     ->where('start_date', '<=', now()->toDateString())
                     ->where('end_date', '>=', now()->toDateString());
@@ -113,49 +369,32 @@ class CitaController extends Controller
             'servicio_id' => 'required|exists:services,id',
             'anticipo_recibido' => 'required|accepted',
             'anticipo_monto' => 'required|numeric|min:0.01',
-        ], [
-            'anticipo_recibido.required' => 'Debes confirmar que se recibio anticipo en recepcion.',
-            'anticipo_recibido.accepted' => 'Debes confirmar que se recibio anticipo en recepcion.',
-            'anticipo_monto.required' => 'Debes capturar el monto del anticipo.',
-            'anticipo_monto.min' => 'El monto del anticipo debe ser mayor a 0.',
         ]);
 
         $cliente = Cliente::where('user_id', $request->usuario_id)->first();
 
         if (!$cliente) {
-            return back()->with('error', 'El usuario no es cliente');
+            return back()->with('error', 'El usuario no es cliente')->withInput();
         }
 
         $servicio = Servicio::with(['empleados' => function ($q) {
             $q->where('active', 1)->with(['schedules', 'breaks']);
         }])->findOrFail($request->servicio_id);
 
-        if (!$servicio->active) {
-            return back()->with('error', 'Servicio no disponible')->withInput();
-        }
-
-        if ($servicio->empleados->isEmpty()) {
-            return back()->with('error', 'No hay empleados disponibles para este servicio')->withInput();
-        }
-
         $horaInicio = Carbon::parse($request->hora_inicio);
         $horaFin = $horaInicio->copy()->addMinutes($servicio->duration_minutes);
+
         $precioServicio = $servicio->precioConDescuento();
-        $anticipo = (float) $request->anticipo_monto;
+        $anticipo = $request->anticipo_monto;
+
         $totalPagado = $anticipo;
-        $status = $anticipo >= $precioServicio ? 'completada' : 'confirmada';
 
-        $driver = DB::getDriverName();
-        $lockName = 'citas:' . $request->fecha;
-
-        if ($driver === 'mysql') {
-            $lock = DB::selectOne('SELECT GET_LOCK(?, 10) AS l', [$lockName]);
-            if ((int) ($lock->l ?? 0) !== 1) {
-                return back()->with('error', 'Intenta nuevamente')->withInput();
-            }
-        }
+        $status = $anticipo >= $precioServicio
+            ? 'completada'
+            : 'confirmada';
 
         try {
+
             DB::beginTransaction();
 
             $empleadoAsignado = $this->availability->findAssignableEmployee(
@@ -168,83 +407,341 @@ class CitaController extends Controller
 
             if (!$empleadoAsignado) {
                 DB::rollBack();
-                return back()->with('error', 'Ya no hay empleados disponibles en ese horario.')->withInput();
+                return back()->with('error', 'No hay empleados disponibles')->withInput();
             }
 
             Cita::create([
+
                 'client_id' => $cliente->id,
                 'service_id' => $servicio->id,
                 'employee_id' => $empleadoAsignado->id,
+
                 'date' => $request->fecha,
                 'start_time' => $horaInicio->format('H:i'),
                 'end_time' => $horaFin->format('H:i'),
+
                 'service_price' => $servicio->price,
                 'deposit_amount' => $anticipo,
                 'total_paid' => $totalPagado,
+
                 'status' => $status,
-                'notes' => 'Anticipo recibido en recepcion: $' . number_format($anticipo, 2),
+
+                'notes' => 'Anticipo recibido por recepcionista'
+
             ]);
 
             DB::commit();
         } catch (\Exception $e) {
+
             DB::rollBack();
-            return back()->with('error', 'Ocurrio un error al agendar la cita.')->withInput();
-        } finally {
-            if ($driver === 'mysql') {
-                DB::selectOne('SELECT RELEASE_LOCK(?)', [$lockName]);
-            }
+
+            return back()->with('error', 'Error al crear cita')->withInput();
         }
 
         return redirect()
-            ->route('recepcionista.dashboard')
-            ->with('success', 'Cita agendada correctamente');
+            ->route('recepcionista.citas.index')
+            ->with('success', 'Cita creada correctamente');
     }
 
-    public function index()
+    public function reporteDiario(Request $request)
     {
-        $inicioSemana = now()->startOfWeek(Carbon::MONDAY)->toDateString();
-        $finSemana = now()->endOfWeek(Carbon::SUNDAY)->toDateString();
+        $request->validate([
+            'fecha' => 'nullable|date',
+        ]);
 
-        $baseQuery = Cita::query()
-            ->with(['client.user', 'service'])
-            ->withCount([
-                'estados as reagendas_count' => function ($query) {
-                    $query->where('status', 'reagendada');
-                },
-            ])
-            ->whereBetween('date', [$inicioSemana, $finSemana]);
+        $fecha = $request->input('fecha', today()->toDateString());
 
-        $statusCounts = Cita::query()
-            ->whereBetween('date', [$inicioSemana, $finSemana])
+        $citas = Cita::with(['client.user', 'service', 'employee'])
+            ->whereDate('date', $fecha)
+            ->orderBy('start_time')
+            ->get();
+
+        $filename = 'reporte_citas_' . $fecha . '.csv';
+        $handle = fopen('php://temp', 'r+');
+
+        // BOM para que Excel abra UTF-8 correctamente
+        fwrite($handle, "\xEF\xBB\xBF");
+
+        fputcsv($handle, ['Reporte diario de citas']);
+        fputcsv($handle, ['Fecha', $fecha]);
+        fputcsv($handle, ['Total de citas', $citas->count()]);
+        fputcsv($handle, []);
+        fputcsv($handle, [
+            'Hora',
+            'Cliente',
+            'Email',
+            'Servicio',
+            'Estado',
+            'Empleado',
+            'Notas',
+        ]);
+
+        foreach ($citas as $cita) {
+            fputcsv($handle, [
+                optional($cita->start_time)->format('H:i'),
+                trim((string) optional(optional($cita->client)->user)->name),
+                trim((string) optional(optional($cita->client)->user)->email),
+                trim((string) optional($cita->service)->name),
+                (string) $cita->status,
+                trim((string) optional($cita->employee)->name),
+                trim((string) ($cita->notes ?? '')),
+            ]);
+        }
+
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
+    public function reporteDiarioPdf(Request $request)
+    {
+        $request->validate([
+            'fecha' => 'nullable|date',
+        ]);
+
+        $fecha = $request->input('fecha', today()->toDateString());
+
+        $citas = Cita::with(['client.user', 'service', 'employee'])
+            ->whereDate('date', $fecha)
+            ->orderBy('start_time')
+            ->get();
+
+        $statusResumen = $citas
+            ->groupBy('status')
+            ->map(fn($grupo) => $grupo->count())
+            ->sortKeys();
+
+        $pdf = Pdf::loadView('recepcionista.citas.reporte-diario-pdf', [
+            'fecha' => Carbon::parse($fecha),
+            'citas' => $citas,
+            'totalCitas' => $citas->count(),
+            'statusResumen' => $statusResumen,
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->download('reporte_diario_citas_' . Carbon::parse($fecha)->format('Y-m-d') . '.pdf');
+    }
+
+    public function reporteMensual(Request $request)
+    {
+        $request->validate([
+            'mes' => 'nullable|date_format:Y-m',
+        ]);
+
+        $data = $this->buildMonthlyReportData($request->input('mes', now()->format('Y-m')));
+
+        return view('recepcionista.citas.reporte-mensual', $data);
+    }
+
+    public function reporteMensualPdf(Request $request)
+    {
+        $request->validate([
+            'mes' => 'nullable|date_format:Y-m',
+        ]);
+
+        $data = $this->buildMonthlyReportData($request->input('mes', now()->format('Y-m')));
+        $nombreMes = $data['inicio']->format('Y-m');
+
+        $pdf = Pdf::loadView('recepcionista.citas.reporte-mensual-pdf', $data)
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download("reporte_mensual_citas_{$nombreMes}.pdf");
+    }
+
+    private function buildMonthlyReportData(string $mesSeleccionado): array
+    {
+        [$year, $month] = array_map('intval', explode('-', $mesSeleccionado));
+
+        $inicio = Carbon::create($year, $month, 1)->startOfMonth();
+        $fin = $inicio->copy()->endOfMonth();
+
+        $conteoPorDia = Cita::query()
+            ->selectRaw('DATE(date) as fecha, COUNT(*) as total')
+            ->whereBetween('date', [$inicio->toDateString(), $fin->toDateString()])
+            ->groupBy(DB::raw('DATE(date)'))
+            ->orderBy('fecha')
+            ->pluck('total', 'fecha');
+
+        $conteoPorDiaEstatus = Cita::query()
+            ->selectRaw('DATE(date) as fecha, status, COUNT(*) as total')
+            ->whereBetween('date', [$inicio->toDateString(), $fin->toDateString()])
+            ->groupBy(DB::raw('DATE(date)'), 'status')
+            ->get()
+            ->groupBy('fecha');
+
+        $ingresosPorDia = Cita::query()
+            ->join('services', 'appointments.service_id', '=', 'services.id')
+            ->selectRaw('DATE(appointments.date) as fecha, SUM(services.price) as total')
+            ->whereBetween('appointments.date', [$inicio->toDateString(), $fin->toDateString()])
+            ->whereIn('appointments.status', ['confirmada', 'completada'])
+            ->groupBy(DB::raw('DATE(appointments.date)'))
+            ->pluck('total', 'fecha');
+
+        $labels = [];
+        $valores = [];
+        $valoresCanceladas = [];
+        $valoresConfirmadas = [];
+        $valoresCompletadas = [];
+        $valoresNoAsistio = [];
+        $valoresPendientes = [];
+        $detalleDiario = [];
+        $acumulado = 0;
+        $ingresosMes = 0.0;
+
+        for ($dia = 1; $dia <= $inicio->daysInMonth; $dia++) {
+            $fecha = $inicio->copy()->day($dia)->toDateString();
+            $totalDia = (int) ($conteoPorDia[$fecha] ?? 0);
+            $registrosDia = $conteoPorDiaEstatus->get($fecha, collect());
+            $canceladasDia = (int) ($registrosDia->firstWhere('status', 'cancelada')?->total ?? 0);
+            $confirmadasDia = (int) ($registrosDia->firstWhere('status', 'confirmada')?->total ?? 0);
+            $completadasDia = (int) ($registrosDia->firstWhere('status', 'completada')?->total ?? 0);
+            $noAsistioDia = (int) ($registrosDia->firstWhere('status', 'no_asistio')?->total ?? 0);
+            $pendientesDia = (int) ($registrosDia->firstWhere('status', 'pendiente_anticipo')?->total ?? 0);
+            $ingresoDia = (float) ($ingresosPorDia[$fecha] ?? 0);
+            $acumulado += $totalDia;
+            $ingresosMes += $ingresoDia;
+
+            $labels[] = str_pad((string) $dia, 2, '0', STR_PAD_LEFT);
+            $valores[] = $totalDia;
+            $valoresCanceladas[] = $canceladasDia;
+            $valoresConfirmadas[] = $confirmadasDia;
+            $valoresCompletadas[] = $completadasDia;
+            $valoresNoAsistio[] = $noAsistioDia;
+            $valoresPendientes[] = $pendientesDia;
+            $detalleDiario[] = [
+                'dia' => str_pad((string) $dia, 2, '0', STR_PAD_LEFT),
+                'citas' => $totalDia,
+                'canceladas' => $canceladasDia,
+                'confirmadas' => $confirmadasDia,
+                'completadas' => $completadasDia,
+                'pendientes' => $pendientesDia,
+                'no_asistio' => $noAsistioDia,
+                'ingresos' => round($ingresoDia, 2),
+                'totales' => $acumulado,
+            ];
+        }
+
+        $statusResumen = Cita::query()
             ->selectRaw('status, COUNT(*) as total')
+            ->whereBetween('date', [$inicio->toDateString(), $fin->toDateString()])
             ->groupBy('status')
             ->pluck('total', 'status');
 
-        $statusOptions = collect(self::STATUS_PRIORITY)
-            ->filter(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0)
-            ->map(fn (string $status) => [
-                'key' => $status,
-                'label' => self::STATUS_LABELS[$status] ?? ucfirst($status),
-                'count' => (int) ($statusCounts[$status] ?? 0),
-            ])
-            ->values();
+        $totalCitas = array_sum($valores);
+        $promedioDiario = $inicio->daysInMonth > 0
+            ? round($totalCitas / $inicio->daysInMonth, 2)
+            : 0;
+        $promedioIngresosDiario = $inicio->daysInMonth > 0
+            ? round($ingresosMes / $inicio->daysInMonth, 2)
+            : 0;
 
-        $defaultStatus = collect(self::STATUS_PRIORITY)
-            ->first(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0);
+        $maxCitas = max($valores ?: [0]);
+        $indicePico = array_search($maxCitas, $valores, true);
+        $diaPico = $maxCitas > 0 && $indicePico !== false ? $labels[$indicePico] : null;
 
-        $requestedStatus = (string) request('status');
-        $selectedStatus = $requestedStatus !== '' && CitaStatus::isValid($requestedStatus) && (int) ($statusCounts[$requestedStatus] ?? 0) > 0
-            ? $requestedStatus
-            : $defaultStatus;
+        return [
+            'mesSeleccionado' => $mesSeleccionado,
+            'inicio' => $inicio,
+            'labels' => $labels,
+            'valores' => $valores,
+            'valoresCanceladas' => $valoresCanceladas,
+            'valoresConfirmadas' => $valoresConfirmadas,
+            'valoresCompletadas' => $valoresCompletadas,
+            'valoresNoAsistio' => $valoresNoAsistio,
+            'valoresPendientes' => $valoresPendientes,
+            'maxCitas' => $maxCitas,
+            'totalCitas' => $totalCitas,
+            'totalCanceladas' => (int) ($statusResumen['cancelada'] ?? 0),
+            'totalConfirmadas' => (int) ($statusResumen['confirmada'] ?? 0),
+            'totalCompletadas' => (int) ($statusResumen['completada'] ?? 0),
+            'totalPendientes' => (int) ($statusResumen['pendiente_anticipo'] ?? 0),
+            'totalNoAsistio' => (int) ($statusResumen['no_asistio'] ?? 0),
+            'promedioDiario' => $promedioDiario,
+            'ingresosMes' => round($ingresosMes, 2),
+            'promedioIngresosDiario' => $promedioIngresosDiario,
+            'diaPico' => $diaPico,
+            'statusResumen' => $statusResumen,
+            'detalleDiario' => $detalleDiario,
+        ];
+    }
 
-        $citas = (clone $baseQuery)
-            ->when($selectedStatus, fn ($query) => $query->where('status', $selectedStatus))
-            ->orderByDesc('date')
-            ->orderByDesc('start_time')
-            ->paginate(4)
-            ->withQueryString();
 
-        return view('recepcionista.citas.index', compact('citas', 'statusOptions', 'selectedStatus'));
+    public function confirmar(Request $request,Cita $cita)
+    {
+        $request->validate([
+            'anticipo_monto' => 'required|numeric|min:0'
+        ]);
+
+        $anticipo = (float) $request->anticipo_monto;
+
+        $cita->update([
+            'deposit_amount' => $anticipo,
+            'total_paid' => $anticipo,
+            'status' => 'confirmada',
+            'notes' => 'Anticipo validado por recepcionista'
+        ]);
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'confirmada',
+            'user_id' => auth()->id(),
+            'change_date' => now()
+        ]);
+
+        $cita->loadMissing(['client.user', 'service', 'employee']);
+
+        $clienteUsuario = $cita->client?->user;
+
+        if ($clienteUsuario) {
+            $clienteUsuario->notify(
+                new CitaClienteNotification(
+                    $cita,
+                    CitaClienteNotification::CONFIRMADA_CON_EMPLEADO
+                )
+            );
+        }
+
+        return back()->with('success', 'Cita confirmada correctamente');
+    }
+
+
+    public function cancelar(Request $request, Cita $cita)
+    {
+        $request->validate([
+            'observaciones' => 'nullable|string|max:500',
+        ]);
+
+        $motivoCancelacion = $request->observaciones
+            ?? 'Cancelada por el recepcionista';
+
+        $cita->update([
+            'status' => 'cancelada',
+            'notes' => $motivoCancelacion,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'cancelada',
+            'user_id' => auth()->id(),
+            'change_date' => now()
+        ]);
+
+        $cita->loadMissing(['client.user', 'service', 'employee']);
+        $clienteUsuario = $cita->client?->user;
+        if ($clienteUsuario) {
+            $clienteUsuario->notify(
+                new CitaClienteNotification(
+                    $cita,
+                    CitaClienteNotification::CANCELADA_POR_ADMIN,
+                    $motivoCancelacion
+                )
+            );
+        }
+
+        return back()->with('success', 'Cita cancelada correctamente');
     }
 
     public function reagendar(AppointmentDateTimeRequest $request, Cita $cita)
@@ -316,4 +813,159 @@ class CitaController extends Controller
         return back()->with('success', 'Cita reagendada correctamente.');
     }
 
+    public function completar(Request $request, Cita $cita)
+    {
+        if ($cita->status !== 'confirmada') {
+            return back()->with('error', 'Solo se pueden completar citas confirmadas.');
+        }
+
+        $deposito = $cita->anticipoRegistrado();
+        $restante = max(0, round($cita->precioRegistrado() - $deposito, 2));
+
+        if ($restante <= 0) {
+            return back()->with('error', 'La cita ya no tiene saldo pendiente.');
+        }
+
+        $totalPagado = $deposito + $restante;
+
+        $cita->update([
+            'final_payment' => $restante,
+            'total_paid' => $totalPagado,
+            'status' => 'completada'
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'completada',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        return back()->with('success', 'Cita marcada como completada.');
+    }
+
+    public function marcarNoAsistio(Cita $cita)
+    {
+        if ($cita->status !== 'confirmada') {
+            return back()->with('error', 'Solo se puede marcar no asistio en citas confirmadas.');
+        }
+
+        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
+        $inicioCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('start_time'));
+        if (Carbon::now()->lessThan($inicioCita)) {
+            return back()->with('error', 'Solo se puede marcar no asistio a partir de la hora de inicio.');
+        }
+
+        $notaBase = trim((string) ($cita->notes ?? ''));
+        $notaFinal = $notaBase === ''
+            ? 'Marcada como no asistio por recepcionista.'
+            : $notaBase . ' | Marcada como no asistio por recepcionista.';
+
+        $cita->update([
+            'status' => 'no_asistio',
+            'notes' => $notaFinal,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'no_asistio',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        return back()->with('success', 'Cita marcada como no asistio.');
+    }
+
+    public function rechazarPago(Cita $cita)
+    {
+        if ($cita->status !== 'pendiente_anticipo') {
+            return back()->with('error', 'Solo se puede rechazar anticipo en citas pendientes.');
+        }
+
+        if (!$cita->receipt) {
+            return back()->with('error', 'No hay comprobante para rechazar.');
+        }
+
+        $intentos = ($cita->payment_attempts ?? 0) + 1;
+
+        if ($cita->receipt && Storage::exists('public/' . $cita->receipt)) {
+            Storage::delete('public/' . $cita->receipt);
+        }
+
+        if ($intentos >= 2) {
+            $cita->update([
+                'status' => 'cancelada',
+                'notes' => 'Cita cancelada por 2 intentos fallidos de anticipo.',
+                'receipt' => null,
+                'payment_deadline' => null,
+                'payment_attempts' => $intentos,
+            ]);
+
+            CitaEstado::create([
+                'appointment_id' => $cita->id,
+                'status' => 'cancelada',
+                'user_id' => auth()->id(),
+                'change_date' => now(),
+            ]);
+
+            $email = $cita->client?->user?->email;
+            if ($email) {
+                Mail::to($email)->send(new AnticipoCanceladoPorRechazosMail($cita));
+            }
+
+            return back()->with('error', 'La cita fue cancelada por 2 intentos fallidos.');
+        }
+
+        $cita->update([
+            'status' => 'pendiente_anticipo',
+            'notes' => 'Anticipo rechazado por recepcionista. Tiene 15 minutos para reenviar comprobante (ultimo intento).',
+            'receipt' => null,
+            'payment_deadline' => now()->addMinutes(15),
+            'payment_attempts' => $intentos,
+        ]);
+
+        CitaEstado::create([
+            'appointment_id' => $cita->id,
+            'status' => 'anticipo_rechazado',
+            'user_id' => auth()->id(),
+            'change_date' => now(),
+        ]);
+
+        $email = $cita->client?->user?->email;
+        if ($email) {
+            Mail::to($email)->send(new PagoRechazadoMail($cita));
+        }
+
+        return back()->with('success', 'Anticipo rechazado. Cliente notificado.');
+    }
+
+    public function asignarEmpleado(Request $request, Cita $cita)
+    {
+        if ($cita->status !== 'confirmada') {
+            return back()->with('error', 'Solo se puede asignar empleado a citas confirmadas');
+        }
+
+        if ($cita->employee_id) {
+            return back()->with('error', 'Esta cita ya tiene un empleado asignado');
+        }
+
+        $request->validate([
+            'empleado_id' => 'required|exists:employees,id',
+        ]);
+
+        $cita->update([
+            'employee_id' => $request->empleado_id,
+        ]);
+
+        $cita->loadMissing(['client.user', 'service', 'employee']);
+        $clienteUsuario = $cita->client?->user;
+        if ($clienteUsuario) {
+            $clienteUsuario->notify(
+                new CitaClienteNotification($cita, CitaClienteNotification::CONFIRMADA_CON_EMPLEADO)
+            );
+        }
+
+        return back()->with('success', 'Empleado asignado correctamente');
+    }
 }
+

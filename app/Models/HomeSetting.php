@@ -13,6 +13,7 @@ class HomeSetting extends Model
     protected $fillable = [
         'hero_title',
         'hero_subtitle',
+        'register_subtitle',
         'feature_1_title',
         'feature_1_description',
         'feature_2_title',

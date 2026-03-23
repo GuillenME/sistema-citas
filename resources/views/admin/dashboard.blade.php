@@ -11,34 +11,6 @@
             </div>
             <div class="dh-topbar-actions">
 
-                <div class="notif-dropdown">
-                    <button class="notif-btn">
-                        🔔
-                        @if (auth()->user()->unreadNotifications->count() > 0)
-                            <span class="notif-count">
-                                {{ auth()->user()->unreadNotifications->count() }}
-                            </span>
-                        @endif
-                    </button>
-
-                    <div class="notif-menu" id="notif-menu">
-
-                        @forelse(auth()->user()->unreadNotifications as $noti)
-                            <a href="{{ route('admin.notificacion.leer', $noti->id) }}" class="notif-item">
-                                {{ $noti->data['mensaje'] }}
-                                <small>{{ $noti->created_at->diffForHumans() }}</small>
-                            </a>
-
-                        @empty
-
-                            <div class="notif-empty">
-                                No hay notificaciones
-                            </div>
-                        @endforelse
-
-                    </div>
-                </div>
-
                 <a href="{{ route('admin.citas.reporte-diario.pdf') }}" class="dh-btn dh-btn-ghost">Reporte diario</a>
                 <a href="{{ route('admin.citas.reporte-mensual') }}" class="dh-btn dh-btn-ghost">Reporte mensual</a>
 
@@ -171,51 +143,5 @@
             </a>
         </section>
     </div>
-    <script>
-        function cargarNotificaciones() {
-
-            fetch("/admin/notificaciones")
-                .then(res => res.json())
-                .then(data => {
-
-                    let contador = document.getElementById("notif-count");
-                    let menu = document.getElementById("notif-menu");
-
-                    if (data.count > 0) {
-                        contador.innerText = data.count;
-                        contador.style.display = "inline-block";
-                    } else {
-                        contador.style.display = "none";
-                    }
-
-                    menu.innerHTML = "";
-
-                    if (data.notificaciones.length === 0) {
-                        menu.innerHTML = "<div class='notif-empty'>No hay notificaciones</div>";
-                        return;
-                    }
-
-                    data.notificaciones.forEach(n => {
-
-                        let item = document.createElement("a");
-
-                        item.href = "/admin/notificacion/" + n.id;
-                        item.className = "notif-item";
-
-                        item.innerHTML = `
-                ${n.mensaje}
-                <small>${n.tiempo}</small>
-            `;
-
-                        menu.appendChild(item);
-
-                    });
-
-                });
-
-        }
-
-        setInterval(cargarNotificaciones, 5000);
-        // revisa cada 5 segundos
-    </script>
 @endsection
+

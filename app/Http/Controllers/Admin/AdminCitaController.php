@@ -640,6 +640,32 @@ class AdminCitaController extends Controller
         return back()->with('success', 'Cita confirmada correctamente');
     }
 
+    public function actualizarAnticipo(Request $request, Cita $cita)
+    {
+        if (in_array($cita->status, ['cancelada'], true)) {
+            return back()->with('error', 'No se puede editar el anticipo de una cita cancelada.');
+        }
+
+        $request->validate([
+            'anticipo_monto' => 'required|numeric|min:0',
+        ]);
+
+        $anticipo = (float) $request->anticipo_monto;
+        $pagoFinal = (float) ($cita->final_payment ?? 0);
+        $totalPagado = $anticipo + $pagoFinal;
+        $notaAnterior = trim((string) ($cita->notes ?? ''));
+        $notaEdicion = 'Anticipo actualizado por administrador a $' . number_format($anticipo, 2) . '.';
+        $notaFinal = $notaAnterior === '' ? $notaEdicion : $notaAnterior . ' | ' . $notaEdicion;
+
+        $cita->update([
+            'deposit_amount' => $anticipo,
+            'total_paid' => $totalPagado,
+            'notes' => $notaFinal,
+        ]);
+
+        return back()->with('success', 'Anticipo actualizado correctamente.');
+    }
+
 
     public function cancelar(Request $request, Cita $cita)
     {

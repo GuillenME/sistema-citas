@@ -111,10 +111,6 @@ body {
     max-width:520px;
 }
 
-.accent-text{
-    color:var(--accent);
-}
-
 .hero-content p {
     margin: 0;
     max-width: 560px;

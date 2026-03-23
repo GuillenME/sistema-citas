@@ -132,6 +132,86 @@
             });
         })();
     </script>
+    <script>
+        (function () {
+            function bindNotifications() {
+                const btn = document.getElementById('notifBtn');
+                const menu = document.getElementById('notif-menu');
+                const contador = document.getElementById('notif-count');
+                const summary = document.getElementById('notif-summary');
+                const dot = document.getElementById('notif-dot');
+                if (!btn || !menu || btn.dataset.bound === '1') return;
+
+                function renderMenu(data) {
+                    if (summary) {
+                        summary.textContent = data.count > 0
+                            ? data.count + ' avisos pendientes hoy'
+                            : 'Sin avisos pendientes hoy';
+                    }
+
+                    if (dot) {
+                        dot.style.display = data.count > 0 ? 'inline-flex' : 'none';
+                    }
+
+                    menu.innerHTML = '';
+
+                    if (!Array.isArray(data.notificaciones) || data.notificaciones.length === 0) {
+                        menu.innerHTML = "<div class='notif-empty'>No hay notificaciones</div><a href='{{ route('admin.notificaciones.index') }}' class='notif-more'>Ver mas</a>";
+                        return;
+                    }
+
+                    data.notificaciones.forEach(function (n) {
+                        const item = document.createElement('a');
+                        item.href = "/admin/notificacion/" + n.id;
+                        item.className = 'notif-item';
+                        item.innerHTML = n.mensaje + '<small>' + n.tiempo + '</small>';
+                        menu.appendChild(item);
+                    });
+
+                    const more = document.createElement('a');
+                    more.href = "{{ route('admin.notificaciones.index') }}";
+                    more.className = 'notif-more';
+                    more.textContent = 'Ver mas';
+                    menu.appendChild(more);
+                }
+
+                function cargarNotificaciones() {
+                    fetch("/admin/notificaciones")
+                        .then(function (res) { return res.json(); })
+                        .then(renderMenu);
+                }
+
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const isOpen = menu.classList.toggle('is-open');
+                    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    if (isOpen) {
+                        cargarNotificaciones();
+                    }
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                        menu.classList.remove('is-open');
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') {
+                        menu.classList.remove('is-open');
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                btn.dataset.bound = '1';
+                setInterval(cargarNotificaciones, 5000);
+            }
+
+            bindNotifications();
+            document.addEventListener('livewire:navigated', bindNotifications);
+        })();
+    </script>
     @yield('scripts')
 </body>
 </html>

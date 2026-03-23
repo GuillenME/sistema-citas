@@ -14,9 +14,15 @@
         <section class="register-hero" aria-hidden="true">
             <div class="hero-overlay"></div>
             <div class="hero-content">
+<<<<<<< HEAD
                 <span class="hero-brand">{{ optional($homeSetting)->hero_title ?? 'Barbería & Spa' }}</span>
                 <h1>Eleva tu estilo a un nuevo nivel de <em>distinción.</em></h1>
                 <p>Descubre el equilibrio perfecto entre la tradición de la barbería clásica y el relax de un spa
+=======
+                <span class="hero-brand">{{ optional($homeSetting)->hero_title ?? 'Barberia & Spa' }}</span>
+                <h1>Eleva tu estilo a un nuevo nivel de distincion.</h1>
+                <p>Descubre el equilibrio perfecto entre la tradicion de la barberia clasica y el relax de un spa
+>>>>>>> 07f4d73cb1073a8ec358cef8101849d0370a5ff7
                     moderno.</p>
             </div>
         </section>
@@ -26,7 +32,7 @@
 
             <div class="register-header">
                 <h2>Registro de Cliente</h2>
-                <p>Unete a nuestra comunidad exclusiva y reserva tu proxima experiencia de lujo.</p>
+                <p>{{ optional($homeSetting)->register_subtitle ?? 'Unete a nuestra comunidad exclusiva y reserva tu proxima experiencia de lujo.' }}</p>
             </div>
 
             @if ($errors->any())

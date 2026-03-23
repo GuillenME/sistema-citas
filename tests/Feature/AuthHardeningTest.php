@@ -78,7 +78,7 @@ class AuthHardeningTest extends TestCase
         ]);
 
         $expected =
-            'Si el correo existe en el sistema, te enviaremos un enlace para restablecer tu contrasena.';
+            'Si el correo existe en el sistema, te enviaremos un enlace para restablecer tu contraseña.';
 
         $this->post(route('password.email'), [
             'email' => 'reset@test.local',

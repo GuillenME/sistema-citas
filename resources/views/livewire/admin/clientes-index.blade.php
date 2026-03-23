@@ -4,6 +4,7 @@
             <div>
                 <h3>Gestión de clientes del sistema.</h3>
             </div>
+            <a href="{{ route('admin.clientes.create') }}" class="serv-btn primary">Agregar cliente</a>
         </header>
 
         <div class="table-container serv-table-wrap">

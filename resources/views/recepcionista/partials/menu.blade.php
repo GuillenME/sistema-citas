@@ -11,7 +11,7 @@
     <nav>
         <a href="{{ route('recepcionista.dashboard') }}" class="{{ request()->routeIs('recepcionista.dashboard') ? 'active' : '' }}">Inicio</a>
         <a href="{{ route('recepcionista.citas.create') }}" class="{{ request()->routeIs('recepcionista.citas.create') ? 'active' : '' }}">Agendar cita</a>
-        <a href="{{ route('recepcionista.citas.index') }}" class="{{ request()->routeIs('recepcionista.citas.index') ? 'active' : '' }}">Citas</a>
+        <a href="{{ route('recepcionista.citas.agenda') }}" class="{{ request()->routeIs('recepcionista.citas.*') ? 'active' : '' }}">Citas</a>
     </nav>
 
     <form method="POST" action="{{ route('logout') }}" id="logoutForm">
