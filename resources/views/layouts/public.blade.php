@@ -96,6 +96,44 @@
     </footer>
 
     @yield('scripts')
+    <script>
+        (function () {
+            const navbar = document.querySelector('.public-navbar');
+            const toggle = navbar?.querySelector('[data-public-menu-toggle]');
+            const mobileMq = window.matchMedia('(max-width: 980px)');
+
+            if (!navbar || !toggle) {
+                return;
+            }
+
+            const syncMenu = () => {
+                if (!mobileMq.matches) {
+                    navbar.classList.remove('is-open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                    return;
+                }
+
+                toggle.setAttribute('aria-expanded', navbar.classList.contains('is-open') ? 'true' : 'false');
+            };
+
+            toggle.addEventListener('click', () => {
+                navbar.classList.toggle('is-open');
+                syncMenu();
+            });
+
+            navbar.querySelectorAll('nav a').forEach((link) => {
+                link.addEventListener('click', () => {
+                    if (mobileMq.matches) {
+                        navbar.classList.remove('is-open');
+                        syncMenu();
+                    }
+                });
+            });
+
+            window.addEventListener('resize', syncMenu);
+            syncMenu();
+        })();
+    </script>
     @livewireScripts
 </body>
 

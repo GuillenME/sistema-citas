@@ -15,6 +15,11 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
+.cliente-menu .cliente-menu-top,
+.cliente-menu .cliente-menu-main {
+    display: contents;
+}
+
 .cliente-menu .title {
     font-family: "Cinzel", serif;
     color: #ffdca0;
@@ -33,6 +38,28 @@
     border-radius: 0;
     border: none;
     box-shadow: none;
+}
+
+.cliente-menu .menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    background: rgba(255, 255, 255, 0.06);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.cliente-menu .menu-toggle span {
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: #ffdca0;
 }
 
 .cliente-menu nav {
@@ -86,19 +113,70 @@
     width: 100%;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 860px) {
     .cliente-menu {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        gap: 14px;
+        padding: 16px 18px;
+    }
+
+    .cliente-menu .cliente-menu-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .cliente-menu .cliente-menu-main {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 14px;
+        padding-top: 6px;
+    }
+
+    .cliente-menu.is-open .cliente-menu-main {
+        display: flex;
+    }
+
+    .cliente-menu .menu-toggle {
+        display: inline-flex;
     }
 
     .cliente-menu nav {
         width: 100%;
+        flex-direction: column;
+        align-items: stretch;
         justify-content: flex-start;
+        gap: 10px;
+    }
+
+    .cliente-menu nav a {
+        display: block;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    .cliente-menu nav a::after {
+        display: none;
     }
 
     .cliente-menu form {
         justify-self: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .cliente-menu .title {
+        font-size: 17px;
+        gap: 12px;
+    }
+
+    .cliente-menu .title-logo-img {
+        width: 42px;
+        height: 42px;
     }
 }

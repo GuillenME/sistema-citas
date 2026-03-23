@@ -39,6 +39,8 @@ main {
     display: flex;
     flex-direction: column;
     gap: 28px;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .hero {
@@ -344,11 +346,25 @@ main {
 }
 
 @media (max-width: 600px) {
+    .container {
+        padding: 18px 12px 28px;
+    }
+
     .hero {
         padding: 24px;
     }
 
     .summary-grid {
         grid-template-columns: 1fr;
+    }
+
+    .recent-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .recent-meta {
+        width: 100%;
+        text-align: left;
     }
 }

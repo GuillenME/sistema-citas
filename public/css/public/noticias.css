@@ -217,3 +217,24 @@
         font-size: 28px;
         cursor: pointer;
     }
+
+    @media (max-width: 640px) {
+        section {
+            padding: 42px 12px;
+        }
+
+        .news-modal-content {
+            width: calc(100vw - 20px);
+            padding: 18px 14px;
+        }
+
+        .news-modal-content img {
+            height: 220px;
+        }
+
+        .news-more {
+            width: calc(100% - 32px);
+            align-self: stretch;
+            text-align: center;
+        }
+    }

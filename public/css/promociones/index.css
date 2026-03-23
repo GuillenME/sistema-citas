@@ -277,3 +277,27 @@ body {
         height: 220px;
     }
 }
+
+@media (max-width: 640px) {
+    .promotions-page {
+        padding: 42px 12px 36px;
+    }
+
+    .promotions-hero {
+        padding: 22px 14px;
+    }
+
+    .promos-showcase {
+        padding: 14px;
+    }
+
+    .promos-tab-buttons {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .promos-tab-btn {
+        width: 100%;
+    }
+}

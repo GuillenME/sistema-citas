@@ -415,4 +415,17 @@ body.modal-open{
     .cta-btn{
         min-width: 100%;
     }
+
+    .services-title{
+        flex-wrap: wrap;
+        white-space: normal;
+    }
+
+    .modal-content{
+        padding: 16px 14px;
+    }
+
+    .modal-content img{
+        height: 220px;
+    }
 }

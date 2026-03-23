@@ -142,6 +142,8 @@ header .logout-btn:active {
     position: relative;
     z-index: 1;
     padding: 60px 40px 80px;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .hero {
@@ -155,10 +157,12 @@ header .logout-btn:active {
 
 .hero-copy {
     order: 2;
+    min-width: 0;
 }
 
 .hero-visual {
     order: 1;
+    min-width: 0;
 }
 
 .hero-tag {
@@ -302,6 +306,57 @@ header .logout-btn:active {
     font-size: 12px;
     color: #f7e9d8;
     max-width: 520px;
+}
+
+@media (max-width: 1100px) {
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-copy,
+    .hero-visual {
+        order: initial;
+    }
+}
+
+@media (max-width: 860px) {
+    .container {
+        padding: 24px 18px 40px;
+    }
+
+    .hero-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .collage {
+        min-height: 320px;
+    }
+}
+
+@media (max-width: 560px) {
+    .container {
+        padding: 18px 12px 32px;
+    }
+
+    .hero-copy h2 {
+        font-size: 28px;
+    }
+
+    .hero-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .collage {
+        min-height: 240px;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
+    .modal-btn {
+        width: 100%;
+    }
 }
 
 /* ===== MODAL LOGOUT PREMIUM UNIFICADO ===== */

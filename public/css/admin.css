@@ -1559,6 +1559,8 @@ select:focus {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
     left: auto;
     right: auto;
 }
@@ -2075,6 +2077,34 @@ main.dashboard.dashboard-home .admin-home {
     main.dashboard.dashboard-home .admin-home {
         padding: 16px;
         border-radius: 14px;
+    }
+
+    .notif-menu,
+    .admin-sidebar-notif-menu {
+        width: min(320px, calc(100vw - 32px));
+    }
+}
+
+@media (max-width: 640px) {
+    .dashboard-inner .page-header h1 {
+        font-size: 30px;
+    }
+
+    .dashboard-inner .page-actions,
+    .modal-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .dashboard-inner .page-actions .btn,
+    .modal-actions .btn {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .modal-box {
+        max-width: calc(100vw - 20px);
+        padding: 22px 16px;
     }
 }
 
