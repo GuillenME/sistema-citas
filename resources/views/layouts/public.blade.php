@@ -29,9 +29,7 @@
                     Barbería & Spa
                 @endif
 
-                <p class="footer-tag">
-                    Excelencia en el cuidado personal.
-                </p>
+
             </div>
 
             <div class="footer-item">

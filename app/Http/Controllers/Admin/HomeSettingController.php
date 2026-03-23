@@ -62,7 +62,7 @@ class HomeSettingController extends Controller
             'footer_references' => null,
             'footer_phone' => '3312345678',
             'footer_whatsapp' => '3312345678',
-            'footer_hours' => 'Lun-Sab 9:00-20:00',
+            'footer_hours' => 'Lunes a Viernes: 09:00 a.m. – 08:00 p.m. Sábados: 09:00 a.m. – 06:00 p.m. Domingos: Cerrado',
         ]);
 
         $serviciosActivos = Servicio::where('active', 1)

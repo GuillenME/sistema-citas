@@ -75,7 +75,8 @@
         font-size: 12px;
         display: inline-block;
         margin-bottom: 8px;
-        color: #fccc7c;
+        color: #fff0cf;
+        text-shadow: 0 1px 4px rgba(59, 33, 16, 0.35);
     }
 
     .news-body h3{
