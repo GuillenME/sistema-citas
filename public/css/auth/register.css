@@ -20,17 +20,17 @@
 
 body.auth-register-page {
     margin: 0;
-    height: 100vh;
     min-height: 100vh;
+    min-height: 100svh;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg-dark);
     color: var(--text-main);
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .register-layout {
-    height: 100vh;
     min-height: 100vh;
+    min-height: 100svh;
     display: grid;
     grid-template-columns: 60% 40%;
 }
@@ -90,7 +90,7 @@ body.auth-register-page {
     display: flex;
     flex-direction: column;
     gap: clamp(0.6rem, 1.1vh, 1rem);
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 /* ================= FLECHA REGRESO ================= */
@@ -284,17 +284,18 @@ body.auth-register-page {
     .hero-content h1 {
         font-size: clamp(1.8rem, 3.4vw, 2.8rem);
     }
+
+    .register-panel {
+        padding: 2rem 1.25rem;
+    }
 }
 
 @media (max-width: 920px) {
     body.auth-register-page {
-        height: auto;
         min-height: 100vh;
-        overflow: auto;
     }
 
     .register-layout {
-        height: auto;
         grid-template-columns: 1fr;
     }
 
@@ -307,6 +308,13 @@ body.auth-register-page {
         border-left: 0;
         border-top: 1px solid var(--line-soft);
         overflow: visible;
+        padding: 1.5rem 1.1rem 1.8rem;
+    }
+
+    .back-arrow {
+        position: absolute;
+        top: 14px;
+        left: 14px;
     }
 }
 
@@ -319,11 +327,53 @@ body.auth-register-page {
         padding: 1.2rem;
     }
 
+    .register-header h2 {
+        font-size: 1.7rem;
+    }
+
+    .register-header p {
+        max-width: 100%;
+        font-size: 0.94rem;
+    }
+
     .hero-brand {
         font-size: 1.45rem;
     }
 
     .hero-content p {
         font-size: 0.94rem;
+    }
+
+    .field-group input {
+        font-size: 16px;
+    }
+
+    .submit-button {
+        padding: 0.9rem 1rem;
+    }
+
+    .back-arrow {
+        width: 38px;
+        height: 38px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 420px) {
+    .register-hero {
+        min-height: 240px;
+        padding: 1rem;
+    }
+
+    .hero-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-content p {
+        font-size: 0.88rem;
+    }
+
+    .register-panel {
+        padding: 1rem 0.9rem 1.4rem;
     }
 }
