@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminClientesController;
 use App\Http\Controllers\Admin\AdminServicioController;
 use App\Http\Controllers\Admin\HomeSettingController;
+use App\Http\Controllers\Admin\LegalContentController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
@@ -208,6 +209,12 @@ Route::middleware(['auth', 'rol:1'])
 
         Route::put('/home-settings', [HomeSettingController::class, 'update'])
             ->name('home_settings.update');
+
+        Route::get('/legal', [LegalContentController::class, 'edit'])
+            ->name('legal.edit');
+
+        Route::put('/legal', [LegalContentController::class, 'update'])
+            ->name('legal.update');
         Route::post('/citas/{cita}/rechazar', [AdminCitaController::class, 'rechazarPago'])
             ->name('citas.rechazar');
 
@@ -465,8 +472,8 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
     ->name('password.update');
 
 
-Route::view('/terminos', 'cliente.terminos')->name('terminos');
-Route::view('/privacidad', 'cliente.privacidad')->name('privacidad');
+Route::get('/terminos', [PublicController::class, 'terminos'])->name('terminos');
+Route::get('/privacidad', [PublicController::class, 'privacidad'])->name('privacidad');
 
 Route::get('/promociones', function () {
     return view('promociones.index');

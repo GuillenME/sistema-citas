@@ -130,6 +130,7 @@ class HomeSettingController extends Controller
             $data['navbar_logo'] = $request->file('navbar_logo')
                 ->store('home_settings', 'public');
         }
+
         $selectedServiceIds = collect($request->input('featured_services', []))
             ->map(fn ($id) => (int) $id)
             ->unique()
@@ -164,9 +165,8 @@ class HomeSettingController extends Controller
         });
 
         return redirect()->route('admin.home_settings.edit')
-            ->with('success', 'Configuración de inicio actualizada correctamente');
+            ->with('success', 'Configuracion de inicio actualizada correctamente');
     }
-
 
     /**
      * Remove the specified resource from storage.

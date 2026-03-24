@@ -1,0 +1,125 @@
+.legal-editor-shell {
+    width: 100%;
+}
+
+.legal-editor-form {
+    display: grid;
+    gap: 20px;
+}
+
+.legal-editor-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    border: 1px solid rgba(252, 204, 124, 0.18);
+    border-radius: 18px;
+    background: linear-gradient(160deg, rgba(30, 22, 11, 0.94), rgba(17, 13, 8, 0.9));
+}
+
+.legal-editor-kicker {
+    margin: 0 0 6px;
+    color: #f3cc73;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.legal-editor-meta {
+    margin: 0;
+    color: #d6c4a0;
+}
+
+.legal-editor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.legal-editor-card {
+    display: grid;
+    gap: 12px;
+    border: 1px solid rgba(252, 204, 124, 0.18);
+    border-radius: 18px;
+    background: linear-gradient(165deg, rgba(18, 16, 9, 0.96), rgba(24, 20, 10, 0.9));
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.28);
+    padding: 20px;
+}
+
+.legal-editor-card-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.legal-editor-card h3 {
+    margin: 0 0 6px;
+    color: #fff3d3;
+}
+
+.legal-editor-card p {
+    margin: 0;
+    color: #cdb995;
+}
+
+.legal-editor-card label {
+    color: #f3cc73;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.legal-editor-card textarea {
+    width: 100%;
+    min-height: 420px;
+    border-radius: 14px;
+    border: 1px solid rgba(252, 204, 124, 0.26);
+    background: rgba(0, 0, 0, 0.38);
+    color: #f6efdd;
+    padding: 14px;
+    font-size: 14px;
+    line-height: 1.7;
+    resize: vertical;
+}
+
+.legal-editor-card textarea:focus {
+    outline: 0;
+    border-color: rgba(252, 204, 124, 0.58);
+    box-shadow: 0 0 0 3px rgba(252, 204, 124, 0.12);
+}
+
+.legal-editor-badge {
+    white-space: nowrap;
+    color: #2c1e0a;
+    background: #f3cc73;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.legal-editor-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 1100px) {
+    .legal-editor-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .legal-editor-topbar,
+    .legal-editor-card-head {
+        flex-direction: column;
+    }
+
+    .legal-editor-card textarea {
+        min-height: 320px;
+    }
+}
