@@ -605,6 +605,14 @@ class AdminCitaController extends Controller
 
     public function confirmar(Request $request,Cita $cita)
     {
+        if ($cita->status !== 'pendiente_anticipo') {
+            return back()->with('error', 'Solo se pueden confirmar citas pendientes de anticipo.');
+        }
+
+        if (!$cita->receipt) {
+            return back()->with('error', 'Se necesita un comprobante para confirmar el anticipo.');
+        }
+
         $request->validate([
             'anticipo_monto' => 'required|numeric|min:0'
         ]);

@@ -1,6 +1,6 @@
 @extends('layouts.recepcionista')
 
-@section('title', 'Agenda visual')
+@section('title', 'Citas')
 @section('back-url', route('recepcionista.dashboard'))
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/citas-agenda.css') }}">

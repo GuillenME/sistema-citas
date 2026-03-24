@@ -92,88 +92,7 @@ class CitaController extends Controller
 
     public function index()
     {
-        $hoy = today();
-
-        Cita::where('status', 'pendiente_anticipo')
-            ->whereNotNull('payment_deadline')
-            ->where('payment_deadline', '<', now())
-            ->whereNull('receipt')
-            ->update([
-                'status' => 'cancelada',
-                'notes' => 'Cita cancelada automaticamente por no reenviar anticipo a tiempo.',
-                'receipt' => null,
-                'payment_deadline' => null,
-                'payment_attempts' => 0,
-            ]);
-
-        $baseQuery = Cita::with([
-                'client.user',
-                'client.appointments.service',
-                'client.appointments.employee',
-                'service',
-                'employee',
-                'estados.user',
-            ])
-            ->withCount([
-                'estados as reagendas_count' => function ($query) {
-                    $query->where('status', 'reagendada');
-                },
-            ]);
-
-        $statusCounts = (clone $baseQuery)
-            ->selectRaw('status, COUNT(*) as total')
-            ->groupBy('status')
-            ->pluck('total', 'status');
-
-        $totalAppointments = (int) $statusCounts->sum();
-
-        $statusOptions = collect([
-            [
-                'key' => self::STATUS_ALL,
-                'label' => 'Todas',
-                'count' => $totalAppointments,
-            ],
-        ])->merge(
-            collect(self::STATUS_PRIORITY)
-                ->filter(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0)
-                ->map(fn (string $status) => [
-                    'key' => $status,
-                    'label' => self::STATUS_LABELS[$status] ?? ucfirst($status),
-                    'count' => (int) ($statusCounts[$status] ?? 0),
-                ])
-        )->values();
-
-        $requestedStatus = (string) request('status');
-        $selectedStatus = $requestedStatus === self::STATUS_ALL || $requestedStatus === ''
-            ? self::STATUS_ALL
-            : (array_key_exists($requestedStatus, self::STATUS_LABELS) ? $requestedStatus : self::STATUS_ALL);
-
-        $citas = (clone $baseQuery)
-            ->when($selectedStatus !== self::STATUS_ALL, fn ($query) => $query->where('status', $selectedStatus))
-            ->orderByDesc('created_at')
-            ->paginate(5)
-            ->withQueryString();
-
-        $stats = [
-            'hoy' => Cita::query()
-                ->whereDate('date', $hoy)
-                ->count(),
-            'pendientes' => Cita::query()
-                ->whereDate('date', $hoy)
-                ->where('status', 'pendiente_anticipo')
-                ->count(),
-            'canceladas' => Cita::query()
-                ->whereDate('date', $hoy)
-                ->where('status', 'cancelada')
-                ->count(),
-        ];
-
-        return view('recepcionista.citas.index', compact(
-            'citas',
-            'stats',
-            'statusOptions',
-            'selectedStatus'
-        ));
+        return redirect()->route('recepcionista.citas.agenda');
     }
 
     public function ticket(Cita $cita)
@@ -301,7 +220,7 @@ class CitaController extends Controller
                         $anticipo = $cita->anticipoRegistrado();
                         $restante = max(0, $precio - $anticipo);
                         $canAssign = $cita->status === 'confirmada' && !$cita->employee_id;
-                        $canConfirm = $cita->status === 'pendiente_anticipo';
+                        $canConfirm = (bool) $cita->receipt && $cita->status === 'pendiente_anticipo';
                         $canReject = (bool) $cita->receipt && $cita->status === 'pendiente_anticipo';
                         $canReschedule = in_array($cita->status, ['confirmada', 'pendiente_anticipo'], true)
                             && (($cita->reagendas_count ?? 0) < 2)
@@ -538,7 +457,7 @@ class CitaController extends Controller
         }
 
         return redirect()
-            ->route('recepcionista.citas.index')
+            ->route('recepcionista.citas.agenda')
             ->with('success', 'Cita creada correctamente');
     }
 
@@ -771,6 +690,14 @@ class CitaController extends Controller
 
     public function confirmar(Request $request,Cita $cita)
     {
+        if ($cita->status !== 'pendiente_anticipo') {
+            return back()->with('error', 'Solo se pueden confirmar citas pendientes de anticipo.');
+        }
+
+        if (!$cita->receipt) {
+            return back()->with('error', 'Se necesita un comprobante para confirmar el anticipo.');
+        }
+
         $request->validate([
             'anticipo_monto' => 'required|numeric|min:0'
         ]);

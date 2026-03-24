@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -12,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-menu.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-base.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-ui.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/citas-index.css') }}">
     <link rel="stylesheet" href="{{ asset('css/recepcionista/recepcionista-citas.css') }}">
 </head>
 
@@ -22,25 +21,29 @@
     <div class="container">
 
         <div class="table-card">
-            <h2>Citas de la semana</h2>
+            <header class="citas-topbar">
+                <div class="citas-topbar-left">
+                    <div>
+                        <h2>Citas</h2>
 
-            @if ($statusOptions->isNotEmpty())
-                <div class="status-tabs">
-                    @foreach ($statusOptions as $statusOption)
-                        <a
-                            href="{{ request()->url() }}?status={{ $statusOption['key'] }}"
-                            class="status-tab {{ $selectedStatus === $statusOption['key'] ? 'active' : '' }}">
-                            {{ $statusOption['label'] }} ({{ $statusOption['count'] }})
-                        </a>
-                    @endforeach
+                        @if ($statusOptions->isNotEmpty())
+                            <div class="status-tabs">
+                                @foreach ($statusOptions as $statusOption)
+                                    <a href="{{ request()->url() }}?status={{ $statusOption['key'] }}"
+                                        class="status-tab {{ $selectedStatus === $statusOption['key'] ? 'active' : '' }}">
+                                        {{ $statusOption['label'] }} ({{ $statusOption['count'] }})
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
                 </div>
-            </div>
-            <div class="citas-topbar-right">
-                <a href="{{ route('recepcionista.citas.agenda') }}" class="citas-btn ghost">Agenda visual</a>
-                <a href="{{ route('recepcionista.citas.create') }}" class="citas-btn ghost">Nueva cita</a>
-                <a href="{{ route('recepcionista.citas.index') }}" class="citas-btn primary">Actualizar página</a>
-            </div>
-        </header>
+                <div class="citas-topbar-right">
+                    <a href="{{ route('recepcionista.citas.agenda') }}" class="citas-btn ghost">Agenda visual</a>
+                    <a href="{{ route('recepcionista.citas.create') }}" class="citas-btn ghost">Nueva cita</a>
+                    <a href="{{ route('recepcionista.citas.index') }}" class="citas-btn primary">Actualizar página</a>
+                </div>
+            </header>
 
         <section class="citas-stats">
             <article class="stat-card">
@@ -209,16 +212,16 @@
                                     'total_spent' => '$' . number_format($totalSpent, 2),
                                     'avg_ticket' => '$' . number_format($avgTicket, 2),
                                     'last_completed' => $lastCompletedAppointment
-                                        ? $lastCompletedAppointment->date->format('d/m/Y') . ' · ' . \Carbon\Carbon::parse($lastCompletedAppointment->start_time)->format('h:i A')
+                                        ? $lastCompletedAppointment->date->format('d/m/Y') . ' Â· ' . \Carbon\Carbon::parse($lastCompletedAppointment->start_time)->format('h:i A')
                                         : 'Sin visitas completadas',
                                     'favorite_employee' => $favoriteEmployee
                                         ? $favoriteEmployee['employee'] . ' (' . $favoriteEmployee['count'] . ')'
                                         : 'Aun sin preferencia clara',
                                     'next_appointment' => $nextAppointment
-                                        ? $nextAppointment->date->format('d/m/Y') . ' · ' . \Carbon\Carbon::parse($nextAppointment->start_time)->format('h:i A')
+                                        ? $nextAppointment->date->format('d/m/Y') . ' Â· ' . \Carbon\Carbon::parse($nextAppointment->start_time)->format('h:i A')
                                         : 'Sin citas proximas',
                                     'last_appointment' => $lastAppointment
-                                        ? $lastAppointment->date->format('d/m/Y') . ' · ' . \Carbon\Carbon::parse($lastAppointment->start_time)->format('h:i A')
+                                        ? $lastAppointment->date->format('d/m/Y') . ' Â· ' . \Carbon\Carbon::parse($lastAppointment->start_time)->format('h:i A')
                                         : 'Sin historial',
                                     'favorite_services' => $favoriteServices,
                                 ];
@@ -252,7 +255,7 @@
                                         @if ($isToday)
                                             Hoy
                                         @elseif ($isTomorrow)
-                                            Mañana
+                                            MaÃ±ana
                                         @else
                                             Programada
                                         @endif
@@ -342,7 +345,7 @@
         <div class="modal-box citas-detail-modal-box">
             <div class="citas-detail-modal-head">
                 <h3>Detalle de la cita</h3>
-                <button type="button" class="citas-detail-close-icon" id="notesModalDismiss" aria-label="Cerrar">×</button>
+                <button type="button" class="citas-detail-close-icon" id="notesModalDismiss" aria-label="Cerrar">Ã—</button>
             </div>
 
             <div class="citas-detail-summary-grid">
@@ -431,7 +434,7 @@
             </form>
             <form method="POST" id="noShowForm" class="assign-inline">
                 @csrf
-                <button type="submit" class="btn btn-cancel btn-compact">Marcar no asistió</button>
+                <button type="submit" class="btn btn-cancel btn-compact">Marcar no asistiÃ³</button>
             </form>
             </div>
             <div class="citas-detail-footer">
@@ -451,7 +454,7 @@
                     <h3>Ficha del cliente</h3>
                     <p class="client-profile-head-note">Resumen rapido del comportamiento e historial del cliente.</p>
                 </div>
-                <button type="button" class="citas-detail-close-icon" id="clientProfileDismiss" aria-label="Cerrar">×</button>
+                <button type="button" class="citas-detail-close-icon" id="clientProfileDismiss" aria-label="Cerrar">Ã—</button>
             </div>
 
             <div class="client-profile-content">
@@ -596,9 +599,7 @@
             </form>
         </div>
     </div>
-@endsection
 
-@section('scripts')
     <script>
         (function() {
             var searchInput = document.getElementById('citasSearch');
@@ -801,7 +802,7 @@
                     modalEmployee.textContent = employee;
                     modalOrigin.textContent = origin === 'cliente' ?
                         'Cliente (anticipo por transferencia)' :
-                        'Recepción / Recepcionista';
+                        'RecepciÃ³n / Recepcionista';
                     try {
                         currentClientProfile = JSON.parse(clientProfileRaw);
                     } catch (e) {
@@ -910,7 +911,7 @@
                 document.getElementById('clientProfileNext').textContent = profile.next_appointment || 'Sin citas proximas';
                 document.getElementById('clientProfileLast').textContent = profile.last_appointment || 'Sin historial';
                 document.getElementById('clientProfileLastCompleted').textContent = profile.last_completed || 'Sin visitas completadas';
-                document.getElementById('clientProfileValueSummary').textContent = (profile.total_spent || '$0.00') + ' acumulado · ' + (profile.avg_ticket || '$0.00') + ' promedio';
+                document.getElementById('clientProfileValueSummary').textContent = (profile.total_spent || '$0.00') + ' acumulado Â· ' + (profile.avg_ticket || '$0.00') + ' promedio';
 
                 var favoritesWrap = document.getElementById('clientProfileFavorites');
                 var favorites = Array.isArray(profile.favorite_services) ? profile.favorite_services : [];
@@ -981,17 +982,36 @@
                     cancelModal.setAttribute('aria-hidden', 'false');
                 }
 
-    <!-- Modal de confirmacion de logout -->
-    <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
-        <div class="modal-content">
-            <h3>¿Cerrar sesión?</h3>
-            <p>¿Estás seguro de que deseas cerrar sesión?</p>
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
-                <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
-            </div>
-        </div>
-    </div>
+                if (openCancelFromModal) {
+                    openCancelFromModal.addEventListener('click', function() {
+                        var action = openCancelFromModal.getAttribute('data-cancel-action');
+                        if (action) {
+                            closeModal();
+                            openCancel(action);
+                        }
+                    });
+                }
+
+                function closeCancel() {
+                    cancelModal.classList.remove('active');
+                    cancelModal.setAttribute('aria-hidden', 'true');
+                }
+
+                cancelClose.addEventListener('click', closeCancel);
+                cancelModal.addEventListener('click', function(e) {
+                    if (e.target === cancelModal) closeCancel();
+                });
+            }
+
+            var rescheduleModal = document.getElementById('rescheduleModal');
+            var rescheduleForm = document.getElementById('rescheduleForm');
+            var rescheduleClose = document.getElementById('rescheduleModalClose');
+            if (rescheduleModal && rescheduleForm && rescheduleClose) {
+                function openReschedule(action) {
+                    rescheduleForm.setAttribute('action', action);
+                    rescheduleModal.classList.add('active');
+                    rescheduleModal.setAttribute('aria-hidden', 'false');
+                }
 
                 if (openRescheduleFromModal) {
                     openRescheduleFromModal.addEventListener('click', function() {
@@ -1036,5 +1056,18 @@
             }
         })();
     </script>
-@endsection
 
+    <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
+        <div class="modal-content">
+            <h3>¿Cerrar sesión?</h3>
+            <p>¿Estás seguro de que deseas cerrar sesión?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
+                <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

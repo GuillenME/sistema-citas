@@ -156,7 +156,7 @@
 <body>
     <div class="ticket-actions">
         <button type="button" onclick="window.print()">Imprimir ticket</button>
-        <a href="{{ route('recepcionista.citas.index') }}">Volver a citas</a>
+        <a href="{{ route('recepcionista.citas.agenda') }}">Volver a citas</a>
     </div>
 
     <article class="ticket-sheet">
