@@ -48,7 +48,22 @@ class HomeSettingController extends Controller
      */
     public function edit()
     {
-        $homeSetting = HomeSetting::firstOrCreate([], HomeSetting::defaultAttributes());
+        $homeSetting = HomeSetting::firstOrCreate([], [
+            'hero_title' => 'BARBERíA & SPA',
+            'hero_subtitle' => 'Estilo, cuidado y bienestar en un solo lugar',
+            'register_subtitle' => 'Unete a nuestra comunidad exclusiva y reserva tu proxima experiencia de lujo.',
+            'feature_1_title' => 'Cortes Modernos',
+            'feature_1_description' => 'Técnicas actuales y tendencias',
+            'feature_2_title' => 'Tratamientos Spa',
+            'feature_2_description' => 'Relajación y cuidado personal',
+            'feature_3_title' => 'Atención Personalizada',
+            'feature_3_description' => 'Productos de primera línea',
+            'footer_address' => 'Calle Principal #123 - Guadalajara',
+            'footer_references' => null,
+            'footer_phone' => '3312345678',
+            'footer_whatsapp' => '3312345678',
+            'footer_hours' => 'Lunes a Viernes: 09:00 a.m. – 08:00 p.m. Sábados: 09:00 a.m. – 06:00 p.m. Domingos: Cerrado',
+        ]);
 
         $serviciosActivos = Servicio::where('active', 1)
             ->orderByRaw('featured_on_home DESC')

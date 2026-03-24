@@ -36,7 +36,18 @@
                     <div class="booking-left">
                         <div class="field">
                             <label><span class="step-dot">1</span> Seleccionar Cliente</label>
-                            <select name="usuario_id" id="usuario_id" required>
+                            <div class="searchable-select" id="clientDropdown">
+                                <button type="button" class="searchable-select-trigger" id="clientDropdownTrigger"
+                                    aria-haspopup="listbox" aria-expanded="false">
+                                    <span id="clientDropdownLabel">Selecciona un cliente</span>
+                                </button>
+                                <div class="searchable-select-panel" id="clientDropdownPanel" hidden>
+                                    <input type="text" id="clientFilter" class="booking-filter-input searchable-select-input"
+                                        placeholder="Buscar cliente">
+                                    <div class="searchable-select-options" id="clientDropdownOptions" role="listbox"></div>
+                                </div>
+                            </div>
+                            <select name="usuario_id" id="usuario_id" class="sr-only-select" required>
                                 <option value="">Selecciona un cliente</option>
                                 @foreach ($usuarios as $usuario)
                                     <option value="{{ $usuario->id }}"
@@ -49,7 +60,18 @@
 
                         <div class="field">
                             <label><span class="step-dot">2</span> Seleccionar Servicio</label>
-                            <select name="servicio_id" id="servicio" required>
+                            <div class="searchable-select" id="serviceDropdown">
+                                <button type="button" class="searchable-select-trigger" id="serviceDropdownTrigger"
+                                    aria-haspopup="listbox" aria-expanded="false">
+                                    <span id="serviceDropdownLabel">Selecciona un servicio</span>
+                                </button>
+                                <div class="searchable-select-panel" id="serviceDropdownPanel" hidden>
+                                    <input type="text" id="serviceFilter" class="booking-filter-input searchable-select-input"
+                                        placeholder="Buscar servicio">
+                                    <div class="searchable-select-options" id="serviceDropdownOptions" role="listbox"></div>
+                                </div>
+                            </div>
+                            <select name="servicio_id" id="servicio" class="sr-only-select" required>
                                 <option value="">Selecciona un servicio</option>
                                 @foreach ($servicios as $servicio)
                                     @php

@@ -64,6 +64,36 @@ body.cliente-perfil-page::before {
     font-size: 34px;
 }
 
+.profile-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.profile-hero-badge {
+    min-width: 160px;
+    border-radius: 16px;
+    border: 1px solid rgba(212, 155, 80, 0.18);
+    background: rgba(20, 8, 5, 0.42);
+    padding: 14px 16px;
+}
+
+.profile-hero-badge span {
+    display: block;
+    margin-bottom: 6px;
+    color: #c69b62;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+}
+
+.profile-hero-badge strong {
+    color: #fff2de;
+    font-size: 18px;
+}
+
 .profile-subtitle {
     margin: 10px 0 22px;
     color: #d6bea1;
@@ -74,7 +104,7 @@ body.cliente-perfil-page::before {
 .profile-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 14px;
 }
 
 .profile-item,
@@ -114,6 +144,10 @@ body.cliente-perfil-page::before {
     font-size: 15px;
 }
 
+.profile-item-wide {
+    grid-column: 1 / -1;
+}
+
 .profile-item input:focus {
     outline: none;
     border-color: rgba(243, 216, 157, 0.45);
@@ -137,6 +171,7 @@ body.cliente-perfil-page::before {
 .profile-card-side {
     display: grid;
     gap: 14px;
+    align-content: start;
 }
 
 .profile-actions {
@@ -174,6 +209,52 @@ body.cliente-perfil-page::before {
 .profile-form-actions {
     display: flex;
     justify-content: flex-start;
+}
+
+.profile-danger-inline {
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(212, 155, 80, 0.14);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+}
+
+.profile-danger-text {
+    margin: 0;
+    color: #e6c9bf;
+}
+
+.profile-delete-form {
+    width: 100%;
+    max-width: 100%;
+}
+
+.profile-btn-danger {
+    background: linear-gradient(135deg, #a63f2d, #d16547);
+    color: #fff7f2;
+    border: 1px solid rgba(255, 214, 201, 0.2);
+}
+
+.profile-delete-modal {
+    text-align: left;
+}
+
+.profile-delete-field {
+    text-align: left;
+    background: rgba(24, 9, 7, 0.56);
+}
+
+.modal-btn-danger {
+    background: linear-gradient(135deg, #a63f2d, #d16547);
+    color: #fff7f2;
+    box-shadow: 0 8px 18px rgba(166, 63, 45, 0.32);
+}
+
+.modal-btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(166, 63, 45, 0.45);
 }
 
 .profile-alert {
@@ -292,6 +373,20 @@ body.cliente-perfil-page::before {
 @media (max-width: 900px) {
     .profile-shell {
         grid-template-columns: 1fr;
+    }
+
+    .profile-hero {
+        flex-direction: column;
+    }
+
+    .profile-hero-badge {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .profile-danger-inline {
+        flex-direction: column;
+        align-items: stretch;
     }
 }
 

@@ -42,7 +42,18 @@
                     {{-- SERVICIO --}}
                     <div class="field">
                         <label><span class="step-dot">1</span>Seleccionar Servicio</label>
-                        <select name="servicio_id" id="servicio" required>
+                        <div class="searchable-select" id="serviceDropdown">
+                            <button type="button" class="searchable-select-trigger" id="serviceDropdownTrigger"
+                                aria-haspopup="listbox" aria-expanded="false">
+                                <span id="serviceDropdownLabel">Selecciona un servicio</span>
+                            </button>
+                            <div class="searchable-select-panel" id="serviceDropdownPanel" hidden>
+                                <input type="text" id="serviceFilter" class="booking-filter-input searchable-select-input"
+                                    placeholder="Buscar servicio">
+                                <div class="searchable-select-options" id="serviceDropdownOptions" role="listbox"></div>
+                            </div>
+                        </div>
+                        <select name="servicio_id" id="servicio" class="sr-only-select" required>
                             <option value="">Selecciona un servicio</option>
                             @foreach ($servicios as $servicio)
                                 @php
@@ -265,7 +276,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-    <script src="{{ asset('js/cliente/citas.js') }}"></script>
+    <script src="{{ asset('js/cliente/citas.js') }}?v={{ filemtime(public_path('js/cliente/citas.js')) }}"></script>
     <script>
         (function() {
             const servicio = document.getElementById('servicio');

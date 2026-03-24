@@ -46,8 +46,12 @@ class RecepcionistaIndex extends Component
         $usuario = Usuario::findOrFail($this->confirmDeleteId);
         abort_if($usuario->role_id !== 3, 403);
 
-        $usuario->delete();
+        $usuario->update([
+            'active' => false,
+        ]);
+
         $this->confirmDeleteId = null;
+        session()->flash('success', 'Recepcionista dado de baja correctamente. Su historial se conservó.');
     }
 
     public function openReminderCreateModal()

@@ -65,7 +65,11 @@ class EmpleadoIndex extends Component
         }
 
         $empleado = Empleado::findOrFail($this->confirmDeleteId);
-        $empleado->delete();
+        $empleado->update([
+            'active' => false,
+        ]);
+
+        $this->setReassignResult('success', 'Empleado dado de baja correctamente. Su historial y citas se conservaron.');
         $this->confirmDeleteId = null;
     }
 

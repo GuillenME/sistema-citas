@@ -15,6 +15,10 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServicioPublicController;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 
 /* HOME PÚBLICO */
@@ -376,6 +380,49 @@ Route::middleware(['auth', 'rol:2'])
                 ->route('cliente.perfil')
                 ->with('success', 'Perfil actualizado correctamente.');
         })->name('perfil.update');
+
+        Route::post('/perfil/eliminar', function (Request $request) {
+            $request->validate([
+                'password' => 'required|current_password',
+            ], [
+                'password.required' => 'Debes confirmar tu contraseña para eliminar la cuenta.',
+                'password.current_password' => 'La contraseña ingresada no es correcta.',
+            ]);
+
+            /** @var \App\Models\Usuario $usuario */
+            $usuario = auth()->user()->load('client');
+            $cliente = $usuario->client;
+
+            DB::transaction(function () use ($usuario, $cliente) {
+                $emailAnonimo = 'eliminado+' . $usuario->id . '+' . now()->format('YmdHis') . '@local.invalid';
+
+                $usuario->forceFill([
+                    'name' => 'Cliente eliminado',
+                    'last_name' => null,
+                    'email' => $emailAnonimo,
+                    'phone' => null,
+                    'password' => Hash::make(Str::random(40)),
+                    'active' => false,
+                    'remember_token' => null,
+                ])->save();
+
+                if ($cliente) {
+                    $cliente->update([
+                        'birth_date' => null,
+                        'notes' => 'Cuenta anonimizada por solicitud del cliente el ' . now()->format('Y-m-d H:i:s'),
+                        'birth_date_change_count' => 0,
+                    ]);
+                }
+            });
+
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()
+                ->route('login')
+                ->with('success', 'Tu cuenta fue eliminada correctamente. Conservamos solo el historial necesario sin tus datos personales.');
+        })->name('perfil.delete');
 
         Route::get('/citas', [CitaController::class, 'index'])
             ->name('citas.index');
