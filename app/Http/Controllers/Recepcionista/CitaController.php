@@ -24,6 +24,24 @@ use Illuminate\Support\Facades\Storage;
 
 class CitaController extends Controller
 {
+    private const STATUS_ALL = 'all';
+
+    private const STATUS_LABELS = [
+        'pendiente_anticipo' => 'Pendientes de anticipo',
+        'confirmada' => 'Confirmadas',
+        'completada' => 'Completadas',
+        'cancelada' => 'Canceladas',
+        'no_asistio' => 'No asistio',
+    ];
+
+    private const STATUS_PRIORITY = [
+        'pendiente_anticipo',
+        'confirmada',
+        'completada',
+        'cancelada',
+        'no_asistio',
+    ];
+
     public function __construct(private AppointmentAvailabilityService $availability) {}
 
     public function dashboard()
@@ -74,7 +92,88 @@ class CitaController extends Controller
 
     public function index()
     {
-        return redirect()->route('recepcionista.citas.agenda');
+        $hoy = today();
+
+        Cita::where('status', 'pendiente_anticipo')
+            ->whereNotNull('payment_deadline')
+            ->where('payment_deadline', '<', now())
+            ->whereNull('receipt')
+            ->update([
+                'status' => 'cancelada',
+                'notes' => 'Cita cancelada automaticamente por no reenviar anticipo a tiempo.',
+                'receipt' => null,
+                'payment_deadline' => null,
+                'payment_attempts' => 0,
+            ]);
+
+        $baseQuery = Cita::with([
+                'client.user',
+                'client.appointments.service',
+                'client.appointments.employee',
+                'service',
+                'employee',
+                'estados.user',
+            ])
+            ->withCount([
+                'estados as reagendas_count' => function ($query) {
+                    $query->where('status', 'reagendada');
+                },
+            ]);
+
+        $statusCounts = (clone $baseQuery)
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $totalAppointments = (int) $statusCounts->sum();
+
+        $statusOptions = collect([
+            [
+                'key' => self::STATUS_ALL,
+                'label' => 'Todas',
+                'count' => $totalAppointments,
+            ],
+        ])->merge(
+            collect(self::STATUS_PRIORITY)
+                ->filter(fn (string $status) => (int) ($statusCounts[$status] ?? 0) > 0)
+                ->map(fn (string $status) => [
+                    'key' => $status,
+                    'label' => self::STATUS_LABELS[$status] ?? ucfirst($status),
+                    'count' => (int) ($statusCounts[$status] ?? 0),
+                ])
+        )->values();
+
+        $requestedStatus = (string) request('status');
+        $selectedStatus = $requestedStatus === self::STATUS_ALL || $requestedStatus === ''
+            ? self::STATUS_ALL
+            : (array_key_exists($requestedStatus, self::STATUS_LABELS) ? $requestedStatus : self::STATUS_ALL);
+
+        $citas = (clone $baseQuery)
+            ->when($selectedStatus !== self::STATUS_ALL, fn ($query) => $query->where('status', $selectedStatus))
+            ->orderByDesc('created_at')
+            ->paginate(5)
+            ->withQueryString();
+
+        $stats = [
+            'hoy' => Cita::query()
+                ->whereDate('date', $hoy)
+                ->count(),
+            'pendientes' => Cita::query()
+                ->whereDate('date', $hoy)
+                ->where('status', 'pendiente_anticipo')
+                ->count(),
+            'canceladas' => Cita::query()
+                ->whereDate('date', $hoy)
+                ->where('status', 'cancelada')
+                ->count(),
+        ];
+
+        return view('recepcionista.citas.index', compact(
+            'citas',
+            'stats',
+            'statusOptions',
+            'selectedStatus'
+        ));
     }
 
     public function ticket(Cita $cita)
