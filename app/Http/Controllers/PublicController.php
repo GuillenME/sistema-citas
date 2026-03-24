@@ -76,4 +76,26 @@ class PublicController extends Controller
 
         return view('public.noticias', compact('noticias'));
     }
+
+    public function terminos()
+    {
+        $homeSetting = HomeSetting::firstOrCreate([], HomeSetting::defaultAttributes());
+
+        return view('cliente.legal', [
+            'title' => 'Terminos y condiciones',
+            'content' => $homeSetting->terms_content,
+            'updatedAt' => $homeSetting->terms_updated_at,
+        ]);
+    }
+
+    public function privacidad()
+    {
+        $homeSetting = HomeSetting::firstOrCreate([], HomeSetting::defaultAttributes());
+
+        return view('cliente.legal', [
+            'title' => 'Politica de Privacidad',
+            'content' => $homeSetting->privacy_policy_content,
+            'updatedAt' => $homeSetting->privacy_policy_updated_at,
+        ]);
+    }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Configuración de inicio')
+@section('title', 'Configuracion de inicio')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/home-edit.css') }}">
 @endsection
@@ -37,7 +37,7 @@
                 <p class="block-lead">Personaliza el titulo principal y el mensaje de bienvenida.</p>
                 <div class="form-grid two">
                     <div>
-                        <label for="hero_title">Título principal</label>
+                        <label for="hero_title">Titulo principal</label>
                         <input type="text" id="hero_title" name="hero_title" value="{{ old('hero_title', $homeSetting->hero_title) }}">
                     </div>
                     <div>
@@ -54,7 +54,7 @@
             </section>
 
             <section class="editor-block">
-                <h3>Gestión de multimedia</h3>
+                <h3>Gestion de multimedia</h3>
                 <div class="media-grid">
                     <article class="upload-card">
                         <div class="upload-card-head">
@@ -98,25 +98,25 @@
                 <div class="form-grid three">
                     <div class="mini-card">
                         <h4>Tarjeta 1</h4>
-                        <label for="feature_1_title">Título</label>
+                        <label for="feature_1_title">Titulo</label>
                         <input type="text" id="feature_1_title" name="feature_1_title" value="{{ old('feature_1_title', $homeSetting->feature_1_title) }}">
-                        <label for="feature_1_description">Descripción</label>
+                        <label for="feature_1_description">Descripcion</label>
                         <textarea id="feature_1_description" name="feature_1_description" rows="2" class="auto-grow">{{ old('feature_1_description', $homeSetting->feature_1_description) }}</textarea>
                     </div>
 
                     <div class="mini-card">
                         <h4>Tarjeta 2</h4>
-                        <label for="feature_2_title">Título</label>
+                        <label for="feature_2_title">Titulo</label>
                         <input type="text" id="feature_2_title" name="feature_2_title" value="{{ old('feature_2_title', $homeSetting->feature_2_title) }}">
-                        <label for="feature_2_description">Descripción</label>
+                        <label for="feature_2_description">Descripcion</label>
                         <textarea id="feature_2_description" name="feature_2_description" rows="2" class="auto-grow">{{ old('feature_2_description', $homeSetting->feature_2_description) }}</textarea>
                     </div>
 
                     <div class="mini-card">
                         <h4>Tarjeta 3</h4>
-                        <label for="feature_3_title">Título</label>
+                        <label for="feature_3_title">Titulo</label>
                         <input type="text" id="feature_3_title" name="feature_3_title" value="{{ old('feature_3_title', $homeSetting->feature_3_title) }}">
-                        <label for="feature_3_description">Descripción</label>
+                        <label for="feature_3_description">Descripcion</label>
                         <textarea id="feature_3_description" name="feature_3_description" rows="2" class="auto-grow">{{ old('feature_3_description', $homeSetting->feature_3_description) }}</textarea>
                     </div>
                 </div>
@@ -172,12 +172,12 @@
                     @endforeach
                 </div>
 
-                <small>Selecciona hasta 10. Al llegar al límite, los demás servicios se desactivan.</small>
+                <small>Selecciona hasta 10. Al llegar al limite, los demas servicios se desactivan.</small>
             </section>
 
 
             <section class="editor-block">
-                <h3>Información de contacto</h3>
+                <h3>Informacion de contacto</h3>
                 @php
                     $footerAddressValue = old('footer_address', $homeSetting->footer_address);
                     $footerAddressQuery = rawurlencode(trim((string) $footerAddressValue) !== '' ? $footerAddressValue : 'Guadalajara Centro');
@@ -185,7 +185,7 @@
 
                 <div class="contact-info-row contact-info-row-top">
                     <div class="contact-info-item">
-                        <label for="footer_address">Dirección</label>
+                        <label for="footer_address">Direccion</label>
                         <textarea id="footer_address" name="footer_address" rows="2" class="auto-grow fixed-height-control">{{ old('footer_address', $homeSetting->footer_address) }}</textarea>
                         <small class="field-note">Usa la direccion exacta de Google Maps (sin referencias) para que el mapa se ubique correctamente.</small>
                     </div>
@@ -194,13 +194,8 @@
                         <textarea id="footer_references" name="footer_references" rows="2" class="auto-grow fixed-height-control">{{ old('footer_references', $homeSetting->footer_references) }}</textarea>
                     </div>
                     <div class="contact-info-item">
-<<<<<<< HEAD
-                        <label for="footer_phone">Teléfono de contacto</label>
-                        <textarea id="footer_phone" name="footer_phone" rows="2" class="auto-grow fixed-height-control">{{ old('footer_phone', $homeSetting->footer_phone) }}</textarea>
-=======
                         <label for="footer_phone">Telefono de contacto</label>
                         <textarea id="footer_phone" name="footer_phone" rows="2" class="auto-grow fixed-height-control" inputmode="numeric">{{ old('footer_phone', $homeSetting->footer_phone) }}</textarea>
->>>>>>> 07f4d73cb1073a8ec358cef8101849d0370a5ff7
                     </div>
                     <div class="contact-info-item">
                         <label for="footer_whatsapp">WhatsApp</label>

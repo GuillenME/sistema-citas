@@ -48,22 +48,7 @@ class HomeSettingController extends Controller
      */
     public function edit()
     {
-        $homeSetting = HomeSetting::firstOrCreate([], [
-            'hero_title' => 'BARBERíA & SPA',
-            'hero_subtitle' => 'Estilo, cuidado y bienestar en un solo lugar',
-            'register_subtitle' => 'Unete a nuestra comunidad exclusiva y reserva tu proxima experiencia de lujo.',
-            'feature_1_title' => 'Cortes Modernos',
-            'feature_1_description' => 'Técnicas actuales y tendencias',
-            'feature_2_title' => 'Tratamientos Spa',
-            'feature_2_description' => 'Relajación y cuidado personal',
-            'feature_3_title' => 'Atención Personalizada',
-            'feature_3_description' => 'Productos de primera línea',
-            'footer_address' => 'Calle Principal #123 - Guadalajara',
-            'footer_references' => null,
-            'footer_phone' => '3312345678',
-            'footer_whatsapp' => '3312345678',
-            'footer_hours' => 'Lun-Sab 9:00-20:00',
-        ]);
+        $homeSetting = HomeSetting::firstOrCreate([], HomeSetting::defaultAttributes());
 
         $serviciosActivos = Servicio::where('active', 1)
             ->orderByRaw('featured_on_home DESC')
@@ -130,6 +115,7 @@ class HomeSettingController extends Controller
             $data['navbar_logo'] = $request->file('navbar_logo')
                 ->store('home_settings', 'public');
         }
+
         $selectedServiceIds = collect($request->input('featured_services', []))
             ->map(fn ($id) => (int) $id)
             ->unique()
@@ -164,9 +150,8 @@ class HomeSettingController extends Controller
         });
 
         return redirect()->route('admin.home_settings.edit')
-            ->with('success', 'Configuración de inicio actualizada correctamente');
+            ->with('success', 'Configuracion de inicio actualizada correctamente');
     }
-
 
     /**
      * Remove the specified resource from storage.
