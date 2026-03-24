@@ -10,16 +10,18 @@ header.cliente-menu {
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     column-gap: 16px;
-
     padding: 18px 40px;
-
     background: rgba(52, 30, 20, 0.96);
     backdrop-filter: blur(10px);
-
     border-bottom: 1px solid rgba(252, 204, 124, 0.2);
 }
 
-/* ===== TÍTULO ===== */
+header.cliente-menu .cliente-menu-top,
+header.cliente-menu .cliente-menu-main {
+    display: contents;
+}
+
+/* ===== TÃTULO ===== */
 
 header.cliente-menu .title {
     font-family: "Cinzel", serif;
@@ -41,6 +43,28 @@ header.cliente-menu .title-logo-img {
     box-shadow: none;
 }
 
+header.cliente-menu .menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(252, 204, 124, 0.35);
+    background: rgba(255, 255, 255, 0.06);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+header.cliente-menu .menu-toggle span {
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: #ffdca0;
+}
+
 /* ===== NAV ===== */
 
 header.cliente-menu nav {
@@ -55,6 +79,7 @@ header.cliente-menu .cliente-menu-actions {
     align-items: center;
     justify-self: end;
     gap: 12px;
+    min-width: 0;
 }
 
 header.cliente-menu form {
@@ -134,30 +159,26 @@ header.cliente-menu nav a.active {
 header.cliente-menu nav a.active::after {
     width: 100%;
 }
-/* ===== BOTÓN LOGOUT ========= */
+
+/* ===== BOTÃ“N LOGOUT ========= */
 
 header.cliente-menu .logout-btn {
     background: linear-gradient(145deg, #5b3b2c, #4b3226);
     border: 1px solid rgba(252, 204, 124, 0.35);
     color: #fccc7c;
-
     width: 40px;
     height: 40px;
     border-radius: 50%;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     cursor: pointer;
     transition: all .25s ease;
-
     box-shadow:
         0 6px 18px rgba(0, 0, 0, 0.35),
         inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-/* Icono */
 header.cliente-menu .logout-btn svg {
     width: 28px;
     height: 28px;
@@ -165,11 +186,9 @@ header.cliente-menu .logout-btn svg {
     transition: transform .2s ease, stroke .2s ease;
 }
 
-/* Hover */
 header.cliente-menu .logout-btn:hover {
     background: linear-gradient(145deg, #6a4633, #553728);
     transform: translateY(-2px);
-
     box-shadow:
         0 10px 25px rgba(0, 0, 0, 0.45),
         0 0 15px rgba(252, 204, 124, 0.35);
@@ -180,30 +199,64 @@ header.cliente-menu .logout-btn:hover svg {
     stroke: #ffdca0;
 }
 
-/* Click */
 header.cliente-menu .logout-btn:active {
     transform: scale(.95);
 }
 
-
 /* ===== RESPONSIVE =========== */
 
-@media (max-width: 700px) {
-
+@media (max-width: 860px) {
     header.cliente-menu {
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 14px;
+        padding: 16px 18px;
+    }
+
+    header.cliente-menu .cliente-menu-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    header.cliente-menu .cliente-menu-main {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 14px;
+        padding-top: 6px;
+    }
+
+    header.cliente-menu.is-open .cliente-menu-main {
+        display: flex;
+    }
+
+    header.cliente-menu .menu-toggle {
+        display: inline-flex;
     }
 
     header.cliente-menu nav {
-        flex-wrap: wrap;
-        gap: 16px;
-        justify-content: flex-start;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    header.cliente-menu nav a {
+        display: block;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    header.cliente-menu nav a::after {
+        display: none;
     }
 
     header.cliente-menu .cliente-menu-actions {
+        width: 100%;
+        justify-content: flex-start;
         justify-self: auto;
     }
 }
@@ -213,10 +266,8 @@ header.cliente-menu .logout-btn:active {
 .cliente-footer {
     margin-top: 40px;
     padding: 20px 40px;
-
     background: rgba(52, 30, 20, 0.96);
     border-top: 1px solid rgba(252, 204, 124, 0.2);
-
     color: #fffaf4;
 }
 
@@ -225,7 +276,6 @@ header.cliente-menu .logout-btn:active {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-
     gap: 10px;
 }
 
@@ -266,11 +316,26 @@ header.cliente-menu .logout-btn:active {
     width: 100%;
 }
 
-/* RESPONSIVE */
 @media (max-width: 600px) {
-    .footer-content {
+    .footer-content,
+    .footer-links {
         flex-direction: column;
         text-align: center;
     }
+
+    .cliente-footer {
+        padding: 20px 18px;
+    }
 }
 
+@media (max-width: 480px) {
+    header.cliente-menu .title {
+        font-size: 17px;
+        gap: 12px;
+    }
+
+    header.cliente-menu .title-logo-img {
+        width: 42px;
+        height: 42px;
+    }
+}

@@ -56,6 +56,11 @@
             @endif
 
             <div class="citas-grid">
+                <a href="{{ route('cliente.citas.create') }}" class="cita-card cita-card-create">
+                    <span class="create-plus">+</span>
+                    <span class="create-label">Agendar una nueva cita</span>
+                </a>
+
                 @forelse ($citas as $cita)
                     @php
                         $precioOriginal = $cita->service->price;
@@ -379,11 +384,6 @@
                         No hay citas en este estado por ahora.
                     </div>
                 @endforelse
-
-                <a href="{{ route('cliente.citas.create') }}" class="cita-card cita-card-create">
-                    <span class="create-plus">+</span>
-                    <span class="create-label">Agendar una nueva cita</span>
-                </a>
             </div>
 
             @if ($citas->hasPages())

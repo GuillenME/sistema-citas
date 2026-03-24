@@ -6,13 +6,6 @@
     <link rel="stylesheet" href="{{ asset('css/public/index.css') }}?v={{ filemtime(public_path('css/public/index.css')) }}">
 @endsection
 
-@include('partials.navbar')
-
-<main>
-    @yield('content')
-</main>
-
-
 @section('content')
     <div class="hero" id="inicio"
         style="--hero-bg-image: url('{{ $homeSetting && $homeSetting->hero_image ? asset('storage/' . $homeSetting->hero_image) : asset('imagenes/registro_fondo3.png') }}');">

@@ -194,8 +194,13 @@
                         <textarea id="footer_references" name="footer_references" rows="2" class="auto-grow fixed-height-control">{{ old('footer_references', $homeSetting->footer_references) }}</textarea>
                     </div>
                     <div class="contact-info-item">
+<<<<<<< HEAD
                         <label for="footer_phone">Teléfono de contacto</label>
+                        <textarea id="footer_phone" name="footer_phone" rows="2" class="auto-grow fixed-height-control">{{ old('footer_phone', $homeSetting->footer_phone) }}</textarea>
+=======
+                        <label for="footer_phone">Telefono de contacto</label>
                         <textarea id="footer_phone" name="footer_phone" rows="2" class="auto-grow fixed-height-control" inputmode="numeric">{{ old('footer_phone', $homeSetting->footer_phone) }}</textarea>
+>>>>>>> 07f4d73cb1073a8ec358cef8101849d0370a5ff7
                     </div>
                     <div class="contact-info-item">
                         <label for="footer_whatsapp">WhatsApp</label>

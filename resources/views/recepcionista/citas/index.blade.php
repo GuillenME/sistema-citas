@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -31,6 +33,35 @@
                             {{ $statusOption['label'] }} ({{ $statusOption['count'] }})
                         </a>
                     @endforeach
+                </div>
+            </div>
+            <div class="citas-topbar-right">
+                <a href="{{ route('recepcionista.citas.agenda') }}" class="citas-btn ghost">Agenda visual</a>
+                <a href="{{ route('recepcionista.citas.create') }}" class="citas-btn ghost">Nueva cita</a>
+                <a href="{{ route('recepcionista.citas.index') }}" class="citas-btn primary">Actualizar página</a>
+            </div>
+        </header>
+
+        <section class="citas-stats">
+            <article class="stat-card">
+                <p>Citas de Hoy</p>
+                <strong>{{ $stats['hoy'] ?? 0 }}</strong>
+            </article>
+            <article class="stat-card">
+                <p>Pendientes</p>
+                <strong>{{ $stats['pendientes'] ?? 0 }}</strong>
+            </article>
+            <article class="stat-card">
+                <p>Canceladas</p>
+                <strong>{{ $stats['canceladas'] ?? 0 }}</strong>
+            </article>
+        </section>
+
+        <section class="citas-panel">
+            <div class="citas-panel-head">
+                <div>
+                    <h3>Listado de Proximas Citas</h3>
+                    <p>Actualizado al momento</p>
                 </div>
             </div>
 
@@ -950,36 +981,17 @@
                     cancelModal.setAttribute('aria-hidden', 'false');
                 }
 
-                if (openCancelFromModal) {
-                    openCancelFromModal.addEventListener('click', function() {
-                        var action = openCancelFromModal.getAttribute('data-cancel-action');
-                        if (action) {
-                            closeModal();
-                            openCancel(action);
-                        }
-                    });
-                }
-
-                function closeCancel() {
-                    cancelModal.classList.remove('active');
-                    cancelModal.setAttribute('aria-hidden', 'true');
-                }
-
-                cancelClose.addEventListener('click', closeCancel);
-                cancelModal.addEventListener('click', function(e) {
-                    if (e.target === cancelModal) closeCancel();
-                });
-            }
-
-            var rescheduleModal = document.getElementById('rescheduleModal');
-            var rescheduleForm = document.getElementById('rescheduleForm');
-            var rescheduleClose = document.getElementById('rescheduleModalClose');
-            if (rescheduleModal && rescheduleForm && rescheduleClose) {
-                function openReschedule(action) {
-                    rescheduleForm.setAttribute('action', action);
-                    rescheduleModal.classList.add('active');
-                    rescheduleModal.setAttribute('aria-hidden', 'false');
-                }
+    <!-- Modal de confirmacion de logout -->
+    <div id="modalLogout" class="modal-overlay" onclick="if(event.target === this) cerrarModalLogout()">
+        <div class="modal-content">
+            <h3>¿Cerrar sesión?</h3>
+            <p>¿Estás seguro de que deseas cerrar sesión?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-confirm" onclick="confirmarLogout()">Sí, cerrar sesión</button>
+                <button class="modal-btn modal-btn-cancel" onclick="cerrarModalLogout()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
                 if (openRescheduleFromModal) {
                     openRescheduleFromModal.addEventListener('click', function() {
@@ -1025,3 +1037,4 @@
         })();
     </script>
 @endsection
+

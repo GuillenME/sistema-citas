@@ -1096,6 +1096,7 @@ body.cliente-citas-index-page .create-label {
 body.cliente-citas-index-page .modal-content-detail {
     max-width: 880px;
     max-height: 88vh;
+    width: min(880px, calc(100vw - 24px));
     text-align: left;
     overflow-y: auto;
 }
@@ -1319,7 +1320,7 @@ body.cliente-citas-index-page .detalle-section:has(.detalle-timeline) {
 
 @media (max-width: 640px) {
     body.cliente-citas-index-page .container {
-        padding: 10px 5px 20px;
+        padding: 12px 8px 24px;
     }
 
     body.cliente-citas-index-page .table-card {
@@ -1327,5 +1328,45 @@ body.cliente-citas-index-page .detalle-section:has(.detalle-timeline) {
         width: 100%;
         padding: 18px 14px 20px;
         border-radius: 18px;
+    }
+
+    body.cliente-citas-index-page .cita-head-row,
+    body.cliente-citas-index-page .price-row,
+    body.cliente-citas-index-page .detalle-cita-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    body.cliente-citas-index-page .cita-when {
+        grid-template-columns: 1fr;
+    }
+
+    body.cliente-citas-index-page .modal-content,
+    body.cliente-citas-index-page .modal-content-detail,
+    body.cliente-citas-index-page .modal-content-preview {
+        width: calc(100vw - 20px);
+        padding: 22px 16px;
+        border-radius: 16px;
+    }
+
+    body.cliente-citas-index-page .modal-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    body.cliente-citas-index-page .modal-btn,
+    body.cliente-citas-index-page #cancelarCitaForm,
+    body.cliente-citas-index-page #cancelarCitaForm .modal-btn {
+        width: 100%;
+    }
+
+    body.cliente-citas-index-page .upload-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    body.cliente-citas-index-page .btn-preview-eye {
+        width: 100%;
+        height: 40px;
     }
 }
