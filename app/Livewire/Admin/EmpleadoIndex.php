@@ -24,6 +24,8 @@ class EmpleadoIndex extends Component
     public $confirmReassignId = null;
     public $reassignMessage = null;
     public $reassignType = 'success';
+    public $upcomingAppointmentsCount = 0;
+    public $upcomingAppointmentsLabel = '';
 
     public function boot(AppointmentAvailabilityService $availability): void
     {
@@ -40,12 +42,17 @@ class EmpleadoIndex extends Component
 
     public function confirmDelete($id)
     {
+        $empleado = Empleado::findOrFail($id);
         $this->confirmDeleteId = $id;
+        $this->upcomingAppointmentsCount = $this->upcomingAppointmentsQuery($empleado)->count();
+        $this->upcomingAppointmentsLabel = $empleado->name;
     }
 
     public function cancelDelete()
     {
         $this->confirmDeleteId = null;
+        $this->upcomingAppointmentsCount = 0;
+        $this->upcomingAppointmentsLabel = '';
     }
 
     public function confirmReassign($id)
@@ -65,12 +72,180 @@ class EmpleadoIndex extends Component
         }
 
         $empleado = Empleado::findOrFail($this->confirmDeleteId);
+
+        if ($this->upcomingAppointmentsQuery($empleado)->exists()) {
+            $this->setReassignResult('error', 'Este empleado aún tiene citas próximas. Reasígnalas o déjalas sin asignar antes de darlo de baja.');
+            return;
+        }
+
         $empleado->update([
             'active' => false,
         ]);
 
         $this->setReassignResult('success', 'Empleado dado de baja correctamente. Su historial y citas se conservaron.');
-        $this->confirmDeleteId = null;
+        $this->cancelDelete();
+    }
+
+    public function deleteAndUnassignUpcomingAppointments()
+    {
+        if (!$this->confirmDeleteId) {
+            return;
+        }
+
+        $empleado = Empleado::findOrFail($this->confirmDeleteId);
+        $citas = $this->upcomingAppointmentsQuery($empleado)->get();
+
+        DB::transaction(function () use ($empleado, $citas) {
+            foreach ($citas as $cita) {
+                $notaActual = trim((string) ($cita->notes ?? ''));
+                $notaNueva = 'Empleado desasignado por baja administrativa.';
+
+                $cita->update([
+                    'employee_id' => null,
+                    'notes' => $notaActual === '' ? $notaNueva : $notaActual . ' | ' . $notaNueva,
+                ]);
+            }
+
+            $empleado->update([
+                'active' => false,
+            ]);
+        });
+
+        $this->setReassignResult(
+            'success',
+            $citas->count() . ' cita(s) próximas quedaron sin empleado asignado y el empleado fue dado de baja.'
+        );
+
+        $this->cancelDelete();
+    }
+
+    public function deleteAndReassignUpcomingAppointments()
+    {
+        if (!$this->confirmDeleteId) {
+            return;
+        }
+
+        $empleado = Empleado::with(['servicios:id', 'schedules'])->findOrFail($this->confirmDeleteId);
+        $citas = $this->upcomingAppointmentsQuery($empleado)
+            ->with(['service.empleados.schedules', 'service.empleados.breaks', 'client.user', 'employee'])
+            ->orderBy('date')
+            ->orderBy('start_time')
+            ->get();
+
+        if ($citas->isEmpty()) {
+            $this->deleteConfirmed();
+            return;
+        }
+
+        $candidateAppointments = Cita::query()
+            ->whereDate('date', '>=', today()->toDateString())
+            ->whereIn('status', [CitaStatus::CONFIRMADA, CitaStatus::PENDIENTE_ANTICIPO])
+            ->whereNotNull('employee_id')
+            ->where('employee_id', '!=', $empleado->id)
+            ->get()
+            ->groupBy(fn (Cita $cita) => $cita->employee_id . '|' . optional($cita->date)->toDateString());
+
+        $bloquesOcupados = [];
+        foreach ($candidateAppointments as $key => $appointments) {
+            $bloquesOcupados[$key] = $appointments
+                ->map(fn (Cita $cita) => [
+                    'inicio' => Carbon::parse($cita->getRawOriginal('start_time'))->format('H:i'),
+                    'fin' => Carbon::parse($cita->getRawOriginal('end_time'))->format('H:i'),
+                ])
+                ->values()
+                ->all();
+        }
+
+        $reasignaciones = [];
+        $sinDestino = [];
+
+        foreach ($citas as $cita) {
+            if (!$cita->service) {
+                $sinDestino[] = $cita->id;
+                continue;
+            }
+
+            $fecha = Carbon::parse($cita->date);
+            $horaInicio = Carbon::parse($cita->getRawOriginal('start_time'))->format('H:i');
+            $horaFin = Carbon::parse($cita->getRawOriginal('end_time'))->format('H:i');
+
+            $candidatos = $cita->service->empleados
+                ->filter(fn (Empleado $candidato) => $candidato->active && $candidato->id !== $empleado->id)
+                ->filter(function (Empleado $candidato) use ($fecha, $horaInicio, $horaFin, $bloquesOcupados) {
+                    if (!$this->availability->employeeCoversRange($candidato, $fecha, $horaInicio, $horaFin)) {
+                        return false;
+                    }
+
+                    $key = $candidato->id . '|' . $fecha->toDateString();
+
+                    return !$this->availability->hasOverlap($bloquesOcupados[$key] ?? [], $horaInicio, $horaFin);
+                })
+                ->sortBy(function (Empleado $candidato) use ($fecha, $bloquesOcupados) {
+                    $key = $candidato->id . '|' . $fecha->toDateString();
+                    return count($bloquesOcupados[$key] ?? []);
+                })
+                ->values();
+
+            if ($candidatos->isEmpty()) {
+                $sinDestino[] = $cita->id;
+                continue;
+            }
+
+            $destino = $candidatos->first();
+            $key = $destino->id . '|' . $fecha->toDateString();
+            $bloquesOcupados[$key] ??= [];
+            $bloquesOcupados[$key][] = [
+                'inicio' => $horaInicio,
+                'fin' => $horaFin,
+            ];
+
+            $reasignaciones[] = [
+                'cita_id' => $cita->id,
+                'empleado_destino_id' => $destino->id,
+            ];
+        }
+
+        if (!empty($sinDestino)) {
+            $this->setReassignResult(
+                'error',
+                'No se pudo dar de baja. ' . count($sinDestino) . ' cita(s) próximas no tienen un empleado compatible para reasignación automática.'
+            );
+            return;
+        }
+
+        DB::transaction(function () use ($empleado, $reasignaciones) {
+            foreach ($reasignaciones as $item) {
+                Cita::where('id', $item['cita_id'])
+                    ->update(['employee_id' => $item['empleado_destino_id']]);
+            }
+
+            $empleado->update([
+                'active' => false,
+            ]);
+        });
+
+        $citasReasignadas = Cita::with(['client.user', 'service', 'employee'])
+            ->whereIn('id', collect($reasignaciones)->pluck('cita_id'))
+            ->get();
+
+        foreach ($citasReasignadas as $citaReasignada) {
+            $clienteUsuario = $citaReasignada->client?->user;
+            if ($clienteUsuario) {
+                $clienteUsuario->notify(
+                    new CitaClienteNotification(
+                        $citaReasignada,
+                        CitaClienteNotification::REASIGNADA_DE_EMPLEADO
+                    )
+                );
+            }
+        }
+
+        $this->setReassignResult(
+            'success',
+            count($reasignaciones) . ' cita(s) próximas fueron reasignadas y el empleado fue dado de baja.'
+        );
+
+        $this->cancelDelete();
     }
 
     public function reassignTodayAppointments()
@@ -214,6 +389,14 @@ class EmpleadoIndex extends Component
     {
         $this->reassignType = $type;
         $this->reassignMessage = $message;
+    }
+
+    private function upcomingAppointmentsQuery(Empleado $empleado)
+    {
+        return Cita::query()
+            ->where('employee_id', $empleado->id)
+            ->whereDate('date', '>=', today()->toDateString())
+            ->whereIn('status', [CitaStatus::CONFIRMADA, CitaStatus::PENDIENTE_ANTICIPO]);
     }
 
     public function render()

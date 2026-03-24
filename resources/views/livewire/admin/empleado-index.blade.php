@@ -73,9 +73,15 @@
                                 <a href="{{ route('admin.empleados.edit', $e) }}" class="serv-icon-btn edit" title="Editar" aria-label="Editar">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.226 5.226-2.52-2.52A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-.351"/><path d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/><path d="M8 18h1"/></svg>
                                 </a>
-                                <button class="serv-btn ghost" wire:click="toggle({{ $e->id }})">
-                                    {{ $e->active ? 'Desactivar' : 'Activar' }}
-                                </button>
+                                @if ($e->active)
+                                    <button class="serv-btn ghost" wire:click="confirmDelete({{ $e->id }})">
+                                        Desactivar
+                                    </button>
+                                @else
+                                    <button class="serv-btn ghost" wire:click="toggle({{ $e->id }})">
+                                        Activar
+                                    </button>
+                                @endif
                                 <button class="serv-btn reassign-btn" wire:click="confirmReassign({{ $e->id }})">
                                     Reasignar citas de hoy
                                 </button>
@@ -99,16 +105,52 @@
 
     @if ($confirmDeleteId)
         <div class="modal-overlay" wire:click.self="cancelDelete">
-            <div class="modal-box">
-                <h3>Dar de baja al empleado?</h3>
-                <p>El empleado quedara inactivo y ya no podra recibir nuevas citas, pero su historial se conservara.</p>
-                <div class="modal-actions">
-                    <button class="btn btn-cancel" wire:click="cancelDelete">Cancelar</button>
-                    <button class="btn btn-save" wire:click="deleteConfirmed" wire:loading.attr="disabled">
-                        <span wire:loading.remove>Dar de baja</span>
-                        <span wire:loading>Dando de baja...</span>
-                    </button>
+            <div class="modal-box serv-deactivate-modal">
+                <div class="serv-deactivate-modal-head">
+                    <span class="serv-deactivate-modal-kicker">Gestión de empleado</span>
+                    <h3>¿Dar de baja al empleado?</h3>
                 </div>
+                @if ($upcomingAppointmentsCount > 0)
+                    <p class="serv-deactivate-modal-copy">
+                        <strong>{{ $upcomingAppointmentsLabel }}</strong> tiene
+                        <strong>{{ $upcomingAppointmentsCount }}</strong> cita(s) próximas activas.
+                        Elige cómo quieres resolverlas antes de completar la baja.
+                    </p>
+                    <div class="serv-deactivate-summary">
+                        <div class="serv-deactivate-summary-card">
+                            <span>Citas próximas</span>
+                            <strong>{{ $upcomingAppointmentsCount }}</strong>
+                        </div>
+                        <div class="serv-deactivate-summary-card">
+                            <span>Empleado</span>
+                            <strong>{{ $upcomingAppointmentsLabel }}</strong>
+                        </div>
+                    </div>
+                    <div class="modal-actions serv-deactivate-actions">
+                        <button class="btn btn-cancel serv-deactivate-btn" wire:click="cancelDelete">
+                            Cancelar
+                        </button>
+                        <button class="btn btn-cancel serv-deactivate-btn is-secondary" wire:click="deleteAndUnassignUpcomingAppointments" wire:loading.attr="disabled">
+                            <span wire:loading.remove wire:target="deleteAndUnassignUpcomingAppointments">Dejar sin asignar</span>
+                            <span wire:loading wire:target="deleteAndUnassignUpcomingAppointments">Actualizando...</span>
+                        </button>
+                        <button class="btn btn-save serv-deactivate-btn is-primary" wire:click="deleteAndReassignUpcomingAppointments" wire:loading.attr="disabled">
+                            <span wire:loading.remove wire:target="deleteAndReassignUpcomingAppointments">Reasignar y dar de baja</span>
+                            <span wire:loading wire:target="deleteAndReassignUpcomingAppointments">Reasignando...</span>
+                        </button>
+                    </div>
+                @else
+                    <p class="serv-deactivate-modal-copy">
+                        El empleado quedará inactivo y ya no podrá recibir nuevas citas, pero su historial se conservará.
+                    </p>
+                    <div class="modal-actions serv-deactivate-actions is-compact">
+                        <button class="btn btn-cancel serv-deactivate-btn" wire:click="cancelDelete">Cancelar</button>
+                        <button class="btn btn-save serv-deactivate-btn is-primary" wire:click="deleteConfirmed" wire:loading.attr="disabled">
+                            <span wire:loading.remove wire:target="deleteConfirmed">Dar de baja</span>
+                            <span wire:loading wire:target="deleteConfirmed">Dando de baja...</span>
+                        </button>
+                    </div>
+                @endif
             </div>
         </div>
     @endif
