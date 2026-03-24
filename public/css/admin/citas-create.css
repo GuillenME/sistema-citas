@@ -100,24 +100,49 @@
 
 .admin-citas-create .searchable-select-trigger {
     width: 100%;
-    height: 46px;
-    border-radius: 12px;
-    border: 1px solid rgba(252, 204, 124, 0.2);
-    background: rgba(0, 0, 0, 0.28);
+    min-height: 52px;
+    border-radius: 16px;
+    border: 1px solid rgba(252, 204, 124, 0.24);
+    background:
+        linear-gradient(180deg, rgba(83, 54, 37, 0.32), rgba(39, 24, 15, 0.4)),
+        rgba(0, 0, 0, 0.22);
     color: #f7efdc;
-    padding: 10px 14px;
+    padding: 14px 48px 14px 16px;
     text-align: left;
-    font-size: 13px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
     cursor: pointer;
     position: relative;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.admin-citas-create .searchable-select-trigger:hover {
+    border-color: rgba(252, 204, 124, 0.42);
+    transform: translateY(-1px);
+}
+
+.admin-citas-create .searchable-select-trigger[aria-expanded="true"] {
+    border-color: rgba(252, 204, 124, 0.52);
+    box-shadow: 0 0 0 4px rgba(252, 204, 124, 0.08);
 }
 
 .admin-citas-create .searchable-select-trigger::after {
-    content: '▾';
+    content: '';
     position: absolute;
-    right: 14px;
+    right: 18px;
     top: 50%;
-    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid rgba(247, 239, 220, 0.85);
+    border-bottom: 2px solid rgba(247, 239, 220, 0.85);
+    transform: translateY(-60%) rotate(45deg);
+    transition: transform .2s ease;
+}
+
+.admin-citas-create .searchable-select-trigger[aria-expanded="true"]::after {
+    transform: translateY(-25%) rotate(225deg);
 }
 
 .admin-citas-create .searchable-select-panel {
@@ -125,52 +150,77 @@
     top: calc(100% + 8px);
     left: 0;
     width: 100%;
-    background: #f2eee8;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32);
-    z-index: 25;
+    background: linear-gradient(180deg, rgba(34, 24, 17, 0.98), rgba(22, 15, 11, 0.98));
+    border: 1px solid rgba(252, 204, 124, 0.22);
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 24px 44px rgba(0, 0, 0, 0.42);
+    z-index: 35;
+    backdrop-filter: blur(10px);
 }
 
 .admin-citas-create .searchable-select-input {
     width: 100%;
-    height: 40px !important;
-    background: #ffffff !important;
-    color: #1c1c1c !important;
-    border: 1px solid #bdd4ef !important;
+    height: 44px !important;
+    background: rgba(255, 248, 239, 0.05) !important;
+    color: #f7efdc !important;
+    border: 1px solid rgba(252, 204, 124, 0.18) !important;
     margin-top: 0 !important;
+    border-radius: 12px !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18);
 }
 
 .admin-citas-create .searchable-select-options {
-    margin-top: 8px;
-    max-height: 220px;
+    margin-top: 10px;
+    max-height: 240px;
     overflow-y: auto;
+    padding-right: 4px;
+}
+
+.admin-citas-create .searchable-select-options::-webkit-scrollbar {
+    width: 8px;
+}
+
+.admin-citas-create .searchable-select-options::-webkit-scrollbar-thumb {
+    background: rgba(252, 204, 124, 0.26);
+    border-radius: 999px;
+}
+
+.admin-citas-create .searchable-select-options::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .admin-citas-create .searchable-select-option,
 .admin-citas-create .searchable-select-empty {
     width: 100%;
-    border: none;
+    border: 1px solid transparent;
     background: transparent;
-    color: #1f1f1f;
-    padding: 10px 12px;
+    color: #f2e6cf;
+    padding: 12px 14px;
     text-align: left;
-    font-size: 12px;
+    font-size: 13px;
+    border-radius: 12px;
 }
 
 .admin-citas-create .searchable-select-option {
     cursor: pointer;
     font-size: 14px;
+    margin-bottom: 4px;
+    transition: background .18s ease, border-color .18s ease, transform .18s ease, color .18s ease;
 }
 
 .admin-citas-create .searchable-select-option:hover,
 .admin-citas-create .searchable-select-option.is-selected {
-    background: #3b7fc0;
-    color: #fff;
+    background: linear-gradient(135deg, rgba(252, 204, 124, 0.18), rgba(215, 151, 71, 0.12));
+    border-color: rgba(252, 204, 124, 0.28);
+    color: #fff7ea;
+    transform: translateY(-1px);
 }
 
 .admin-citas-create .searchable-select-empty {
-    color: #6f6f6f;
+    color: #b9aa88;
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(252, 204, 124, 0.08);
 }
 
 .admin-citas-create select {
