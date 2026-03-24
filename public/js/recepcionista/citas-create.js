@@ -3,6 +3,7 @@
     const servicio = document.getElementById('servicio');
     const fecha = document.getElementById('fecha');
     const horarios = document.getElementById('horarios');
+    const horaInicioOld = document.getElementById('horaInicioOld');
     const chipsWrap = document.getElementById('horarioChips');
     const anticipoCheck = document.getElementById('anticipo_check');
     const anticipoBox = document.getElementById('anticipo_box');
@@ -15,6 +16,24 @@
     const warningToastText = document.getElementById('warningToastText');
     const anticipoPct = parseFloat(document.body?.dataset?.anticipoPct || '50');
     const btnAgendar = document.getElementById('btnAgendar');
+    const clientDropdown = document.getElementById('clientDropdown');
+    const clientTrigger = document.getElementById('clientDropdownTrigger');
+    const clientLabel = document.getElementById('clientDropdownLabel');
+    const clientPanel = document.getElementById('clientDropdownPanel');
+    const clientFilter = document.getElementById('clientFilter');
+    const clientOptionsWrap = document.getElementById('clientDropdownOptions');
+    const serviceDropdown = document.getElementById('serviceDropdown');
+    const serviceTrigger = document.getElementById('serviceDropdownTrigger');
+    const serviceLabel = document.getElementById('serviceDropdownLabel');
+    const servicePanel = document.getElementById('serviceDropdownPanel');
+    const serviceFilter = document.getElementById('serviceFilter');
+    const serviceOptionsWrap = document.getElementById('serviceDropdownOptions');
+    const usuariosBase = usuario
+        ? Array.from(usuario.options).filter((opt) => opt.value).map((opt) => opt.cloneNode(true))
+        : [];
+    const serviciosBase = servicio
+        ? Array.from(servicio.options).filter((opt) => opt.value).map((opt) => opt.cloneNode(true))
+        : [];
 
     if (!usuario || !servicio || !fecha || !horarios || !chipsWrap) {
         return;
@@ -23,9 +42,116 @@
     let servicioConfirmado = false;
     let fpInstance = null;
 
+    function normalizeText(value) {
+        return String(value || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim();
+    }
+
+    function setDropdownOpen(panel, trigger, open) {
+        if (!panel || !trigger) return;
+        panel.hidden = !open;
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    function syncDropdownLabel(select, label, placeholder) {
+        if (!label) return;
+        const opt = select.options[select.selectedIndex];
+        label.textContent = opt && opt.value ? opt.textContent.trim() : placeholder;
+    }
+
+    function filterOptions(baseOptions, searchValue) {
+        const search = normalizeText(searchValue);
+        return baseOptions.filter((opt) => search === '' || normalizeText(opt.textContent).includes(search));
+    }
+
+    function syncSelectOptions(select, placeholder, options) {
+        const selectedValue = select.value;
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+
+        options.forEach((opt) => {
+            const clone = opt.cloneNode(true);
+            if (String(clone.value) === String(selectedValue)) {
+                clone.selected = true;
+            }
+            select.appendChild(clone);
+        });
+
+        return selectedValue && String(select.value) === String(selectedValue);
+    }
+
+    function renderDropdownOptions(config) {
+        const {
+            select,
+            baseOptions,
+            filterInput,
+            optionsWrap,
+            placeholder,
+            onPick,
+        } = config;
+
+        if (!optionsWrap) return;
+
+        const filteredOptions = filterOptions(baseOptions, filterInput?.value || '');
+        syncSelectOptions(select, placeholder, filteredOptions);
+        optionsWrap.innerHTML = '';
+
+        const placeholderBtn = document.createElement('button');
+        placeholderBtn.type = 'button';
+        placeholderBtn.className = 'searchable-select-option';
+        placeholderBtn.textContent = placeholder;
+        if (!select.value) {
+            placeholderBtn.classList.add('is-selected');
+        }
+        placeholderBtn.addEventListener('click', () => onPick(null));
+        optionsWrap.appendChild(placeholderBtn);
+
+        if (!filteredOptions.length) {
+            const empty = document.createElement('div');
+            empty.className = 'searchable-select-empty';
+            empty.textContent = 'No se encontraron resultados.';
+            optionsWrap.appendChild(empty);
+            return;
+        }
+
+        filteredOptions.forEach((opt) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'searchable-select-option';
+            button.textContent = opt.textContent.trim();
+            if (String(opt.value) === String(select.value)) {
+                button.classList.add('is-selected');
+            }
+            button.addEventListener('click', () => onPick(opt));
+            optionsWrap.appendChild(button);
+        });
+    }
+
     function limpiarHorarios() {
         horarios.innerHTML = '<option value="">Selecciona un horario</option>';
         renderHoraChips();
+    }
+
+    function limpiarServicioSeleccionado() {
+        servicio.value = '';
+        servicioConfirmado = false;
+        fecha.value = '';
+        limpiarHorarios();
+        if (serviceFilter) {
+            serviceFilter.value = '';
+        }
+        syncDropdownLabel(servicio, serviceLabel, 'Selecciona un servicio');
+    }
+
+    function limpiarClienteSeleccionado() {
+        usuario.value = '';
+        if (clientFilter) {
+            clientFilter.value = '';
+        }
+        limpiarServicioSeleccionado();
+        syncDropdownLabel(usuario, clientLabel, 'Selecciona un cliente');
     }
 
     function bloquearCalendario(locked) {
@@ -43,7 +169,6 @@
         const fechaSeleccionada = !!fecha.value;
         const horaSeleccionada = !!horarios.value;
 
-        servicio.disabled = !clienteSeleccionado;
         fecha.disabled = !(clienteSeleccionado && servicioSeleccionado && servicioConfirmado);
         horarios.disabled = !(clienteSeleccionado && servicioSeleccionado && servicioConfirmado && fechaSeleccionada);
 
@@ -140,7 +265,6 @@
             btn.type = 'button';
             btn.className = 'hora-chip';
             btn.textContent = opt.textContent;
-            btn.dataset.value = opt.value;
             if (horarios.value === opt.value) {
                 btn.classList.add('active');
             }
@@ -155,7 +279,12 @@
     }
 
     servicio.addEventListener('change', function () {
-        if (!this.value) return;
+        if (!this.value) {
+            syncDropdownLabel(servicio, serviceLabel, 'Selecciona un servicio');
+            syncSummary();
+            actualizarEstadoCampos();
+            return;
+        }
 
         servicioConfirmado = false;
         const opt = this.options[this.selectedIndex];
@@ -175,8 +304,7 @@
             document.getElementById('msPrecio').textContent = `$${parseFloat(opt.dataset.precio).toFixed(2)}`;
         }
 
-        fecha.value = '';
-        limpiarHorarios();
+        syncDropdownLabel(servicio, serviceLabel, 'Selecciona un servicio');
         syncSummary();
         actualizarEstadoCampos();
         document.getElementById('modalServicioConfirmar').classList.add('active');
@@ -206,6 +334,13 @@
                 horarios.appendChild(opt);
             });
 
+            if (horaInicioOld && horaInicioOld.value) {
+                const existeHorarioOld = Array.from(horarios.options).some((o) => o.value === horaInicioOld.value);
+                if (existeHorarioOld) {
+                    horarios.value = horaInicioOld.value;
+                }
+            }
+
             renderHoraChips();
             syncSummary();
         } catch (e) {
@@ -215,27 +350,115 @@
         }
     }
 
-    anticipoCheck.addEventListener('change', () => {
-        actualizarEstadoCampos();
-    });
-
+    anticipoCheck.addEventListener('change', actualizarEstadoCampos);
     anticipoMonto.addEventListener('input', actualizarEstadoCampos);
 
     usuario.addEventListener('change', () => {
         if (!usuario.value) {
-            servicio.value = '';
-            servicioConfirmado = false;
-            fecha.value = '';
-            limpiarHorarios();
+            limpiarClienteSeleccionado();
         } else {
-            servicio.value = '';
-            servicioConfirmado = false;
-            fecha.value = '';
-            limpiarHorarios();
+            limpiarServicioSeleccionado();
         }
+        syncDropdownLabel(usuario, clientLabel, 'Selecciona un cliente');
         syncSummary();
         actualizarEstadoCampos();
     });
+
+    if (clientTrigger) {
+        clientTrigger.addEventListener('click', () => {
+            renderDropdownOptions({
+                select: usuario,
+                baseOptions: usuariosBase,
+                filterInput: clientFilter,
+                optionsWrap: clientOptionsWrap,
+                placeholder: 'Selecciona un cliente',
+                onPick: (opt) => {
+                    if (!opt) {
+                        limpiarClienteSeleccionado();
+                    } else {
+                        usuario.value = opt.value;
+                    }
+                    syncDropdownLabel(usuario, clientLabel, 'Selecciona un cliente');
+                    setDropdownOpen(clientPanel, clientTrigger, false);
+                    usuario.dispatchEvent(new Event('change'));
+                }
+            });
+            setDropdownOpen(clientPanel, clientTrigger, clientPanel.hidden);
+            if (clientPanel.hidden === false && clientFilter) {
+                window.setTimeout(() => clientFilter.focus(), 0);
+            }
+        });
+    }
+
+    if (serviceTrigger) {
+        serviceTrigger.addEventListener('click', () => {
+            renderDropdownOptions({
+                select: servicio,
+                baseOptions: serviciosBase,
+                filterInput: serviceFilter,
+                optionsWrap: serviceOptionsWrap,
+                placeholder: 'Selecciona un servicio',
+                onPick: (opt) => {
+                    if (!opt) {
+                        limpiarServicioSeleccionado();
+                    } else {
+                        servicio.value = opt.value;
+                    }
+                    syncDropdownLabel(servicio, serviceLabel, 'Selecciona un servicio');
+                    setDropdownOpen(servicePanel, serviceTrigger, false);
+                    servicio.dispatchEvent(new Event('change'));
+                }
+            });
+            setDropdownOpen(servicePanel, serviceTrigger, servicePanel.hidden);
+            if (servicePanel.hidden === false && serviceFilter) {
+                window.setTimeout(() => serviceFilter.focus(), 0);
+            }
+        });
+    }
+
+    if (clientFilter) {
+        clientFilter.addEventListener('input', () => {
+            renderDropdownOptions({
+                select: usuario,
+                baseOptions: usuariosBase,
+                filterInput: clientFilter,
+                optionsWrap: clientOptionsWrap,
+                placeholder: 'Selecciona un cliente',
+                onPick: (opt) => {
+                    if (!opt) {
+                        limpiarClienteSeleccionado();
+                    } else {
+                        usuario.value = opt.value;
+                    }
+                    syncDropdownLabel(usuario, clientLabel, 'Selecciona un cliente');
+                    setDropdownOpen(clientPanel, clientTrigger, false);
+                    usuario.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+    }
+
+    if (serviceFilter) {
+        serviceFilter.addEventListener('input', () => {
+            renderDropdownOptions({
+                select: servicio,
+                baseOptions: serviciosBase,
+                filterInput: serviceFilter,
+                optionsWrap: serviceOptionsWrap,
+                placeholder: 'Selecciona un servicio',
+                onPick: (opt) => {
+                    if (!opt) {
+                        limpiarServicioSeleccionado();
+                    } else {
+                        servicio.value = opt.value;
+                    }
+                    syncDropdownLabel(servicio, serviceLabel, 'Selecciona un servicio');
+                    setDropdownOpen(servicePanel, serviceTrigger, false);
+                    servicio.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+    }
 
     fecha.addEventListener('change', () => {
         if (!fecha.value) return;
@@ -313,10 +536,7 @@
     }
 
     function cancelarServicio() {
-        servicio.value = '';
-        fecha.value = '';
-        limpiarHorarios();
-        servicioConfirmado = false;
+        limpiarServicioSeleccionado();
         document.getElementById('modalServicioConfirmar').classList.remove('active');
         syncSummary();
         actualizarEstadoCampos();
@@ -370,9 +590,26 @@
     window.confirmarLogout = confirmarLogout;
     window.cerrarWarningToast = cerrarWarningToast;
 
+    document.addEventListener('click', (event) => {
+        if (clientDropdown && !clientDropdown.contains(event.target)) {
+            setDropdownOpen(clientPanel, clientTrigger, false);
+        }
+        if (serviceDropdown && !serviceDropdown.contains(event.target)) {
+            setDropdownOpen(servicePanel, serviceTrigger, false);
+        }
+    });
+
     anticipoBox.hidden = !anticipoCheck.checked;
     anticipoMonto.disabled = !anticipoCheck.checked;
+    syncDropdownLabel(usuario, clientLabel, 'Selecciona un cliente');
+    syncDropdownLabel(servicio, serviceLabel, 'Selecciona un servicio');
+    if (servicio.value) {
+        servicioConfirmado = true;
+    }
     renderHoraChips();
     syncSummary();
     actualizarEstadoCampos();
+    if (servicioConfirmado && fecha.value) {
+        cargarBloques();
+    }
 })();

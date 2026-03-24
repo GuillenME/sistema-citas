@@ -616,12 +616,20 @@
             var employeeFilter = document.getElementById('citasEmployeeFilter');
             var rows = Array.prototype.slice.call(document.querySelectorAll('tbody tr[data-search]'));
 
+            function normalizeText(value) {
+                return String(value || '')
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase()
+                    .trim();
+            }
+
             function applyFilters() {
-                var q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+                var q = searchInput ? normalizeText(searchInput.value) : '';
                 var selectedEmployee = employeeFilter ? employeeFilter.value : '';
 
                 rows.forEach(function(row) {
-                    var haystack = row.getAttribute('data-search') || '';
+                    var haystack = normalizeText(row.getAttribute('data-search') || '');
                     var employeeId = row.getAttribute('data-employee-id') || '';
                     var matchesSearch = haystack.includes(q);
                     var matchesEmployee = true;

@@ -41,10 +41,22 @@
                 <div class="booking-left">
                     <div class="field">
                         <label><span class="step-dot">1</span>Seleccionar Cliente</label>
-                        <select name="usuario_id" id="usuario_id" required>
+                        <div class="searchable-select" id="clientDropdown">
+                            <button type="button" class="searchable-select-trigger" id="clientDropdownTrigger"
+                                aria-haspopup="listbox" aria-expanded="false">
+                                <span id="clientDropdownLabel">Selecciona un cliente</span>
+                            </button>
+                            <div class="searchable-select-panel" id="clientDropdownPanel" hidden>
+                                <input type="text" id="clientFilter" class="booking-filter-input searchable-select-input"
+                                    placeholder="Buscar cliente">
+                                <div class="searchable-select-options" id="clientDropdownOptions" role="listbox"></div>
+                            </div>
+                        </div>
+                        <select name="usuario_id" id="usuario_id" class="sr-only-select" required>
                             <option value="">Selecciona un cliente</option>
                             @foreach ($usuarios as $usuario)
-                                <option value="{{ $usuario->id }}">
+                                <option value="{{ $usuario->id }}"
+                                    {{ old('usuario_id') == $usuario->id ? 'selected' : '' }}>
                                     {{ $usuario->name }} {{ $usuario->last_name }} - {{ $usuario->email }}
                                 </option>
                             @endforeach
@@ -53,7 +65,18 @@
 
                     <div class="field">
                         <label><span class="step-dot">2</span>Seleccionar Servicio</label>
-                        <select name="servicio_id" id="servicio" required>
+                        <div class="searchable-select" id="serviceDropdown">
+                            <button type="button" class="searchable-select-trigger" id="serviceDropdownTrigger"
+                                aria-haspopup="listbox" aria-expanded="false">
+                                <span id="serviceDropdownLabel">Selecciona un servicio</span>
+                            </button>
+                            <div class="searchable-select-panel" id="serviceDropdownPanel" hidden>
+                                <input type="text" id="serviceFilter" class="booking-filter-input searchable-select-input"
+                                    placeholder="Buscar servicio">
+                                <div class="searchable-select-options" id="serviceDropdownOptions" role="listbox"></div>
+                            </div>
+                        </div>
+                        <select name="servicio_id" id="servicio" class="sr-only-select" required>
                             <option value="">Selecciona un servicio</option>
                             @foreach ($servicios as $servicio)
                                 @php
@@ -65,7 +88,8 @@
                                     data-tiene-promocion="{{ $promo ? '1' : '0' }}"
                                     data-descripcion="{{ $servicio->description }}"
                                     data-duracion="{{ $servicio->duration_minutes }}"
-                                    data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}">
+                                    data-imagen="{{ $servicio->image ? asset('storage/' . $servicio->image) : asset('imagenes/servicio_default.png') }}"
+                                    {{ old('servicio_id') == $servicio->id ? 'selected' : '' }}>
                                     {{ $servicio->name }}
                                 </option>
                             @endforeach
@@ -75,7 +99,7 @@
                     <div class="field date-field">
                         <label><span class="step-dot">3</span>Seleccionar Fecha</label>
                         <input type="text" id="fecha" name="fecha" class="date-inline"
-                            placeholder="Selecciona una fecha" onkeydown="return false;" readonly required>
+                            placeholder="Selecciona una fecha" value="{{ old('fecha') }}" onkeydown="return false;" readonly required>
                     </div>
 
                     <div class="field horario-field">
@@ -84,6 +108,7 @@
                         <select id="horarios" name="hora_inicio" class="sr-only-select" required>
                             <option value="">Selecciona un horario</option>
                         </select>
+                        <input type="hidden" id="horaInicioOld" value="{{ old('hora_inicio') }}">
                     </div>
                 </div>
 
@@ -109,14 +134,14 @@
                     <div class="field">
                         <label class="privacy-label">
                             <input type="checkbox" id="anticipo_check" name="anticipo_recibido" value="1"
-                                class="privacy-checkbox" required>
+                                class="privacy-checkbox" required {{ old('anticipo_recibido') ? 'checked' : '' }}>
                             <span class="privacy-text">Se recibio anticipo en recepcion</span>
                         </label>
                     </div>
                     <div class="field" id="anticipo_box" hidden>
                         <label for="anticipo_monto">Monto recibido</label>
                         <input type="number" id="anticipo_monto" name="anticipo_monto" min="0.01" step="0.01"
-                            required disabled placeholder="Ej. 100.00">
+                            required disabled placeholder="Ej. 100.00" value="{{ old('anticipo_monto') }}">
                     </div>
 
                     <div class="field summary-submit">
