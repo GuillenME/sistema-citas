@@ -2,37 +2,62 @@
 
 @section('title', 'Notificaciones')
 @section('back-url', route('admin.dashboard'))
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/notificaciones-index.css') }}">
+@endsection
 
 @section('content')
-    <div class="card" style="padding: 0;">
-        <div style="padding: 22px 24px; border-bottom: 1px solid rgba(252, 204, 124, 0.14);">
-            <h3 style="margin: 0; color: #fff3df;">Todas las notificaciones</h3>
-            <p style="margin: 8px 0 0; color: #d6c1a4;">Revisa el historial completo y abre cada aviso para marcarlo como leido.</p>
-        </div>
+    <section class="admin-notif-shell">
+        <header class="admin-notif-hero">
+            <div>
+                <span class="admin-notif-kicker">Centro de actividad</span>
+                <h2>Todas las notificaciones</h2>
+                <p>Revisa el historial completo y abre cada aviso para marcarlo como leido.</p>
+            </div>
+            <div class="admin-notif-hero-stat">
+                <span>Pendientes</span>
+                <strong>{{ $notificaciones->whereNull('read_at')->count() }}</strong>
+            </div>
+        </header>
 
-        <div style="display: grid; gap: 0;">
+        <div class="admin-notif-list">
             @forelse ($notificaciones as $notificacion)
+                @php
+                    $isUnread = is_null($notificacion->read_at);
+                @endphp
                 <a href="{{ route('admin.notificacion.leer', $notificacion->id) }}"
-                    style="display: block; padding: 18px 24px; text-decoration: none; border-bottom: 1px solid rgba(252, 204, 124, 0.10); color: #fff3df; background: {{ $notificacion->read_at ? 'rgba(255,255,255,0.02)' : 'rgba(252, 204, 124, 0.06)' }};">
-                    <div style="display: flex; justify-content: space-between; gap: 14px; align-items: start;">
-                        <div style="display: grid; gap: 6px;">
-                            <strong style="font-size: 15px; line-height: 1.45;">{{ $notificacion->data['mensaje'] ?? 'Notificacion' }}</strong>
-                            <span style="font-size: 12px; color: #cdb391;">
-                                {{ $notificacion->read_at ? 'Leida' : 'No leida' }}
+                    class="admin-notif-item {{ $isUnread ? 'is-unread' : '' }}">
+                    <div class="admin-notif-item-main">
+                        <span class="admin-notif-item-icon" aria-hidden="true"></span>
+                        <div class="admin-notif-item-copy">
+                            <strong>{{ $notificacion->data['mensaje'] ?? 'Notificacion' }}</strong>
+                            <span class="admin-notif-item-status {{ $isUnread ? 'is-unread' : 'is-read' }}">
+                                {{ $isUnread ? 'No leida' : 'Leida' }}
                             </span>
                         </div>
-                        <small style="color: #d6c1a4; white-space: nowrap;">{{ $notificacion->created_at->diffForHumans() }}</small>
+                    </div>
+                    <div class="admin-notif-item-meta">
+                        <small>{{ $notificacion->created_at->diffForHumans() }}</small>
+                        <span class="admin-notif-item-arrow" aria-hidden="true">&rarr;</span>
                     </div>
                 </a>
             @empty
-                <div style="padding: 24px; color: #d6c1a4;">No hay notificaciones registradas.</div>
+                <div class="admin-notif-empty">
+                    <div class="admin-notif-empty-icon" aria-hidden="true"></div>
+                    <strong>No hay notificaciones registradas</strong>
+                    <p>Cuando ocurra algo importante en el sistema, aparecera aqui.</p>
+                </div>
             @endforelse
         </div>
 
         @if ($notificaciones->hasPages())
-            <div class="pagination-wrapper" style="padding: 20px 24px;">
+            <div class="pagination-wrapper admin-notif-pagination">
+                <div class="admin-notif-pagination-copy">
+                    Mostrando {{ $notificaciones->firstItem() }}-{{ $notificaciones->lastItem() }}
+                    de {{ $notificaciones->total() }} notificaciones
+                </div>
                 {{ $notificaciones->links('pagination::simple-bootstrap-4') }}
             </div>
         @endif
-    </div>
+    </section>
 @endsection

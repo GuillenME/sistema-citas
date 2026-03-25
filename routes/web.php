@@ -244,7 +244,10 @@ Route::middleware(['auth', 'rol:1'])
         Route::get('/notificaciones/todas', function () {
             /** @var \App\Models\Usuario $user */
             $user = auth()->user();
-            $notificaciones = $user->notifications()->latest()->paginate(15);
+            $notificaciones = $user->notifications()
+                ->latest()
+                ->paginate(8)
+                ->onEachSide(1);
 
             return view('admin.notificaciones.index', compact('notificaciones'));
         })->name('notificaciones.index');

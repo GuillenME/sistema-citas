@@ -46,7 +46,7 @@ body {
     gap: 14px;
     flex: 1 1 auto;
     min-width: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .navbar-links {
@@ -267,7 +267,7 @@ body {
 
 .admin-card {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     background: linear-gradient(165deg, rgba(252, 204, 124, 0.12), rgba(95, 70, 54, 0.9));
     backdrop-filter: blur(10px);
     border-radius: 18px;
@@ -1665,7 +1665,7 @@ select:focus {
     flex-direction: column;
     gap: 12px;
     transition: transform .25s ease;
-    overflow: hidden;
+    overflow: visible;
     text-align: left;
 }
 
@@ -1678,6 +1678,7 @@ select:focus {
 .admin-sidebar-notifications {
     width: 100%;
     min-width: 0;
+    position: relative;
 }
 
 .admin-sidebar-notif-btn {
@@ -1726,11 +1727,13 @@ select:focus {
 
 .admin-sidebar-notif-copy {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     text-align: left;
     min-width: 0;
     flex: 1;
     padding-top: 0;
+    gap: 3px;
 }
 
 .admin-sidebar-notif-copy strong {
@@ -1741,7 +1744,10 @@ select:focus {
 }
 
 .admin-sidebar-notif-copy small {
-    display: none;
+    display: block;
+    color: #bda57c;
+    font-size: 11px;
+    line-height: 1.35;
 }
 
 .admin-sidebar-notif-dot {
@@ -2083,6 +2089,14 @@ main.dashboard.dashboard-home .admin-home {
     .admin-sidebar-notif-menu {
         width: min(320px, calc(100vw - 32px));
     }
+
+    .admin-sidebar-notif-menu {
+        position: absolute;
+        left: 0;
+        top: calc(100% + 6px);
+        min-width: 0;
+        max-width: calc(100vw - 32px);
+    }
 }
 
 @media (max-width: 640px) {
@@ -2403,11 +2417,16 @@ main.dashboard.dashboard-home .admin-home {
 }
 
 .notif-item{
-    padding: 10px;
+    padding: 14px 16px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     text-decoration: none;
-    color: #fff;
-    font-size: 13px;
+    color: #fff7ea;
+    font-size: 14px;
+    line-height: 1.45;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    word-break: break-word;
 }
 
 .notif-item:hover{
@@ -2417,6 +2436,7 @@ main.dashboard.dashboard-home .admin-home {
 .notif-item small{
     display: block;
     color: #c9bfa5;
+    font-size: 12px;
 }
 
 .notif-empty{
@@ -2444,15 +2464,22 @@ main.dashboard.dashboard-home .admin-home {
 }
 
 .admin-sidebar-notif-menu {
-    left: 0;
+    position: absolute;
+    left: calc(100% + 18px);
     right: auto;
-    top: calc(100% + 6px);
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
+    top: 0;
+    width: min(380px, calc(100vw - var(--admin-sidebar-width) - 36px));
+    min-width: 340px;
+    max-width: calc(100vw - var(--admin-sidebar-width) - 36px);
     margin-top: 0;
     background: linear-gradient(180deg, rgba(29, 24, 10, 0.98), rgba(18, 15, 7, 0.98));
     border-color: rgba(252, 204, 124, 0.16);
     border-radius: 16px;
     overflow-x: hidden;
+    max-height: min(70vh, 560px);
+    padding-top: 4px;
+    padding-bottom: 4px;
+    box-shadow: 0 24px 50px rgba(0,0,0,0.42);
 }
+
+
