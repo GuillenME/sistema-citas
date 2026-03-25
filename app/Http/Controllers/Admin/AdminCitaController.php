@@ -33,9 +33,10 @@ class AdminCitaController extends Controller
         return now()->greaterThanOrEqualTo($inicioCita);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $hoy = today();
+        $focusCitaId = (int) $request->query('focus_cita', 0);
 
         // Cancelar citas vencidas automaticamente
         Cita::where('status', 'pendiente_anticipo')
@@ -54,7 +55,13 @@ class AdminCitaController extends Controller
                 'estados as reagendas_count' => function ($query) {
                     $query->where('status', 'reagendada');
                 },
-            ])
+            ]);
+
+        if ($focusCitaId > 0) {
+            $citas->orderByRaw('CASE WHEN id = ? THEN 0 ELSE 1 END', [$focusCitaId]);
+        }
+
+        $citas = $citas
             ->orderByDesc('created_at')
             ->paginate(5);
 

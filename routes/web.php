@@ -5,7 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\Admin\AdminCitaController;
 use App\Http\Controllers\Admin\AdminClientesController;
+use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Admin\AdminServicioController;
+use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\Admin\HomeSettingController;
 use App\Http\Controllers\Admin\LegalContentController;
 use App\Http\Controllers\PasswordResetController;
@@ -13,12 +15,6 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Recepcionista\CitaController as RecepcionistaCitaController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServicioPublicController;
-use App\Models\Cliente;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 
 /* HOME PÚBLICO */
@@ -218,39 +214,14 @@ Route::middleware(['auth', 'rol:1'])
         Route::post('/citas/{cita}/rechazar', [AdminCitaController::class, 'rechazarPago'])
             ->name('citas.rechazar');
 
-        Route::get('/notificacion/{id}', function ($id) {
-            /** @var \App\Models\Usuario $user */
-            $user = auth()->user();
-            $noti = $user->notifications()->findOrFail($id);
-            $noti->markAsRead();
-            return redirect()->route('admin.citas.index');
-        })->name('notificacion.leer');
-        Route::get('/notificaciones', function () {
-
-            $user = auth()->user();
-
-            return response()->json([
-                'count' => $user->unreadNotifications->count(),
-                'notificaciones' => $user->unreadNotifications->take(5)->map(function ($n) {
-                    return [
-                        'id' => $n->id,
-                        'mensaje' => $n->data['mensaje'],
-                        'tiempo' => $n->created_at->diffForHumans()
-                    ];
-                })
-            ]);
-        })->name('notificaciones.json');
-
-        Route::get('/notificaciones/todas', function () {
-            /** @var \App\Models\Usuario $user */
-            $user = auth()->user();
-            $notificaciones = $user->notifications()
-                ->latest()
-                ->paginate(8)
-                ->onEachSide(1);
-
-            return view('admin.notificaciones.index', compact('notificaciones'));
-        })->name('notificaciones.index');
+        Route::get('/notificacion/{id}', [AdminNotificationController::class, 'read'])
+            ->name('notificacion.leer');
+        Route::post('/notificaciones/marcar-todas', [AdminNotificationController::class, 'readAll'])
+            ->name('notificaciones.read-all');
+        Route::get('/notificaciones', [AdminNotificationController::class, 'json'])
+            ->name('notificaciones.json');
+        Route::get('/notificaciones/todas', [AdminNotificationController::class, 'index'])
+            ->name('notificaciones.index');
     });
 
 /* RECEPCIONISTA (rol_id = 3) */
@@ -321,111 +292,14 @@ Route::middleware(['auth', 'rol:2'])
             return view('cliente.dashboard');
         })->name('dashboard');
 
-        Route::get('/perfil', function () {
-            $usuario = auth()->user()->load('client');
-            $cliente = $usuario->client;
+        Route::get('/perfil', [ClientProfileController::class, 'show'])
+            ->name('perfil');
 
-            $stats = [
-                'citas_total' => \App\Models\Cita::query()
-                    ->where('client_id', $cliente?->id)
-                    ->count(),
-                'proxima_cita' => \App\Models\Cita::query()
-                    ->where('client_id', $cliente?->id)
-                    ->whereDate('date', '>=', today())
-                    ->orderBy('date')
-                    ->orderBy('start_time')
-                    ->first(),
-            ];
+        Route::post('/perfil', [ClientProfileController::class, 'update'])
+            ->name('perfil.update');
 
-            return view('cliente.perfil', compact('usuario', 'cliente', 'stats'));
-        })->name('perfil');
-
-        Route::post('/perfil', function (Request $request) {
-            /** @var \App\Models\Usuario $usuario */
-            $usuario = auth()->user();
-            $cliente = $usuario->client ?? Cliente::create([
-                'user_id' => $usuario->id,
-            ]);
-
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'last_name' => 'nullable|string|max:255',
-                'phone' => 'nullable|string|max:30',
-                'birth_date' => 'nullable|date|before:today',
-            ]);
-
-            $birthDateActual = $cliente->birth_date?->format('Y-m-d');
-            $birthDateNueva = $validated['birth_date'] ?? null;
-
-            if ($birthDateNueva !== $birthDateActual) {
-                if ($birthDateActual !== null && (int) ($cliente->birth_date_change_count ?? 0) >= 1) {
-                    return back()->withErrors([
-                        'birth_date' => 'La fecha de nacimiento solo puede modificarse una vez despues de registrarla.',
-                    ])->withInput();
-                }
-
-                if ($birthDateActual !== null) {
-                    $cliente->birth_date_change_count = (int) ($cliente->birth_date_change_count ?? 0) + 1;
-                }
-
-                $cliente->birth_date = $birthDateNueva;
-            }
-
-            $usuario->update([
-                'name' => $validated['name'],
-                'last_name' => $validated['last_name'] ?? null,
-                'phone' => $validated['phone'] ?? null,
-            ]);
-
-            $cliente->save();
-
-            return redirect()
-                ->route('cliente.perfil')
-                ->with('success', 'Perfil actualizado correctamente.');
-        })->name('perfil.update');
-
-        Route::post('/perfil/eliminar', function (Request $request) {
-            $request->validate([
-                'password' => 'required|current_password',
-            ], [
-                'password.required' => 'Debes confirmar tu contraseña para eliminar la cuenta.',
-                'password.current_password' => 'La contraseña ingresada no es correcta.',
-            ]);
-
-            /** @var \App\Models\Usuario $usuario */
-            $usuario = auth()->user()->load('client');
-            $cliente = $usuario->client;
-
-            DB::transaction(function () use ($usuario, $cliente) {
-                $emailAnonimo = 'eliminado+' . $usuario->id . '+' . now()->format('YmdHis') . '@local.invalid';
-
-                $usuario->forceFill([
-                    'name' => 'Cliente eliminado',
-                    'last_name' => null,
-                    'email' => $emailAnonimo,
-                    'phone' => null,
-                    'password' => Hash::make(Str::random(40)),
-                    'active' => false,
-                    'remember_token' => null,
-                ])->save();
-
-                if ($cliente) {
-                    $cliente->update([
-                        'birth_date' => null,
-                        'notes' => 'Cuenta anonimizada por solicitud del cliente el ' . now()->format('Y-m-d H:i:s'),
-                        'birth_date_change_count' => 0,
-                    ]);
-                }
-            });
-
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return redirect()
-                ->route('login')
-                ->with('success', 'Tu cuenta fue eliminada correctamente. Conservamos solo el historial necesario sin tus datos personales.');
-        })->name('perfil.delete');
+        Route::post('/perfil/eliminar', [ClientProfileController::class, 'destroy'])
+            ->name('perfil.delete');
 
         Route::get('/citas', [CitaController::class, 'index'])
             ->name('citas.index');
@@ -495,3 +369,4 @@ Route::get('/api/promocion/{id}', function ($id) {
         'image' => $promocion->image ?? null
     ]);
 });
+

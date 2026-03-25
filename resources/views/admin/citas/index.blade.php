@@ -224,7 +224,7 @@
                                     'favorite_services' => $favoriteServices,
                                 ];
                             @endphp
-                            <tr data-search="{{ $searchText }}" data-employee-id="{{ $cita->employee_id ?? '' }}">
+                            <tr data-search="{{ $searchText }}" data-employee-id="{{ $cita->employee_id ?? '' }}" data-cita-row="{{ $cita->id }}">
                                 <td class="col-cliente">
                                     <div class="cell-main">{{ $cita->client->user->name }}</div>
                                     <small class="cell-sub">{{ $cita->client->user->email ?? '-' }}</small>
@@ -288,7 +288,7 @@
                                 </td>
 
                                 <td class="table-actions col-acciones">
-                                    <button type="button" class="btn notes-btn citas-detail-btn"
+                                    <button type="button" class="btn notes-btn citas-detail-btn" data-cita-id="{{ $cita->id }}"
                                         title="Ver empleado, comprobante y acciones de la cita"
                                         data-origin="{{ $cita->receipt ? 'cliente' : 'recepcion' }}"
                                         data-price="{{ $precio }}"
@@ -1031,6 +1031,31 @@
             var rescheduleModal = document.getElementById('rescheduleModal');
             var rescheduleForm = document.getElementById('rescheduleForm');
             var rescheduleClose = document.getElementById('rescheduleModalClose');
+            var focusCitaId = new URLSearchParams(window.location.search).get('focus_cita');
+
+            function openFocusedAppointment() {
+                if (!focusCitaId) return;
+
+                var targetButton = document.querySelector('.notes-btn[data-cita-id="' + focusCitaId + '"]');
+                var targetRow = document.querySelector('[data-cita-row="' + focusCitaId + '"]');
+
+                if (targetRow) {
+                    targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    targetRow.classList.add('is-highlighted');
+                    setTimeout(function() {
+                        targetRow.classList.remove('is-highlighted');
+                    }, 2400);
+                }
+
+                if (targetButton) {
+                    setTimeout(function() {
+                        targetButton.click();
+                        var url = new URL(window.location.href);
+                        url.searchParams.delete('focus_cita');
+                        window.history.replaceState({}, '', url.toString());
+                    }, 180);
+                }
+            }
             if (rescheduleModal && rescheduleForm && rescheduleClose) {
                 function openReschedule(action) {
                     rescheduleForm.setAttribute('action', action);
@@ -1079,6 +1104,14 @@
                     });
                 }
             }
+
+            openFocusedAppointment();
         })();
     </script>
 @endsection
+
+
+
+
+
+

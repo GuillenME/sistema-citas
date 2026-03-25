@@ -26,6 +26,8 @@ class EmpleadoIndex extends Component
     public $reassignType = 'success';
     public $upcomingAppointmentsCount = 0;
     public $upcomingAppointmentsLabel = '';
+    public $upcomingAppointments = [];
+    public $showUpcomingAppointmentsModal = false;
 
     public function boot(AppointmentAvailabilityService $availability): void
     {
@@ -43,9 +45,30 @@ class EmpleadoIndex extends Component
     public function confirmDelete($id)
     {
         $empleado = Empleado::findOrFail($id);
+        $upcomingAppointments = $this->upcomingAppointmentsQuery($empleado)
+            ->with(['service:id,name', 'client.user:id,name'])
+            ->orderBy('date')
+            ->orderBy('start_time')
+            ->get();
+
         $this->confirmDeleteId = $id;
-        $this->upcomingAppointmentsCount = $this->upcomingAppointmentsQuery($empleado)->count();
+        $this->upcomingAppointmentsCount = $upcomingAppointments->count();
         $this->upcomingAppointmentsLabel = $empleado->name;
+        $this->upcomingAppointments = $upcomingAppointments
+            ->map(function (Cita $cita) {
+                return [
+                    'id' => $cita->id,
+                    'date' => optional($cita->date)->format('d/m/Y'),
+                    'time' => trim(
+                        Carbon::parse($cita->getRawOriginal('start_time'))->format('H:i')
+                        . ' - ' .
+                        Carbon::parse($cita->getRawOriginal('end_time'))->format('H:i')
+                    ),
+                    'service' => $cita->service?->name ?? 'Servicio no disponible',
+                    'client' => $cita->client?->user?->name ?? 'Cliente sin nombre',
+                ];
+            })
+            ->all();
     }
 
     public function cancelDelete()
@@ -53,6 +76,22 @@ class EmpleadoIndex extends Component
         $this->confirmDeleteId = null;
         $this->upcomingAppointmentsCount = 0;
         $this->upcomingAppointmentsLabel = '';
+        $this->upcomingAppointments = [];
+        $this->showUpcomingAppointmentsModal = false;
+    }
+
+    public function openUpcomingAppointmentsModal()
+    {
+        if (empty($this->upcomingAppointments)) {
+            return;
+        }
+
+        $this->showUpcomingAppointmentsModal = true;
+    }
+
+    public function closeUpcomingAppointmentsModal()
+    {
+        $this->showUpcomingAppointmentsModal = false;
     }
 
     public function confirmReassign($id)

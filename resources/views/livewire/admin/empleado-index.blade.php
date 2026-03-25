@@ -2,7 +2,7 @@
     <div class="serv-panel">
         <header class="serv-head">
             <div>
-                <h3>Gestión de empleados y sus especialidades.</h3>
+                <h3>Gestion de empleados y sus especialidades.</h3>
             </div>
             <div class="serv-actions">
                 <a href="{{ route('admin.empleados.create') }}" class="serv-btn primary">
@@ -107,32 +107,74 @@
         <div class="modal-overlay" wire:click.self="cancelDelete">
             <div class="modal-box serv-deactivate-modal">
                 <div class="serv-deactivate-modal-head">
-                    <span class="serv-deactivate-modal-kicker">Gestión de empleado</span>
+                    <span class="serv-deactivate-modal-kicker">
+                        <span class="serv-deactivate-modal-kicker-icon" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9.5" cy="7" r="3"/>
+                                <path d="M18 8v6"/>
+                                <path d="M15 11h6"/>
+                            </svg>
+                        </span>
+                        <span>Gestion de personal</span>
+                    </span>
                     <h3>¿Dar de baja al empleado?</h3>
                 </div>
+
+                @php
+                    $internalCode = 'EMP-' . str_pad((string) $confirmDeleteId, 4, '0', STR_PAD_LEFT);
+                @endphp
+
                 @if ($upcomingAppointmentsCount > 0)
                     <p class="serv-deactivate-modal-copy">
-                        <strong>{{ $upcomingAppointmentsLabel }}</strong> tiene
-                        <strong>{{ $upcomingAppointmentsCount }}</strong> cita(s) próximas activas.
-                        Elige cómo quieres resolverlas antes de completar la baja.
+                        Esta accion marcara al empleado como inactivo. Se han detectado compromisos pendientes que requieren
+                        atencion antes de proceder.
                     </p>
-                    <div class="serv-deactivate-summary">
-                        <div class="serv-deactivate-summary-card">
-                            <span>Citas próximas</span>
-                            <strong>{{ $upcomingAppointmentsCount }}</strong>
+
+                    <div class="serv-deactivate-profile-card">
+                        <div class="serv-deactivate-profile-head">
+                            <div class="serv-deactivate-profile-avatar" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21a8 8 0 0 0-16 0"/>
+                                    <circle cx="12" cy="8" r="4"/>
+                                </svg>
+                            </div>
+                            <div class="serv-deactivate-profile-copy">
+                                <span>Nombre del empleado</span>
+                                <strong>{{ $upcomingAppointmentsLabel }}</strong>
+                            </div>
+                            <div class="serv-deactivate-profile-meta">
+                                <span>ID interno</span>
+                                <strong>{{ $internalCode }}</strong>
+                            </div>
                         </div>
-                        <div class="serv-deactivate-summary-card">
-                            <span>Empleado</span>
-                            <strong>{{ $upcomingAppointmentsLabel }}</strong>
-                        </div>
+
+                        <button
+                            type="button"
+                            class="serv-deactivate-summary-card is-inline is-action"
+                            wire:click="openUpcomingAppointmentsModal"
+                            @disabled(empty($upcomingAppointments))>
+                            <div class="serv-deactivate-summary-copy">
+                                <span>Citas proximas</span>
+                                <small>Requieren reasignacion antes de la baja.</small>
+                            </div>
+                            <div class="serv-deactivate-summary-value">
+                                <strong>{{ $upcomingAppointmentsCount }}</strong>
+                            </div>
+                        </button>
                     </div>
+
+                    <div class="serv-deactivate-note" role="note">
+                        <span class="serv-deactivate-note-icon" aria-hidden="true">!</span>
+                        <p>
+                            Al reasignar, el sistema buscara automaticamente el perfil mas adecuado dentro del departamento de
+                            <strong>Administracion</strong>.
+                        </p>
+                    </div>
+
                     <div class="modal-actions serv-deactivate-actions">
                         <button class="btn btn-cancel serv-deactivate-btn" wire:click="cancelDelete">
                             Cancelar
-                        </button>
-                        <button class="btn btn-cancel serv-deactivate-btn is-secondary" wire:click="deleteAndUnassignUpcomingAppointments" wire:loading.attr="disabled">
-                            <span wire:loading.remove wire:target="deleteAndUnassignUpcomingAppointments">Dejar sin asignar</span>
-                            <span wire:loading wire:target="deleteAndUnassignUpcomingAppointments">Actualizando...</span>
                         </button>
                         <button class="btn btn-save serv-deactivate-btn is-primary" wire:click="deleteAndReassignUpcomingAppointments" wire:loading.attr="disabled">
                             <span wire:loading.remove wire:target="deleteAndReassignUpcomingAppointments">Reasignar y dar de baja</span>
@@ -141,8 +183,28 @@
                     </div>
                 @else
                     <p class="serv-deactivate-modal-copy">
-                        El empleado quedará inactivo y ya no podrá recibir nuevas citas, pero su historial se conservará.
+                        El empleado quedara inactivo y ya no podra recibir nuevas citas, pero su historial se conservara.
                     </p>
+
+                    <div class="serv-deactivate-profile-card is-simple">
+                        <div class="serv-deactivate-profile-head">
+                            <div class="serv-deactivate-profile-avatar" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21a8 8 0 0 0-16 0"/>
+                                    <circle cx="12" cy="8" r="4"/>
+                                </svg>
+                            </div>
+                            <div class="serv-deactivate-profile-copy">
+                                <span>Nombre del empleado</span>
+                                <strong>{{ $upcomingAppointmentsLabel }}</strong>
+                            </div>
+                            <div class="serv-deactivate-profile-meta">
+                                <span>ID interno</span>
+                                <strong>{{ $internalCode }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="modal-actions serv-deactivate-actions is-compact">
                         <button class="btn btn-cancel serv-deactivate-btn" wire:click="cancelDelete">Cancelar</button>
                         <button class="btn btn-save serv-deactivate-btn is-primary" wire:click="deleteConfirmed" wire:loading.attr="disabled">
@@ -151,6 +213,44 @@
                         </button>
                     </div>
                 @endif
+            </div>
+        </div>
+    @endif
+
+    @if ($showUpcomingAppointmentsModal)
+        <div class="modal-overlay" wire:click.self="closeUpcomingAppointmentsModal">
+            <div class="modal-box serv-appointments-modal">
+                <div class="serv-appointments-modal-head">
+                    <div>
+                        <span class="serv-appointments-modal-kicker">Citas proximas</span>
+                        <h3>{{ $upcomingAppointmentsCount }} cita(s) pendientes</h3>
+                        <p>{{ $upcomingAppointmentsLabel }} tiene los siguientes compromisos activos.</p>
+                    </div>
+                    <button type="button" class="serv-appointments-close" wire:click="closeUpcomingAppointmentsModal" aria-label="Cerrar listado de citas">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="serv-appointments-modal-list">
+                    @foreach ($upcomingAppointments as $appointment)
+                        <article class="serv-deactivate-appointment-item">
+                            <div class="serv-deactivate-appointment-main">
+                                <strong>{{ $appointment['service'] }}</strong>
+                                <span>{{ $appointment['client'] }}</span>
+                            </div>
+                            <div class="serv-deactivate-appointment-meta">
+                                <span>{{ $appointment['date'] }}</span>
+                                <small>{{ $appointment['time'] }}</small>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+
+                <div class="modal-actions serv-appointments-modal-actions">
+                    <button type="button" class="btn btn-cancel serv-deactivate-btn" wire:click="closeUpcomingAppointmentsModal">
+                        Volver
+                    </button>
+                </div>
             </div>
         </div>
     @endif
