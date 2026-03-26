@@ -126,10 +126,9 @@
                                         'meta' => 'Sistema',
                                         'date' => optional($cita->created_at)->format('d/m/Y H:i'),
                                     ],
-                                ])->merge(
-                                    $cita->estados
-                                        ->sortBy('change_date')
-                                        ->map(function ($estado) {
+                                ])
+                                    ->merge(
+                                        $cita->estados->sortBy('change_date')->map(function ($estado) {
                                             $label = match ($estado->status) {
                                                 'confirmada' => 'Confirmada',
                                                 'cancelada' => 'Cancelada',
@@ -143,19 +142,30 @@
 
                                             return [
                                                 'label' => $label,
-                                                'meta' => trim((string) (($estado->user?->name ?? '') . ' ' . ($estado->user?->last_name ?? ''))) ?: 'Sistema',
-                                                'date' => \Carbon\Carbon::parse($estado->change_date)->format('d/m/Y H:i'),
+                                                'meta' =>
+                                                    trim(
+                                                        (string) (($estado->user?->name ?? '') .
+                                                            ' ' .
+                                                            ($estado->user?->last_name ?? '')),
+                                                    ) ?:
+                                                    'Sistema',
+                                                'date' => \Carbon\Carbon::parse($estado->change_date)->format(
+                                                    'd/m/Y H:i',
+                                                ),
                                             ];
-                                        })
-                                )->values();
+                                        }),
+                                    )
+                                    ->values();
                                 $clientAppointments = $cita->client?->appointments ?? collect();
                                 $favoriteServices = $clientAppointments
-                                    ->filter(fn ($appointment) => $appointment->service?->name)
-                                    ->groupBy(fn ($appointment) => $appointment->service->name)
-                                    ->map(fn ($group, $serviceName) => [
-                                        'service' => $serviceName,
-                                        'count' => $group->count(),
-                                    ])
+                                    ->filter(fn($appointment) => $appointment->service?->name)
+                                    ->groupBy(fn($appointment) => $appointment->service->name)
+                                    ->map(
+                                        fn($group, $serviceName) => [
+                                            'service' => $serviceName,
+                                            'count' => $group->count(),
+                                        ],
+                                    )
                                     ->sortByDesc('count')
                                     ->take(3)
                                     ->values();
@@ -164,42 +174,74 @@
                                         $date = optional($appointment->date)?->format('Y-m-d');
                                         return $date && $date >= today()->toDateString();
                                     })
-                                    ->sortBy(fn ($appointment) => optional($appointment->date)?->format('Y-m-d') . ' ' . $appointment->getRawOriginal('start_time'))
+                                    ->sortBy(
+                                        fn($appointment) => optional($appointment->date)?->format('Y-m-d') .
+                                            ' ' .
+                                            $appointment->getRawOriginal('start_time'),
+                                    )
                                     ->first();
                                 $lastAppointment = $clientAppointments
-                                    ->sortByDesc(fn ($appointment) => optional($appointment->date)?->format('Y-m-d') . ' ' . $appointment->getRawOriginal('start_time'))
+                                    ->sortByDesc(
+                                        fn($appointment) => optional($appointment->date)?->format('Y-m-d') .
+                                            ' ' .
+                                            $appointment->getRawOriginal('start_time'),
+                                    )
                                     ->first();
                                 $completedAppointments = $clientAppointments->where('status', 'completada');
                                 $completedCount = $completedAppointments->count();
                                 $cancelledCount = $clientAppointments->where('status', 'cancelada')->count();
                                 $noShowCount = $clientAppointments->where('status', 'no_asistio')->count();
                                 $totalAppointments = $clientAppointments->count();
-                                $totalSpent = $completedAppointments->sum(fn ($appointment) => $appointment->precioRegistrado());
+                                $totalSpent = $completedAppointments->sum(
+                                    fn($appointment) => $appointment->precioRegistrado(),
+                                );
                                 $avgTicket = $completedCount > 0 ? $totalSpent / $completedCount : 0;
                                 $upcomingCount = $clientAppointments
-                                    ->filter(fn ($appointment) => optional($appointment->date)?->format('Y-m-d') >= today()->toDateString())
+                                    ->filter(
+                                        fn($appointment) => optional($appointment->date)?->format('Y-m-d') >=
+                                            today()->toDateString(),
+                                    )
                                     ->whereNotIn('status', ['cancelada', 'no_asistio'])
                                     ->count();
                                 $lastCompletedAppointment = $completedAppointments
-                                    ->sortByDesc(fn ($appointment) => optional($appointment->date)?->format('Y-m-d') . ' ' . $appointment->getRawOriginal('start_time'))
+                                    ->sortByDesc(
+                                        fn($appointment) => optional($appointment->date)?->format('Y-m-d') .
+                                            ' ' .
+                                            $appointment->getRawOriginal('start_time'),
+                                    )
                                     ->first();
                                 $favoriteEmployee = $clientAppointments
-                                    ->filter(fn ($appointment) => $appointment->employee?->name)
-                                    ->groupBy(fn ($appointment) => $appointment->employee->name)
-                                    ->map(fn ($group, $employeeName) => [
-                                        'employee' => $employeeName,
-                                        'count' => $group->count(),
-                                    ])
+                                    ->filter(fn($appointment) => $appointment->employee?->name)
+                                    ->groupBy(fn($appointment) => $appointment->employee->name)
+                                    ->map(
+                                        fn($group, $employeeName) => [
+                                            'employee' => $employeeName,
+                                            'count' => $group->count(),
+                                        ],
+                                    )
                                     ->sortByDesc('count')
                                     ->first();
-                                $completionRate = $totalAppointments > 0 ? round(($completedCount / $totalAppointments) * 100) : 0;
-                                $incidentRate = $totalAppointments > 0 ? round((($cancelledCount + $noShowCount) / $totalAppointments) * 100) : 0;
+                                $completionRate =
+                                    $totalAppointments > 0 ? round(($completedCount / $totalAppointments) * 100) : 0;
+                                $incidentRate =
+                                    $totalAppointments > 0
+                                        ? round((($cancelledCount + $noShowCount) / $totalAppointments) * 100)
+                                        : 0;
                                 $clientProfile = [
-                                    'name' => trim((string) (($cita->client?->user?->name ?? '') . ' ' . ($cita->client?->user?->last_name ?? ''))) ?: 'Cliente',
+                                    'name' =>
+                                        trim(
+                                            (string) (($cita->client?->user?->name ?? '') .
+                                                ' ' .
+                                                ($cita->client?->user?->last_name ?? '')),
+                                        ) ?:
+                                        'Cliente',
                                     'email' => (string) ($cita->client?->user?->email ?? 'No registrado'),
                                     'phone' => (string) ($cita->client?->user?->phone ?? 'No registrado'),
-                                    'birth_date' => $cita->client?->birth_date ? $cita->client->birth_date->format('d/m/Y') : 'No registrada',
-                                    'member_since' => optional($cita->client?->created_at)->format('d/m/Y') ?: 'Sin registro',
+                                    'birth_date' => $cita->client?->birth_date
+                                        ? $cita->client->birth_date->format('d/m/Y')
+                                        : 'No registrada',
+                                    'member_since' =>
+                                        optional($cita->client?->created_at)->format('d/m/Y') ?: 'Sin registro',
                                     'total_appointments' => $totalAppointments,
                                     'completed' => $completedCount,
                                     'cancelled' => $cancelledCount,
@@ -210,21 +252,30 @@
                                     'total_spent' => '$' . number_format($totalSpent, 2),
                                     'avg_ticket' => '$' . number_format($avgTicket, 2),
                                     'last_completed' => $lastCompletedAppointment
-                                        ? $lastCompletedAppointment->date->format('d/m/Y') . ' · ' . \Carbon\Carbon::parse($lastCompletedAppointment->start_time)->format('h:i A')
+                                        ? $lastCompletedAppointment->date->format('d/m/Y') .
+                                            ' · ' .
+                                            \Carbon\Carbon::parse($lastCompletedAppointment->start_time)->format(
+                                                'h:i A',
+                                            )
                                         : 'Sin visitas completadas',
                                     'favorite_employee' => $favoriteEmployee
                                         ? $favoriteEmployee['employee'] . ' (' . $favoriteEmployee['count'] . ')'
                                         : 'Aun sin preferencia clara',
                                     'next_appointment' => $nextAppointment
-                                        ? $nextAppointment->date->format('d/m/Y') . ' · ' . \Carbon\Carbon::parse($nextAppointment->start_time)->format('h:i A')
+                                        ? $nextAppointment->date->format('d/m/Y') .
+                                            ' · ' .
+                                            \Carbon\Carbon::parse($nextAppointment->start_time)->format('h:i A')
                                         : 'Sin citas proximas',
                                     'last_appointment' => $lastAppointment
-                                        ? $lastAppointment->date->format('d/m/Y') . ' · ' . \Carbon\Carbon::parse($lastAppointment->start_time)->format('h:i A')
+                                        ? $lastAppointment->date->format('d/m/Y') .
+                                            ' · ' .
+                                            \Carbon\Carbon::parse($lastAppointment->start_time)->format('h:i A')
                                         : 'Sin historial',
                                     'favorite_services' => $favoriteServices,
                                 ];
                             @endphp
-                            <tr data-search="{{ $searchText }}" data-employee-id="{{ $cita->employee_id ?? '' }}" data-cita-row="{{ $cita->id }}">
+                            <tr data-search="{{ $searchText }}" data-employee-id="{{ $cita->employee_id ?? '' }}"
+                                data-cita-row="{{ $cita->id }}">
                                 <td class="col-cliente">
                                     <div class="cell-main">{{ $cita->client->user->name }}</div>
                                     <small class="cell-sub">{{ $cita->client->user->email ?? '-' }}</small>
@@ -288,11 +339,11 @@
                                 </td>
 
                                 <td class="table-actions col-acciones">
-                                    <button type="button" class="btn notes-btn citas-detail-btn" data-cita-id="{{ $cita->id }}"
+                                    <button type="button" class="btn notes-btn citas-detail-btn"
+                                        data-cita-id="{{ $cita->id }}"
                                         title="Ver empleado, comprobante y acciones de la cita"
                                         data-origin="{{ $cita->receipt ? 'cliente' : 'recepcion' }}"
-                                        data-price="{{ $precio }}"
-                                        data-deposit="{{ $anticipo }}"
+                                        data-price="{{ $precio }}" data-deposit="{{ $anticipo }}"
                                         data-remaining="{{ $restante }}"
                                         data-deadline="{{ $cita->payment_deadline ? $cita->payment_deadline->toIso8601String() : '' }}"
                                         data-notes="{{ e($cita->notes ?? '') }}"
@@ -305,6 +356,7 @@
                                         data-can-reschedule="{{ $cita->status === 'confirmada' && ($cita->reagendas_count ?? 0) < 2 && now()->lt($inicioCita) ? '1' : '0' }}"
                                         data-can-complete="{{ $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($finCita) ? '1' : '0' }}"
                                         data-can-no-show="{{ $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($inicioCita) ? '1' : '0' }}"
+                                        data-can-cancel="{{ $cita->status !== 'cancelada' ? '1' : '0' }}"
                                         data-confirm-action="{{ route('admin.citas.confirmar', $cita) }}"
                                         data-edit-deposit-action="{{ route('admin.citas.actualizarAnticipo', $cita) }}"
                                         data-reject-action="{{ route('admin.citas.rechazar', $cita) }}"
@@ -312,7 +364,7 @@
                                         data-reschedule-action="{{ route('admin.citas.reagendar', $cita) }}"
                                         data-complete-action="{{ route('admin.citas.completar', $cita) }}"
                                         data-no-show-action="{{ route('admin.citas.noAsistio', $cita) }}"
-                                        data-can-edit-deposit="{{ $cita->status !== 'cancelada' ? '1' : '0' }}"
+                                        data-can-edit-deposit="{{ $cita->status !== 'cancelada' && now()->lt($inicioCita) ? '1' : '0' }}"
                                         data-service-id="{{ $cita->service_id }}"
                                         data-date="{{ \Carbon\Carbon::parse($cita->date)->format('Y-m-d') }}"
                                         data-timeline='@json($timelineItems)'
@@ -345,7 +397,8 @@
         <div class="modal-box citas-detail-modal-box">
             <div class="citas-detail-modal-head">
                 <h3>Detalle de la cita</h3>
-                <button type="button" class="citas-detail-close-icon" id="notesModalDismiss" aria-label="Cerrar">×</button>
+                <button type="button" class="citas-detail-close-icon" id="notesModalDismiss"
+                    aria-label="Cerrar">×</button>
             </div>
 
             <div class="citas-detail-summary-grid">
@@ -391,64 +444,71 @@
             </div>
 
             <div class="citas-detail-actions-stack">
-            <form method="POST" id="assignForm" class="assign-inline">
-                @csrf
-                <select name="empleado_id" id="assignEmployeeSelect" class="select-compact">
-                    <option value="">Seleccionar empleado</option>
-                    @foreach ($empleados as $empleado)
-                        <option value="{{ $empleado->id }}">{{ $empleado->name }}</option>
-                    @endforeach
-                </select>
-                <button type="submit" class="btn btn-save btn-compact">Asignar</button>
-            </form>
-            <form method="POST" id="confirmForm" class="assign-inline">
-                @csrf
+                <form method="POST" id="assignForm" class="assign-inline">
+                    @csrf
+                    <select name="empleado_id" id="assignEmployeeSelect" class="select-compact">
+                        <option value="">Seleccionar empleado</option>
+                        @foreach ($empleados as $empleado)
+                            <option value="{{ $empleado->id }}">{{ $empleado->name }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="btn btn-save btn-compact">Asignar</button>
+                </form>
+                <form method="POST" id="confirmForm" class="assign-inline">
+                    @csrf
 
-                <label>Monto recibido</label>
-                <input type="number" name="anticipo_monto" id="modalAnticipoMonto" step="0.01" min="0"
-                    required>
+                    <label>Monto recibido</label>
+                    <input type="number" name="anticipo_monto" id="modalAnticipoMonto" step="0.01" min="0"
+                        required>
 
-                <button type="submit" class="btn btn-save btn-compact">
-                    Confirmar anticipo
-                </button>
-
+                    <button type="submit" class="btn btn-save btn-compact">
+                        Confirmar anticipo
+                    </button>
+                </form>
+                <form method="POST" id="editDepositForm" class="assign-inline" style="display:none;">
+                    @csrf
+                    <label>Editar anticipo</label>
+                    <input type="number" name="anticipo_monto" id="modalEditarAnticipo" step="0.01" min="0"
+                        required>
+                    <button type="submit" class="btn btn-save btn-compact">
+                        Guardar anticipo
+                    </button>
+                </form>
                 <button type="button" class="btn btn-cancel btn-compact" id="openCancelFromModal">
                     Cancelar
                 </button>
-            </form>
-            <form method="POST" id="editDepositForm" class="assign-inline" style="display:none;">
-                @csrf
-                <label>Editar anticipo</label>
-                <input type="number" name="anticipo_monto" id="modalEditarAnticipo" step="0.01" min="0" required>
-                <button type="submit" class="btn btn-save btn-compact">
-                    Guardar anticipo
-                </button>
-            </form>
-            <form method="POST" id="rejectPaymentForm" class="assign-inline" style="display:none;">
-                @csrf
-                <button type="submit" class="btn btn-cancel btn-compact">
-                    Rechazar anticipo
-                </button>
-            </form>
-            <form method="POST" id="completeForm" class="assign-inline">
-                @csrf
+                <form method="POST" id="rejectPaymentForm" class="assign-inline" style="display:none;">
+                    @csrf
+                    <button type="submit" class="btn btn-cancel btn-compact">
+                        Rechazar anticipo
+                    </button>
+                </form>
+                <form method="POST" id="completeForm" class="assign-inline">
+                    @csrf
 
-                <label>Pago restante</label>
-                <input type="number" name="pago_final" id="modalPagoFinal" step="0.01" min="0" required>
+                    <label>Pago restante</label>
 
-                <button type="submit" class="btn btn-save btn-compact">
-                    Marcar completada
-                </button>
-            </form>
-            <form method="POST" id="noShowForm" class="assign-inline">
-                @csrf
-                <button type="submit" class="btn btn-cancel btn-compact">Marcar no asistió</button>
-            </form>
+                    <!-- Visible pero NO editable -->
+                    <input type="number" id="modalPagoFinal" step="0.01" readonly>
+
+                    <!-- Valor real que se envía -->
+                    <input type="hidden" name="pago_final" id="modalPagoFinalHidden">
+
+                    <button type="submit" class="btn btn-save btn-compact">
+                        Marcar completada
+                    </button>
+                </form>
+                <form method="POST" id="noShowForm" class="assign-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-cancel btn-compact">Marcar no asistió</button>
+                </form>
             </div>
             <div class="citas-detail-footer">
                 <button type="button" class="btn btn-cancel" id="notesModalClose">Cerrar</button>
-                <button type="button" class="btn btn-cancel btn-compact" id="openClientProfileFromModal">Ver cliente</button>
-                <a href="#" target="_blank" rel="noopener" class="btn btn-cancel btn-compact" id="printTicketFromModal">Imprimir ticket</a>
+                <button type="button" class="btn btn-cancel btn-compact" id="openClientProfileFromModal">Ver
+                    cliente</button>
+                <a href="#" target="_blank" rel="noopener" class="btn btn-cancel btn-compact"
+                    id="printTicketFromModal">Imprimir ticket</a>
                 <button type="button" class="btn btn-save btn-compact" id="openRescheduleFromModal">Reagendar</button>
             </div>
         </div>
@@ -462,7 +522,8 @@
                     <h3>Ficha del cliente</h3>
                     <p class="client-profile-head-note">Resumen rapido del comportamiento e historial del cliente.</p>
                 </div>
-                <button type="button" class="citas-detail-close-icon" id="clientProfileDismiss" aria-label="Cerrar">×</button>
+                <button type="button" class="citas-detail-close-icon" id="clientProfileDismiss"
+                    aria-label="Cerrar">×</button>
             </div>
 
             <div class="client-profile-content">
@@ -775,9 +836,13 @@
                     if (editarAnticipoInput) {
                         editarAnticipoInput.value = parseFloat(deposit).toFixed(2);
                     }
-                    var pagoInput = document.querySelector('#completeForm input[name="pago_final"]');
-                    if (pagoInput) {
-                        pagoInput.value = parseFloat(remaining).toFixed(2);
+                    var pagoVisible = document.getElementById('modalPagoFinal');
+                    var pagoHidden = document.getElementById('modalPagoFinalHidden');
+
+                    if (pagoVisible && pagoHidden) {
+                        var restante = parseFloat(remaining).toFixed(2);
+                        pagoVisible.value = restante;
+                        pagoHidden.value = restante;
                     }
 
                     if (deadline) {
@@ -837,8 +902,8 @@
                             timeline = [];
                         }
 
-                        timelineContainer.innerHTML = timeline.length
-                            ? timeline.map(function(item) {
+                        timelineContainer.innerHTML = timeline.length ?
+                            timeline.map(function(item) {
                                 return '<div class="timeline-item">' +
                                     '<div class="timeline-dot"></div>' +
                                     '<div class="timeline-copy">' +
@@ -846,9 +911,9 @@
                                     '<span>' + (item.meta || 'Sistema') + '</span>' +
                                     '<small>' + (item.date || '-') + '</small>' +
                                     '</div>' +
-                                '</div>';
-                            }).join('')
-                            : '<p class="timeline-empty">No hay movimientos registrados.</p>';
+                                    '</div>';
+                            }).join('') :
+                            '<p class="timeline-empty">No hay movimientos registrados.</p>';
                     }
                     if (rejectPaymentForm) {
                         rejectPaymentForm.style.display = canReject ? 'inline-flex' : 'none';
@@ -884,8 +949,11 @@
                         noShowForm.style.display = canNoShow ? 'inline-flex' : 'none';
                         noShowForm.setAttribute('action', noShowAction);
                     }
+                    var canCancel = btn.getAttribute('data-can-cancel') === '1';
+
                     if (openCancelFromModal) {
                         openCancelFromModal.setAttribute('data-cancel-action', cancelAction);
+                        openCancelFromModal.style.display = canCancel ? 'inline-flex' : 'none';
                     }
                     if (openRescheduleFromModal) {
                         openRescheduleFromModal.style.display = canReschedule ? 'inline-flex' : 'none';
@@ -895,7 +963,8 @@
                         openRescheduleFromModal.setAttribute('data-date', currentDate);
                     }
                     if (openClientProfileFromModal) {
-                        openClientProfileFromModal.style.display = currentClientProfile ? 'inline-flex' : 'inline-flex';
+                        openClientProfileFromModal.style.display = currentClientProfile ?
+                            'inline-flex' : 'inline-flex';
                     }
                     if (printTicketFromModal) {
                         printTicketFromModal.setAttribute('href', ticketUrl);
@@ -921,9 +990,11 @@
                 document.getElementById('clientProfileInitials').textContent = initials;
                 document.getElementById('clientProfilePhone').textContent = profile.phone || 'No registrado';
                 document.getElementById('clientProfileBirthDate').textContent = profile.birth_date || 'No registrada';
-                document.getElementById('clientProfileMemberSince').textContent = profile.member_since || 'Sin registro';
+                document.getElementById('clientProfileMemberSince').textContent = profile.member_since ||
+                    'Sin registro';
                 document.getElementById('clientProfileTotal').textContent = profile.total_appointments ?? 0;
-                document.getElementById('clientProfileTotalHero').textContent = (profile.total_appointments ?? 0) + ' citas';
+                document.getElementById('clientProfileTotalHero').textContent = (profile.total_appointments ?? 0) +
+                    ' citas';
                 document.getElementById('clientProfileCompleted').textContent = profile.completed ?? 0;
                 document.getElementById('clientProfileCancelled').textContent = profile.cancelled ?? 0;
                 document.getElementById('clientProfileNoShow').textContent = profile.no_show ?? 0;
@@ -932,21 +1003,25 @@
                 document.getElementById('clientProfileUpcomingCount').textContent = profile.upcoming_count ?? 0;
                 document.getElementById('clientProfileCompletionRate').textContent = profile.completion_rate || '0%';
                 document.getElementById('clientProfileIncidentRate').textContent = profile.incident_rate || '0%';
-                document.getElementById('clientProfileFavoriteEmployee').textContent = profile.favorite_employee || 'Aun sin preferencia clara';
-                document.getElementById('clientProfileNext').textContent = profile.next_appointment || 'Sin citas proximas';
+                document.getElementById('clientProfileFavoriteEmployee').textContent = profile.favorite_employee ||
+                    'Aun sin preferencia clara';
+                document.getElementById('clientProfileNext').textContent = profile.next_appointment ||
+                    'Sin citas proximas';
                 document.getElementById('clientProfileLast').textContent = profile.last_appointment || 'Sin historial';
-                document.getElementById('clientProfileLastCompleted').textContent = profile.last_completed || 'Sin visitas completadas';
-                document.getElementById('clientProfileValueSummary').textContent = (profile.total_spent || '$0.00') + ' acumulado · ' + (profile.avg_ticket || '$0.00') + ' promedio';
+                document.getElementById('clientProfileLastCompleted').textContent = profile.last_completed ||
+                    'Sin visitas completadas';
+                document.getElementById('clientProfileValueSummary').textContent = (profile.total_spent || '$0.00') +
+                    ' acumulado · ' + (profile.avg_ticket || '$0.00') + ' promedio';
 
                 var favoritesWrap = document.getElementById('clientProfileFavorites');
                 var favorites = Array.isArray(profile.favorite_services) ? profile.favorite_services : [];
-                favoritesWrap.innerHTML = favorites.length
-                    ? favorites.map(function(item) {
+                favoritesWrap.innerHTML = favorites.length ?
+                    favorites.map(function(item) {
                         return '<span class="client-favorite-chip">' +
                             (item.service || 'Servicio') + ' (' + (item.count || 0) + ')' +
-                        '</span>';
-                    }).join('')
-                    : '<p class="client-favorite-empty">Aun no hay suficientes citas para detectar favoritos.</p>';
+                            '</span>';
+                    }).join('') :
+                    '<p class="client-favorite-empty">Aun no hay suficientes citas para detectar favoritos.</p>';
             }
 
             function openClientProfile() {
@@ -1008,12 +1083,19 @@
                 }
 
                 if (openCancelFromModal) {
-                    openCancelFromModal.addEventListener('click', function() {
-                        var action = openCancelFromModal.getAttribute('data-cancel-action');
-                        if (action) {
-                            closeModal();
-                            openCancel(action);
+                    openCancelFromModal.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        var action = this.getAttribute('data-cancel-action');
+
+                        if (!action) {
+                            console.error('No hay ruta de cancelación');
+                            return;
                         }
+
+                        closeModal();
+                        openCancel(action);
                     });
                 }
 
@@ -1040,7 +1122,10 @@
                 var targetRow = document.querySelector('[data-cita-row="' + focusCitaId + '"]');
 
                 if (targetRow) {
-                    targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    targetRow.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
                     targetRow.classList.add('is-highlighted');
                     setTimeout(function() {
                         targetRow.classList.remove('is-highlighted');
@@ -1109,9 +1194,3 @@
         })();
     </script>
 @endsection
-
-
-
-
-
-

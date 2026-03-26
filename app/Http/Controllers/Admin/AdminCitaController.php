@@ -110,7 +110,7 @@ class AdminCitaController extends Controller
             ->where('active', 1)
             ->with([
                 'schedules',
-                'breaks' => fn ($query) => $query->whereDate('date', $fechaSeleccionada->toDateString())->orderBy('start_time'),
+                'breaks' => fn($query) => $query->whereDate('date', $fechaSeleccionada->toDateString())->orderBy('start_time'),
             ])
             ->orderBy('name')
             ->get();
@@ -154,7 +154,7 @@ class AdminCitaController extends Controller
                 ? $empleado->schedules->where('day_of_week', $fechaSeleccionada->dayOfWeek)->isNotEmpty()
                 : false;
             $employeeBreaks = $empleado?->breaks ?? collect();
-            $allDayBreak = $employeeBreaks->first(fn ($break) => $break->is_all_day);
+            $allDayBreak = $employeeBreaks->first(fn($break) => $break->is_all_day);
 
             return [
                 'id' => $empleado?->id ? 'employee-' . $empleado->id : 'unassigned',
@@ -166,7 +166,7 @@ class AdminCitaController extends Controller
                     : 'Requiere asignacion',
                 'is_rest_day' => $empleado ? (!$hasScheduleToday || (bool) $allDayBreak) : false,
                 'appointments' => $appointments
-                    ->sortBy(fn (Cita $cita) => $cita->getRawOriginal('start_time'))
+                    ->sortBy(fn(Cita $cita) => $cita->getRawOriginal('start_time'))
                     ->map(function (Cita $cita) use ($fechaSeleccionada, $horaInicio, $totalMinutos) {
                         $inicio = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $cita->getRawOriginal('start_time'));
                         $fin = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $cita->getRawOriginal('end_time'));
@@ -197,7 +197,7 @@ class AdminCitaController extends Controller
                     })
                     ->concat(
                         $employeeBreaks
-                            ->reject(fn ($break) => $break->is_all_day)
+                            ->reject(fn($break) => $break->is_all_day)
                             ->map(function ($break) use ($fechaSeleccionada, $horaInicio, $totalMinutos) {
                                 $inicio = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $break->start_time);
                                 $fin = Carbon::parse($fechaSeleccionada->format('Y-m-d') . ' ' . $break->end_time);
@@ -264,7 +264,7 @@ class AdminCitaController extends Controller
             'ingresos_estimados' => round(
                 $citasDia
                     ->whereIn('status', ['confirmada', 'completada'])
-                    ->sum(fn (Cita $cita) => $cita->precioRegistrado()),
+                    ->sum(fn(Cita $cita) => $cita->precioRegistrado()),
                 2
             ),
         ];
@@ -610,7 +610,7 @@ class AdminCitaController extends Controller
     }
 
 
-    public function confirmar(Request $request,Cita $cita)
+    public function confirmar(Request $request, Cita $cita)
     {
         if ($cita->status !== 'pendiente_anticipo') {
             return back()->with('error', 'Solo se pueden confirmar citas pendientes de anticipo.');
@@ -661,6 +661,16 @@ class AdminCitaController extends Controller
             return back()->with('error', 'No se puede editar el anticipo de una cita cancelada.');
         }
 
+        // Solo editar una vez el anticipo para evitar confusiones en el historial de notas
+        if (str_contains($cita->notes ?? '', 'Anticipo actualizado')) {
+            return back()->with('error', 'El anticipo ya fue editado una vez.');
+        }
+
+        // No permitir editar el anticipo si la cita ya inició para evitar confusiones en el historial de notas y estado de la cita
+        if ($this->citaYaInicio($cita)) {
+            return back()->with('error', 'No se puede editar el anticipo porque la cita ya inició.');
+        }
+
         $request->validate([
             'anticipo_monto' => 'required|numeric|min:0',
         ]);
@@ -668,6 +678,7 @@ class AdminCitaController extends Controller
         $anticipo = (float) $request->anticipo_monto;
         $pagoFinal = (float) ($cita->final_payment ?? 0);
         $totalPagado = $anticipo + $pagoFinal;
+
         $notaAnterior = trim((string) ($cita->notes ?? ''));
         $notaEdicion = 'Anticipo actualizado por administrador a $' . number_format($anticipo, 2) . '.';
         $notaFinal = $notaAnterior === '' ? $notaEdicion : $notaAnterior . ' | ' . $notaEdicion;
@@ -789,21 +800,40 @@ class AdminCitaController extends Controller
 
     public function completar(Request $request, Cita $cita)
     {
-        $request->validate([
-            'pago_final' => 'required|numeric|min:0'
-        ]);
+        // Validar estado de la cita
+        if ($cita->status !== 'confirmada') {
+            return back()->with('error', 'Solo se pueden completar citas confirmadas.');
+        }
 
-        $pagoFinal = (float) $request->pago_final;
-        $deposito = $cita->anticipoRegistrado();
+        //  Validar que ya terminó la cita
+        $fechaCita = Carbon::parse($cita->date)->format('Y-m-d');
+        $finCita = Carbon::parse($fechaCita . ' ' . $cita->getRawOriginal('end_time'));
 
-        $totalPagado = $deposito + $pagoFinal;
+        if (now()->lt($finCita)) {
+            return back()->with('error', 'La cita aún no ha finalizado.');
+        }
 
+        // CALCULAR AUTOMATICAMENTE EL PAGO FINAL
+        $precio = $cita->precioRegistrado();
+        $anticipo = $cita->anticipoRegistrado();
+        $pagoFinal = max(0, $precio - $anticipo);
+
+        $totalPagado = $anticipo + $pagoFinal;
+
+        // Notas
+        $notaBase = trim((string) ($cita->notes ?? ''));
+        $notaPago = 'Cita completada con pago final de $' . number_format($pagoFinal, 2);
+        $notaFinal = $notaBase === '' ? $notaPago : $notaBase . ' | ' . $notaPago;
+
+        // Actualizar
         $cita->update([
             'final_payment' => $pagoFinal,
             'total_paid' => $totalPagado,
-            'status' => 'completada'
+            'status' => 'completada',
+            'notes' => $notaFinal,
         ]);
 
+        // 📌 Historial
         CitaEstado::create([
             'appointment_id' => $cita->id,
             'status' => 'completada',
@@ -813,6 +843,7 @@ class AdminCitaController extends Controller
 
         return back()->with('success', 'Cita marcada como completada.');
     }
+
 
     public function marcarNoAsistio(Cita $cita)
     {
@@ -937,4 +968,6 @@ class AdminCitaController extends Controller
 
         return back()->with('success', 'Empleado asignado correctamente');
     }
+
+
 }
