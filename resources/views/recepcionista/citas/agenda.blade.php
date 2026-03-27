@@ -45,9 +45,9 @@
             padding: 22px 24px 18px;
         }
 
-        #agendaAppointmentModal .citas-detail-summary-item > span,
-        #agendaAppointmentModal .citas-detail-extra > span,
-        #agendaAppointmentModal .citas-detail-comment-box > span {
+        #agendaAppointmentModal .citas-detail-summary-item>span,
+        #agendaAppointmentModal .citas-detail-extra>span,
+        #agendaAppointmentModal .citas-detail-comment-box>span {
             display: block;
             margin-bottom: 8px;
             color: #d5a870;
@@ -236,6 +236,7 @@
         }
 
         @media (max-width: 760px) {
+
             #agendaAppointmentModal .citas-detail-summary-grid,
             #agendaAppointmentModal .citas-detail-footer {
                 grid-template-columns: 1fr;
@@ -249,6 +250,83 @@
             #agendaAppointmentModal .agenda-modal-body {
                 max-height: calc(100vh - 132px);
             }
+        }
+
+        #agendaCancelModal .modal-box {
+            max-width: 520px;
+            padding: 22px 24px;
+            border-radius: 16px;
+            background: rgba(30, 12, 6, 0.95);
+            border: 1px solid rgba(212, 155, 80, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Header */
+        #agendaCancelModal .citas-detail-modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        #agendaCancelModal h3 {
+            color: #fff1d8;
+            font-size: 20px;
+        }
+
+        /* FORM */
+        #agendaCancelModal form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Label */
+        #agendaCancelModal label {
+            color: #d6a057;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        /* TEXTAREA */
+        #agendaCancelModal textarea {
+            width: 100%;
+            min-height: 90px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(212, 155, 80, 0.25);
+            background: rgba(20, 8, 4, 0.6);
+            color: #fff1d8;
+            resize: none;
+            transition: all .2s ease;
+        }
+
+        /* glow más elegante */
+        #agendaCancelModal textarea:focus {
+            outline: none;
+            border-color: #d6a057;
+            box-shadow: 0 0 0 2px rgba(214, 160, 87, 0.25);
+        }
+
+        /* BOTÓN */
+        #agendaCancelModal .btn {
+            margin-top: 6px;
+            height: 44px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        #agendaCancelModal .btn-cancel {
+            background: linear-gradient(135deg, #a94438, #d66a57);
+            border: none;
+            color: #fff;
+            box-shadow: 0 8px 18px rgba(120, 40, 30, 0.4);
+        }
+
+        #agendaCancelModal {
+            backdrop-filter: blur(6px);
         }
     </style>
 @endsection
@@ -280,21 +358,27 @@
 
             <div class="agenda-toolbar-actions">
                 <div class="agenda-nav-actions">
-                    <a href="{{ route('recepcionista.citas.agenda', array_filter(array_merge($queryBase, ['fecha' => $previousDate]), fn ($value) => $value !== null)) }}" class="agenda-pill-btn">Dia anterior</a>
-                    <a href="{{ route('recepcionista.citas.agenda', array_filter(array_merge($queryBase, ['fecha' => now()->toDateString()]), fn ($value) => $value !== null)) }}" class="agenda-pill-btn">Hoy</a>
-                    <a href="{{ route('recepcionista.citas.agenda', array_filter(array_merge($queryBase, ['fecha' => $nextDate]), fn ($value) => $value !== null)) }}" class="agenda-pill-btn">Dia siguiente</a>
+                    <a href="{{ route('recepcionista.citas.agenda', array_filter(array_merge($queryBase, ['fecha' => $previousDate]), fn($value) => $value !== null)) }}"
+                        class="agenda-pill-btn">Dia anterior</a>
+                    <a href="{{ route('recepcionista.citas.agenda', array_filter(array_merge($queryBase, ['fecha' => now()->toDateString()]), fn($value) => $value !== null)) }}"
+                        class="agenda-pill-btn">Hoy</a>
+                    <a href="{{ route('recepcionista.citas.agenda', array_filter(array_merge($queryBase, ['fecha' => $nextDate]), fn($value) => $value !== null)) }}"
+                        class="agenda-pill-btn">Dia siguiente</a>
                 </div>
 
                 <form method="GET" action="{{ route('recepcionista.citas.agenda') }}" class="agenda-date-form">
                     <label for="agendaDate" class="sr-only">Seleccionar fecha</label>
-                    <input type="date" id="agendaDate" name="fecha" value="{{ $currentDate }}" class="agenda-date-input">
+                    <input type="date" id="agendaDate" name="fecha" value="{{ $currentDate }}"
+                        class="agenda-date-input">
                     <label class="agenda-toggle-pill">
-                        <input type="checkbox" name="ocultar_descansos" value="1" {{ $ocultarDescansos ? 'checked' : '' }}>
+                        <input type="checkbox" name="ocultar_descansos" value="1"
+                            {{ $ocultarDescansos ? 'checked' : '' }}>
                         <span class="agenda-toggle-indicator" aria-hidden="true"></span>
                         <span>Ocultar descansos</span>
                     </label>
                     <label class="agenda-toggle-pill">
-                        <input type="checkbox" name="ocultar_sin_citas" value="1" {{ $ocultarSinCitas ? 'checked' : '' }}>
+                        <input type="checkbox" name="ocultar_sin_citas" value="1"
+                            {{ $ocultarSinCitas ? 'checked' : '' }}>
                         <span class="agenda-toggle-indicator" aria-hidden="true"></span>
                         <span>Ocultar sin citas</span>
                     </label>
@@ -353,7 +437,8 @@
                                     <div class="agenda-column-body">
                                         <div class="agenda-grid-lines">
                                             @foreach ($slots as $slot)
-                                                <div class="agenda-grid-line {{ $slot['is_hour'] ? 'is-hour' : '' }}"></div>
+                                                <div class="agenda-grid-line {{ $slot['is_hour'] ? 'is-hour' : '' }}">
+                                                </div>
                                             @endforeach
                                         </div>
 
@@ -469,7 +554,8 @@
                     <form method="POST" id="agendaConfirmForm" class="assign-inline" style="display:none;">
                         @csrf
                         <label>Monto recibido</label>
-                        <input type="number" name="anticipo_monto" id="agendaModalAnticipoMonto" step="0.01" min="0" required>
+                        <input type="number" name="anticipo_monto" id="agendaModalAnticipoMonto" step="0.01"
+                            min="0" required>
                         <button type="submit" class="btn btn-save btn-compact">Confirmar anticipo</button>
                     </form>
 
@@ -481,8 +567,10 @@
                     <form method="POST" id="agendaCompleteForm" class="assign-inline" style="display:none;">
                         @csrf
                         <label>Pago restante</label>
-                        <input type="number" name="pago_final" id="agendaModalPagoFinal" step="0.01" min="0" required readonly>
-                        <small class="profile-help" style="color:#d6c1a4;">Se completa automaticamente con el restante del servicio.</small>
+                        <input type="number" name="pago_final" id="agendaModalPagoFinal" step="0.01" min="0"
+                            required readonly>
+                        <small class="profile-help" style="color:#d6c1a4;">Se completa automaticamente con el restante del
+                            servicio.</small>
                         <button type="submit" class="btn btn-save btn-compact">Marcar completada</button>
                     </form>
 
@@ -494,7 +582,8 @@
 
                 <div class="citas-detail-footer">
                     <button type="button" class="btn btn-cancel" id="agendaOpenCancel">Cancelar cita</button>
-                    <a href="#" target="_blank" rel="noopener" class="btn btn-cancel btn-compact" id="agendaPrintTicket">Imprimir ticket</a>
+                    <a href="#" target="_blank" rel="noopener" class="btn btn-cancel btn-compact"
+                        id="agendaPrintTicket">Imprimir ticket</a>
                     <button type="button" class="btn btn-save btn-compact" id="agendaOpenReschedule">Reagendar</button>
                 </div>
             </div>
@@ -505,12 +594,15 @@
         <div class="modal-box">
             <div class="citas-detail-modal-head">
                 <h3>Cancelar cita</h3>
-                <button type="button" class="citas-detail-close-icon" id="agendaCancelModalClose" aria-label="Cerrar">x</button>
+                <button type="button" class="citas-detail-close-icon" id="agendaCancelModalClose" aria-label="Cerrar">
+                    &times;
+                </button>
             </div>
-            <form method="POST" id="agendaCancelForm" class="assign-inline" style="display:flex;">
+            <form method="POST" id="agendaCancelForm" class="assign-inline">
                 @csrf
                 <label for="agendaCancelObservaciones">Motivo u observaciones</label>
-                <textarea id="agendaCancelObservaciones" name="observaciones" rows="4" class="select-compact" placeholder="Comentario de cancelacion..."></textarea>
+                <textarea id="agendaCancelObservaciones" name="observaciones" rows="4" class="select-compact"
+                    placeholder="Comentario de cancelacion..."></textarea>
                 <button type="submit" class="btn btn-cancel btn-compact">Confirmar cancelacion</button>
             </form>
         </div>
@@ -520,7 +612,8 @@
         <div class="modal-box">
             <div class="citas-detail-modal-head">
                 <h3>Reagendar cita</h3>
-                <button type="button" class="citas-detail-close-icon" id="agendaRescheduleModalClose" aria-label="Cerrar">x</button>
+                <button type="button" class="citas-detail-close-icon" id="agendaRescheduleModalClose"
+                    aria-label="Cerrar">x</button>
             </div>
             <form method="POST" id="agendaRescheduleForm" class="assign-inline" style="display:flex;">
                 @csrf
@@ -533,7 +626,8 @@
                 </select>
 
                 <label for="agendaRescheduleNotes">Observaciones</label>
-                <textarea id="agendaRescheduleNotes" name="observaciones" rows="4" class="select-compact" placeholder="Comentario de reagenda..."></textarea>
+                <textarea id="agendaRescheduleNotes" name="observaciones" rows="4" class="select-compact"
+                    placeholder="Comentario de reagenda..."></textarea>
 
                 <button type="submit" class="btn btn-save btn-compact">Guardar reagenda</button>
             </form>
@@ -598,18 +692,20 @@
 
                 if (timelineContainer) {
                     var timeline = Array.isArray(payload.timeline) ? payload.timeline : [];
-                    timelineContainer.innerHTML = timeline.length
-                        ? timeline.map(function(item) {
+                    timelineContainer.innerHTML = timeline.length ?
+                        timeline.map(function(item) {
                             return '<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-copy"><strong>' +
-                                (item.label || '-') + '</strong><span>' + (item.meta || 'Sistema') + '</span><small>' +
+                                (item.label || '-') + '</strong><span>' + (item.meta || 'Sistema') +
+                                '</span><small>' +
                                 (item.date || '-') + '</small></div></div>';
-                        }).join('')
-                        : '<p class="timeline-empty">No hay movimientos registrados.</p>';
+                        }).join('') :
+                        '<p class="timeline-empty">No hay movimientos registrados.</p>';
                 }
 
                 if (payload.receipt_url) {
                     receiptCard.style.display = '';
-                    receiptWrap.innerHTML = '<a href="' + payload.receipt_url + '" target="_blank" rel="noopener">Ver comprobante</a>';
+                    receiptWrap.innerHTML = '<a href="' + payload.receipt_url +
+                        '" target="_blank" rel="noopener">Ver comprobante</a>';
                 } else {
                     receiptCard.style.display = 'none';
                     receiptWrap.innerHTML = '-';
@@ -623,6 +719,7 @@
                     }
 
                     var end = new Date(payload.deadline);
+
                     function updateDeadline() {
                         var diff = Math.floor((end - new Date()) / 60000);
                         if (diff > 0) {
@@ -713,8 +810,11 @@
                 if (!currentServiceId || !rescheduleDate.value) return;
 
                 rescheduleTime.innerHTML = '<option value="">Cargando...</option>';
-                fetch('/citas/bloques?servicio_id=' + encodeURIComponent(currentServiceId) + '&fecha=' + encodeURIComponent(rescheduleDate.value))
-                    .then(function(res) { return res.json(); })
+                fetch('/citas/bloques?servicio_id=' + encodeURIComponent(currentServiceId) + '&fecha=' +
+                        encodeURIComponent(rescheduleDate.value))
+                    .then(function(res) {
+                        return res.json();
+                    })
                     .then(function(bloques) {
                         rescheduleTime.innerHTML = '';
 
@@ -784,4 +884,3 @@
         })();
     </script>
 @endsection
-

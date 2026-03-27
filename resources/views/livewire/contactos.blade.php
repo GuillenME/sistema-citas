@@ -14,7 +14,7 @@
     @endphp
 
     <div class="contact-lux-head">
-        <h2>CONTACTANOS</h2>
+        <h2>CONTACTO</h2>
         <p>Vive la experiencia del estándar de oro en belleza. Nuestro equipo está listo para diseñar tu próximo look icónico.</p>
     </div>
 
