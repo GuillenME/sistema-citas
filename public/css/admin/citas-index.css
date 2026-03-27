@@ -567,23 +567,44 @@
     border-radius: 14px;
 }
 
-#notesModal .citas-detail-footer .btn-cancel {
+#notesModal .citas-detail-footer .btn-bt {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(212, 155, 80, 0.24);
     color: #f2e4cf;
     box-shadow: none;
 }
 
+#notesModal .citas-detail-footer .btn-cerrar {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(190, 138, 71, 0.453);
+    color: #dcaf6d;
+    box-shadow: none;
+}
+
 #notesModal .citas-detail-footer .btn-save {
-    background: linear-gradient(135deg, #b9772f, #d6a057);
+    background: linear-gradient(135deg, #d78227, #ca770a);
     border-color: rgba(214, 160, 87, 0.35);
     color: #231308;
     box-shadow: 0 8px 20px rgba(76, 41, 20, 0.28);
 }
 
 #notesModal .citas-detail-footer .btn.btn-save::before,
-#notesModal .citas-detail-footer .btn.btn-cancel::before {
+#notesModal .citas-detail-footer .btn.btn-bt::before {
     display: none;
+}
+
+#notesModal .citas-detail-footer .btn-cancel {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+    font-weight: 700;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+#notesModal .citas-detail-footer .btn-cancel:hover {
+    background: rgba(239, 68, 68, 0.25);
+    transform: translateY(-1px);
 }
 
 #clientProfileModal .client-profile-modal-box {

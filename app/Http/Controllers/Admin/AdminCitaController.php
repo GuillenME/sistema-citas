@@ -695,6 +695,10 @@ class AdminCitaController extends Controller
 
     public function cancelar(Request $request, Cita $cita)
     {
+        if ($cita->status !== 'confirmada') {
+            return back()->with('error', 'Solo se pueden cancelar citas confirmadas.');
+        }
+
         $request->validate([
             'observaciones' => 'nullable|string|max:500',
         ]);
@@ -713,18 +717,6 @@ class AdminCitaController extends Controller
             'user_id' => auth()->id(),
             'change_date' => now()
         ]);
-
-        $cita->loadMissing(['client.user', 'service', 'employee']);
-        $clienteUsuario = $cita->client?->user;
-        if ($clienteUsuario) {
-            $clienteUsuario->notify(
-                new CitaClienteNotification(
-                    $cita,
-                    CitaClienteNotification::CANCELADA_POR_ADMIN,
-                    $motivoCancelacion
-                )
-            );
-        }
 
         return back()->with('success', 'Cita cancelada correctamente');
     }
@@ -968,6 +960,4 @@ class AdminCitaController extends Controller
 
         return back()->with('success', 'Empleado asignado correctamente');
     }
-
-
 }

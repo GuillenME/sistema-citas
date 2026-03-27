@@ -356,7 +356,7 @@
                                         data-can-reschedule="{{ $cita->status === 'confirmada' && ($cita->reagendas_count ?? 0) < 2 && now()->lt($inicioCita) ? '1' : '0' }}"
                                         data-can-complete="{{ $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($finCita) ? '1' : '0' }}"
                                         data-can-no-show="{{ $cita->status === 'confirmada' && now()->greaterThanOrEqualTo($inicioCita) ? '1' : '0' }}"
-                                        data-can-cancel="{{ $cita->status !== 'cancelada' ? '1' : '0' }}"
+                                        data-can-cancel="{{ $cita->status === 'confirmada' ? '1' : '0' }}"
                                         data-confirm-action="{{ route('admin.citas.confirmar', $cita) }}"
                                         data-edit-deposit-action="{{ route('admin.citas.actualizarAnticipo', $cita) }}"
                                         data-reject-action="{{ route('admin.citas.rechazar', $cita) }}"
@@ -474,9 +474,6 @@
                         Guardar anticipo
                     </button>
                 </form>
-                <button type="button" class="btn btn-cancel btn-compact" id="openCancelFromModal">
-                    Cancelar
-                </button>
                 <form method="POST" id="rejectPaymentForm" class="assign-inline" style="display:none;">
                     @csrf
                     <button type="submit" class="btn btn-cancel btn-compact">
@@ -500,16 +497,19 @@
                 </form>
                 <form method="POST" id="noShowForm" class="assign-inline">
                     @csrf
-                    <button type="submit" class="btn btn-cancel btn-compact">Marcar no asistió</button>
+                    <button type="submit" class="btn btn-bt btn-compact">Marcar no asistió</button>
                 </form>
             </div>
             <div class="citas-detail-footer">
-                <button type="button" class="btn btn-cancel" id="notesModalClose">Cerrar</button>
-                <button type="button" class="btn btn-cancel btn-compact" id="openClientProfileFromModal">Ver
+                <button type="button" class="btn btn-cancel btn-compact" id="openCancelFromModal">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-bt btn-compact" id="openClientProfileFromModal">Ver
                     cliente</button>
-                <a href="#" target="_blank" rel="noopener" class="btn btn-cancel btn-compact"
+                <a href="#" target="_blank" rel="noopener" class="btn btn-bt btn-compact"
                     id="printTicketFromModal">Imprimir ticket</a>
                 <button type="button" class="btn btn-save btn-compact" id="openRescheduleFromModal">Reagendar</button>
+                <button type="button" class="btn btn-cerrar" id="notesModalClose">Cerrar</button>
             </div>
         </div>
     </div>
@@ -951,9 +951,10 @@
                     }
                     var canCancel = btn.getAttribute('data-can-cancel') === '1';
 
-                    if (openCancelFromModal) {
-                        openCancelFromModal.setAttribute('data-cancel-action', cancelAction);
-                        openCancelFromModal.style.display = canCancel ? 'inline-flex' : 'none';
+                    if (canCancel) {
+                        openCancelFromModal.style.display = '';
+                    } else {
+                        openCancelFromModal.style.display = 'none';
                     }
                     if (openRescheduleFromModal) {
                         openRescheduleFromModal.style.display = canReschedule ? 'inline-flex' : 'none';
