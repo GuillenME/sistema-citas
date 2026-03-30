@@ -45,6 +45,11 @@ class EmpleadoIndex extends Component
     public function confirmDelete($id)
     {
         $empleado = Empleado::findOrFail($id);
+
+        if ($empleado->trashed()) {
+            return;
+        }
+
         $upcomingAppointments = $this->upcomingAppointmentsQuery($empleado)
             ->with(['service:id,name', 'client.user:id,name'])
             ->orderBy('date')
@@ -61,8 +66,8 @@ class EmpleadoIndex extends Component
                     'date' => optional($cita->date)->format('d/m/Y'),
                     'time' => trim(
                         Carbon::parse($cita->getRawOriginal('start_time'))->format('H:i')
-                        . ' - ' .
-                        Carbon::parse($cita->getRawOriginal('end_time'))->format('H:i')
+                            . ' - ' .
+                            Carbon::parse($cita->getRawOriginal('end_time'))->format('H:i')
                     ),
                     'service' => $cita->service?->name ?? 'Servicio no disponible',
                     'client' => $cita->client?->user?->name ?? 'Cliente sin nombre',
@@ -117,9 +122,7 @@ class EmpleadoIndex extends Component
             return;
         }
 
-        $empleado->update([
-            'active' => false,
-        ]);
+        $empleado->delete();
 
         $this->setReassignResult('success', 'Empleado dado de baja correctamente. Su historial y citas se conservaron.');
         $this->cancelDelete();
@@ -145,9 +148,7 @@ class EmpleadoIndex extends Component
                 ]);
             }
 
-            $empleado->update([
-                'active' => false,
-            ]);
+            $empleado->delete();
         });
 
         $this->setReassignResult(
@@ -182,12 +183,12 @@ class EmpleadoIndex extends Component
             ->whereNotNull('employee_id')
             ->where('employee_id', '!=', $empleado->id)
             ->get()
-            ->groupBy(fn (Cita $cita) => $cita->employee_id . '|' . optional($cita->date)->toDateString());
+            ->groupBy(fn(Cita $cita) => $cita->employee_id . '|' . optional($cita->date)->toDateString());
 
         $bloquesOcupados = [];
         foreach ($candidateAppointments as $key => $appointments) {
             $bloquesOcupados[$key] = $appointments
-                ->map(fn (Cita $cita) => [
+                ->map(fn(Cita $cita) => [
                     'inicio' => Carbon::parse($cita->getRawOriginal('start_time'))->format('H:i'),
                     'fin' => Carbon::parse($cita->getRawOriginal('end_time'))->format('H:i'),
                 ])
@@ -209,7 +210,7 @@ class EmpleadoIndex extends Component
             $horaFin = Carbon::parse($cita->getRawOriginal('end_time'))->format('H:i');
 
             $candidatos = $cita->service->empleados
-                ->filter(fn (Empleado $candidato) => $candidato->active && $candidato->id !== $empleado->id)
+                ->filter(fn(Empleado $candidato) => $candidato->active && $candidato->id !== $empleado->id)
                 ->filter(function (Empleado $candidato) use ($fecha, $horaInicio, $horaFin, $bloquesOcupados) {
                     if (!$this->availability->employeeCoversRange($candidato, $fecha, $horaInicio, $horaFin)) {
                         return false;
@@ -258,9 +259,7 @@ class EmpleadoIndex extends Component
                     ->update(['employee_id' => $item['empleado_destino_id']]);
             }
 
-            $empleado->update([
-                'active' => false,
-            ]);
+            $empleado->delete();
         });
 
         $citasReasignadas = Cita::with(['client.user', 'service', 'employee'])

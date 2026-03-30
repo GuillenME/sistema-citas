@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Servicio;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Empleado extends Model
 {
     protected $table = 'employees';
+
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -35,5 +38,16 @@ class Empleado extends Model
     public function breaks()
     {
         return $this->hasMany(EmployeeBreak::class, 'employee_id');
+    }
+
+    public function displayName(bool $withStatus = true): string
+    {
+        $name = (string) $this->name;
+
+        if ($withStatus && $this->trashed()) {
+            return $name . ' (baja)';
+        }
+
+        return $name;
     }
 }

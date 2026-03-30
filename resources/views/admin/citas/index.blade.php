@@ -106,7 +106,7 @@
                                             ' ' .
                                             ($cita->service->name ?? '') .
                                             ' ' .
-                                            ($cita->employee?->name ?? '') .
+                                            ($cita->employee?->displayName() ?? '') .
                                             ' ' .
                                             ($cita->status ?? ''),
                                     ),
@@ -211,8 +211,8 @@
                                     )
                                     ->first();
                                 $favoriteEmployee = $clientAppointments
-                                    ->filter(fn($appointment) => $appointment->employee?->name)
-                                    ->groupBy(fn($appointment) => $appointment->employee->name)
+                                    ->filter(fn($appointment) => $appointment->employee?->displayName())
+                                    ->groupBy(fn($appointment) => $appointment->employee->displayName())
                                     ->map(
                                         fn($group, $employeeName) => [
                                             'employee' => $employeeName,
@@ -286,7 +286,7 @@
                                     @if ($cita->employee)
                                         <small class="cell-sub">
                                             <span class="employee-chip is-assigned">Empleado:
-                                                {{ $cita->employee->name }}</span>
+                                                {{ $cita->employee->displayName() }}</span>
                                         </small>
                                     @else
                                         <small class="cell-sub">
@@ -347,7 +347,7 @@
                                         data-remaining="{{ $restante }}"
                                         data-deadline="{{ $cita->payment_deadline ? $cita->payment_deadline->toIso8601String() : '' }}"
                                         data-notes="{{ e($cita->notes ?? '') }}"
-                                        data-employee="{{ e($cita->employee?->name ?? '- Sin asignar -') }}"
+                                        data-employee="{{ e($cita->employee?->displayName() ?? '- Sin asignar -') }}"
                                         data-receipt="{{ $cita->receipt ? asset('storage/' . $cita->receipt) : '' }}"
                                         data-assign-action="{{ route('admin.citas.asignarEmpleado', $cita) }}"
                                         data-can-assign="{{ $cita->status === 'confirmada' && !$cita->employee_id ? '1' : '0' }}"

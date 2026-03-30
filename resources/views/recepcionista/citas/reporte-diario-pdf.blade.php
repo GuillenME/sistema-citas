@@ -97,7 +97,7 @@
                     <td>{{ $cita->client?->user?->email ?? '-' }}</td>
                     <td>{{ $cita->service?->name ?? '-' }}</td>
                     <td>{{ ucfirst(str_replace('_', ' ', $cita->status)) }}</td>
-                    <td>{{ $cita->employee?->name ?? '-' }}</td>
+                    <td>{{ $cita->employee?->displayName() ?? '-' }}</td>
                     <td class="notes-col">{{ $cita->notes ?? '-' }}</td>
                 </tr>
             @empty

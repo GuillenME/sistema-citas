@@ -186,7 +186,7 @@
                 </div>
                 <div class="ticket-card">
                     <span>Empleado</span>
-                    <p>{{ $cita->employee?->name ?? 'Sin asignar' }}</p>
+                    <p>{{ $cita->employee?->displayName() ?? 'Sin asignar' }}</p>
                 </div>
                 <div class="ticket-card">
                     <span>Estado</span>

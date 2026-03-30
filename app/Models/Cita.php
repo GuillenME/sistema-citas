@@ -51,7 +51,8 @@ class Cita extends Model
 
     public function employee()
     {
-        return $this->belongsTo(Empleado::class, 'employee_id');
+        // Conserva el nombre del empleado en citas historicas aunque haya sido dado de baja logicamente.
+        return $this->belongsTo(Empleado::class, 'employee_id')->withTrashed();
     }
 
     public function estados()
