@@ -262,9 +262,7 @@ class AdminCitaController extends Controller
             'confirmadas' => $citasDia->where('status', 'confirmada')->count(),
             'completadas' => $citasDia->where('status', 'completada')->count(),
             'ingresos_estimados' => round(
-                $citasDia
-                    ->whereIn('status', ['confirmada', 'completada'])
-                    ->sum(fn(Cita $cita) => $cita->precioRegistrado()),
+                $citasDia->sum(fn(Cita $cita) => (float) ($cita->total_paid ?? 0)),
                 2
             ),
         ];

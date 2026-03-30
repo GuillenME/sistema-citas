@@ -236,6 +236,94 @@
         }
 
         @media (max-width: 760px) {
+            .agenda-shell {
+                gap: 14px;
+            }
+
+            .agenda-toolbar {
+                grid-template-columns: 1fr !important;
+                padding: 18px 16px !important;
+            }
+
+            .agenda-toolbar-copy h2 {
+                font-size: clamp(1.8rem, 8vw, 2.4rem);
+            }
+
+            .agenda-toolbar-copy p {
+                font-size: 13px;
+            }
+
+            .agenda-toolbar-actions,
+            .agenda-nav-actions,
+            .agenda-date-form {
+                width: 100%;
+            }
+
+            .agenda-toolbar-actions {
+                justify-items: stretch !important;
+            }
+
+            .agenda-nav-actions {
+                display: grid !important;
+                grid-template-columns: 1fr;
+                justify-content: stretch !important;
+            }
+
+            .agenda-pill-btn,
+            .agenda-date-form button,
+            .agenda-header-btn,
+            .agenda-date-input,
+            .agenda-toggle-pill {
+                width: 100%;
+            }
+
+            .agenda-date-form {
+                grid-template-columns: 1fr !important;
+            }
+
+            .agenda-stats {
+                grid-template-columns: 1fr !important;
+            }
+
+            .agenda-stat-card {
+                padding: 16px;
+            }
+
+            .agenda-board-shell {
+                padding: 12px !important;
+                overflow: hidden;
+            }
+
+            .agenda-board-scroll {
+                width: 100%;
+                overflow-x: auto;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .agenda-board {
+                --time-column-width: 72px;
+                min-width: 780px !important;
+            }
+
+            .agenda-lanes {
+                grid-auto-columns: minmax(240px, 1fr);
+                gap: 10px;
+            }
+
+            .agenda-column-head {
+                min-height: 68px;
+                padding: 12px;
+            }
+
+            .agenda-column-head strong {
+                font-size: 16px;
+            }
+
+            .agenda-column-head span,
+            .agenda-time-slot span {
+                font-size: 11px;
+            }
 
             #agendaAppointmentModal .citas-detail-summary-grid,
             #agendaAppointmentModal .citas-detail-footer {
@@ -249,6 +337,40 @@
 
             #agendaAppointmentModal .agenda-modal-body {
                 max-height: calc(100vh - 132px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .agenda-toolbar {
+                padding: 16px 14px !important;
+                border-radius: 18px;
+            }
+
+            .agenda-kicker {
+                font-size: 9px;
+                letter-spacing: 0.12em;
+            }
+
+            .agenda-board {
+                --time-column-width: 64px;
+                min-width: 680px !important;
+            }
+
+            .agenda-lanes {
+                grid-auto-columns: minmax(220px, 1fr);
+            }
+
+            .agenda-time-column {
+                padding-right: 10px;
+                margin-right: 10px;
+            }
+
+            .agenda-appointment-card {
+                padding: 10px 10px 12px;
+            }
+
+            .agenda-appointment-card h4 {
+                font-size: 14px;
             }
         }
 

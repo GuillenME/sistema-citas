@@ -74,7 +74,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18.226 5.226-2.52-2.52A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-.351"/><path d="M21.378 12.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/><path d="M8 18h1"/></svg>
                                 </a>
                                 @if ($e->active)
-                                    <button class="serv-btn ghost" wire:click="confirmDelete({{ $e->id }})">
+                                    <button class="serv-btn ghost" wire:click="toggle({{ $e->id }})">
                                         Desactivar
                                     </button>
                                 @else
@@ -124,6 +124,12 @@
                 @php
                     $internalCode = 'EMP-' . str_pad((string) $confirmDeleteId, 4, '0', STR_PAD_LEFT);
                 @endphp
+
+                @if ($reassignMessage && $reassignType === 'error')
+                    <div class="serv-reassign-alert is-error">
+                        {{ $reassignMessage }}
+                    </div>
+                @endif
 
                 @if ($upcomingAppointmentsCount > 0)
                     <p class="serv-deactivate-modal-copy">
@@ -217,6 +223,40 @@
         </div>
     @endif
 
+    @if ($confirmToggleId)
+        <div class="modal-overlay" wire:click.self="cancelToggle">
+            <div class="modal-box">
+                <h3>¿Desactivar empleado?</h3>
+                <p>
+                    {{ $toggleUpcomingAppointmentsLabel }} dejara de estar disponible para nuevas asignaciones, pero seguira
+                    visible en el sistema.
+                </p>
+
+                @if ($reassignMessage && $reassignType === 'error')
+                    <div class="serv-reassign-alert is-error">
+                        {{ $reassignMessage }}
+                    </div>
+                @endif
+
+                @if ($toggleUpcomingAppointmentsCount > 0)
+                    <div class="serv-reassign-alert is-error">
+                        Este empleado tiene {{ $toggleUpcomingAppointmentsCount }} cita(s) proxima(s) activa(s). No se puede
+                        desactivar hasta resolverlas.
+                    </div>
+                @endif
+
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" wire:click="cancelToggle">Cancelar</button>
+                    <button class="btn btn-save" wire:click="toggleConfirmed" wire:loading.attr="disabled"
+                        @disabled($toggleUpcomingAppointmentsCount > 0)>
+                        <span wire:loading.remove wire:target="toggleConfirmed">Confirmar desactivacion</span>
+                        <span wire:loading wire:target="toggleConfirmed">Desactivando...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
     @if ($showUpcomingAppointmentsModal)
         <div class="modal-overlay" wire:click.self="closeUpcomingAppointmentsModal">
             <div class="modal-box serv-appointments-modal">
@@ -260,6 +300,11 @@
             <div class="modal-box">
                 <h3>Reasignar citas de hoy?</h3>
                 <p>Se moveran automaticamente solo las citas compatibles por servicio, horario y disponibilidad.</p>
+                @if ($reassignMessage && $reassignType === 'error')
+                    <div class="serv-reassign-alert is-error">
+                        {{ $reassignMessage }}
+                    </div>
+                @endif
                 <div class="modal-actions">
                     <button class="btn btn-cancel" wire:click="cancelReassign">Cancelar</button>
                     <button class="btn btn-save" wire:click="reassignTodayAppointments" wire:loading.attr="disabled">

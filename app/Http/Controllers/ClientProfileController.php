@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\CitaStatus;
 use App\Models\Cliente;
 use App\Models\Cita;
+use App\Models\CitaEstado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,11 +14,31 @@ use Illuminate\Support\Str;
 
 class ClientProfileController extends Controller
 {
+    private function upcomingActiveAppointmentsQuery(?Cliente $cliente)
+    {
+        return Cita::query()
+            ->where('client_id', $cliente?->id)
+            ->whereIn('status', [CitaStatus::PENDIENTE_ANTICIPO, CitaStatus::CONFIRMADA])
+            ->where(function ($query) {
+                $query->whereDate('date', '>', today()->toDateString())
+                    ->orWhere(function ($innerQuery) {
+                        $innerQuery->whereDate('date', today()->toDateString())
+                            ->where('start_time', '>', now()->format('H:i:s'));
+                    });
+            });
+    }
+
     public function show()
     {
         /** @var \App\Models\Usuario $usuario */
         $usuario = auth()->user()->load('client');
         $cliente = $usuario->client;
+
+        $upcomingActiveAppointments = $this->upcomingActiveAppointmentsQuery($cliente)
+            ->with('service')
+            ->orderBy('date')
+            ->orderBy('start_time')
+            ->get();
 
         $stats = [
             'citas_total' => Cita::query()
@@ -28,9 +50,10 @@ class ClientProfileController extends Controller
                 ->orderBy('date')
                 ->orderBy('start_time')
                 ->first(),
+            'citas_activas_futuras' => $upcomingActiveAppointments->count(),
         ];
 
-        return view('cliente.perfil', compact('usuario', 'cliente', 'stats'));
+        return view('cliente.perfil', compact('usuario', 'cliente', 'stats', 'upcomingActiveAppointments'));
     }
 
     public function update(Request $request)
@@ -90,24 +113,46 @@ class ClientProfileController extends Controller
         /** @var \App\Models\Usuario $usuario */
         $usuario = auth()->user()->load('client');
         $cliente = $usuario->client;
+        $citasActivasFuturas = $this->upcomingActiveAppointmentsQuery($cliente)
+            ->orderBy('date')
+            ->orderBy('start_time')
+            ->get();
 
-        DB::transaction(function () use ($usuario, $cliente) {
+        DB::transaction(function () use ($usuario, $cliente, $citasActivasFuturas) {
+            foreach ($citasActivasFuturas as $cita) {
+                $notaBase = trim((string) ($cita->notes ?? ''));
+                $motivo = 'Cancelada por eliminacion de cuenta del cliente.';
+                $notaFinal = $notaBase === '' ? $motivo : $notaBase . ' | ' . $motivo;
+
+                $cita->update([
+                    'status' => CitaStatus::CANCELADA,
+                    'notes' => $notaFinal,
+                ]);
+
+                CitaEstado::create([
+                    'appointment_id' => $cita->id,
+                    'status' => CitaStatus::CANCELADA,
+                    'user_id' => $usuario->id,
+                    'change_date' => now(),
+                ]);
+            }
+
             $anonymousEmail = 'eliminado+' . $usuario->id . '+' . now()->format('YmdHis') . '@local.invalid';
 
             $usuario->forceFill([
-                'name' => 'Cliente eliminado',
+                'name' => 'Cliente anonimizado',
                 'last_name' => null,
                 'email' => $anonymousEmail,
                 'phone' => null,
                 'password' => Hash::make(Str::random(40)),
                 'active' => false,
-                'remember_token' => null,
             ])->save();
 
             if ($cliente) {
                 $cliente->update([
                     'birth_date' => null,
-                    'notes' => 'Cuenta anonimizada por solicitud del cliente el ' . now()->format('Y-m-d H:i:s'),
+                    'notes' => 'Cuenta anonimizada por solicitud del cliente el ' . now()->format('Y-m-d H:i:s')
+                        . '. Citas futuras canceladas automaticamente: ' . $citasActivasFuturas->count() . '.',
                     'birth_date_change_count' => 0,
                 ]);
             }
@@ -119,6 +164,12 @@ class ClientProfileController extends Controller
 
         return redirect()
             ->route('login')
-            ->with('success', 'Tu cuenta fue eliminada correctamente. Conservamos solo el historial necesario sin tus datos personales.');
+            ->with(
+                'success',
+                'Tu cuenta fue anonimizada correctamente. '
+                    . ($citasActivasFuturas->isNotEmpty()
+                        ? 'Tambien cancelamos tus citas futuras para evitar dejar reservas activas sin acceso a la cuenta.'
+                        : 'Conservamos solo el historial necesario sin tus datos personales.')
+            );
     }
 }

@@ -128,9 +128,36 @@
     <div class="modal-overlay" id="deleteAccountModal" aria-hidden="true">
         <div class="modal-content profile-delete-modal" role="dialog" aria-modal="true" aria-labelledby="deleteAccountTitle">
             <h3 id="deleteAccountTitle">Eliminar cuenta</h3>
-            <p>
-                Tu acceso sera desactivado y tus datos personales se anonimizaran. El historial de citas se conservara sin informacion identificable.
-            </p>
+            @if (($stats['citas_activas_futuras'] ?? 0) > 0)
+                <p>
+                    Tu acceso sera desactivado y tus datos personales se anonimizaran. Ademas, tus
+                    {{ $stats['citas_activas_futuras'] }} cita(s) futura(s) activa(s) se cancelaran automaticamente
+                    para no dejar reservas vigentes sin una cuenta disponible.
+                </p>
+
+                <div class="profile-alert profile-alert-error">
+                    Al confirmar, se cancelaran tus proximas citas pendientes o confirmadas antes de anonimizar la cuenta.
+                </div>
+
+                <div class="profile-stat" style="margin-bottom: 1rem;">
+                    <span>Citas que se cancelaran</span>
+                    <strong>{{ $stats['citas_activas_futuras'] }}</strong>
+                    @foreach ($upcomingActiveAppointments->take(3) as $appointment)
+                        <small>
+                            {{ \Carbon\Carbon::parse($appointment->date)->format('d/m/Y') }}
+                            {{ \Carbon\Carbon::parse($appointment->start_time)->format('h:i A') }}
+                            · {{ $appointment->service?->name ?? 'Servicio' }}
+                        </small>
+                    @endforeach
+                    @if ($upcomingActiveAppointments->count() > 3)
+                        <small>Y {{ $upcomingActiveAppointments->count() - 3 }} cita(s) mas.</small>
+                    @endif
+                </div>
+            @else
+                <p>
+                    Tu acceso sera desactivado y tus datos personales se anonimizaran. El historial de citas se conservara sin informacion identificable.
+                </p>
+            @endif
 
             <form method="POST" action="{{ route('cliente.perfil.delete') }}" class="profile-form profile-delete-form">
                 @csrf
@@ -143,7 +170,9 @@
 
                 <div class="modal-buttons">
                     <button type="button" class="modal-btn modal-btn-cancel" id="closeDeleteAccountModal">Cancelar</button>
-                    <button type="submit" class="modal-btn modal-btn-danger">Confirmar eliminacion</button>
+                    <button type="submit" class="modal-btn modal-btn-danger">
+                        {{ ($stats['citas_activas_futuras'] ?? 0) > 0 ? 'Cancelar citas y eliminar cuenta' : 'Confirmar eliminacion' }}
+                    </button>
                 </div>
             </form>
         </div>

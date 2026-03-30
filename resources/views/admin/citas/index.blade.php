@@ -276,12 +276,12 @@
                             @endphp
                             <tr data-search="{{ $searchText }}" data-employee-id="{{ $cita->employee_id ?? '' }}"
                                 data-cita-row="{{ $cita->id }}">
-                                <td class="col-cliente">
+                                <td class="col-cliente" data-label="Cliente">
                                     <div class="cell-main">{{ $cita->client->user->name }}</div>
                                     <small class="cell-sub">{{ $cita->client->user->email ?? '-' }}</small>
                                 </td>
 
-                                <td class="col-servicio">
+                                <td class="col-servicio" data-label="Servicio">
                                     <div class="cell-main">{{ $cita->service->name }}</div>
                                     @if ($cita->employee)
                                         <small class="cell-sub">
@@ -295,7 +295,7 @@
                                     @endif
                                 </td>
 
-                                <td class="col-fecha">
+                                <td class="col-fecha" data-label="Fecha y Hora">
                                     <div class="cell-main">
                                         {{ \Carbon\Carbon::parse($cita->date)->format('d/m/Y') }}
                                         {{ \Carbon\Carbon::parse($cita->start_time)->format('h:i A') }}
@@ -311,12 +311,12 @@
                                     </small>
                                 </td>
 
-                                <td class="col-estado">
+                                <td class="col-estado" data-label="Estado">
                                     <span
                                         class="status-pill {{ $statusClass }}">{{ ucfirst(str_replace('_', ' ', $cita->status)) }}</span>
                                 </td>
 
-                                <td>
+                                <td data-label="Pago">
                                     @php
                                         $precio = $cita->precioRegistrado();
                                         $anticipo = $cita->anticipoRegistrado();
@@ -338,7 +338,7 @@
                                     @endif
                                 </td>
 
-                                <td class="table-actions col-acciones">
+                                <td class="table-actions col-acciones" data-label="Acciones">
                                     <button type="button" class="btn notes-btn citas-detail-btn"
                                         data-cita-id="{{ $cita->id }}"
                                         title="Ver empleado, comprobante y acciones de la cita"
@@ -951,10 +951,14 @@
                     }
                     var canCancel = btn.getAttribute('data-can-cancel') === '1';
 
-                    if (canCancel) {
-                        openCancelFromModal.style.display = '';
-                    } else {
-                        openCancelFromModal.style.display = 'none';
+                    if (openCancelFromModal) {
+                        if (canCancel) {
+                            openCancelFromModal.style.display = '';
+                            openCancelFromModal.setAttribute('data-cancel-action', cancelAction);
+                        } else {
+                            openCancelFromModal.style.display = 'none';
+                            openCancelFromModal.removeAttribute('data-cancel-action');
+                        }
                     }
                     if (openRescheduleFromModal) {
                         openRescheduleFromModal.style.display = canReschedule ? 'inline-flex' : 'none';

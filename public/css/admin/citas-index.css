@@ -913,6 +913,92 @@
 }
 
 @media (max-width: 640px) {
+    .citas-panel {
+        overflow: visible;
+    }
+
+    .citas-table-wrap {
+        overflow: visible;
+    }
+
+    .citas-table,
+    .citas-table thead,
+    .citas-table tbody,
+    .citas-table th,
+    .citas-table td,
+    .citas-table tr {
+        display: block;
+    }
+
+    .citas-table {
+        min-width: 100%;
+        border-collapse: separate;
+    }
+
+    .citas-table colgroup,
+    .citas-table thead {
+        display: none;
+    }
+
+    .citas-table tbody {
+        display: grid;
+        gap: 14px;
+    }
+
+    .citas-table tbody tr {
+        border: 1px solid rgba(243, 202, 132, 0.12);
+        border-radius: 18px;
+        background: linear-gradient(155deg, rgba(32, 14, 9, 0.94), rgba(58, 31, 20, 0.9));
+        box-shadow: 0 14px 32px rgba(10, 4, 2, 0.2);
+        overflow: hidden;
+    }
+
+    .citas-table tbody td {
+        position: relative;
+        padding: 14px 16px 14px 120px;
+        min-height: 54px;
+        border: 0;
+        text-align: left;
+    }
+
+    .citas-table tbody td + td {
+        border-top: 1px solid rgba(243, 202, 132, 0.08);
+    }
+
+    .citas-table tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        top: 14px;
+        left: 16px;
+        width: 88px;
+        color: #d5a870;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .citas-table .cell-main,
+    .citas-table .cell-sub,
+    .citas-table .status-pill,
+    .citas-table .details-hint {
+        display: block;
+    }
+
+    .citas-table .table-actions.col-acciones {
+        padding-top: 16px;
+    }
+
+    .citas-table .table-actions.col-acciones .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .citas-table .details-hint {
+        margin-top: 8px;
+        text-align: left;
+    }
+
     #notesModal .citas-detail-summary-grid,
     #notesModal .citas-detail-footer {
         grid-template-columns: 1fr;
@@ -1008,4 +1094,3 @@
     background: rgba(252, 204, 124, 0.12) !important;
     box-shadow: inset 0 0 0 1px rgba(252, 204, 124, 0.24);
 }
-

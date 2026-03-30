@@ -21,6 +21,7 @@ class EmpleadoIndex extends Component
     protected $paginationTheme = 'simple-bootstrap';
 
     public $confirmDeleteId = null;
+    public $confirmToggleId = null;
     public $confirmReassignId = null;
     public $reassignMessage = null;
     public $reassignType = 'success';
@@ -28,6 +29,8 @@ class EmpleadoIndex extends Component
     public $upcomingAppointmentsLabel = '';
     public $upcomingAppointments = [];
     public $showUpcomingAppointmentsModal = false;
+    public $toggleUpcomingAppointmentsCount = 0;
+    public $toggleUpcomingAppointmentsLabel = '';
 
     public function boot(AppointmentAvailabilityService $availability): void
     {
@@ -37,9 +40,59 @@ class EmpleadoIndex extends Component
     public function toggle($id)
     {
         $empleado = Empleado::findOrFail($id);
+
+        if ($empleado->active) {
+            $this->confirmToggle($id);
+            return;
+        }
+
         $empleado->update([
-            'active' => !$empleado->active,
+            'active' => true,
         ]);
+
+        $this->setReassignResult('success', 'Empleado activado correctamente.');
+    }
+
+    public function confirmToggle($id): void
+    {
+        $empleado = Empleado::findOrFail($id);
+
+        $this->reassignMessage = null;
+        $this->reassignType = 'success';
+        $this->confirmToggleId = $id;
+        $this->toggleUpcomingAppointmentsLabel = $empleado->name;
+        $this->toggleUpcomingAppointmentsCount = $this->upcomingAppointmentsQuery($empleado)->count();
+    }
+
+    public function cancelToggle(): void
+    {
+        $this->confirmToggleId = null;
+        $this->toggleUpcomingAppointmentsCount = 0;
+        $this->toggleUpcomingAppointmentsLabel = '';
+    }
+
+    public function toggleConfirmed(): void
+    {
+        if (!$this->confirmToggleId) {
+            return;
+        }
+
+        $empleado = Empleado::findOrFail($this->confirmToggleId);
+
+        if ($this->upcomingAppointmentsQuery($empleado)->exists()) {
+            $this->setReassignResult(
+                'error',
+                'No se puede desactivar este empleado porque aun tiene citas proximas activas. Reasignalas o dalo de baja con el flujo correspondiente.'
+            );
+            return;
+        }
+
+        $empleado->update([
+            'active' => false,
+        ]);
+
+        $this->setReassignResult('success', 'Empleado desactivado correctamente.');
+        $this->cancelToggle();
     }
 
     public function confirmDelete($id)
@@ -49,6 +102,9 @@ class EmpleadoIndex extends Component
         if ($empleado->trashed()) {
             return;
         }
+
+        $this->reassignMessage = null;
+        $this->reassignType = 'success';
 
         $upcomingAppointments = $this->upcomingAppointmentsQuery($empleado)
             ->with(['service:id,name', 'client.user:id,name'])
@@ -101,6 +157,8 @@ class EmpleadoIndex extends Component
 
     public function confirmReassign($id)
     {
+        $this->reassignMessage = null;
+        $this->reassignType = 'success';
         $this->confirmReassignId = $id;
     }
 

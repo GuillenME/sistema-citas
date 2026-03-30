@@ -616,6 +616,23 @@
 }
 
 @media (max-width: 640px) {
+    .agenda-shell {
+        gap: 14px;
+    }
+
+    .agenda-toolbar {
+        padding: 18px 16px;
+        border-radius: 18px;
+    }
+
+    .agenda-toolbar-copy h2 {
+        font-size: clamp(1.8rem, 8vw, 2.4rem);
+    }
+
+    .agenda-toolbar-copy p {
+        font-size: 13px;
+    }
+
     .agenda-stats {
         grid-template-columns: 1fr;
     }
@@ -635,10 +652,48 @@
 
     .agenda-nav-actions {
         display: grid;
+        grid-template-columns: 1fr;
+        justify-content: stretch;
+    }
+
+    .agenda-toolbar-actions {
+        justify-items: stretch;
     }
 
     .agenda-board-shell {
-        padding: 14px;
+        padding: 12px;
+        overflow: hidden;
+    }
+
+    .agenda-board-scroll {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .agenda-board {
+        --time-column-width: 72px;
+        min-width: 780px;
+    }
+
+    .agenda-lanes {
+        grid-auto-columns: minmax(240px, 1fr);
+        gap: 10px;
+    }
+
+    .agenda-column-head {
+        min-height: 68px;
+        padding: 12px;
+    }
+
+    .agenda-column-head strong {
+        font-size: 16px;
+    }
+
+    .agenda-column-head span,
+    .agenda-time-slot span {
+        font-size: 11px;
     }
 
     .agenda-modal-grid {
@@ -647,5 +702,38 @@
 
     .agenda-modal-head h3 {
         font-size: 26px;
+    }
+}
+
+@media (max-width: 480px) {
+    .agenda-toolbar {
+        padding: 16px 14px;
+    }
+
+    .agenda-kicker {
+        font-size: 9px;
+        letter-spacing: 0.12em;
+    }
+
+    .agenda-board {
+        --time-column-width: 64px;
+        min-width: 680px;
+    }
+
+    .agenda-lanes {
+        grid-auto-columns: minmax(220px, 1fr);
+    }
+
+    .agenda-time-column {
+        padding-right: 10px;
+        margin-right: 10px;
+    }
+
+    .agenda-appointment-card {
+        padding: 10px 10px 12px;
+    }
+
+    .agenda-appointment-card h4 {
+        font-size: 14px;
     }
 }
