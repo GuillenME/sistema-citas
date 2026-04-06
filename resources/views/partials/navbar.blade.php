@@ -34,7 +34,8 @@
                 class="{{ request()->routeIs('comentarios.publicos') ? 'active' : '' }}">Comentarios</a>
 
             <a href="{{ $homeUrl }}#noticias"
-                data-section="noticias">Noticias y novedades</a>
+                data-section="noticias"
+                class="{{ request()->routeIs('noticias.publicas') ? 'active' : '' }}">Noticias y novedades</a>
 
             <a href="{{ $homeUrl }}#contacto"
                 data-section="contacto">Contacto</a>

@@ -342,12 +342,28 @@
                     });
                 };
 
-                const currentHash = (window.location.hash || '').replace('#', '');
-                if (currentHash && sectionMap.has(currentHash)) {
-                    setActiveNav(currentHash);
-                } else {
-                    setActiveNav('inicio');
-                }
+                const syncActiveNav = () => {
+                    const currentHash = (window.location.hash || '').replace('#', '');
+                    if (currentHash && sectionMap.has(currentHash)) {
+                        setActiveNav(currentHash);
+                        return;
+                    }
+
+                    const navbarHeight = document.querySelector('.public-navbar')?.offsetHeight || 0;
+                    const viewportMarker = navbarHeight + Math.max(window.innerHeight * 0.22, 120);
+
+                    let currentSection = 'inicio';
+                    sectionMap.forEach((el, id) => {
+                        const rect = el.getBoundingClientRect();
+                        if (rect.top <= viewportMarker) {
+                            currentSection = id;
+                        }
+                    });
+
+                    setActiveNav(currentSection);
+                };
+
+                syncActiveNav();
 
                 sectionLinks.forEach((link) => {
                     link.addEventListener('click', () => {
@@ -356,23 +372,10 @@
                     });
                 });
 
-                const sectionObserver = new IntersectionObserver((entries) => {
-                    let topVisible = null;
-                    entries.forEach((entry) => {
-                        if (!entry.isIntersecting) return;
-                        if (!topVisible || entry.intersectionRatio > topVisible.intersectionRatio) {
-                            topVisible = entry;
-                        }
-                    });
-                    if (topVisible?.target?.id) {
-                        setActiveNav(topVisible.target.id);
-                    }
-                }, {
-                    threshold: [0.2, 0.5, 0.75],
-                    rootMargin: '-20% 0px -55% 0px'
+                window.addEventListener('scroll', syncActiveNav, {
+                    passive: true
                 });
-
-                sectionMap.forEach((el) => sectionObserver.observe(el));
+                window.addEventListener('hashchange', syncActiveNav);
             }
         });
 
