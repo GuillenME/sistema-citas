@@ -1890,6 +1890,45 @@ body.modal-open {
     filter: brightness(1.06);
 }
 
+.contact-lux .contact-lux-submit[disabled] {
+    opacity: .72;
+    cursor: wait;
+}
+
+.contact-lux .contact-lux-alert {
+    margin: 0 0 16px;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.contact-lux .contact-lux-alert-success {
+    background: rgba(70, 146, 92, .18);
+    border: 1px solid rgba(108, 201, 136, .38);
+    color: #dff7e6;
+}
+
+.contact-lux .contact-lux-alert-error {
+    background: rgba(164, 54, 54, .18);
+    border: 1px solid rgba(255, 122, 122, .34);
+    color: #ffd6d6;
+}
+
+.contact-lux .contact-lux-field input:focus,
+.contact-lux .contact-lux-field textarea:focus {
+    border-color: rgba(241, 163, 31, .7);
+    box-shadow: 0 0 0 3px rgba(241, 163, 31, .12);
+}
+
+.contact-lux .contact-lux-error {
+    display: block;
+    margin-top: 6px;
+    color: #ffb4b4;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
 .contact-lux .contact-lux-side {
     display: flex;
     flex-direction: column;

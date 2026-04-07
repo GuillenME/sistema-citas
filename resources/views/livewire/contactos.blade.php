@@ -22,34 +22,64 @@
         <form class="contact-lux-form" wire:submit.prevent="enviar">
             <h3>Envianos un mensaje</h3>
 
+            @if (session('success'))
+                <div class="contact-lux-alert contact-lux-alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="contact-lux-alert contact-lux-alert-error">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="contact-lux-fields">
                 <div class="contact-lux-field">
                     <label>NOMBRE</label>
-                    <input type="text" wire:model.defer="nombre" placeholder="Tu nombre">
+                    <input type="text" name="nombre" wire:model.defer="nombre" placeholder="Tu nombre">
+                    @error('nombre')
+                        <span class="contact-lux-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="contact-lux-field">
                     <label>APELLIDOS</label>
-                    <input type="text" wire:model.defer="apellido" placeholder="Tus apellidos">
+                    <input type="text" name="apellido" wire:model.defer="apellido" placeholder="Tus apellidos">
+                    @error('apellido')
+                        <span class="contact-lux-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="contact-lux-field full">
                     <label>CORREO ELECTRONICO</label>
-                    <input type="email" wire:model.defer="email" placeholder="ejemplo@correo.com">
+                    <input type="email" name="email" wire:model.defer="email" placeholder="ejemplo@correo.com">
+                    @error('email')
+                        <span class="contact-lux-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="contact-lux-field full">
                     <label>ASUNTO</label>
-                    <input type="text" wire:model.defer="asunto" placeholder="Reserva de cita">
+                    <input type="text" name="asunto" wire:model.defer="asunto" placeholder="Reserva de cita">
+                    @error('asunto')
+                        <span class="contact-lux-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="contact-lux-field full">
                     <label>MENSAJE</label>
-                    <textarea rows="5" wire:model.defer="mensaje" placeholder="Como podemos ayudarte?"></textarea>
+                    <textarea rows="5" name="mensaje" wire:model.defer="mensaje" placeholder="Como podemos ayudarte?"></textarea>
+                    @error('mensaje')
+                        <span class="contact-lux-error">{{ $message }}</span>
+                    @enderror
                 </div>
             </div>
 
-            <button type="submit" class="contact-lux-submit">ENVIAR MENSAJE</button>
+            <button type="submit" class="contact-lux-submit" wire:loading.attr="disabled" wire:target="enviar">
+                <span wire:loading.remove wire:target="enviar">ENVIAR MENSAJE</span>
+                <span wire:loading wire:target="enviar">ENVIANDO...</span>
+            </button>
         </form>
 
         <div class="contact-lux-side">

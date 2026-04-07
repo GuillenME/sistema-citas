@@ -2,9 +2,10 @@
 <html lang="es">
 
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Barber?a & Spa')</title>
+    <title>@yield('title', 'Barbería & Spa')</title>
 
     <link rel="stylesheet" href="{{ asset('css/public/layout.css') }}">
     @yield('styles')
